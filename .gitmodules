@@ -1,0 +1,3 @@
+[submodule "Flow/ThirdParty/spdlog"]
+	path = Flow/ThirdParty/spdlog
+	url = https://github.com/gabime/spdlog
