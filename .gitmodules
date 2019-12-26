@@ -1,3 +1,0 @@
-[submodule "FlowEngine/ThirdParty/spdlog"]
-	path = FlowEngine/ThirdParty/spdlog
-	url = https://github.com/gabime/spdlog

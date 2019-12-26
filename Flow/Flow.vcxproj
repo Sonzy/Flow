@@ -64,6 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -80,6 +81,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,20 +91,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="FlowEngine\Source\Flow.h" />
-    <ClInclude Include="FlowEngine\Source\FlowEngine\Application.h" />
-    <ClInclude Include="FlowEngine\Source\FlowEngine\Core.h" />
-    <ClInclude Include="FlowEngine\Source\FlowEngine\EntryPoint.h" />
-    <ClInclude Include="FlowEngine\Source\Flow\Application.h" />
-    <ClInclude Include="FlowEngine\Source\Flow\Core.h" />
-    <ClInclude Include="FlowEngine\Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow.h" />
     <ClInclude Include="Source\FlowEngine\Application.h" />
     <ClInclude Include="Source\FlowEngine\Core.h" />
     <ClInclude Include="Source\FlowEngine\EntryPoint.h" />
+    <ClInclude Include="Source\Flow\Application.h" />
+    <ClInclude Include="Source\Flow\Core.h" />
+    <ClInclude Include="Source\Flow\EntryPoint.h" />
+    <ClInclude Include="Source\Flow\Logging\Log.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FlowEngine\Source\Flow\Application.cpp" />
+    <ClCompile Include="Source\Flow\Application.cpp" />
+    <ClCompile Include="Source\Flow\Logging\Log.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
