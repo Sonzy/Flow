@@ -65,6 +65,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +87,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +112,7 @@
     <ClInclude Include="Source\Flow\Events\Event.h" />
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
+    <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
   </ItemGroup>
@@ -117,6 +122,10 @@
     <ClCompile Include="Source\Flow\Events\Event.cpp" />
     <ClCompile Include="Source\Flow\Events\KeyEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\MouseEvent.cpp" />
+    <ClCompile Include="Source\Flowpch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
   </ItemGroup>

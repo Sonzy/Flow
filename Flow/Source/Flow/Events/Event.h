@@ -3,10 +3,6 @@
 #include "Flow/Core.h"
 #include "Flow/Helper/Maths.h"
 
-#include <string>
-#include <ostream>
-#include <functional>
-
 namespace Flow
 {
 	//TODO: Make buffered events instead of blocking
