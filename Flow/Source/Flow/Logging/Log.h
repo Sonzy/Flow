@@ -8,7 +8,8 @@ namespace Flow
 	class FLOW_API Log
 	{
 	public:
-		static void Initialise(const std::string& ApplicationName);
+		static void InitialiseEngineLogger();
+		static void InitialiseApplicationLogger(const std::string& ApplicationName);
 		static std::shared_ptr<spdlog::logger> InitialiseLogger(const std::string& LoggerName);
 
 		inline static std::shared_ptr<spdlog::logger>& GetEngineLogger() { return EngineLogger; };

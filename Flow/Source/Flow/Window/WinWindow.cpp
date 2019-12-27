@@ -2,6 +2,10 @@
 #include "WinWindow.h"
 #include "Flow/Core.h"
 
+#include "Flow/Events/ApplicationEvent.h"
+#include "Flow/Events/MouseEvent.h"
+#include "Flow/Events/KeyEvent.h"
+
 namespace Flow
 {
 	Window* Window::Create(const WindowProperties& Properties)
@@ -54,6 +58,23 @@ namespace Flow
 		//TODO: Initialise Window UI
 
 		Props = Properties;
+
+		m_WindowData.Title = Props.Title;
+		m_WindowData.Width = Props.Width;
+		m_WindowData.Height = Props.Height;
+
+
+		//InitialiseBoundEvents();
+		//
+		//
+		////Find the event type, add the callback
+		//std::unordered_map<EventType, std::function<void()>>::iterator Found = BoundEvents.find(EventType::WindowClose);
+		//if (Found != BoundEvents.end())
+		//{
+		//	Found->second.push_back();
+		//}
+		//WindowClosedEvent ClosedEvent;
+		//BoundEvents.emplace(EventType::WindowClose, ClosedEvent);
 	}
 
 	void WinWindow::Shutdown()
@@ -78,7 +99,7 @@ namespace Flow
 
 	void WinWindow::SetEventCallback(const EventCallbackFunction& Callback)
 	{
-		FLOW_ENGINE_LOG("TODO: WinWindow::SetEventCallback");
+		m_WindowData.EventCallback = Callback;
 	}
 
 	void WinWindow::EnableVSync(bool bEnabled)
@@ -118,6 +139,39 @@ namespace Flow
 
 	LRESULT WinWindow::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		Event* e = nullptr;
+		bool bHandled = true;
+		switch (msg)
+		{
+			case WM_CLOSE:
+			{
+				WindowClosedEvent Event;
+				e = &Event;
+				break;
+			}
+			case WM_MOUSEMOVE:
+			{
+				const POINTS points = MAKEPOINTS(lParam);
+				MouseMovedEvent Event(points.x, points.y);
+				e = &Event;
+				break;
+			}
+
+		default:
+				bHandled = false;
+
+		}
+
+
+		//If we have a handled event, call the callback
+		if (e)
+			m_WindowData.EventCallback(*e);
+		else if(bHandled)
+		{
+			FLOW_ENGINE_ERROR("WinWindow::HandleMessages: Event was nullptr");
+		}
+
+
 		////if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		////	return true;
 		//
@@ -290,6 +344,7 @@ namespace Flow
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 
+
 	std::optional<int> WinWindow::ProcessWindowsMessages()
 	{
 		MSG Message;
@@ -302,6 +357,11 @@ namespace Flow
 			DispatchMessage(&Message);
 		}
 		return {};
+	}
+
+	HWND& WinWindow::GetWindowHandle()
+	{
+		return WindowHandle;
 	}
 
 	//= Window Class ===========================

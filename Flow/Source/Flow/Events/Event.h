@@ -9,9 +9,9 @@ namespace Flow
 	enum class EventType
 	{
 		None = 0,
-		WindowClose,
-		WindowResize,
-		WindowFocus,
+		WindowClosed,
+		WindowResized,
+		WindowFocused,
 		WindowLostFocus,
 		WindowMoved,
 		ApplicationTick, //TODO: Might be unused
@@ -54,7 +54,7 @@ namespace Flow
 		virtual std::string ToString() const;
 
 		bool IsInCategory(EventCategory Category) const;
-	protected:
+
 		bool bHandled = false;
 	};
 

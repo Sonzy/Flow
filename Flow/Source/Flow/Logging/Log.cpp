@@ -7,7 +7,7 @@ namespace Flow
 	std::shared_ptr<spdlog::logger> Log::EngineLogger;
 	std::shared_ptr<spdlog::logger> Log::ApplicationLogger;
 
-	void Log::Initialise(const std::string& ApplicationName)
+	void Log::InitialiseEngineLogger()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 	
@@ -16,9 +16,14 @@ namespace Flow
 			FLOW_ENGINE_LOG("Engine Logger (Flow) Initialised") :
 			FLOW_ENGINE_ERROR("Failed to initialise logger (Flow)");
 
-		ApplicationLogger = InitialiseLogger(ApplicationName);
-	
 		EngineLogger->set_level(spdlog::level::trace);
+	}
+
+
+
+	void Log::InitialiseApplicationLogger(const std::string& ApplicationName)
+	{
+		ApplicationLogger = InitialiseLogger(ApplicationName);
 		ApplicationLogger->set_level(spdlog::level::trace);
 	}
 

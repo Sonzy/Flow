@@ -13,7 +13,7 @@ namespace Flow
 
 		std::string ToString() const override;
 
-		EVENT_CLASS_TYPE(WindowResize)
+		EVENT_CLASS_TYPE(WindowResized)
 		EVENT_CLASS_CATEGORY(EventCategory::App)
 	private:
 		unsigned int Width;
@@ -25,7 +25,7 @@ namespace Flow
 	public:
 		WindowClosedEvent();
 
-		EVENT_CLASS_TYPE(WindowClose)
+		EVENT_CLASS_TYPE(WindowClosed)
 		EVENT_CLASS_CATEGORY(EventCategory::App)
 	};
 

@@ -21,6 +21,8 @@ namespace Flow
 		bool IsVSyncEnabled() const override;
 
 		static std::optional<int> ProcessWindowsMessages();
+
+		HWND& GetWindowHandle();
 	private:
 		friend class WindowClass;
 
@@ -33,6 +35,16 @@ namespace Flow
 	private:
 
 		HWND WindowHandle;
+
+		struct WindowData
+		{
+			std::string Title;
+			unsigned int Width;
+			unsigned int Height;
+			EventCallbackFunction EventCallback;
+		};
+
+		WindowData m_WindowData;
 	};
 
 	class WindowClass
