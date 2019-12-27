@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.h"
+#include <string>
 
 namespace Flow
 {
@@ -7,10 +8,12 @@ namespace Flow
 	{
 	public:
 
-		Application();
+		Application(const std::string& AppName);
 		virtual ~Application();
 		
 		void Run();
+
+		std::string ApplicationName;
 	};
 
 	//Is defined externally

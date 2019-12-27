@@ -8,9 +8,9 @@ extern Flow::Application* Flow::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	Flow::Log::Initialise();
-
 	auto App = Flow::CreateApplication();
+	Flow::Log::Initialise(App->ApplicationName);
+
 	App->Run();
 	delete App;
 

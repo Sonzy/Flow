@@ -3,7 +3,8 @@
 class Sandbox : public Flow::Application
 {
 public:
-	Sandbox()
+	Sandbox(const std::string& AppName)
+		: Application(AppName)
 	{
 
 	}
@@ -17,6 +18,6 @@ public:
 
 Flow::Application* Flow::CreateApplication()
 {
-	Sandbox* App = new Sandbox();
+	Sandbox* App = new Sandbox("Sandbox");
 	return App;
 }

@@ -70,6 +70,9 @@
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(ProjectDir)Source;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -89,6 +92,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(ProjectDir)Source;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Flow.h" />
@@ -98,10 +104,20 @@
     <ClInclude Include="Source\Flow\Application.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
+    <ClInclude Include="Source\Flow\Events\ApplicationEvent.h" />
+    <ClInclude Include="Source\Flow\Events\Event.h" />
+    <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
+    <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
+    <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
+    <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
+    <ClCompile Include="Source\Flow\Events\Event.cpp" />
+    <ClCompile Include="Source\Flow\Events\KeyEvent.cpp" />
+    <ClCompile Include="Source\Flow\Events\MouseEvent.cpp" />
+    <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

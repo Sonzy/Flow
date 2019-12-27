@@ -1,8 +1,11 @@
 #include "Application.h"
+#include "Logging/Log.h"
+#include "Events/ApplicationEvent.h"
 
 namespace Flow
 {
-	Application::Application()
+	Application::Application(const std::string& AppName)
+		: ApplicationName(AppName)
 	{
 
 	}

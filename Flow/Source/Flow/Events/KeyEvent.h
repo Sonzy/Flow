@@ -1,0 +1,51 @@
+#pragma once
+#include "Event.h"
+#include <sstream>
+
+namespace Flow
+{
+	class FLOW_API KeyEvent : public Event
+	{
+	public:
+		int GetKeyCode() const;
+
+		EVENT_CLASS_CATEGORY(EventCategory::Keyboard | EventCategory::Input)
+	protected:
+		KeyEvent(int KeyCode);
+
+	protected:
+		int KeyCode;
+	};
+
+
+	class FLOW_API KeyPressedEvent : public KeyEvent
+	{
+	public:
+		KeyPressedEvent(int KeyCode, int RepeatCount)
+			: KeyEvent(KeyCode), RepeatCount(RepeatCount)
+		{
+
+		}
+
+		int GetRepeatCount() const;
+		std::string ToString() const override;
+
+		EVENT_CLASS_TYPE(KeyPressed)
+	private:
+		int RepeatCount;
+	};
+
+	class FLOW_API KeyReleasedEvent : public KeyEvent
+	{
+	public:
+		KeyReleasedEvent(int KeyCode)
+			: KeyEvent(KeyCode)
+		{
+
+		}
+
+		std::string ToString() const override;
+
+		EVENT_CLASS_TYPE(KeyReleased)
+	};
+}

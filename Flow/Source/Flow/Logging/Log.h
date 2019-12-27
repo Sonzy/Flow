@@ -1,13 +1,14 @@
 #pragma once
 #include "Flow/Core.h"
 #include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
 namespace Flow
 {
 	class FLOW_API Log
 	{
 	public:
-		static void Initialise();
+		static void Initialise(const std::string& ApplicationName);
 		static std::shared_ptr<spdlog::logger> InitialiseLogger(const std::string& LoggerName);
 
 		inline static std::shared_ptr<spdlog::logger>& GetEngineLogger() { return EngineLogger; };
