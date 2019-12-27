@@ -28,3 +28,5 @@ namespace Flow
 #define FLOW_WARNING(...)			Flow::Log::GetApplicationLogger()->warn(__VA_ARGS__)
 #define FLOW_TRACE(...)				Flow::Log::GetApplicationLogger()->trace(__VA_ARGS__)
 #define FLOW_LOG(...)				Flow::Log::GetApplicationLogger()->info(__VA_ARGS__)
+
+#define FLOW_SAFE_ENGINE_LOG(...) if(Flow::Log::GetEngineLogger().get()) {Flow::Log::GetEngineLogger()->info(__VA_ARGS__);}

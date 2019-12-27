@@ -28,7 +28,7 @@ namespace Flow
 	enum EventCategory
 	{
 		None = 0,
-		Application		= BITMASK(0),
+		App				= BITMASK(0),
 		Input			= BITMASK(1),
 		Keyboard		= BITMASK(2),
 		Mouse			= BITMASK(3),

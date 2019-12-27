@@ -1,6 +1,7 @@
 #pragma once
 #include "Flowpch.h"
 #include "Core.h"
+#include "Flow/Window/Window.h"
 
 namespace Flow
 {
@@ -14,6 +15,9 @@ namespace Flow
 		void Run();
 
 		std::string ApplicationName;
+
+	private:
+		std::unique_ptr<Window> MainWindow;
 	};
 
 	//Is defined externally

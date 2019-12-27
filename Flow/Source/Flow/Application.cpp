@@ -8,7 +8,7 @@ namespace Flow
 	Application::Application(const std::string& AppName)
 		: ApplicationName(AppName)
 	{
-
+		MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties()));
 	}
 
 	Application::~Application()
@@ -20,7 +20,7 @@ namespace Flow
 	{
 		while (true)
 		{
-
+			MainWindow->OnUpdate();
 		}
 	}
 }

@@ -115,6 +115,8 @@
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
+    <ClInclude Include="Source\Flow\Window\Window.h" />
+    <ClInclude Include="Source\Flow\Window\WinWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
@@ -128,6 +130,7 @@
     </ClCompile>
     <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
+    <ClCompile Include="Source\Flow\Window\WinWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

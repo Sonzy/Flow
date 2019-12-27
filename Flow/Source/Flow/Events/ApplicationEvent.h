@@ -14,7 +14,7 @@ namespace Flow
 		std::string ToString() const override;
 
 		EVENT_CLASS_TYPE(WindowResize)
-		EVENT_CLASS_CATEGORY(EventCategory::Application)
+		EVENT_CLASS_CATEGORY(EventCategory::App)
 	private:
 		unsigned int Width;
 		unsigned int Height;
@@ -26,7 +26,7 @@ namespace Flow
 		WindowClosedEvent();
 
 		EVENT_CLASS_TYPE(WindowClose)
-		EVENT_CLASS_CATEGORY(EventCategory::Application)
+		EVENT_CLASS_CATEGORY(EventCategory::App)
 	};
 
 	class FLOW_API ApplicationTickEvent : public Event
@@ -35,7 +35,7 @@ namespace Flow
 		ApplicationTickEvent();
 
 		EVENT_CLASS_TYPE(ApplicationTick)
-		EVENT_CLASS_CATEGORY(EventCategory::Application)
+		EVENT_CLASS_CATEGORY(EventCategory::App)
 	};
 
 	class FLOW_API ApplicationUpdateEvent : public Event
@@ -44,7 +44,7 @@ namespace Flow
 		ApplicationUpdateEvent();
 
 		EVENT_CLASS_TYPE(ApplicationUpdate)
-		EVENT_CLASS_CATEGORY(EventCategory::Application)
+		EVENT_CLASS_CATEGORY(EventCategory::App)
 	};
 
 	class FLOW_API ApplicationRenderEvent : public Event
@@ -53,6 +53,6 @@ namespace Flow
 		ApplicationRenderEvent();
 
 		EVENT_CLASS_TYPE(ApplicationRender)
-		EVENT_CLASS_CATEGORY(EventCategory::Application)
+		EVENT_CLASS_CATEGORY(EventCategory::App)
 	};
 }

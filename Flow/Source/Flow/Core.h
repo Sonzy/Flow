@@ -9,3 +9,11 @@
 #else
 	#error Windows Only Supported.
 #endif
+
+#ifdef FLOW_ENABLE_ASSERTIONS
+	#define FLOW_ASSERT(Condition, ...) { if(!Condition) {FLOW_ERROR("Assertion Failed: ", __VA_ARGS__); __debugbreak(); }}
+	#define FLOW_ENGINE_ASSERT(Condition, ...) { if(!Condition) {FLOW_ENGINE_ERROR("Assertion Failed: ", __VA_ARGS__); __debugbreak(); }}
+#else
+	#define FLOW_ASSERT(Condition, ...) 
+	#define FLOW_ENGINE_ASSERT(Condition, ...) 
+#endif
