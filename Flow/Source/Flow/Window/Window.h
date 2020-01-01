@@ -3,6 +3,7 @@
 
 #include "Flow/Core.h"
 #include "Flow/Events/Event.h"
+#include "Flow/Rendering/DX11/GraphicsDX11.h"
 
 namespace Flow
 {
@@ -29,7 +30,9 @@ namespace Flow
 
 		static Window* Create(const WindowProperties& Properties);
 
+		virtual void PreUpdate() = 0;
 		virtual void OnUpdate() = 0;
+		virtual void PostUpdate() = 0;
 		
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
@@ -38,7 +41,11 @@ namespace Flow
 		virtual void EnableVSync(bool bEnabled) = 0;
 		virtual bool IsVSyncEnabled() const = 0;
 
+		inline GraphicsDX11& Gfx() { return *DX11Renderer; };
+
 	protected:
 		WindowProperties Props;
+
+		std::unique_ptr<GraphicsDX11> DX11Renderer;//TODO: Temp for imgui init
 	};
 }

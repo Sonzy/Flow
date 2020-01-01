@@ -10,7 +10,9 @@ namespace Flow
 		WinWindow(const WindowProperties& Properties);
 		virtual ~WinWindow();
 
+		void PreUpdate() override;
 		void OnUpdate() override;
+		void PostUpdate() override;
 
 		unsigned int GetWidth() const override;
 		unsigned int GetHeight() const override;

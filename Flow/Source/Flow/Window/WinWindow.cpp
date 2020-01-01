@@ -16,6 +16,7 @@ namespace Flow
 	WinWindow::WinWindow(const WindowProperties& Properties)
 	{
 		Initialise(Properties);
+		DX11Renderer = std::make_unique<GraphicsDX11>(WindowHandle, Properties.Width, Properties.Height);
 	}
 
 	WinWindow::~WinWindow()
@@ -36,7 +37,7 @@ namespace Flow
 		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 		result = AdjustWindowRect(&WindowRegion, WindowStyle, FALSE);
-		FLOW_ASSERT(result, "Failed to adjust the window rect");
+		FLOW_ASSERT(result, "WinWindow::Initialise: Failed to adjust the window rect");
 
 		WindowHandle = CreateWindowEx(
 			0,
@@ -82,9 +83,19 @@ namespace Flow
 		DestroyWindow(WindowHandle);
 	}
 
+	void WinWindow::PreUpdate()
+	{
+		DX11Renderer->ClearWindow(0.7f, 0.7f, 0.7f, 1.0f);
+	}
+
 	void WinWindow::OnUpdate()
 	{
 		ProcessWindowsMessages();
+	}
+
+	void WinWindow::PostUpdate()
+	{
+		DX11Renderer->EndFrame();
 	}
 
 	unsigned int WinWindow::GetWidth() const

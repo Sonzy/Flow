@@ -27,12 +27,15 @@ namespace Flow
 	{
 		while (bRunning)
 		{
+			MainWindow->PreUpdate();
+
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();
 			}
 
 			MainWindow->OnUpdate();
+			MainWindow->PostUpdate();
 		}
 	}
 
@@ -40,7 +43,6 @@ namespace Flow
 	{
 		EventDispatcher Dispatcher(e);
 		Dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowClosed));
-
 
 		for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
 		{

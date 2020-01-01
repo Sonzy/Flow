@@ -7,6 +7,7 @@
 #include "imgui.h"
 
 #include "Flow/Window/WinWindow.h"
+#include "Flow/Rendering/DX11/GraphicsDX11.h"
 
 namespace Flow
 {
@@ -41,8 +42,9 @@ namespace Flow
 		}
 
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
-		io.Fonts->Build();
-		//ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+		ImGui_ImplDX11_Init(Window->Gfx().GetDevice(), Window->Gfx().GetContext());
+
+		FLOW_ENGINE_LOG("Imgui Initialised.");
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -52,8 +54,8 @@ namespace Flow
 	void ImGuiLayer::OnUpdate()
 	{
 		Application& app = Application::GetApplication();
-		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		//ImGuiIO& io = ImGui::GetIO();
+		//io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();

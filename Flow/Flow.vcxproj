@@ -108,6 +108,9 @@
     <ClInclude Include="Source\Flow\Application.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
+    <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
+    <ClInclude Include="Source\Flow\ErrorHandling\ErrorHelpers.h" />
+    <ClInclude Include="Source\Flow\ErrorHandling\ErrorMacros.h" />
     <ClInclude Include="Source\Flow\Events\ApplicationEvent.h" />
     <ClInclude Include="Source\Flow\Events\Event.h" />
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
@@ -117,6 +120,7 @@
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
+    <ClInclude Include="Source\Flow\Rendering\DX11\GraphicsDX11.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGuiLayer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_DX11.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_Win32.h" />
@@ -131,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
+    <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />
     <ClCompile Include="Source\Flow\Events\KeyEvent.cpp" />
@@ -143,6 +148,7 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\DX11\GraphicsDX11.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_DX11.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_Win32.cpp" />
@@ -151,6 +157,11 @@
     <ClCompile Include="ThirdParty\ImGui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Flow\ErrorHandling\DXGetErrorDescription.inl" />
+    <None Include="Source\Flow\ErrorHandling\DXGetErrorString.inl" />
+    <None Include="Source\Flow\ErrorHandling\DXTrace.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
