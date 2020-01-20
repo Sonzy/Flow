@@ -56,8 +56,8 @@ namespace Flow
 	void ImGuiLayer::OnUpdate()
 	{
 		Application& app = Application::GetApplication();
-		//ImGuiIO& io = ImGui::GetIO();
-		//io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -93,10 +93,15 @@ namespace Flow
 
 			IO.MouseDown[MousePressedEvent->GetMouseButton()] = true;
 			e.bHandled = true;
+
+
+			RECT windowRect;
+			GetWindowRect(Window->GetWindowHandle(), &windowRect);
+			FLOW_ENGINE_LOG("Width {0}, Height {1}", windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
 			break;
 		}
 		case EventType::MouseButtonReleased:
-
+		{
 			MouseButtonReleasedEvent* MouseReleasedEvent = dynamic_cast<MouseButtonReleasedEvent*>(&e);
 
 			IO.MouseDown[MouseReleasedEvent->GetMouseButton()] = false;
@@ -106,6 +111,12 @@ namespace Flow
 			e.bHandled = true;
 			break;
 		}
-
+		case EventType::MouseMoved:
+		{
+			MouseMovedEvent* Move = static_cast<MouseMovedEvent*>(&e);
+			FLOW_ENGINE_LOG("X: {0} Y: {1}", Move->GetX(), Move->GetY());
+			break;
+		}
+		}
 	}
 }

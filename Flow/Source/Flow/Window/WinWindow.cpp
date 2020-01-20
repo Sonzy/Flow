@@ -46,8 +46,8 @@ namespace Flow
 			WindowStyle,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
-			Properties.Width,
-			Properties.Height,
+			WindowRegion.right - WindowRegion.left,
+			WindowRegion.bottom - WindowRegion.top,
 			nullptr,
 			nullptr,
 			WindowClass::GetInstanceHandle(),
@@ -63,19 +63,6 @@ namespace Flow
 		m_WindowData.Title = Props.Title;
 		m_WindowData.Width = Props.Width;
 		m_WindowData.Height = Props.Height;
-
-
-		//InitialiseBoundEvents();
-		//
-		//
-		////Find the event type, add the callback
-		//std::unordered_map<EventType, std::function<void()>>::iterator Found = BoundEvents.find(EventType::WindowClose);
-		//if (Found != BoundEvents.end())
-		//{
-		//	Found->second.push_back();
-		//}
-		//WindowClosedEvent ClosedEvent;
-		//BoundEvents.emplace(EventType::WindowClose, ClosedEvent);
 	}
 
 	void WinWindow::Shutdown()

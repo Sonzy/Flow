@@ -14,7 +14,7 @@ namespace Flow
 	{
 		Instance = this;
 
-		MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties()));
+		MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
 		MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 	}
 
