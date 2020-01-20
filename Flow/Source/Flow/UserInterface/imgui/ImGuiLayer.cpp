@@ -6,6 +6,8 @@
 #include "Flow/UserInterface/imgui/ImGui_DX11.h"
 #include "imgui.h"
 
+#include "Flow/Events/MouseEvent.h"
+
 #include "Flow/Window/WinWindow.h"
 #include "Flow/Rendering/DX11/GraphicsDX11.h"
 
@@ -70,5 +72,40 @@ namespace Flow
 
 	void ImGuiLayer::OnEvent(Event& e)
 	{
+		if (ImGui::GetCurrentContext() == NULL)
+		{
+			FLOW_ENGINE_WARNING("IMGUI context was null, unable to consume input");
+			return;
+		}
+
+		Application& app = Application::GetApplication();
+		WinWindow* Window = dynamic_cast<WinWindow*>(&app.GetWindow());
+
+		ImGuiIO& IO = ImGui::GetIO();
+
+		switch (e.GetEventType())
+		{
+		case EventType::MouseButtonPressed:
+		{
+			MouseButtonPressedEvent* MousePressedEvent = dynamic_cast<MouseButtonPressedEvent*>(&e);
+			if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
+				::SetCapture(Window->GetWindowHandle());
+
+			IO.MouseDown[MousePressedEvent->GetMouseButton()] = true;
+			e.bHandled = true;
+			break;
+		}
+		case EventType::MouseButtonReleased:
+
+			MouseButtonReleasedEvent* MouseReleasedEvent = dynamic_cast<MouseButtonReleasedEvent*>(&e);
+
+			IO.MouseDown[MouseReleasedEvent->GetMouseButton()] = false;
+
+			if (!ImGui::IsAnyMouseDown() && ::GetCapture() == Window->GetWindowHandle())
+				::ReleaseCapture();
+			e.bHandled = true;
+			break;
+		}
+
 	}
 }

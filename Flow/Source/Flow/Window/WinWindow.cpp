@@ -167,10 +167,21 @@ namespace Flow
 				e = &Event;
 				break;
 			}
+			case WM_LBUTTONDOWN:
+			{
+				MouseButtonPressedEvent Event(0);
+				e = &Event;
+				break;
+			}
+			case WM_LBUTTONUP:
+			{
+				MouseButtonReleasedEvent Event(0);
+				e = &Event;
+				break;
+			}
 
 		default:
 				bHandled = false;
-
 		}
 
 
