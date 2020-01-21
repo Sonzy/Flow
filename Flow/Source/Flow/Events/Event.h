@@ -19,6 +19,7 @@ namespace Flow
 		ApplicationRender,//TODO: Might be unused
 		KeyPressed,
 		KeyReleased,
+		KeyTyped,
 		MouseButtonPressed,
 		MouseButtonReleased,
 		MouseMoved,
@@ -72,7 +73,7 @@ namespace Flow
 			if (m_Event.GetEventType() != T::GetStaticType())
 				return false;
 
-			m_Event.bHandled = Function(*(T*)&m_Event); //bruh this casting lul
+			m_Event.bHandled = Function(*(T*)&m_Event);
 			return true;
 		}
 

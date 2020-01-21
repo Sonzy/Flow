@@ -78,45 +78,89 @@ namespace Flow
 			return;
 		}
 
-		Application& app = Application::GetApplication();
-		WinWindow* Window = dynamic_cast<WinWindow*>(&app.GetWindow());
-
-		ImGuiIO& IO = ImGui::GetIO();
-
-		switch (e.GetEventType())
-		{
-		case EventType::MouseButtonPressed:
-		{
-			MouseButtonPressedEvent* MousePressedEvent = dynamic_cast<MouseButtonPressedEvent*>(&e);
-			if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
-				::SetCapture(Window->GetWindowHandle());
-
-			IO.MouseDown[MousePressedEvent->GetMouseButton()] = true;
-			e.bHandled = true;
-
-
-			RECT windowRect;
-			GetWindowRect(Window->GetWindowHandle(), &windowRect);
-			FLOW_ENGINE_LOG("Width {0}, Height {1}", windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
-			break;
-		}
-		case EventType::MouseButtonReleased:
-		{
-			MouseButtonReleasedEvent* MouseReleasedEvent = dynamic_cast<MouseButtonReleasedEvent*>(&e);
-
-			IO.MouseDown[MouseReleasedEvent->GetMouseButton()] = false;
-
-			if (!ImGui::IsAnyMouseDown() && ::GetCapture() == Window->GetWindowHandle())
-				::ReleaseCapture();
-			e.bHandled = true;
-			break;
-		}
-		case EventType::MouseMoved:
-		{
-			MouseMovedEvent* Move = static_cast<MouseMovedEvent*>(&e);
-			FLOW_ENGINE_LOG("X: {0} Y: {1}", Move->GetX(), Move->GetY());
-			break;
-		}
-		}
+		EventDispatcher Dispatcher(e);
+		Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnMouseButtonPressed));
+		Dispatcher.Dispatch<MouseButtonReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnMouseButtonReleased));
+		Dispatcher.Dispatch<MouseMovedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnMouseMoved));
+		Dispatcher.Dispatch<MouseScrolledEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnMouseScrolled));
+		Dispatcher.Dispatch<KeyPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnKeyPressed));
+		Dispatcher.Dispatch<KeyReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnKeyReleased));
+		Dispatcher.Dispatch<WindowResizedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnWindowResized));
+		Dispatcher.Dispatch<KeyTypedEvent>(FLOW_BIND_EVENT_FUNCTION(ImGuiLayer::OnKeyTyped));
 	}
+
+	bool ImGuiLayer::OnMouseButtonPressed(MouseButtonEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.MouseDown[e.GetMouseButton()] = true;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.MouseDown[e.GetMouseButton()] = false;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseMoved(MouseMovedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.MousePos = ImVec2(e.GetX(), e.GetY());
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseScrolled(MouseScrolledEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.MouseWheelH += e.GetXOffset();
+		IO.MouseWheel += e.GetYOffset();
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.KeysDown[e.GetKeyCode()] = true;
+
+		IO.KeyCtrl = IO.KeysDown[VK_LCONTROL] || IO.KeysDown[VK_RCONTROL];
+		IO.KeyShift = IO.KeysDown[VK_LSHIFT] || IO.KeysDown[VK_RSHIFT];
+		IO.KeyCtrl = IO.KeysDown[VK_LMENU] || IO.KeysDown[VK_RMENU];
+		IO.KeySuper = IO.KeysDown[VK_LWIN] || IO.KeysDown[VK_RWIN];
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyTyped(KeyTypedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.AddInputCharacter((unsigned short) e.GetKeyCode());
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyReleased(KeyReleasedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.KeysDown[e.GetKeyCode()] = false;
+
+		IO.KeyCtrl = !IO.KeysDown[VK_LCONTROL] && !IO.KeysDown[VK_RCONTROL];
+		IO.KeyShift = !IO.KeysDown[VK_LSHIFT] && !IO.KeysDown[VK_RSHIFT];
+		IO.KeyCtrl = !IO.KeysDown[VK_LMENU] && !IO.KeysDown[VK_RMENU];
+		IO.KeySuper = !IO.KeysDown[VK_LWIN] && !IO.KeysDown[VK_RWIN];
+		return false;
+	}
+
+	bool ImGuiLayer::OnWindowResized(WindowResizedEvent& e)
+	{
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
+		IO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f); //TODO: Find out what this is
+
+		return false;
+	}
+
+
+
 }

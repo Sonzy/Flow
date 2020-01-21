@@ -147,6 +147,9 @@ namespace Flow
 				e = &Event;
 				break;
 			}
+
+			//= Mouse Events =====================
+
 			case WM_MOUSEMOVE:
 			{
 				const POINTS points = MAKEPOINTS(lParam);
@@ -166,6 +169,49 @@ namespace Flow
 				e = &Event;
 				break;
 			}
+			case WM_RBUTTONDOWN:
+			{
+				MouseButtonPressedEvent Event(1);
+				e = &Event;
+				break;
+			}
+			case WM_RBUTTONUP:
+			{
+				MouseButtonReleasedEvent Event(1);
+				e = &Event;
+				break;
+			}
+			case WM_MOUSEWHEEL:
+			{
+				constexpr int Division = 120;
+				float yDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+				MouseScrolledEvent Event(0.0f, yDelta / Division);
+				e = &Event;
+				break;
+			}
+
+			//= Key Events ===============================
+
+			case WM_SYSKEYDOWN:
+			case WM_KEYDOWN:
+			{
+				KeyPressedEvent Event(static_cast<unsigned char>(wParam), 0);
+				e = &Event;
+				break;
+			}
+			case WM_KEYUP:
+			{
+				KeyReleasedEvent Event(static_cast<unsigned char>(wParam));
+				e = &Event;
+				break;
+			}
+			case WM_CHAR:
+			{
+				KeyTypedEvent Event(static_cast<unsigned char>(wParam));
+				e = &Event;
+				break;
+			}
+
 
 		default:
 				bHandled = false;

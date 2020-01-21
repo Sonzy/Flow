@@ -31,4 +31,10 @@ namespace Flow
 		ss << "KeyReleasedEvent: " << KeyCode;
 		return ss.str();
 	}
+	std::string KeyTypedEvent::ToString() const
+	{
+		std::stringstream ss;
+		ss << "KeyTypedEvent: " << KeyCode;
+		return ss.str();
+	}
 }

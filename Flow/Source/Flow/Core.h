@@ -17,3 +17,6 @@
 	#define FLOW_ASSERT(Condition, ...) 
 	#define FLOW_ENGINE_ASSERT(Condition, ...) 
 #endif
+
+
+#define FLOW_BIND_EVENT_FUNCTION(Func) std::bind(&Func, this, std::placeholders::_1)

@@ -50,6 +50,7 @@ namespace Flow
 		int Button;
 	};
 
+	/* Mouse button event, 0 = Left, 1 = Right, 2 = Middle */
 	class FLOW_API MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:

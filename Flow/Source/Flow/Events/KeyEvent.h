@@ -47,4 +47,18 @@ namespace Flow
 
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
+
+	class FLOW_API KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(int KeyCode)
+			: KeyEvent(KeyCode)
+		{
+
+		}
+
+		std::string ToString() const override;
+
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
 }
