@@ -18,6 +18,9 @@ namespace Flow
 
 		MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
 		MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -35,6 +38,14 @@ namespace Flow
 			{
 				layer->OnUpdate();
 			}
+
+			//Allow each layer to render their own IMGUI
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_ImGuiLayer->End();
 
 			MainWindow->OnUpdate();
 			MainWindow->PostUpdate();

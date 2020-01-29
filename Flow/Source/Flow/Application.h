@@ -6,6 +6,8 @@
 
 #include "Events/ApplicationEvent.h"
 
+#include "UserInterface/imgui/ImGuiLayer.h"
+
 namespace Flow
 {
 	class FLOW_API Application
@@ -36,6 +38,7 @@ namespace Flow
 	private:
 		static Application* Instance;
 		std::unique_ptr<Window> MainWindow;
+		ImGuiLayer* m_ImGuiLayer;
 		bool bRunning = true;
 
 		LayerStack m_LayerStack;

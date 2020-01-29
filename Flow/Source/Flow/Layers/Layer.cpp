@@ -26,6 +26,10 @@ void Flow::Layer::OnEvent(Event& e)
 {
 }
 
+void Flow::Layer::OnImGuiRender()
+{
+}
+
 const std::string& Flow::Layer::GetName() const
 {
 	return Name;

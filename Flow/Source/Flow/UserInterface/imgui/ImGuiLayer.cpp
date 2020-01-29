@@ -2,9 +2,13 @@
 #include "ImGuiLayer.h"
 #include "Flow/Application.h"
 
-#include "Flow/UserInterface/imgui/ImGui_Win32.h"
-#include "Flow/UserInterface/imgui/ImGui_DX11.h"
-#include "imgui.h"
+//#include "Flow/UserInterface/imgui/ImGui_Win32.h"
+//#include "Flow/UserInterface/imgui/ImGui_DX11.h"
+
+#include "Flow/Input/KeyCodes.h"
+
+#include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
+#include "ThirdParty/ImGui/examples/imgui_impl_win32.h"
 
 #include "Flow/Events/MouseEvent.h"
 
@@ -28,20 +32,25 @@ namespace Flow
 		ImGui::StyleColorsLight();
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-		//TODO: check if I need to set up the keybinds
+		//io.ConfigDockingWithShift = true;
+		//TODO: Fix IMGUI viewports not rendering on the main window when returned to the main window
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+		//ImGuiStyle& Style = ImGui::GetStyle();
+		//if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		//{
+		//	Style.WindowRounding = 0.0f;
+		//	Style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		//}
 
 		Application& app = Application::GetApplication();
+		WinWindow* Window = static_cast<WinWindow*>(&app.GetWindow());
 
-		WinWindow* Window = dynamic_cast<WinWindow*>(&app.GetWindow());
-		
-		if (!Window)
-		{
-			FLOW_ENGINE_ERROR("ImGuiLayer::OnAttach: Failed to get window as Windows window");
-			return;
-		}
+		io.DisplaySize = ImVec2(Window->GetWidth(), Window->GetHeight());
 
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
 		ImGui_ImplDX11_Init(Window->Gfx().GetDevice(), Window->Gfx().GetContext());
@@ -51,23 +60,41 @@ namespace Flow
 
 	void ImGuiLayer::OnDetach()
 	{
+		ImGui_ImplWin32_Shutdown();
+		ImGui_ImplDX11_Shutdown();
+		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::OnUpdate()
+	void ImGuiLayer::OnImGuiRender()
+	{
+		ImGui::DockSpaceOverViewport(0, ImGuiDockNodeFlags_PassthruCentralNode);
+
+		static bool bShowDemoWindow = true;
+		ImGui::ShowDemoWindow(&bShowDemoWindow);
+	}
+
+	void ImGuiLayer::Begin()
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
+
+	void ImGuiLayer::End()
 	{
 		Application& app = Application::GetApplication();
 		ImGuiIO& io = ImGui::GetIO();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
-		static bool bShowDemoWindow = true;
-		ImGui::ShowDemoWindow(&bShowDemoWindow);
-
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		//TODO: Fix IMGUI viewports not rendering on the main window when returned to the main window
+		//if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		//{
+		//	ImGui::UpdatePlatformWindows();
+		//	ImGui::RenderPlatformWindowsDefault();
+		//}
 	}
 
 	void ImGuiLayer::OnEvent(Event& e)
@@ -91,6 +118,13 @@ namespace Flow
 
 	bool ImGuiLayer::OnMouseButtonPressed(MouseButtonEvent& e)
 	{
+		//TODO: Add a window reference to the input so we know which window it was
+		Application& App = Application::GetApplication();
+		WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
+
+		if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
+			::SetCapture(Window->GetWindowHandle());
+
 		ImGuiIO& IO = ImGui::GetIO();
 		IO.MouseDown[e.GetMouseButton()] = true;
 
@@ -101,6 +135,13 @@ namespace Flow
 	{
 		ImGuiIO& IO = ImGui::GetIO();
 		IO.MouseDown[e.GetMouseButton()] = false;
+
+		//TODO: Add a window reference to the input so we know which window it was
+		Application& App = Application::GetApplication();
+		WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
+
+		if (!ImGui::IsAnyMouseDown() && ::GetCapture() == Window->GetWindowHandle())
+			::ReleaseCapture();
 
 		return false;
 	}
@@ -136,7 +177,7 @@ namespace Flow
 	bool ImGuiLayer::OnKeyTyped(KeyTypedEvent& e)
 	{
 		ImGuiIO& IO = ImGui::GetIO();
-		IO.AddInputCharacter((unsigned short) e.GetKeyCode());
+		IO.AddInputCharacter((unsigned short)e.GetKeyCode());
 		return false;
 	}
 
@@ -160,7 +201,4 @@ namespace Flow
 
 		return false;
 	}
-
-
-
 }

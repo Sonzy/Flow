@@ -27,8 +27,6 @@ public:
 	Sandbox(const std::string& AppName)
 		: Application(AppName)
 	{
-		//PushLayer(new ExampleLayer());
-		PushLayer(new Flow::ImGuiLayer());
 	}
 
 	~Sandbox()

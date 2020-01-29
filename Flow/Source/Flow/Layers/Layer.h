@@ -16,6 +16,8 @@ namespace Flow
 		virtual void OnUpdate();
 		virtual void OnEvent(Event& e);
 
+		virtual void OnImGuiRender();
+
 		const std::string& GetName() const;
 	protected:
 		std::string Name;

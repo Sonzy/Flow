@@ -1,7 +1,7 @@
 #include "Flowpch.h"
 #include "GraphicsDX11.h"
-#include "imgui.h"
-#include "Flow/UserInterface/imgui/ImGui_DX11.h"
+#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
 #include "Flow/ErrorHandling/dxerr.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
 

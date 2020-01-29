@@ -5,7 +5,6 @@ namespace Flow
 {
 	LayerStack::LayerStack()
 	{
-		LayerInsert = Layers.begin();
 	}
 
 	LayerStack::~LayerStack()
@@ -16,7 +15,8 @@ namespace Flow
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		LayerInsert = Layers.emplace(LayerInsert, layer);
+		Layers.emplace(Layers.begin() + LayerInsertIndex, layer);
+		LayerInsertIndex++;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
@@ -31,7 +31,7 @@ namespace Flow
 		if (iterator != Layers.end())
 		{
 			Layers.erase(iterator);
-			LayerInsert--;
+			LayerInsertIndex--;
 		}
 	}
 
