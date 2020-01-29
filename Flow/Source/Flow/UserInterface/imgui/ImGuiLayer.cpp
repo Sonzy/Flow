@@ -34,6 +34,7 @@ namespace Flow
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 		io.ConfigDockingWithShift = true;
+
 		//TODO: Fix IMGUI viewports not rendering on the main window when returned to the main window
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 

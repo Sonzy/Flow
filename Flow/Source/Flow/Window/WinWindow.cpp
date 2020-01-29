@@ -34,7 +34,7 @@ namespace Flow
 		WindowRegion.top = 100;
 		WindowRegion.bottom = Properties.Height + WindowRegion.top;
 
-		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
 
 		result = AdjustWindowRect(&WindowRegion, WindowStyle, FALSE);
 		FLOW_ASSERT(result, "WinWindow::Initialise: Failed to adjust the window rect");
@@ -72,7 +72,7 @@ namespace Flow
 
 	void WinWindow::PreUpdate()
 	{
-		DX11Renderer->ClearWindow(0.7f, 0.7f, 0.7f, 1.0f);
+		DX11Renderer->ClearWindow(0.2f, 0.2f, 0.2f, 1.0f);
 	}
 
 	void WinWindow::OnUpdate()

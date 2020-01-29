@@ -8,6 +8,8 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
+//TODO: Change resolution on window res change
+
 Flow::GraphicsDX11::GraphicsDX11(HWND WindowHandle, unsigned int Width, unsigned int Height)
 {
 	HRESULT ResultHandle;
@@ -30,7 +32,7 @@ Flow::GraphicsDX11::GraphicsDX11(HWND WindowHandle, unsigned int Width, unsigned
 	SwapchainDesc.Flags = 0;
 
 	UINT SwapCreateFlags = 0;
-	SwapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG; //TODO: Disable in debug mode
+	SwapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG; //TODO: Disable in non debug mode
 
 	CATCH_ERROR_DX(
 		D3D11CreateDeviceAndSwapChain(

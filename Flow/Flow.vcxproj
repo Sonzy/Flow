@@ -63,7 +63,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
@@ -85,7 +85,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
