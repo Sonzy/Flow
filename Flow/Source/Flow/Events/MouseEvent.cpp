@@ -1,5 +1,6 @@
 #include "Flowpch.h"
 #include "MouseEvent.h"
+#include "Flow/Input/Input.h"
 
 namespace Flow
 {
@@ -9,7 +10,6 @@ namespace Flow
 	MouseMovedEvent::MouseMovedEvent(int X, int Y)
 		: MouseX(X), MouseY(Y)
 	{
-
 	}
 
 	int Flow::MouseMovedEvent::GetX() const
@@ -73,6 +73,18 @@ namespace Flow
 	MouseButtonPressedEvent::MouseButtonPressedEvent(int Button)
 		: MouseButtonEvent(Button)
 	{
+		switch (Button)
+		{
+		case 0:
+			Input::OnKeyPressed(FLOW_MOUSE_LEFT);
+			break;
+		case 1:
+			Input::OnKeyPressed(FLOW_MOUSE_RIGHT);
+			break;
+		case 2:
+			Input::OnKeyPressed(FLOW_MOUSE_MIDDLE);
+			break;
+		}
 	}
 
 	std::string MouseButtonPressedEvent::ToString() const
@@ -85,6 +97,18 @@ namespace Flow
 	MouseButtonReleasedEvent::MouseButtonReleasedEvent(int Button)
 		: MouseButtonEvent(Button)
 	{
+		switch (Button)
+		{
+		case 0:
+			Input::OnKeyReleased(FLOW_MOUSE_LEFT);
+			break;
+		case 1:
+			Input::OnKeyReleased(FLOW_MOUSE_RIGHT);
+			break;
+		case 2:
+			Input::OnKeyReleased(FLOW_MOUSE_MIDDLE);
+			break;
+		}
 	}
 
 	std::string MouseButtonReleasedEvent::ToString() const

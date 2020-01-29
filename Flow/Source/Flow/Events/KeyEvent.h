@@ -20,11 +20,8 @@ namespace Flow
 	class FLOW_API KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int KeyCode, int RepeatCount)
-			: KeyEvent(KeyCode), RepeatCount(RepeatCount)
-		{
+		KeyPressedEvent(int KeyCode, int RepeatCount);
 
-		}
 
 		int GetRepeatCount() const;
 		std::string ToString() const override;
@@ -37,11 +34,8 @@ namespace Flow
 	class FLOW_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(int KeyCode)
-			: KeyEvent(KeyCode)
-		{
+		KeyReleasedEvent(int KeyCode);
 
-		}
 
 		std::string ToString() const override;
 

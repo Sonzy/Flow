@@ -3,6 +3,8 @@
 #include "Logging/Log.h"
 #include "Events/ApplicationEvent.h"
 
+#include "Flow/Input/Input.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow

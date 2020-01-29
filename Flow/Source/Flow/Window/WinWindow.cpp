@@ -181,6 +181,18 @@ namespace Flow
 				e = &Event;
 				break;
 			}
+			case WM_MBUTTONDOWN:
+			{
+				MouseButtonPressedEvent Event(2);
+				e = &Event;
+				break;
+			}
+			case WM_MBUTTONUP:
+			{
+				MouseButtonReleasedEvent Event(2);
+				e = &Event;
+				break;
+			}
 			case WM_MOUSEWHEEL:
 			{
 				constexpr int Division = 120;
