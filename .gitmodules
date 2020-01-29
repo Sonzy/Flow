@@ -1,7 +1,3 @@
 [submodule "Flow/ThirdParty/spdlog"]
 	path = Flow/ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "Flow/ThirdParty/ImGui"]
-	path = Flow/ThirdParty/ImGui
-	url = https://github.com/ocornut/imgui.git
-	branch = docking
