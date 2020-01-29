@@ -2,13 +2,10 @@
 #include "ImGuiLayer.h"
 #include "Flow/Application.h"
 
-//#include "Flow/UserInterface/imgui/ImGui_Win32.h"
-//#include "Flow/UserInterface/imgui/ImGui_DX11.h"
+#include "Flow/UserInterface/imgui/ImGui_Win32.h"
+#include "Flow/UserInterface/imgui/ImGui_DX11.h"
 
 #include "Flow/Input/KeyCodes.h"
-
-#include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
-#include "ThirdParty/ImGui/examples/imgui_impl_win32.h"
 
 #include "Flow/Events/MouseEvent.h"
 
