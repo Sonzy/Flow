@@ -64,7 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -125,8 +125,25 @@
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ConstantBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\InputLayout.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Sampler.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Topology.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Vertex\Vertex.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexElement.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.h" />
     <ClInclude Include="Source\Flow\Rendering\DX11\DX11Renderer.h" />
     <ClInclude Include="Source\Flow\Rendering\Renderer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGuiLayer.h" />
@@ -232,8 +249,22 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\InputLayout.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Sampler.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.cpp" />
     <ClCompile Include="Source\Flow\Rendering\DX11\DX11Renderer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGuiLayer.cpp" />
@@ -262,6 +293,16 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\assimp-vc140-mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColorVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColourPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

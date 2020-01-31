@@ -1,9 +1,10 @@
 #pragma once
 #include "Flow/Core.h"
+#include "Flow/Rendering/Core/Renderable.h"
 
 namespace Flow
 {
-	class FLOW_API StaticMesh
+	class FLOW_API StaticMesh : public Renderable
 	{
 	public:
 
