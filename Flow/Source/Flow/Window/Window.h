@@ -3,7 +3,11 @@
 
 #include "Flow/Core.h"
 #include "Flow/Events/Event.h"
-#include "Flow/Rendering/DX11/GraphicsDX11.h"
+#include "Flow/Rendering/Renderer.h"
+
+#ifdef FLOW_PLATFORM_WINDOWS
+#include "Flow/Rendering/DX11/DX11Renderer.h"
+#endif
 
 namespace Flow
 {
@@ -41,11 +45,30 @@ namespace Flow
 		virtual void EnableVSync(bool bEnabled) = 0;
 		virtual bool IsVSyncEnabled() const = 0;
 
-		inline GraphicsDX11& Gfx() { return *DX11Renderer; };
+
+		template<typename T>
+		T* GetRenderer()
+		{
+			//TODO: Ensure valid renderer type
+			return dynamic_cast<T*>(CurrentRenderer.get());
+		}
 
 	protected:
 		WindowProperties Props;
 
-		std::unique_ptr<GraphicsDX11> DX11Renderer;//TODO: Temp for imgui init
+		void CreateRenderer(RenderAPI API, HWND WindowHandle, int Height, int Width)
+		{
+			switch (API)
+			{
+			case Flow::RenderAPI::DirectX11:
+				CurrentRenderer = std::make_unique<DX11Renderer>(WindowHandle, Height, Width);
+				break;
+			default:
+				FLOW_ENGINE_ERROR("Window::CreateRenderer: Selected RenderAPI is currently not supported.");
+				break;
+			}
+		}
+
+		std::unique_ptr<Renderer> CurrentRenderer;
 	};
 }

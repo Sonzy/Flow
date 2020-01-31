@@ -14,4 +14,10 @@ namespace Flow
 	{
 		return s_RendererAPI;
 	}
+
+	void Renderer::ClearWindow()
+	{
+		ClearWindow(0,0,0,1);
+	}
+
 }

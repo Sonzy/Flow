@@ -124,9 +124,10 @@
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
-    <ClInclude Include="Source\Flow\Rendering\DX11\GraphicsDX11.h" />
+    <ClInclude Include="Source\Flow\Rendering\DX11\DX11Renderer.h" />
     <ClInclude Include="Source\Flow\Rendering\Renderer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGuiLayer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_DX11.h" />
@@ -233,7 +234,7 @@
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\DX11\GraphicsDX11.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\DX11\DX11Renderer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_DX11.cpp" />

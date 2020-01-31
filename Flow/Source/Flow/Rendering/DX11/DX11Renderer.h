@@ -1,31 +1,21 @@
 #pragma once
-
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl.h>
+#include "Flow/Rendering/Renderer.h"
 
 namespace Flow
 {
-	class GraphicsDX11
+	class DX11Renderer : public Renderer
 	{
 	public:
-		GraphicsDX11(HWND WindowHandle, unsigned int Width, unsigned int Height);
+		DX11Renderer(HWND WindowHandle, int ViewportWidth, int ViewportHeight);
 
-		//Remove copy operators
-		GraphicsDX11(const GraphicsDX11&) = delete;
-		GraphicsDX11& operator=(const GraphicsDX11) = delete;
+		virtual void ClearWindow(float R, float G, float B, float A) override;
+		virtual void EndFrame() override;
 
-		void ClearWindow();
-		void ClearWindow(float R, float G, float B, float A);
-
-		void EndFrame();
-
-		~GraphicsDX11();
-
-		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
-
-
+		ID3D11Device* GetDevice();
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain> SwapChain = nullptr;

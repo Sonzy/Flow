@@ -10,7 +10,7 @@
 #include "Flow/Events/MouseEvent.h"
 
 #include "Flow/Window/WinWindow.h"
-#include "Flow/Rendering/DX11/GraphicsDX11.h"
+#include "Flow/Rendering/DX11/DX11Renderer.h"
 
 namespace Flow
 {
@@ -50,8 +50,10 @@ namespace Flow
 
 		io.DisplaySize = ImVec2(Window->GetWidth(), Window->GetHeight());
 
+#ifdef  FLOW_PLATFORM_WINDOWS
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
-		ImGui_ImplDX11_Init(Window->Gfx().GetDevice(), Window->Gfx().GetContext());
+		ImGui_ImplDX11_Init(Window->GetRenderer<DX11Renderer>()->GetDevice(), Window->GetRenderer<DX11Renderer>()->GetContext());
+#endif
 
 		FLOW_ENGINE_LOG("Imgui Initialised.");
 	}

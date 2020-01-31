@@ -16,7 +16,7 @@ namespace Flow
 	WinWindow::WinWindow(const WindowProperties& Properties)
 	{
 		Initialise(Properties);
-		DX11Renderer = std::make_unique<GraphicsDX11>(WindowHandle, Properties.Width, Properties.Height);
+		CreateRenderer(RenderAPI::DirectX11, GetWindowHandle(), Properties.Width, Properties.Height);
 	}
 
 	WinWindow::~WinWindow()
@@ -56,8 +56,6 @@ namespace Flow
 
 		ShowWindow(WindowHandle, SW_SHOW);
 
-		//TODO: Initialise Window UI
-
 		Props = Properties;
 
 		m_WindowData.Title = Props.Title;
@@ -72,7 +70,7 @@ namespace Flow
 
 	void WinWindow::PreUpdate()
 	{
-		DX11Renderer->ClearWindow(0.2f, 0.2f, 0.2f, 1.0f);
+		CurrentRenderer->ClearWindow(0.2f, 0.2f, 0.2f, 1.0f);
 	}
 
 	void WinWindow::OnUpdate()
@@ -82,7 +80,7 @@ namespace Flow
 
 	void WinWindow::PostUpdate()
 	{
-		DX11Renderer->EndFrame();
+		CurrentRenderer->EndFrame();
 	}
 
 	unsigned int WinWindow::GetWidth() const

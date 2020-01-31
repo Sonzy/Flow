@@ -25,6 +25,7 @@ namespace Flow
 		static std::optional<int> ProcessWindowsMessages();
 
 		HWND& GetWindowHandle();
+
 	private:
 		friend class WindowClass;
 

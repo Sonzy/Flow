@@ -20,5 +20,9 @@ namespace Flow
 		static void SetRenderAPI(RenderAPI API);
 		static RenderAPI GetRenderAPI();
 
+
+		virtual void ClearWindow(float R, float G, float B, float A) = 0;
+		virtual void EndFrame() = 0;
+		void ClearWindow();
 	};
 }
