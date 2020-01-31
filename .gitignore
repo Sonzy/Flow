@@ -33,4 +33,4 @@
 Bin
 Intermediate
 .vs
-Assimp
+!Assimp
