@@ -26,7 +26,7 @@ namespace Flow
 	void ImGuiLayer::OnAttach()
 	{
 		ImGui::CreateContext();
-		ImGui::StyleColorsLight();
+		ImGui::StyleColorsClassic();
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -66,6 +66,7 @@ namespace Flow
 	void ImGuiLayer::OnImGuiRender()
 	{
 		ImGui::DockSpaceOverViewport(0, ImGuiDockNodeFlags_PassthruCentralNode);
+
 
 		static bool bShowDemoWindow = true;
 		ImGui::ShowDemoWindow(&bShowDemoWindow);
