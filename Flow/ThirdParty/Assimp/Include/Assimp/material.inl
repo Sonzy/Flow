@@ -103,7 +103,8 @@ inline aiReturn aiMaterial::Get(const char* pKey,unsigned int type,
             return AI_FAILURE;
         }
 
-        iNum = std::min((size_t)iNum,prop->mDataLength / sizeof(Type));
+        //Sonny - Edit for flow, windows seems to have a min define that is taking priority, so encapsulated std::min
+        iNum = (std::min)((size_t)iNum,prop->mDataLength / sizeof(Type));
         ::memcpy(pOut,prop->mData,iNum * sizeof(Type));
         if (pMax) {
             *pMax = iNum;

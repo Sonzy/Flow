@@ -1,23 +1,21 @@
 #include "Flowpch.h"
 #include "Renderer.h"
 
+
 namespace Flow
 {
-	RenderAPI Renderer::s_RendererAPI = RenderAPI::DirectX11;
-
-	void Renderer::SetRenderAPI(RenderAPI API)
+	void Renderer::BeginScene()
 	{
-		s_RendererAPI = API;
 	}
 
-	RenderAPI Renderer::GetRenderAPI()
+	void Renderer::EndScene()
 	{
-		return s_RendererAPI;
 	}
 
-	void Renderer::ClearWindow()
+	void Renderer::Submit(Renderable* const  Renderables)
 	{
-		ClearWindow(0,0,0,1);
+		CHECK_RETURN(!Renderables, "Renderer::Submit: Renderable was nullptr");
+		RenderCommand::DrawIndexed(Renderables->GetIndexBuffer().GetCount());
 	}
 
 }

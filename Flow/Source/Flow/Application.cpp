@@ -21,6 +21,9 @@ namespace Flow
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+
+		TestMesh = std::make_shared<StaticMesh>("D:\\Personal Projects\\Flow\\Flow\\Assets\\Models\\Box.obj");
 	}
 
 	Application::~Application()
@@ -46,6 +49,13 @@ namespace Flow
 				layer->OnImGuiRender();
 			}
 			m_ImGuiLayer->End();
+
+			Renderer::BeginScene();
+
+			Renderer::Submit(reinterpret_cast<Renderable*>(TestMesh.get()));
+
+			Renderer::EndScene();
+
 
 			MainWindow->OnUpdate();
 			MainWindow->PostUpdate();

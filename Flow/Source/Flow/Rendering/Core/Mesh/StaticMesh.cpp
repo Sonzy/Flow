@@ -14,15 +14,24 @@ namespace Flow
 		// Define Vertex Layout
 		VertexLayout Layout;
 		Layout.Append(ElementType::Position3D);
-
+		
 		// Define Vertex Buffer information
 		VertexBuffer VBuffer(Layout);
-
+		
 		//Import Model
 		Assimp::Importer Importer;
 		const aiScene* Model = Importer.ReadFile(LocalPath,
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices);
+
+		if (!Model)
+		{
+			FLOW_ENGINE_ERROR("{0}", Importer.GetErrorString());
+			return;
+		}
+
+		
+		//CHECK_RETURN(!Model, "StaticMesh::StaticMesh: Failed to load model");
 
 		//Load the data from each vertex
 		const auto Mesh = Model->mMeshes[0];
@@ -32,7 +41,7 @@ namespace Flow
 				DirectX::XMFLOAT3{ Mesh->mVertices[i].x, Mesh->mVertices[i].y, Mesh->mVertices[i].z }
 			);
 		}
-
+		
 		//Load the indices
 		std::vector<unsigned short> indices;
 		indices.reserve(Mesh->mNumFaces * 3); //Using triangles, change for quads
@@ -47,21 +56,24 @@ namespace Flow
 
 		//Add Vertex Buffer Bind
 		AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
-
+		
 		//Bind Shaders
 		auto vShader = std::make_unique<VertexShader>(L"Source/Shaders/SolidColourVS.cso");
 		auto vShaderByteCode = vShader->GetByteCode();
 		AddStaticBindable(std::move(vShader));
 		AddStaticBindable(std::make_unique<PixelShader>(L"Source/Shaders/SolidColourPS.cso"));
-
+		
 		//Bind Index Buffer
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
-
+		
 		//Bind Input Layout
 		AddStaticBindable(std::make_unique<InputLayout>(VBuffer.GetLayout().GetD3DLayout(), vShaderByteCode));
-
+		
 		//Bind Transform
-			//Bind the transform cbuffer
-		AddStaticBindable(std::make_unique<TransformConstantBuffer>(*this));
+		AddStaticBindable(std::make_unique<TransformConstantBuffer>(this));
+	}
+	DirectX::XMMATRIX StaticMesh::GetTransformXM() const
+	{
+		return DirectX::XMMATRIX();
 	}
 }

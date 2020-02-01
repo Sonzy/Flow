@@ -12,7 +12,7 @@ namespace Flow
 		template<ElementType Type>
 		auto& GetAttribute()
 		{
-			auto Attribute = pData + m_LayoutRef.GetElement<Type>().GetOffset();//layout.Resolve<Type>().GetOffset();
+			auto Attribute = Data + m_LayoutRef.GetElement<Type>().GetOffset();//layout.Resolve<Type>().GetOffset();
 			return *reinterpret_cast<typename VertexElement<Type>::DataType*>(Attribute);
 		}
 
@@ -72,7 +72,7 @@ namespace Flow
 		template<ElementType DestLayoutType, typename SrcType>
 		void SetAttribute(char* pAttribute, SrcType&& val) noexcept
 		{
-			using Dest = typename VertexLayout::Map<DestLayoutType>::DataType;
+			using Dest = typename VertexLayout::VertexElement<DestLayoutType>::DataType;
 			if constexpr (std::is_assignable<Dest, SrcType>::value)
 				*reinterpret_cast<Dest*>(pAttribute) = val;
 			else

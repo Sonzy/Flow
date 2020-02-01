@@ -8,6 +8,8 @@
 
 #include "UserInterface/imgui/ImGuiLayer.h"
 
+#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
+
 namespace Flow
 {
 	class FLOW_API Application
@@ -42,6 +44,9 @@ namespace Flow
 		bool bRunning = true;
 
 		LayerStack m_LayerStack;
+
+
+		std::shared_ptr<StaticMesh> TestMesh = nullptr;
 	};
 
 	//Is defined externally

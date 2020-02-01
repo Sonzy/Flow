@@ -1,0 +1,34 @@
+#pragma once
+
+namespace Flow
+{
+	class RenderAPI
+	{
+	public:
+
+		enum class API
+		{
+			None,
+			DirectX11,
+			DirectX12,
+			Vulkan
+		};
+
+	public:
+
+		virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) {};
+
+		virtual void SetClearColour(float R, float G, float B, float A) = 0;
+		virtual void Clear() = 0;
+
+		virtual void DrawIndexed(int Count) = 0;
+
+		virtual void BeginFrame() = 0;
+		virtual void EndFrame() = 0;
+
+		static API GetAPI() { return s_API; };
+		
+	private:
+		static API s_API;
+	};
+}

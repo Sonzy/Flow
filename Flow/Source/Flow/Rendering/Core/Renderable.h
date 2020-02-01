@@ -1,35 +1,27 @@
 #pragma once
 #include "Bindable.h"
 #include <DirectXMath.h>
-
-#include "Bindables/BindableVertexBuffer.h"
 #include "Bindables/IndexBuffer.h"
-#include "Bindables/Sampler.h"
-#include "Bindables/InputLayout.h"
-#include "Bindables/Shaders/VertexShader.h"
-#include "Bindables/Shaders/PixelShader.h"
-#include "Bindables/ConstantBuffers/ConstantBuffer.h"
-#include "Bindables/ConstantBuffers/ShaderConstantBuffers.h"
-#include "Bindables/ConstantBuffers/TransformConstantBuffer.h"
 
 namespace Flow
 {
-	class Renderable
+	class FLOW_API Renderable
 	{
 	public:
+		Renderable();
+		Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector Unique ptr errors, but deleting lvalue copy constructor doesnt.
 
-		void Draw() const;
 		virtual void Update(float deltaTime) {};
 
 		virtual DirectX::XMMATRIX GetTransformXM() const = 0;
 
-
+		const IndexBuffer& GetIndexBuffer();
 	protected:
 
 		template<class T>
 		T* GetBindable() noexcept
 		{
-			for (auto& pb : binds)
+			for (auto& pb : m_Binds)
 			{
 				if (auto pt = dynamic_cast<T*>(pb.get()))
 					return pt;
@@ -43,13 +35,15 @@ namespace Flow
 		void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuffer);
 		void SetIndexFromStatic();
 
+
+
 	private:
 		const std::vector<std::unique_ptr<Bindable>>& GetStaticBindables() const;
 
 	private:
-		const IndexBuffer* indexBuffer = nullptr;
-		std::vector<std::unique_ptr<Bindable>> binds;
+		const IndexBuffer* m_IndexBuffer = nullptr;
+		std::vector<std::unique_ptr<Bindable>> m_Binds;
 
-		static std::vector<std::unique_ptr<Bindable>> staticBinds;
+		static std::vector<std::unique_ptr<Bindable>> m_StaticBinds;
 	};
 }

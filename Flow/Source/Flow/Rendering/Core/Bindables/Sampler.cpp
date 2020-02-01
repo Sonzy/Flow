@@ -1,4 +1,6 @@
+#include "Flowpch.h"
 #include "Sampler.h"
+#include "Flow/ErrorHandling/ErrorMacros.h"
 
 namespace Flow
 {
@@ -6,17 +8,17 @@ namespace Flow
 	{
 		HRESULT ResultHandle;
 
-		D3D11_SAMPLER_DESC samplerDesc = {};
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		D3D11_SAMPLER_DESC SamplerDesc = {};
+		SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-		//TODO: GFX_THROW_INFO(GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSampler));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
 	}
 
 	void Sampler::Bind()
 	{
-		//TODO: GetContext(gfx)->PSSetSamplers(0u, 1u, pSampler.GetAddressOf());
+		RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
 	}
 }

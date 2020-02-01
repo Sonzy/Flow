@@ -41,6 +41,10 @@ namespace Flow
 			return GenerateDescription<ElementType::Float4Colour>(GetOffset());
 		case ElementType::RGBAColour:
 			return GenerateDescription<ElementType::RGBAColour>(GetOffset());
+
+		default:
+			FLOW_ENGINE_ERROR("VertexElement::GetDescription: Case Error");
+			return D3D11_INPUT_ELEMENT_DESC{};
 		}
 	}
 
@@ -62,6 +66,9 @@ namespace Flow
 			return sizeof(VertexElement<ElementType::Float4Colour>::DataType);
 		case ElementType::RGBAColour:
 			return sizeof(VertexElement<ElementType::RGBAColour>::DataType);
+		default:
+			FLOW_ENGINE_ERROR("VertexElement::GetSizeOf: Case Error");
+			return size_t();
 		}
 	}
 }

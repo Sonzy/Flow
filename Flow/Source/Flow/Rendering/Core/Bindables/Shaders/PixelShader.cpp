@@ -1,19 +1,20 @@
+#include "Flowpch.h"
 #include "PixelShader.h"
+#include <d3dcompiler.h>
 
 namespace Flow
 {
 	PixelShader::PixelShader(const std::wstring& LocalPath)
 	{
-		//TODO:	
-		HRESULT ResultHandle;
+		CREATE_RESULT_HANDLE();
 
-		Microsoft::WRL::ComPtr<ID3DBlob> blob;
-		//GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
-		//GFX_THROW_INFO(GetDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
+		Microsoft::WRL::ComPtr<ID3DBlob> Blob;
+		CATCH_ERROR_DX(D3DReadFileToBlob(LocalPath.c_str(), &Blob));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
 	}
 
 	void PixelShader::Bind()
 	{
-		//TODO: 	GetContext(gfx)->PSSetShader(pixelShader.Get(), nullptr, 0);
+		RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 	}
 }

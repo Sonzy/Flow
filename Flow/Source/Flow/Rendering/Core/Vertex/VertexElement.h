@@ -35,7 +35,7 @@ namespace Flow
 	{
 		using DataType = DirectX::XMFLOAT2;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32_FLOAT;
-		static constexpr const char* SemanticNameName = "Position";
+		static constexpr const char* SemanticName = "Position";
 	};
 
 	template<>

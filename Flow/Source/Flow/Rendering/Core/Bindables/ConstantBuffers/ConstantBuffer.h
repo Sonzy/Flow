@@ -8,7 +8,7 @@ namespace Flow
 	{
 	public:
 		
-		ConstantBuffer(Graphics& gfx, const C& consts, UINT slot)
+		ConstantBuffer(const C& consts, UINT slot)
 			: m_Slot(slot)
 		{
 			HRESULT ResultHandle;
@@ -23,10 +23,10 @@ namespace Flow
 
 			D3D11_SUBRESOURCE_DATA csd = {};
 			csd.pSysMem = &consts;
-			//CATCH_ERROR_DX(GetDevice(gfx)->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
+			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 		}
 
-		ConstantBuffer(Graphics& gfx, UINT slot)
+		ConstantBuffer(UINT slot)
 			: m_Slot(slot)
 		{
 			HRESULT ResultHandle;
@@ -39,7 +39,7 @@ namespace Flow
 			cbd.ByteWidth = sizeof(C);
 			cbd.StructureByteStride = 0u;
 
-			//CATCH_ERROR_DX(GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 		}
 
 		void Update(const C& consts)
@@ -47,7 +47,12 @@ namespace Flow
 			HRESULT ResultHandle;
 			D3D11_MAPPED_SUBRESOURCE MSR;
 
-			//TODO: CATCH_ERROR_DX()
+			CATCH_ERROR_DX( RenderCommand::DX11GetContext()->Map(
+					m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+
+			memcpy(MSR.pData, &consts, sizeof(consts));
+
+			RenderCommand::DX11GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
 		}
 
 	protected:

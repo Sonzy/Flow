@@ -8,14 +8,14 @@ namespace Flow
 	{
 		//These allow you to access parent class stuff in a template child class by importing them
 		//or could do this->GetContext(gfx)->PSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
-		using ConstantBuffer<C>::constantBuffer;
-		using ConstantBuffer<C>::slot;
+		using ConstantBuffer<C>::m_ConstantBuffer;
+		using ConstantBuffer<C>::m_Slot;
 	public:
 		using ConstantBuffer<C>::ConstantBuffer;
 
-		void Bind(Graphics& gfx) override
+		void Bind() override
 		{
-			//TODO: GetContext(gfx)->PSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
+			RenderCommand::DX11GetContext()->PSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
 		}
 	};
 
@@ -23,14 +23,14 @@ namespace Flow
 	class VertexConstantBuffer : public ConstantBuffer<C>
 	{
 		//These allow you to access parent class stuff in a template child class
-		using ConstantBuffer<C>::constantBuffer;
-		using ConstantBuffer<C>::slot;
+		using ConstantBuffer<C>::m_ConstantBuffer;
+		using ConstantBuffer<C>::m_Slot;
 	public:
 		using ConstantBuffer<C>::ConstantBuffer;
 
-		void Bind(Graphics& gfx) noexcept override
+		void Bind() override
 		{
-			//TODO:GetContext(gfx)->VSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
+			RenderCommand::DX11GetContext()->VSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
 		}
 	};
 }

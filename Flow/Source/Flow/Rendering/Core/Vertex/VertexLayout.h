@@ -21,14 +21,14 @@ namespace Flow
 		template<typename ElementType Type>
 		const Element& GetElement() const
 		{
-			for (auto& e : elements)
+			for (auto& e : m_Elements)
 			{
 				if (e.GetType() == Type)
 					return e;
 			}
 
 			FLOW_ENGINE_WARNING("VertexLayout::GetElement: Failed to get element type");
-			return elements.front();
+			return m_Elements.front();
 		}
 
 	private:

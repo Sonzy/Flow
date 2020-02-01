@@ -67,6 +67,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +118,7 @@
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
+    <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
@@ -140,11 +142,14 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\Vertex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.h" />
-    <ClInclude Include="Source\Flow\Rendering\DX11\DX11Renderer.h" />
+    <ClInclude Include="Source\Flow\Rendering\DX11\DX11RenderAPI.h" />
+    <ClInclude Include="Source\Flow\Rendering\RenderAPI.h" />
+    <ClInclude Include="Source\Flow\Rendering\RenderCommand.h" />
     <ClInclude Include="Source\Flow\Rendering\Renderer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGuiLayer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_DX11.h" />
@@ -257,15 +262,14 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Buffers\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\DX11\DX11Renderer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\DX11\DX11RenderAPI.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\RenderAPI.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\RenderCommand.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_DX11.cpp" />
@@ -280,16 +284,6 @@
     <None Include="Source\Flow\ErrorHandling\DXGetErrorDescription.inl" />
     <None Include="Source\Flow\ErrorHandling\DXGetErrorString.inl" />
     <None Include="Source\Flow\ErrorHandling\DXTrace.inl" />
-    <None Include="ThirdParty\Assimp\.editorconfig" />
-    <None Include="ThirdParty\Assimp\color4.inl" />
-    <None Include="ThirdParty\Assimp\config.h.in" />
-    <None Include="ThirdParty\Assimp\material.inl" />
-    <None Include="ThirdParty\Assimp\matrix3x3.inl" />
-    <None Include="ThirdParty\Assimp\matrix4x4.inl" />
-    <None Include="ThirdParty\Assimp\quaternion.inl" />
-    <None Include="ThirdParty\Assimp\SmoothingGroups.inl" />
-    <None Include="ThirdParty\Assimp\vector2.inl" />
-    <None Include="ThirdParty\Assimp\vector3.inl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\assimp-vc140-mt.lib" />

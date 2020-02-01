@@ -1,16 +1,19 @@
 #pragma once
 
 #ifdef FLOW_PLATFORM_WINDOWS
-
-#include <string>
 #include <Windows.h>
 #include "Flow/ErrorHandling/dxerr.h"
+#include <string>
 
-std::string GenerateErrorDescription(HRESULT result)
+class ErrorHelpers
 {
-	char buf[512];
-	DXGetErrorDescription(result, buf, sizeof(buf));
-	return buf;
-}
+public:
 
+	static std::string GenerateErrorDescription(HRESULT result)
+	{
+		char buf[512];
+		DXGetErrorDescription(result, buf, sizeof(buf));
+		return buf;
+	}
+};
 #endif

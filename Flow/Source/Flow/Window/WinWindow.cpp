@@ -6,6 +6,8 @@
 #include "Flow/Events/MouseEvent.h"
 #include "Flow/Events/KeyEvent.h"
 
+#include "Flow/Rendering/Renderer.h"
+
 namespace Flow
 {
 	Window* Window::Create(const WindowProperties& Properties)
@@ -16,7 +18,8 @@ namespace Flow
 	WinWindow::WinWindow(const WindowProperties& Properties)
 	{
 		Initialise(Properties);
-		CreateRenderer(RenderAPI::DirectX11, GetWindowHandle(), Properties.Width, Properties.Height);
+
+		RenderCommand::InitialiseDX11(GetWindowHandle(), Properties.Width, Properties.Height);
 	}
 
 	WinWindow::~WinWindow()
@@ -61,6 +64,8 @@ namespace Flow
 		m_WindowData.Title = Props.Title;
 		m_WindowData.Width = Props.Width;
 		m_WindowData.Height = Props.Height;
+
+		RenderCommand::SetClearColour(0.1f, 0.1f, 0.1f, 1.0f);
 	}
 
 	void WinWindow::Shutdown()
@@ -70,7 +75,7 @@ namespace Flow
 
 	void WinWindow::PreUpdate()
 	{
-		CurrentRenderer->ClearWindow(0.2f, 0.2f, 0.2f, 1.0f);
+		RenderCommand::BeginFrame();
 	}
 
 	void WinWindow::OnUpdate()
@@ -80,7 +85,7 @@ namespace Flow
 
 	void WinWindow::PostUpdate()
 	{
-		CurrentRenderer->EndFrame();
+		RenderCommand::EndFrame();
 	}
 
 	unsigned int WinWindow::GetWidth() const
@@ -236,176 +241,6 @@ namespace Flow
 			FLOW_ENGINE_ERROR("WinWindow::HandleMessages: Event was nullptr");
 		}
 
-
-		////if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		////	return true;
-		//
-		////const auto GuiIO = ImGui::GetIO();
-		//
-		//switch (msg)
-		//{
-		//	//Window Messages================================
-		//case WM_CLOSE:
-		//	PostQuitMessage(0); //Sends a quit message with exit code param
-		//	return 0;
-		//case WM_KILLFOCUS: // When we lose focus, reset the keyboard state
-		//	//GetKeyboard().ClearState();
-		//case WM_ACTIVATE:
-		//
-		//	//if (bCursorEnabled)
-		//	//	break;
-		//	//
-		//	//if (wParam & WA_ACTIVE || wParam & WA_CLICKACTIVE)
-		//	//{
-		//	//	ConfineCursor(true);
-		//	//	HideCursor();
-		//	//}
-		//	//else
-		//	//{
-		//	//	ConfineCursor(false);
-		//	//	ShowCursor();
-		//	//}
-		//	//
-		//	break;
-		//	//Key Messages===================================
-		//case WM_SYSKEYDOWN:
-		//case WM_KEYDOWN: //Not Case Sensitive
-		//
-		//	////If the GUI wants to capture the keyboard, let it over the app
-		//	//if (GuiIO.WantCaptureKeyboard)
-		//	//	break;
-		//	//
-		//	//if (!(lParam & 0x40000000) || GetKeyboard().IsAutorepeatEnabled())
-		//	//	GetKeyboard().OnKeyPressed(static_cast<unsigned char>(wParam));
-		//	//break;
-		//case WM_SYSKEYUP:
-		//case WM_KEYUP:
-		//
-		//	////If the GUI wants to capture the keyboard, let it over the app
-		//	//if (GuiIO.WantCaptureKeyboard)
-		//	//	break;
-		//	//
-		//	//GetKeyboard().OnKeyReleased(static_cast<unsigned char>(wParam));
-		//	//break;
-		//case WM_CHAR: // Case sensitive
-		//
-		//	// //If the GUI wants to capture the Keyboad, let it over the app
-		//	//if (GuiIO.WantCaptureKeyboard)
-		//	//	break;
-		//	//
-		//	//GetKeyboard().OnChar(static_cast<unsigned char>(wParam));
-		//	//break;
-		//	//GetMouse() Messages==================================
-		//case WM_MOUSEMOVE:
-		//{
-		//	//If the GUI wants to capture the Keyboad, let it over the app
-		//	//if (GuiIO.WantCaptureMouse)
-		//	//	break;
-		//	//
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	////Check if we are in the window
-		//	//if (points.x >= 0 && points.x < Width && points.y >= 0 && points.y < Height)
-		//	//{
-		//	//	GetMouse().OnMouseMove(points.x, points.y);
-		//	//
-		//	//	//Check if we have just re-entered the window
-		//	//	if (!GetMouse().IsInWindow())
-		//	//	{
-		//	//		SetCapture(hWnd);
-		//	//		GetMouse().OnMouseEnter();
-		//	//	}
-		//	//}
-		//	////If we arent in the region, keep capturing GetMouse() if GetMouse() key is pressed
-		//	//else
-		//	//{
-		//	//	if (GetMouse().IsLeftPressed() || GetMouse().IsRightPressed())
-		//	//		GetMouse().OnMouseMove(points.x, points.y);
-		//	//	else
-		//	//	{
-		//	//		//release capture on not click
-		//	//		ReleaseCapture();
-		//	//		GetMouse().OnMouseLeave();
-		//	//	}
-		//	//}
-		//	//break;
-		//}
-		//case WM_LBUTTONDOWN:
-		//{
-		//	//if (!bCursorEnabled)
-		//	//{
-		//	//	ConfineCursor(true);
-		//	//	HideCursor();
-		//	//}
-		//	//
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnLeftPressed(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_LBUTTONUP:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnLeftReleased(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_RBUTTONDOWN:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnRightPressed(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_MBUTTONDOWN:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnMiddlePressed(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_MBUTTONUP:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnMiddleReleased(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_RBUTTONUP:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnRightReleased(points.x, points.y);
-		//	//break;
-		//}
-		//case WM_MOUSEWHEEL:
-		//{
-		//	//const POINTS points = MAKEPOINTS(lParam);
-		//	//GetMouse().OnWheelDelta(points.x, points.y, GET_WHEEL_DELTA_WPARAM(wParam));
-		//	//break;
-		//}
-		////= Raw GetMouse() Messages ==========================
-		//
-		//case WM_INPUT:
-		//
-		//	//if (!GetMouse().bRawInputEnabled)
-		//	//	break;
-		//	//
-		//	//UINT size = 0;
-		//	////Get the size of the input data
-		//	//if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
-		//	//	break;
-		//	//
-		//	//RawInputBuffer.resize(size);
-		//	//
-		//	////Read the input data
-		//	//if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, RawInputBuffer.data(), &size, sizeof(RAWINPUTHEADER)) != size)
-		//	//	break;
-		//	//
-		//	////Process the input data
-		//	//auto& ri = reinterpret_cast<const RAWINPUT&>(*RawInputBuffer.data());
-		//	//if (ri.header.dwType == RIM_TYPEMOUSE &&
-		//	//	(ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0)) //Read input from GetMouse() devices that have movement input
-		//	//{
-		//	//	GetMouse().OnRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
-		//	//}
-		//	//
-		//	//break;
-		//}
-		//
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 

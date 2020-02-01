@@ -10,7 +10,7 @@
 #include "Flow/Events/MouseEvent.h"
 
 #include "Flow/Window/WinWindow.h"
-#include "Flow/Rendering/DX11/DX11Renderer.h"
+#include "Flow/Rendering/DX11/DX11RenderAPI.h"
 
 namespace Flow
 {
@@ -52,7 +52,7 @@ namespace Flow
 
 #ifdef  FLOW_PLATFORM_WINDOWS
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
-		ImGui_ImplDX11_Init(Window->GetRenderer<DX11Renderer>()->GetDevice(), Window->GetRenderer<DX11Renderer>()->GetContext());
+		ImGui_ImplDX11_Init(RenderCommand::DX11GetDevice(), RenderCommand::DX11GetContext());
 #endif
 
 		FLOW_ENGINE_LOG("Imgui Initialised.");

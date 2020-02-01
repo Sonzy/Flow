@@ -1,3 +1,4 @@
+#include "Flowpch.h"
 #include "Topology.h"
 
 namespace Flow
@@ -9,6 +10,6 @@ namespace Flow
 
 	void Topology::Bind() noexcept
 	{
-		//TODO: 	GetContext(gfx)->IASetPrimitiveTopology(type);
+		RenderCommand::DX11GetContext()->IASetPrimitiveTopology(m_Topology);
 	}
 }
