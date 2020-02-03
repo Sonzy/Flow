@@ -120,6 +120,7 @@
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
+    <ClInclude Include="Source\Flow\Helper\Timer.h" />
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
     <ClInclude Include="Source\Flow\Input\WindowsInput.h" />
@@ -253,6 +254,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
+    <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />

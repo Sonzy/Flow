@@ -2,6 +2,7 @@
 #include "Flow/Core.h"
 #include <bitset>
 #include "KeyCodes.h"
+#include "Flow\Helper\Maths.h"
 
 namespace Flow
 {
@@ -43,6 +44,11 @@ namespace Flow
 		static int GetMouseY()
 		{
 			return s_Instance->MouseY;
+		}
+
+		static IntVector2D GetMousePosition()
+		{
+			return IntVector2D(s_Instance->MouseX, s_Instance->MouseY);
 		}
 
 

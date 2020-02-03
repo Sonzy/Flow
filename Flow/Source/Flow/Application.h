@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "Flow/Window/Window.h"
 #include "Layers/LayerStack.h"
+#include "Flow\Helper\Timer.h"
 
 #include "Events/ApplicationEvent.h"
 
@@ -32,10 +33,20 @@ namespace Flow
 
 		static Application& GetApplication();
 
+		/* Returns path to Flow solution directory */
+		std::string GetLocalFilePath();
+		std::wstring GetLocalFilePathWide();
+
 		Window& GetWindow();
 
 	public:
 		std::string ApplicationName;
+
+	private:
+
+		void RenderApplicationDebug(float DeltaTime);
+
+		void SpawnRandomMeshes(std::string LocalMeshPath, int Num);
 
 	private:
 		static Application* Instance;
@@ -44,9 +55,12 @@ namespace Flow
 		bool bRunning = true;
 
 		LayerStack m_LayerStack;
+		Timer m_Timer;
 
 
 		std::vector<std::shared_ptr<StaticMesh>> TestMesh;
+
+		std::string LocalPath;
 	};
 
 	//Is defined externally

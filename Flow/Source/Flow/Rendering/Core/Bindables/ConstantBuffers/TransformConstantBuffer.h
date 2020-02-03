@@ -19,6 +19,9 @@ namespace Flow
 		{
 			DirectX::XMMATRIX modelViewProj;
 			DirectX::XMMATRIX modelView;
+
+			DirectX::XMFLOAT3 Scale;
+			float padding;
 		};
 
 	private:

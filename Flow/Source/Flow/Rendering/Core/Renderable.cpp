@@ -39,7 +39,7 @@ namespace Flow
 	}
 
 	Renderable::Renderable()
-		: m_Position(0.0f), m_Rotation(0.0f)
+		: m_Position(0.0f), m_Rotation(0.0f), m_Scale(1.0f)
 	{
 	}
 
@@ -51,6 +51,16 @@ namespace Flow
 	void Renderable::SetPosition(Vector Location)
 	{
 		m_Position = Location;
+	}
+
+	void Renderable::SetRotation(Rotator Rotation)
+	{
+		m_Rotation = Rotation;
+	}
+
+	void Renderable::SetScale(Vector Scale)
+	{
+		m_Scale = Scale;
 	}
 
 	void Renderable::BindAll()

@@ -12,6 +12,7 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 #include "ThirdParty\ImGui\imgui.h"
+#include <random>
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -29,32 +30,21 @@ namespace Flow
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
-		PushLayer(new CameraLayer());
 
-		//Desktop Local
-		//D:\\Personal Projects\\Flow\\Flow\
-		//Laptop Local
-		//C:\Users\Sonny\Documents\Personal Projects\Flow Engine\Flow\
+		//Get Local File Path
+		char Path[128];
+		GetModuleFileName(nullptr, Path, sizeof(Path));
+		std::string ExeDir = std::string(Path);
+		LocalPath = ExeDir.substr(0, ExeDir.find("bin")); 
 
-		std::string ModelPath = "C:\\Users\\Sonny\\Documents\\Personal Projects\\Flow Engine\\Flow\\Assets\\Models\\Box.obj";
+		std::shared_ptr<StaticMesh> NewMesh = std::make_shared<StaticMesh>("Flow\\Assets\\Models\\Box.obj");
+		NewMesh->SetPosition(Vector(1.0f));
+		NewMesh->SetScale(Vector(5.0f));
+		TestMesh.push_back(NewMesh);
 
-		int Count = 10;
-		float Distance = 5.0f;
-		int HalfCount = Count / 2;
-		for (int i = 0; i < Count; i++)
-		{
-			for (int j = 0; j < Count; j++)
-			{
-				for (int k = 0; k < Count; k++)
-				{
-					std::shared_ptr<StaticMesh> NewMesh = std::make_shared<StaticMesh>(ModelPath);
-					NewMesh->SetPosition(Vector((-HalfCount + i) * Distance, (-HalfCount + j) * Distance, (-HalfCount + k) * Distance));
-					TestMesh.push_back(NewMesh);
-
-					FLOW_ENGINE_LOG("{0}, {1}, {2}", i, j, k);
-				}
-			}
-		}
+		std::shared_ptr<StaticMesh> NewMesh2 = std::make_shared<StaticMesh>("Flow\\Assets\\Models\\Box.obj");
+		NewMesh2->SetPosition(Vector(0.0f, 0.0f, 20.0f));
+		TestMesh.push_back(NewMesh2);
 	}
 
 	Application::~Application()
@@ -66,12 +56,16 @@ namespace Flow
 	{
 		while (bRunning)
 		{
+			float DeltaTime = m_Timer.Mark();
+
 			MainWindow->PreUpdate();
 
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();
 			}
+
+			RenderCommand::GetCamera().Tick(DeltaTime);
 
 			Renderer::BeginScene();
 			for (auto Mesh : TestMesh)
@@ -80,13 +74,15 @@ namespace Flow
 			}
 			Renderer::EndScene();
 
-			//Allow each layer to render their own IMGUI
+
+			//ImGui UI Rendering
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnImGuiRender();
 			}
-
+			RenderApplicationDebug(DeltaTime);
+			RenderCommand::GetCamera().RenderIMGUIWindow();
 			m_ImGuiLayer->End();
 
 			MainWindow->OnUpdate();
@@ -131,8 +127,41 @@ namespace Flow
 		return *Instance;
 	}
 
+	std::string Application::GetLocalFilePath()
+	{
+		return LocalPath;
+	}
+
+	std::wstring Application::GetLocalFilePathWide()
+	{
+		return std::wstring(LocalPath.begin(), LocalPath.end());
+	}
+
 	Window& Application::GetWindow()
 	{
 		return *MainWindow;
+	}
+
+	void Application::RenderApplicationDebug(float DeltaTime)
+	{
+		if (ImGui::Begin("Application Statistics"))
+		{
+			ImGui::Text("Framerate: %.1f", 1 / DeltaTime);
+			ImGui::Text("FrameTime: %d ms", (int)(DeltaTime * 1000));
+		}
+		ImGui::End();
+	}
+
+	void Application::SpawnRandomMeshes(std::string LocalMeshPath, int Num)
+	{
+		std::mt19937 rng(std::random_device{}());
+		std::uniform_real_distribution<float> Dist(0.0f, 100.0f);
+
+		for (int i = 0; i < Num; i++)
+		{
+			std::shared_ptr<StaticMesh> NewMesh = std::make_shared<StaticMesh>(LocalMeshPath);
+			NewMesh->SetPosition(Vector(Dist(rng), Dist(rng), Dist(rng)));
+			TestMesh.push_back(NewMesh);
+		}
 	}
 }

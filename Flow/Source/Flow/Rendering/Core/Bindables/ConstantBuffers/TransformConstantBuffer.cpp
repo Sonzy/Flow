@@ -22,8 +22,9 @@ namespace Flow
 		{
 			DirectX::XMMatrixTranspose(modelView),
 			DirectX::XMMatrixTranspose(
-				modelView * 
-				RenderCommand::GetCamera().GetProjection())
+				modelView *
+				RenderCommand::GetCamera().GetProjection()),
+			m_Parent->GetScale().ToDXFloat3()
 		};
 		m_VCBuffer->Update(tf);
 		m_VCBuffer->Bind();

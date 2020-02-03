@@ -19,8 +19,11 @@ namespace Flow
 		const IndexBuffer& GetIndexBuffer();
 		
 		void SetPosition(Vector Location);
+		void SetRotation(Rotator Rotation);
+		void SetScale(Vector Scale);
 		Vector GetPosition() { return m_Position; }
 		Rotator GetRotation() { return m_Rotation; }
+		Vector GetScale() { return m_Scale; }
 
 		void BindAll();
 	protected:
@@ -57,6 +60,7 @@ namespace Flow
 
 	protected:
 		Vector m_Position;
+		Vector m_Scale;
 		Rotator m_Rotation;
 	};
 }

@@ -90,7 +90,7 @@ namespace Flow
 		CATCH_ERROR_DX(Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &DepthStencilView));
 
 		// Bind the Depth Stencil to the Output Merger
-		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), nullptr /*DepthStencilView.Get()*/);
+		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), DepthStencilView.Get());
 
 		//Setup Viewport
 		D3D11_VIEWPORT Viewport;
@@ -103,8 +103,8 @@ namespace Flow
 
 		Context->RSSetViewports(1u, &Viewport);
 
-		//Init Camera Projection
-		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 500.0f));
+		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
+		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportWidth / (float)ViewportHeight, 0.5f, 500.0f));
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{
@@ -123,6 +123,9 @@ namespace Flow
 	void DX11RenderAPI::BeginFrame()
 	{
 		Clear();
+
+		//We update here just so we can alter the FOV with ImGui					
+		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), 1280.0f / 720.0f, 0.5f, 500.0f));
 	}
 
 	void DX11RenderAPI::EndFrame()

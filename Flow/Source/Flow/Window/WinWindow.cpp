@@ -207,16 +207,17 @@ namespace Flow
 
 			//= Key Events ===============================
 
+			//TODO: Left/Right Key specification https://stackoverflow.com/questions/15966642/how-do-you-tell-lshift-apart-from-rshift-in-wm-keydown-events
 			case WM_SYSKEYDOWN:
 			case WM_KEYDOWN:
 			{
-				KeyPressedEvent Event(static_cast<unsigned char>(wParam), 0);
+				KeyPressedEvent Event(wParam, 0);
 				e = &Event;
 				break;
 			}
 			case WM_KEYUP:
 			{
-				KeyReleasedEvent Event(static_cast<unsigned char>(wParam));
+				KeyReleasedEvent Event(wParam);
 				e = &Event;
 				break;
 			}

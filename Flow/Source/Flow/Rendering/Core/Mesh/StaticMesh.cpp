@@ -3,11 +3,13 @@
 #include "Flow/Rendering/Core/Vertex/VertexLayout.h"
 #include "Flow/Rendering/Core/Vertex/VertexBuffer.h"
 
-#include "Flow\Rendering\Core\ModelLoader.h"
+#include "Flow\Application.h"
 
 #include <Assimp/Importer.hpp>
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
+
+#include <random>
 
 
 namespace Flow
@@ -23,9 +25,8 @@ namespace Flow
 			// Define Vertex Buffer information
 			VertexBuffer VBuffer(Layout);
 
-
 			Assimp::Importer Importer;
-			const aiScene* Model = Importer.ReadFile(LocalPath,
+			const aiScene* Model = Importer.ReadFile(Application::GetApplication().GetLocalFilePath() + LocalPath,
 				aiProcess_Triangulate |
 				aiProcess_JoinIdenticalVertices);
 
@@ -53,11 +54,12 @@ namespace Flow
 			//Add Vertex Buffer Bind
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
+			std::wstring Local = Application::GetApplication().GetLocalFilePathWide();
 			//Bind Shaders
-			auto vShader = std::make_unique<VertexShader>(L"C:/Users/Sonny/Documents/Personal Projects/Flow Engine/Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
+			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
 			auto vShaderByteCode = vShader->GetByteCode();
 			AddStaticBindable(std::move(vShader));
-			AddStaticBindable(std::make_unique<PixelShader>(L"C:/Users/Sonny/Documents/Personal Projects/Flow Engine/Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso"));
+			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso"));
 
 			//Bind Index Buffer
 			AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
@@ -69,12 +71,25 @@ namespace Flow
 			AddStaticBindable(std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 		}
 		else
-		{
-			//Bind Transform
-			AddBind(std::make_unique<TransformConstantBuffer>(this));
-
 			SetIndexFromStatic();
-		}
+			
+		//Bind Transform
+		AddBind(std::make_unique<TransformConstantBuffer>(this));
+
+		//Bind pixel constant buffer
+		struct PSCBUF
+		{
+			DirectX::XMFLOAT4 Color;
+		} Consts;
+
+		std::mt19937 rng(std::random_device{}());
+		std::uniform_real_distribution<float> Dist(0.0f, 1.0f);
+
+		float r = Dist(rng);
+		float g = Dist(rng);
+		float b = Dist(rng);
+		Consts.Color = { r, g, b, 1 };
+		AddBind(std::make_unique<PixelConstantBuffer<PSCBUF>>(Consts, 0u));
 	}
 
 

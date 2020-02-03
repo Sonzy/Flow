@@ -67,11 +67,8 @@ namespace Flow
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		ImGui::DockSpaceOverViewport(0, ImGuiDockNodeFlags_PassthruCentralNode);
-
-
-		static bool bShowDemoWindow = true;
-		ImGui::ShowDemoWindow(&bShowDemoWindow);
+		//static bool bShowDemoWindow = true;
+		//ImGui::ShowDemoWindow(&bShowDemoWindow);
 	}
 
 	void ImGuiLayer::Begin()
@@ -79,6 +76,8 @@ namespace Flow
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
+
+		ImGui::DockSpaceOverViewport(0, ImGuiDockNodeFlags_PassthruCentralNode);
 	}
 
 	void ImGuiLayer::End()

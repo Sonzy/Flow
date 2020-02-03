@@ -10,6 +10,7 @@ namespace Flow
 	MouseMovedEvent::MouseMovedEvent(int X, int Y)
 		: MouseX(X), MouseY(Y)
 	{
+		Input::OnMouseMoved(X, Y);
 	}
 
 	int Flow::MouseMovedEvent::GetX() const
