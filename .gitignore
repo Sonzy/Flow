@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+!Flow/Assets/Models/*.obj
 
 # Precompiled Headers
 *.gch
