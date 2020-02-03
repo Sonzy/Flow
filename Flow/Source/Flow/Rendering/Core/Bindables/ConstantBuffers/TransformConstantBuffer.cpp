@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "TransformConstantBuffer.h"
-
+#include "Flow/Rendering/Core/Camera/Camera.h"
 
 namespace Flow
 {
@@ -17,14 +17,13 @@ namespace Flow
 	{
 		CHECK_RETURN(!m_Parent, "TransformConstantBuffer::Bind: Parent was nullptr");
 
-		const auto modelView = m_Parent->GetTransformXM();//TODO: Get Camera location *gfx.GetCamera();
+		const auto modelView = m_Parent->GetTransformXM() * RenderCommand::GetCamera().GetMatrix();
 		const Transforms tf =
 		{
 			DirectX::XMMatrixTranspose(modelView),
 			DirectX::XMMatrixTranspose(
 				modelView * 
-				DirectX::XMMATRIX()//TODO: Get Camera Projection *gfx.GetCamera();gfx.GetProjection()
-			)
+				RenderCommand::GetCamera().GetProjection())
 		};
 		m_VCBuffer->Update(tf);
 		m_VCBuffer->Bind();

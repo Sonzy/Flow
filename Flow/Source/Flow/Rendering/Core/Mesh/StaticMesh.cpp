@@ -10,6 +10,7 @@
 namespace Flow
 {
 	StaticMesh::StaticMesh(const std::string& LocalPath)
+		: Position(0, 20, 20)
 	{
 		// Define Vertex Layout
 		VertexLayout Layout;
@@ -29,9 +30,6 @@ namespace Flow
 			FLOW_ENGINE_ERROR("{0}", Importer.GetErrorString());
 			return;
 		}
-
-		
-		//CHECK_RETURN(!Model, "StaticMesh::StaticMesh: Failed to load model");
 
 		//Load the data from each vertex
 		const auto Mesh = Model->mMeshes[0];
@@ -56,12 +54,12 @@ namespace Flow
 
 		//Add Vertex Buffer Bind
 		AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
-		
+
 		//Bind Shaders
-		auto vShader = std::make_unique<VertexShader>(L"Source/Shaders/SolidColourVS.cso");
+		auto vShader = std::make_unique<VertexShader>(L"D:/Personal Projects/Flow/Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
 		auto vShaderByteCode = vShader->GetByteCode();
 		AddStaticBindable(std::move(vShader));
-		AddStaticBindable(std::make_unique<PixelShader>(L"Source/Shaders/SolidColourPS.cso"));
+		AddStaticBindable(std::make_unique<PixelShader>(L"D:/Personal Projects/Flow/Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso"));
 		
 		//Bind Index Buffer
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
@@ -69,11 +67,17 @@ namespace Flow
 		//Bind Input Layout
 		AddStaticBindable(std::make_unique<InputLayout>(VBuffer.GetLayout().GetD3DLayout(), vShaderByteCode));
 		
+		//Bind Topology
+		AddStaticBindable(std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
 		//Bind Transform
 		AddStaticBindable(std::make_unique<TransformConstantBuffer>(this));
 	}
+
 	DirectX::XMMATRIX StaticMesh::GetTransformXM() const
 	{
-		return DirectX::XMMATRIX();
+		return DirectX::XMMatrixRotationRollPitchYaw(Position.x, Position.y, Position.z) * //Rotate around box centre
+			DirectX::XMMatrixTranslation(10.0f, 0.0f, 0.0f) * //Move relative to origin
+			DirectX::XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.z, Rotation.y); //Rotate around world centre
 	}
 }

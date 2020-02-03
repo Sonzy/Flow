@@ -140,6 +140,8 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexElement.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
@@ -262,6 +264,8 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
@@ -292,10 +296,12 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColorVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColourPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

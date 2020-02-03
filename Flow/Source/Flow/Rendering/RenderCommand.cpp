@@ -22,14 +22,9 @@ namespace Flow
 		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetContext();
 	}
 
-	void RenderCommand::SetCameraMatrix(DirectX::FXMMATRIX Matrix)
+	Camera& RenderCommand::GetCamera()
 	{
-		dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->SetCameraMatrix(Matrix);
-	}
-
-	DirectX::XMMATRIX RenderCommand::GetCameraMatrix()
-	{
-		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetCameraMatrix();
+		return s_RendererAPI->GetCamera();
 	}
 
 	void RenderCommand::SetClearColour(float R, float G, float B, float A)

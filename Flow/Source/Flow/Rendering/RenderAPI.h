@@ -1,4 +1,5 @@
 #pragma once
+#include "Flow/Rendering/Core/Camera/Camera.h"
 
 namespace Flow
 {
@@ -25,6 +26,8 @@ namespace Flow
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
+
+		virtual Camera& GetCamera() = 0;
 
 		static API GetAPI() { return s_API; };
 		

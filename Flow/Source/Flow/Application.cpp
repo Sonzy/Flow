@@ -5,6 +5,8 @@
 
 #include "Flow/Input/Input.h"
 
+#include "Flow/Rendering/Core/Camera/CameraLayer.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow
@@ -21,9 +23,10 @@ namespace Flow
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
-
+		PushLayer(new CameraLayer());
 
 		TestMesh = std::make_shared<StaticMesh>("D:\\Personal Projects\\Flow\\Flow\\Assets\\Models\\Box.obj");
+		TestMesh->Position = DirectX::XMFLOAT3(0.0f, 20.0f, 0.0f);
 	}
 
 	Application::~Application()
@@ -55,7 +58,6 @@ namespace Flow
 			Renderer::Submit(reinterpret_cast<Renderable*>(TestMesh.get()));
 
 			Renderer::EndScene();
-
 
 			MainWindow->OnUpdate();
 			MainWindow->PostUpdate();

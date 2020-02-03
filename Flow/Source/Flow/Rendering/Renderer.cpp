@@ -15,6 +15,7 @@ namespace Flow
 	void Renderer::Submit(Renderable* const  Renderables)
 	{
 		CHECK_RETURN(!Renderables, "Renderer::Submit: Renderable was nullptr");
+		Renderables->BindAll();
 		RenderCommand::DrawIndexed(Renderables->GetIndexBuffer().GetCount());
 	}
 

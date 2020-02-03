@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <DirectXMath.h>
+#include "Flow/Rendering/Core/Camera/Camera.h"
 
 namespace Flow
 {
@@ -20,11 +21,10 @@ namespace Flow
 
 		virtual void DrawIndexed(int Count) override;
 
+		virtual Camera& GetCamera() override;
+
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
-
-		void SetCameraMatrix(DirectX::FXMMATRIX NewMatrix);
-		DirectX::XMMATRIX GetCameraMatrix() const;
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain> SwapChain = nullptr;
@@ -35,6 +35,6 @@ namespace Flow
 
 		float BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 
-		DirectX::XMMATRIX CameraMatrix;
+		Camera m_MainCamera;
 	};
 }

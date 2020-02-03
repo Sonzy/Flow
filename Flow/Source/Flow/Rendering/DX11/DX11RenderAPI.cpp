@@ -102,6 +102,9 @@ namespace Flow
 		Viewport.TopLeftY = 0.0f;
 
 		Context->RSSetViewports(1u, &Viewport);
+
+		//Init Camera Projection
+		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 500.0f));
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{
@@ -133,6 +136,11 @@ namespace Flow
 		Context->DrawIndexed(Count, 0, 0);
 	}
 
+	Camera& DX11RenderAPI::GetCamera()
+	{
+		return m_MainCamera;
+	}
+
 	ID3D11Device* DX11RenderAPI::GetDevice()
 	{
 		return Device.Get();
@@ -141,15 +149,5 @@ namespace Flow
 	ID3D11DeviceContext* DX11RenderAPI::GetContext()
 	{
 		return Context.Get();
-	}
-
-	void DX11RenderAPI::SetCameraMatrix(DirectX::FXMMATRIX NewMatrix)
-	{
-		CameraMatrix = NewMatrix;
-	}
-
-	DirectX::XMMATRIX DX11RenderAPI::GetCameraMatrix() const
-	{
-		return CameraMatrix;
 	}
 }

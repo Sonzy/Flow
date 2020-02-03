@@ -26,26 +26,26 @@ namespace Flow
 			//TODO: Further research into R/Lvalue forwarding in templates and perfect forwarding
 			switch (Element.GetType())
 			{
-			case VertexLayout::Position2D:
+			case ElementType::Position2D:
 				SetAttribute<ElementType::Position2D>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::Position3D:
+			case ElementType::Position3D:
 				SetAttribute<ElementType::Position3D>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::Texture2D:
+			case ElementType::Texture2D:
 				SetAttribute<ElementType::Texture2D>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::Normal:
+			case ElementType::Normal:
 				SetAttribute<ElementType::Normal>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::Float3Color:
-				SetAttribute<ElementType::Float3Color>(Attribute, std::forward<T>(val));
+			case ElementType::Float3Colour:
+				SetAttribute<ElementType::Float3Colour>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::Float4Color:
-				SetAttribute<ElementType::Float4Color>(Attribute, std::forward<T>(val));
+			case ElementType::Float4Colour:
+				SetAttribute<ElementType::Float4Colour>(Attribute, std::forward<T>(val));
 				break;
-			case VertexLayout::BGRAColor:
-				SetAttribute<ElementType::BGRAColor>(Attribute, std::forward<T>(val));
+			case ElementType::RGBAColour:
+				SetAttribute<ElementType::RGBAColour>(Attribute, std::forward<T>(val));
 				break;
 			default:
 				assert("Bad element type" && false);
@@ -72,7 +72,7 @@ namespace Flow
 		template<ElementType DestLayoutType, typename SrcType>
 		void SetAttribute(char* pAttribute, SrcType&& val) noexcept
 		{
-			using Dest = typename VertexLayout::VertexElement<DestLayoutType>::DataType;
+			using Dest = typename VertexElement<DestLayoutType>::DataType;
 			if constexpr (std::is_assignable<Dest, SrcType>::value)
 				*reinterpret_cast<Dest*>(pAttribute) = val;
 			else

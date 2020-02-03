@@ -11,5 +11,8 @@ namespace Flow
 		StaticMesh(const std::string& LocalPath);
 
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
+
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT3 Rotation;
 	};
 }

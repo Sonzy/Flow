@@ -16,6 +16,9 @@ namespace Flow
 		virtual DirectX::XMMATRIX GetTransformXM() const = 0;
 
 		const IndexBuffer& GetIndexBuffer();
+
+
+		void BindAll();
 	protected:
 
 		template<class T>

@@ -16,8 +16,8 @@ namespace Flow
 		static void InitialiseDX11(HWND WindowHandle, int ViewportWidth, int ViewportHeight);
 		static ID3D11Device* DX11GetDevice();
 		static ID3D11DeviceContext* DX11GetContext();
-		static void SetCameraMatrix(DirectX::FXMMATRIX Matrix);
-		static DirectX::XMMATRIX GetCameraMatrix();
+
+		static Camera& GetCamera();
 
 
 		static void SetClearColour(float R, float G, float B, float A);

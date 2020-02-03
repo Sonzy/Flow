@@ -5,6 +5,7 @@
 #include "Bindables/IndexBuffer.h"
 #include "Bindables/Sampler.h"
 #include "Bindables/InputLayout.h"
+#include "Bindables/Topology.h"
 #include "Bindables/Shaders/VertexShader.h"
 #include "Bindables/Shaders/PixelShader.h"
 #include "Bindables/ConstantBuffers/ConstantBuffer.h"

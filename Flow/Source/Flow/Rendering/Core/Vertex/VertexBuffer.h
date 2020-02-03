@@ -29,6 +29,7 @@ namespace Flow
 			assert(sizeof...(params) == m_Layout.GetElementCount() && "Param count doesn't match number of vertex elements");
 
 			m_Buffer.resize(m_Buffer.size() + m_Layout.GetSize());
+			GetBack().SetAttributeByIndex(0u, std::forward<Params>(params)...);
 		}
 
 	private:
