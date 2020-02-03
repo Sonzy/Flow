@@ -90,14 +90,14 @@ namespace Flow
 		CATCH_ERROR_DX(Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &DepthStencilView));
 
 		// Bind the Depth Stencil to the Output Merger
-		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), DepthStencilView.Get());
+		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), nullptr /*DepthStencilView.Get()*/);
 
 		//Setup Viewport
 		D3D11_VIEWPORT Viewport;
 		Viewport.Width = ViewportWidth;
 		Viewport.Height = ViewportHeight;
 		Viewport.MinDepth = 0.0f;
-		Viewport.MaxDepth = 1.0f;
+		Viewport.MaxDepth = 1.0f; //Disable depth for testing
 		Viewport.TopLeftX = 0.0f;
 		Viewport.TopLeftY = 0.0f;
 

@@ -143,6 +143,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\ModelLoader.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\Vertex.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\ModelLoader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />

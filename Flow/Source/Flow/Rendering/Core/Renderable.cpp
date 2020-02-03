@@ -5,6 +5,12 @@ namespace Flow
 {
 	std::vector<std::unique_ptr<Bindable>> Renderable::m_StaticBinds;
 
+	void Renderable::AddBind(std::unique_ptr<Bindable> bind)
+	{
+		assert("MUST use AddIndexBuffer to bind index buffer" && typeid(*bind) != typeid(IndexBuffer));
+		m_Binds.push_back(std::move(bind));
+	}
+
 	void Renderable::AddStaticBindable(std::unique_ptr<Bindable> Bind)
 	{
 		assert("USE ADD INDEX BUFFER TO BIND INDEX BUFFER" && typeid(*Bind) != typeid(Bindable));
@@ -33,12 +39,18 @@ namespace Flow
 	}
 
 	Renderable::Renderable()
+		: m_Position(0.0f), m_Rotation(0.0f)
 	{
 	}
 
 	const IndexBuffer& Renderable::GetIndexBuffer()
 	{
 		return *m_IndexBuffer;
+	}
+
+	void Renderable::SetPosition(Vector Location)
+	{
+		m_Position = Location;
 	}
 
 	void Renderable::BindAll()

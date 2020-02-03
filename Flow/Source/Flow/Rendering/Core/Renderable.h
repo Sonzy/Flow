@@ -2,6 +2,7 @@
 #include "Bindable.h"
 #include <DirectXMath.h>
 #include "Bindables/IndexBuffer.h"
+#include "Flow/Helper/Maths.h"
 
 namespace Flow
 {
@@ -16,7 +17,10 @@ namespace Flow
 		virtual DirectX::XMMATRIX GetTransformXM() const = 0;
 
 		const IndexBuffer& GetIndexBuffer();
-
+		
+		void SetPosition(Vector Location);
+		Vector GetPosition() { return m_Position; }
+		Rotator GetRotation() { return m_Rotation; }
 
 		void BindAll();
 	protected:
@@ -32,11 +36,13 @@ namespace Flow
 			return nullptr;
 		}
 
-
+		void AddBind(std::unique_ptr<Bindable> bind);
 		static void AddStaticBindable(std::unique_ptr<Bindable> Bind);
 
 		void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuffer);
 		void SetIndexFromStatic();
+
+		bool StaticInitialised() { return !m_StaticBinds.empty(); }
 
 
 
@@ -48,5 +54,9 @@ namespace Flow
 		std::vector<std::unique_ptr<Bindable>> m_Binds;
 
 		static std::vector<std::unique_ptr<Bindable>> m_StaticBinds;
+
+	protected:
+		Vector m_Position;
+		Rotator m_Rotation;
 	};
 }

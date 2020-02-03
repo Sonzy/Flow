@@ -14,7 +14,7 @@ namespace Flow
 
 	DirectX::XMMATRIX Camera::GetMatrix() const
 	{
-		const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+		const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 		
 		//Apply rotations to the base vector
 		const auto lookVector = DirectX::XMVector3Transform(Forward,

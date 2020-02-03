@@ -46,7 +46,7 @@ namespace Flow
 		LayerStack m_LayerStack;
 
 
-		std::shared_ptr<StaticMesh> TestMesh = nullptr;
+		std::vector<std::shared_ptr<StaticMesh>> TestMesh;
 	};
 
 	//Is defined externally
