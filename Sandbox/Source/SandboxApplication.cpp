@@ -7,8 +7,8 @@ public:
 	Sandbox(const std::string& AppName)
 		: Application(AppName)
 	{
-		//ExampleLayer* Example = new ExampleLayer();
-		//PushLayer(Example);
+		ExampleLayer* Example = new ExampleLayer();
+		PushLayer(Example);
 	}
 
 	~Sandbox()

@@ -57,9 +57,7 @@ namespace Flow
 		LayerStack m_LayerStack;
 		Timer m_Timer;
 
-
-		std::vector<std::shared_ptr<StaticMesh>> TestMesh;
-
+		std::vector<std::shared_ptr<Flow::StaticMesh>> TestMesh;
 		std::string LocalPath;
 	};
 

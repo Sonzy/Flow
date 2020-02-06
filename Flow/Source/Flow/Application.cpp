@@ -36,15 +36,6 @@ namespace Flow
 		GetModuleFileName(nullptr, Path, sizeof(Path));
 		std::string ExeDir = std::string(Path);
 		LocalPath = ExeDir.substr(0, ExeDir.find("bin")); 
-
-		std::shared_ptr<StaticMesh> NewMesh = std::make_shared<StaticMesh>("Flow\\Assets\\Models\\Box.obj");
-		NewMesh->SetPosition(Vector(1.0f));
-		NewMesh->SetScale(Vector(5.0f));
-		TestMesh.push_back(NewMesh);
-
-		std::shared_ptr<StaticMesh> NewMesh2 = std::make_shared<StaticMesh>("Flow\\Assets\\Models\\Box.obj");
-		NewMesh2->SetPosition(Vector(0.0f, 0.0f, 20.0f));
-		TestMesh.push_back(NewMesh2);
 	}
 
 	Application::~Application()
@@ -59,21 +50,12 @@ namespace Flow
 			float DeltaTime = m_Timer.Mark();
 
 			MainWindow->PreUpdate();
+			MainWindow->OnUpdate();
 
 			for (Layer* layer : m_LayerStack)
 			{
-				layer->OnUpdate();
+				layer->OnUpdate(DeltaTime);
 			}
-
-			RenderCommand::GetCamera().Tick(DeltaTime);
-
-			Renderer::BeginScene();
-			for (auto Mesh : TestMesh)
-			{
-				Renderer::Submit(reinterpret_cast<Renderable*>(Mesh.get()));
-			}
-			Renderer::EndScene();
-
 
 			//ImGui UI Rendering
 			m_ImGuiLayer->Begin();
@@ -82,10 +64,8 @@ namespace Flow
 				layer->OnImGuiRender();
 			}
 			RenderApplicationDebug(DeltaTime);
-			RenderCommand::GetCamera().RenderIMGUIWindow();
 			m_ImGuiLayer->End();
 
-			MainWindow->OnUpdate();
 			MainWindow->PostUpdate();
 		}
 	}
@@ -147,7 +127,7 @@ namespace Flow
 		if (ImGui::Begin("Application Statistics"))
 		{
 			ImGui::Text("Framerate: %.1f", 1 / DeltaTime);
-			ImGui::Text("FrameTime: %d ms", (int)(DeltaTime * 1000));
+			ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);
 		}
 		ImGui::End();
 	}

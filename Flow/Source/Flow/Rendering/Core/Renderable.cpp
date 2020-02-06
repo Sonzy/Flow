@@ -72,7 +72,11 @@ namespace Flow
 
 		for (auto& b : m_StaticBinds)
 		{
-			b->Bind();
+			if (!b->bCheckBound || !b->bBound)
+			{
+				b->Bind();
+				b->bBound = true;
+			}
 		}
 	}
 

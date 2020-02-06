@@ -7,7 +7,7 @@
 
 namespace Flow
 {
-	class RenderCommand
+	class FLOW_API RenderCommand
 	{
 	public:
 		

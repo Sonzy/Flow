@@ -68,13 +68,15 @@ namespace Flow
 			AddStaticBindable(std::make_unique<InputLayout>(VBuffer.GetLayout().GetD3DLayout(), vShaderByteCode));
 
 			//Bind Topology
-			AddStaticBindable(std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+			AddStaticBindable (std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 		}
 		else
 			SetIndexFromStatic();
 			
 		//Bind Transform
 		AddBind(std::make_unique<TransformConstantBuffer>(this));
+
+
 
 		//Bind pixel constant buffer
 		struct PSCBUF

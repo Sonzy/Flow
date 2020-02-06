@@ -1,2 +1,3 @@
 #pragma once
 #define CHECK_RETURN(Condition, ErrorMessage) if(Condition) { FLOW_ENGINE_ERROR(ErrorMessage); return; }
+#define CHECK_RETURN_ZERO(Condition, ErrorMessage) if(Condition) { FLOW_ENGINE_ERROR(ErrorMessage); return 0; }

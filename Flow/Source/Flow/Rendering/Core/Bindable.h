@@ -11,5 +11,8 @@ namespace Flow
 	{
 	public:
 		virtual void Bind() = 0;
+		bool bBound;
+		bool bCheckBound = false;
+
 	};
 }

@@ -102,6 +102,9 @@ namespace Flow
 		Translate(Translation.ToDXFloat3());
 
 		m_LastMousePos = Pos;
+
+
+		m_Frustrum.UpdateFrustrum(500.0f, m_Projection, GetMatrix());
 	}
 
 	void Camera::RenderIMGUIWindow()
@@ -148,5 +151,9 @@ namespace Flow
 	DirectX::XMFLOAT3 Camera::GetPosition() const
 	{
 		return m_Position.ToDXFloat3();
+	}
+	const Frustrum& Camera::GetFrustrum() const
+	{
+		return m_Frustrum;
 	}
 }

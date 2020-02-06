@@ -3,7 +3,7 @@
 
 namespace Flow
 {
-	class RenderAPI
+	class FLOW_API RenderAPI
 	{
 	public:
 

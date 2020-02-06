@@ -6,7 +6,7 @@
 
 namespace Flow
 {
-	class Renderer
+	class FLOW_API Renderer
 	{
 	public:
 		static RenderAPI::API GetRenderAPI() { return RenderAPI::GetAPI(); };
@@ -16,6 +16,12 @@ namespace Flow
 		static void BeginScene();
 		static void EndScene();
 
+		static int SubmitWithoutDraw(Renderable* Renderables);
 		static void Submit(Renderable* Renderables);
+
+		static void Draw(int Count);
+
+	private:
+		static int s_ObjectsRendered;
 	};
 }

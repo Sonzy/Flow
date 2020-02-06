@@ -6,6 +6,7 @@ namespace Flow
 	Topology::Topology(D3D11_PRIMITIVE_TOPOLOGY type)
 		: m_Topology(type)
 	{
+		bCheckBound = true;
 	}
 
 	void Topology::Bind() noexcept
