@@ -13,6 +13,9 @@
 #include <Assimp/postprocess.h>
 #include "ThirdParty\ImGui\imgui.h"
 #include <random>
+#include <Psapi.h> //memory debug
+
+#include "Flow\Assets\AssetSystem.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -36,6 +39,17 @@ namespace Flow
 		GetModuleFileName(nullptr, Path, sizeof(Path));
 		std::string ExeDir = std::string(Path);
 		LocalPath = ExeDir.substr(0, ExeDir.find("bin")); 
+
+
+		//TODO: Load assets somewhere
+		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Box2.obj");
+		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Box.obj");
+		AssetSystem::LoadAsset("Flow\\Assets\\Models\\WeirdBox.obj"); 
+		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Hat_FancyMan.obj");
+		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\ExampleRed.png");
+		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\TestTexture.png");
+		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\TestTextureFlip.png");
+		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\CharacterTexture.png"); 
 	}
 
 	Application::~Application()
@@ -128,6 +142,11 @@ namespace Flow
 		{
 			ImGui::Text("Framerate: %.1f", 1 / DeltaTime);
 			ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);
+
+			PROCESS_MEMORY_COUNTERS MemoryData;
+			GetProcessMemoryInfo(GetCurrentProcess(), &MemoryData, sizeof(MemoryData));
+
+			ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
 		}
 		ImGui::End();
 	}

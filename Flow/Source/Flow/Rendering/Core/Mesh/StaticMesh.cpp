@@ -9,7 +9,9 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
-#include <random>
+#include "Flow\Assets\AssetSystem.h"
+#include "Flow\Assets\Meshes\MeshAsset.h"
+#include "Flow\Assets\Textures\TextureAsset.h"
 
 
 namespace Flow
@@ -21,45 +23,44 @@ namespace Flow
 			// Define Vertex Layout
 			VertexLayout Layout;
 			Layout.Append(ElementType::Position3D);
+			Layout.Append(ElementType::Texture2D);
 
 			// Define Vertex Buffer information
 			VertexBuffer VBuffer(Layout);
 
-			Assimp::Importer Importer;
-			const aiScene* Model = Importer.ReadFile(Application::GetApplication().GetLocalFilePath() + LocalPath,
-				aiProcess_Triangulate |
-				aiProcess_JoinIdenticalVertices);
+			MeshAsset* LoadedMesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
+			CHECK_RETURN(!LoadedMesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
 
-			//Load the data from each vertex
-			const aiMesh* Mesh = Model->mMeshes[0];
-			for (unsigned int i = 0; i < Mesh->mNumVertices; i++)
+			for (auto& Vertex : LoadedMesh->GetVertices())
 			{
 				VBuffer.EmplaceBack(
-					DirectX::XMFLOAT3{ Mesh->mVertices[i].x, Mesh->mVertices[i].y, Mesh->mVertices[i].z }
+					DirectX::XMFLOAT3{ Vertex.VertexPosition.X ,  Vertex.VertexPosition.Y,  Vertex.VertexPosition.Z },
+					DirectX::XMFLOAT2 { Vertex.TextureCoord.X,  Vertex.TextureCoord.Y}
 				);
 			}
 
-			//Load the indices
 			std::vector<unsigned short> indices;
-			indices.reserve(Mesh->mNumFaces * 3); //Using triangles, change for quads
-			for (unsigned int i = 0; i < Mesh->mNumFaces; i++)
+			indices.reserve(LoadedMesh->GetNumFaces() * 3); //Using triangles, change for quads
+			for (auto& Face : LoadedMesh->GetFaces())
 			{
-				const auto& face = Mesh->mFaces[i];
-				assert(face.mNumIndices == 3);
-				indices.push_back(face.mIndices[0]);
-				indices.push_back(face.mIndices[1]);
-				indices.push_back(face.mIndices[2]);
+				assert(Face.m_NumIndices == 3);
+				indices.push_back(Face.m_Indices[0]);
+				indices.push_back(Face.m_Indices[1]);
+				indices.push_back(Face.m_Indices[2]);
 			}
 
 			//Add Vertex Buffer Bind
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
+			AddStaticBindable(std::make_unique<Texture>(AssetSystem::GetAsset<TextureAsset>("Flow\\Assets\\Textures\\CharacterTexture.png")));
+			AddStaticBindable(std::make_unique<Sampler>());
+
 			std::wstring Local = Application::GetApplication().GetLocalFilePathWide();
 			//Bind Shaders
-			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
+			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
 			auto vShaderByteCode = vShader->GetByteCode();
 			AddStaticBindable(std::move(vShader));
-			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso"));
+			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso"));
 
 			//Bind Index Buffer
 			AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
@@ -75,23 +76,6 @@ namespace Flow
 			
 		//Bind Transform
 		AddBind(std::make_unique<TransformConstantBuffer>(this));
-
-
-
-		//Bind pixel constant buffer
-		struct PSCBUF
-		{
-			DirectX::XMFLOAT4 Color;
-		} Consts;
-
-		std::mt19937 rng(std::random_device{}());
-		std::uniform_real_distribution<float> Dist(0.0f, 1.0f);
-
-		float r = Dist(rng);
-		float g = Dist(rng);
-		float b = Dist(rng);
-		Consts.Color = { r, g, b, 1 };
-		AddBind(std::make_unique<PixelConstantBuffer<PSCBUF>>(Consts, 0u));
 	}
 
 

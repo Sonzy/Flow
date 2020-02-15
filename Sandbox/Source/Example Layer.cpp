@@ -6,25 +6,16 @@
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	int CountCubed = 20;
+	std::shared_ptr<Flow::StaticMesh> NewMesh = std::make_shared<Flow::StaticMesh>("Flow\\Assets\\Models\\Hat_FancyMan.obj");
+	TestMesh.push_back(NewMesh);
 
-	int offset = 10.0f;
+	std::shared_ptr<Flow::StaticMesh> NewMesh2 = std::make_shared<Flow::StaticMesh>("Flow\\Assets\\Models\\Hat_FancyMan.obj");
+	NewMesh2->SetPosition(Vector(10.0f));
+	TestMesh.push_back(NewMesh2);
 
-		float Distance = 20.0f;
-
-	for (int i = 0; i < CountCubed; i++)
-	{
-		for (int j = 0; j < CountCubed; j++)
-		{
-			for (int k = 0; k < CountCubed; k++)
-			{
-				std::shared_ptr<Flow::StaticMesh> NewMesh = std::make_shared<Flow::StaticMesh>("Flow\\Assets\\Models\\Box.obj");
-				NewMesh->SetPosition(Vector((-Distance * (CountCubed / 2)) + (i * Distance), (-Distance * (CountCubed / 2)) + (j * Distance), (-Distance * (CountCubed / 2)) + (k * Distance)));
-				NewMesh->SetScale(Vector(5.0f));
-				TestMesh.push_back(NewMesh);
-			}
-		}
-	}
+	std::shared_ptr<Flow::StaticMesh> NewMesh3 = std::make_shared<Flow::StaticMesh>("Flow\\Assets\\Models\\Hat_FancyMan.obj");
+	NewMesh3->SetPosition(Vector(-10.0f));
+	TestMesh.push_back(NewMesh3);
 }
 
 void ExampleLayer::OnUpdate(float DeltaTime)
@@ -35,12 +26,11 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	Flow::Renderer::BeginScene();
 	for (auto Mesh : TestMesh)
 	{
-		Count+= Flow::Renderer::SubmitWithoutDraw(reinterpret_cast<Flow::Renderable*>(Mesh.get()));
+		//Count += Flow::Renderer::SubmitWithoutDraw(reinterpret_cast<Flow::Renderable*>(Mesh.get()));
+		Flow::Renderer::Submit(reinterpret_cast<Flow::Renderable*>(Mesh.get()));
 	}
 	Flow::Renderer::Draw(Count);
 	Flow::Renderer::EndScene();
-
-
 }
 
 void ExampleLayer::OnImGuiRender()
@@ -51,6 +41,4 @@ void ExampleLayer::OnImGuiRender()
 void ExampleLayer::OnAttach()
 {
 	Layer::OnAttach();
-
-	FLOW_ENGINE_LOG("FOOK");
 }

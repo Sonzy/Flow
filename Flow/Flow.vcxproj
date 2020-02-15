@@ -108,6 +108,11 @@
     <ClInclude Include="Source\FlowEngine\Core.h" />
     <ClInclude Include="Source\FlowEngine\EntryPoint.h" />
     <ClInclude Include="Source\Flow\Application.h" />
+    <ClInclude Include="Source\Flow\Assets\AssetBase.h" />
+    <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
+    <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
+    <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
+    <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
@@ -137,6 +142,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Sampler.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Texture.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Topology.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.h" />
@@ -245,6 +251,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
+    <ClCompile Include="Source\Flow\Assets\AssetBase.cpp" />
+    <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />
@@ -267,6 +278,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Sampler.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Texture.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
@@ -307,6 +319,16 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColourPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>

@@ -7,6 +7,7 @@ namespace Flow
 		: m_Topology(type)
 	{
 		bCheckBound = true;
+		bBound = false;
 	}
 
 	void Topology::Bind() noexcept

@@ -49,6 +49,7 @@ struct Vector
 	}
 };
 
+//TODO: Simplify wrapping, was lazy
 struct Rotator
 {
 	float Pitch;
@@ -101,6 +102,45 @@ struct Rotator
 		{
 			Yaw += 360.0f;
 		}
+	}
+
+	Rotator operator+(const Rotator& Other)
+	{
+		Rotator New = Rotator(Pitch, Roll, Yaw);
+		New.Pitch += Other.Pitch;
+		New.Roll += Other.Roll;
+		New.Yaw += Other.Yaw;
+
+		//Lazy wrapping
+
+		while (New.Pitch > 360.0f)
+		{
+			New.Pitch -= 360.0f;
+		}
+		while (New.Pitch < 0.0f)
+		{
+			New.Pitch += 360.0f;
+		}
+
+		while (New.Roll > 360.0f)
+		{
+			New.Roll -= 360.0f;
+		}
+		while (New.Roll < 0.0f)
+		{
+			New.Roll += 360.0f;
+		}
+
+		while (New.Yaw > 360.0f)
+		{
+			New.Yaw -= 360.0f;
+		}
+		while (New.Yaw < 0.0f)
+		{
+			New.Yaw += 360.0f;
+		}
+
+		return New;
 	}
 };
 

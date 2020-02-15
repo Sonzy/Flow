@@ -23,10 +23,12 @@ namespace Flow
 		SwapchainDesc.SampleDesc.Count = 1;
 		SwapchainDesc.SampleDesc.Quality = 0;
 		SwapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		SwapchainDesc.BufferCount = 1;
+		//SwapchainDesc.BufferCount = 1;
+		SwapchainDesc.BufferCount = 2; //flip discard
 		SwapchainDesc.OutputWindow = WindowHandle;
 		SwapchainDesc.Windowed = TRUE;
-		SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		//SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; //TODO: Check the flip discard stuff
+		SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; //flip discard
 		SwapchainDesc.Flags = 0;
 
 		UINT SwapCreateFlags = 0;
@@ -53,7 +55,6 @@ namespace Flow
 		// Create render target view and populate backbuffer
 		CATCH_ERROR_DX(SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 		CATCH_ERROR_DX(Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &RenderTarget));
-
 
 		// Create Depth Stencil State
 		D3D11_DEPTH_STENCIL_DESC DepthStencilDescription = {};
@@ -132,6 +133,9 @@ namespace Flow
 	{
 		HRESULT ResultHandle;
 		CATCH_ERROR_DX(SwapChain->Present(1, 0));
+
+		//Rebind the render target after present to use DXGI_SWAP_EFFECT_FLIP_DISCARD
+		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), DepthStencilView.Get());
 	}
 
 	void DX11RenderAPI::DrawIndexed(int Count)
