@@ -1,19 +1,12 @@
 #include "Flowpch.h"
+#include <Psapi.h> //memory debug
 #include "Application.h"
 #include "Logging/Log.h"
 #include "Events/ApplicationEvent.h"
 
 #include "Flow/Input/Input.h"
-
 #include "Flow/Rendering/Core/Camera/CameraLayer.h"
-
-#include "Flow\Rendering\Core\ModelLoader.h"
-#include <Assimp/Importer.hpp>
-#include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
 #include "ThirdParty\ImGui\imgui.h"
-#include <random>
-#include <Psapi.h> //memory debug
 
 #include "Flow\Assets\AssetSystem.h"
 
@@ -42,14 +35,14 @@ namespace Flow
 
 
 		//TODO: Load assets somewhere
-		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Box2.obj");
-		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Box.obj");
-		AssetSystem::LoadAsset("Flow\\Assets\\Models\\WeirdBox.obj"); 
-		AssetSystem::LoadAsset("Flow\\Assets\\Models\\Hat_FancyMan.obj");
-		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\ExampleRed.png");
-		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\TestTexture.png");
-		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\TestTextureFlip.png");
-		AssetSystem::LoadAsset("Flow\\Assets\\Textures\\CharacterTexture.png"); 
+		AssetSystem::LoadAsset("Box2", "Flow\\Assets\\Models\\Box2.obj");
+		AssetSystem::LoadAsset("Box", "Flow\\Assets\\Models\\Box.obj");
+		AssetSystem::LoadAsset("WeirdBox", "Flow\\Assets\\Models\\WeirdBox.obj"); 
+		AssetSystem::LoadAsset("Hat_FancyMan", "Flow\\Assets\\Models\\Hat_FancyMan.obj");
+		AssetSystem::LoadAsset("ExampleRed", "Flow\\Assets\\Textures\\ExampleRed.png");
+		AssetSystem::LoadAsset("TestTexture", "Flow\\Assets\\Textures\\TestTexture.png");
+		AssetSystem::LoadAsset("TestTextureFlip", "Flow\\Assets\\Textures\\TestTextureFlip.png");
+		AssetSystem::LoadAsset("CharacterTexture", "Flow\\Assets\\Textures\\CharacterTexture.png"); 
 	}
 
 	Application::~Application()
@@ -149,18 +142,5 @@ namespace Flow
 			ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
 		}
 		ImGui::End();
-	}
-
-	void Application::SpawnRandomMeshes(std::string LocalMeshPath, int Num)
-	{
-		std::mt19937 rng(std::random_device{}());
-		std::uniform_real_distribution<float> Dist(0.0f, 100.0f);
-
-		for (int i = 0; i < Num; i++)
-		{
-			std::shared_ptr<StaticMesh> NewMesh = std::make_shared<StaticMesh>(LocalMeshPath);
-			NewMesh->SetPosition(Vector(Dist(rng), Dist(rng), Dist(rng)));
-			TestMesh.push_back(NewMesh);
-		}
 	}
 }

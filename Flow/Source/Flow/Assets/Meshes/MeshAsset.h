@@ -40,7 +40,6 @@ namespace Flow
 	public:
 
 		MeshAsset()
-			: m_AssetSize(0)
 		{};
 
 		virtual bool LoadAsset(const std::string& LocalPath) override;
@@ -55,6 +54,5 @@ namespace Flow
 
 		std::vector<MeshVertex> m_Vertices;
 		std::vector<MeshFace> m_Faces;
-		size_t m_AssetSize;
 	};
 }

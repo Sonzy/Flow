@@ -5,6 +5,8 @@
 #include "Textures\TextureAsset.h"
 #include "Flow\Assets\Textures\GDIPlusManager.h"
 
+#include "ThirdParty\ImGui\imgui.h"
+
 namespace Flow
 {
 	AssetSystem* AssetSystem::s_AssetSystem = new AssetSystem();
@@ -28,55 +30,40 @@ namespace Flow
 
 	}
 
-	bool AssetSystem::LoadAsset(const std::string& AssetPath)
+	bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& AssetPath)
 	{
-		switch (AssetSystem::GetAssetTypeFromFileExtension(AssetPath))
-		{
-		case EAssetType::Mesh:
-		{
-			MeshAsset* NewMesh = new MeshAsset();
-			//If we succeeded
-			if (NewMesh->LoadAsset(AssetPath))
-			{
-				std::size_t HashedPath = std::hash<std::string>{}(AssetPath);
-				s_AssetSystem->m_LoadedAssets.insert({ HashedPath, NewMesh });
-				return true;
-			}
+		AssetBase* NewAsset = CreateAsset(AssetSystem::GetAssetTypeFromFileExtension(AssetPath));
+		CHECK_RETURN_FALSE(!NewAsset, "AssetSystem::LoadAsset: Failed to create asset for file type.");
 
-			return false;
-		}
-		case EAssetType::Texture:
+		if (NewAsset->LoadAsset(AssetPath))
 		{
-			TextureAsset* Texture = new TextureAsset();
-			//If we succeeded
-			if (Texture->LoadAsset(AssetPath))
-			{
-				std::size_t HashedPath = std::hash<std::string>{}(AssetPath);
-				s_AssetSystem->m_LoadedAssets.insert({ HashedPath, Texture });
-				return true;
-			}
-			return false;
+			NewAsset->SetAssetName(AssetName);
+			std::size_t HashedName = std::hash<std::string>{}(AssetName);
+			s_AssetSystem->m_LoadedAssets.insert({ HashedName, NewAsset });
+
+			s_AssetSystem->LoadedAssetSize += NewAsset->GetAssetSize();
+
+
+			return true;
 		}
-		default:
-			FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to resolve asset type {0}", AssetPath);
-			return false;
-		}
+
+		return false;
 	}
 
 
-	AssetBase* AssetSystem::GetAsset(const std::string& AssetPath)
+	AssetBase* AssetSystem::GetAsset(const std::string& AssetName)
 	{
 		//Hash the string
-		std::size_t HashedPath = std::hash<std::string>{}(AssetPath);
+		std::size_t HashedName = std::hash<std::string>{}(AssetName);
 
 		//Error if the path doesnt exist in the system
-		if (s_AssetSystem->m_LoadedAssets.find(HashedPath) == s_AssetSystem->m_LoadedAssets.end())
+		if (s_AssetSystem->m_LoadedAssets.find(HashedName) == s_AssetSystem->m_LoadedAssets.end())
 		{
-			FLOW_ENGINE_ERROR("Tried to get asset from path ({0}) and failed", AssetPath);
+			FLOW_ENGINE_ERROR("Tried to get asset from path ({0}) and failed", AssetName);
 			return nullptr;
 		}
 
-		return s_AssetSystem->m_LoadedAssets[HashedPath];
+		return s_AssetSystem->m_LoadedAssets[HashedName];
 	}
 
 	//TODO: Come up wiht a better version of this
@@ -91,5 +78,62 @@ namespace Flow
 			return EAssetType::Mesh;
 		
 		return EAssetType::None;
+	}
+
+	AssetBase* AssetSystem::CreateAsset(EAssetType Type)
+	{
+		switch (Type)
+		{
+		case EAssetType::Mesh:
+		{
+			MeshAsset* NewMesh = new MeshAsset();
+			return NewMesh;
+		}
+		case EAssetType::Texture:
+		{
+			TextureAsset* Texture = new TextureAsset();
+			return Texture;
+		}
+		default:
+			FLOW_ENGINE_ERROR("AssetSystem::CreateAsset: Case Error");
+			return nullptr;
+		}
+	}
+
+	void AssetSystem::RenderDebugWindow(bool Render)
+	{
+		if (ImGui::Begin("Asset System"))
+		{
+			ImGui::Text("Asset Memory usage: %.1f MB", (float)s_AssetSystem->LoadedAssetSize / 1048576);
+
+			if (ImGui::TreeNode("Meshes"))
+			{
+				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				{
+					//First: Name, Second: AssetPtr
+					if (Asset.second->GetAssetType() != EAssetType::Mesh)
+						continue;
+
+					ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());
+				}
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Textures"))
+			{
+				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				{
+					//First: Name, Second: AssetPtr
+					if (Asset.second->GetAssetType() != EAssetType::Texture)
+						continue;
+
+					ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());
+				}
+				ImGui::TreePop();
+			}
+
+
+		}
+		ImGui::End();
 	}
 }

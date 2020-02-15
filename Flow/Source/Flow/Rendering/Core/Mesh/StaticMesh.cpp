@@ -52,7 +52,7 @@ namespace Flow
 			//Add Vertex Buffer Bind
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
-			AddStaticBindable(std::make_unique<Texture>(AssetSystem::GetAsset<TextureAsset>("Flow\\Assets\\Textures\\CharacterTexture.png")));
+			AddStaticBindable(std::make_unique<Texture>(AssetSystem::GetAsset<TextureAsset>("CharacterTexture")));
 			AddStaticBindable(std::make_unique<Sampler>());
 
 			std::wstring Local = Application::GetApplication().GetLocalFilePathWide();

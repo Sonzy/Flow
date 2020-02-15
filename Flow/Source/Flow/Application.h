@@ -46,8 +46,6 @@ namespace Flow
 
 		void RenderApplicationDebug(float DeltaTime);
 
-		void SpawnRandomMeshes(std::string LocalMeshPath, int Num);
-
 	private:
 		static Application* Instance;
 		std::unique_ptr<Window> MainWindow;

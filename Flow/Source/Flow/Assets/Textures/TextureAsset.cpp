@@ -36,7 +36,9 @@ namespace Flow
 			}
 		}
 
-		FLOW_ENGINE_LOG("TextureAsset::LoadAsset: Successfully loaded texture {0}", std::string(WidePath.begin(), WidePath.end()));
+		m_AssetSize = sizeof(TexColor) * (m_TextureHeight * m_TextureWidth);
+		m_AssetType = EAssetType::Texture;
+		FLOW_ENGINE_LOG("MeshAsset::LoadAsset: Successfully loaded texture {0} (Size: {1})", FilePath, m_AssetSize);
 
 		return true;
 	}

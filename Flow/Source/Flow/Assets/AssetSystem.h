@@ -6,15 +6,7 @@
 
 namespace Flow
 {
-	enum class EAssetType
-	{
-		None,
-		Mesh,
-		Texture
-	};
-
-
-	class AssetSystem
+	class FLOW_API AssetSystem
 	{
 	public:
 
@@ -25,13 +17,15 @@ namespace Flow
 
 		void InitialiseAssetSystem();
 
-		static bool LoadAsset(const std::string& FilePath);
+		static bool LoadAsset(const std::string& AssetName, const std::string& FilePath);
 
 		//TODO: Setup asset retrieval
 		static AssetBase* GetAsset(const std::string& AssetPath);
 
 		static EAssetType GetAssetTypeFromFileExtension(const std::string& AssetPath);
+		static AssetBase* CreateAsset(EAssetType Type);
 		
+		static void RenderDebugWindow(bool Render);
 
 		template <typename T>
 		static T* GetAsset(const std::string& AssetPath)
@@ -40,10 +34,12 @@ namespace Flow
 		}
 
 	public:
+		static AssetSystem* s_AssetSystem;
 
 		// Map of all loaded asset pointers as well as HashedFilePath to all loaded assets
 		std::unordered_map<size_t, AssetBase*> m_LoadedAssets;
-		std::unordered_map<std::string, std::function<bool(const std::string&)>> m_AssetLoaders;
-		static AssetSystem* s_AssetSystem;
+
+		size_t LoadedAssetSize = 0;
+
 	};
 }

@@ -31,7 +31,6 @@ namespace Flow
 				);
 		}
 
-
 		//Load the faces
 		m_Faces.reserve(Mesh->mNumFaces);
 		for (unsigned int i = 0; i < Mesh->mNumFaces; i++)
@@ -41,10 +40,11 @@ namespace Flow
 			m_Faces.emplace_back(face.mNumIndices, face.mIndices);
 		}
 
-		FLOW_ENGINE_LOG("MeshAsset::LoadAsset: Successfully loaded static mesh {0}", LocalPath);
+		m_AssetSize = (sizeof(MeshVertex) * m_Vertices.size()) + (sizeof(MeshFace) * m_Faces.size());
+		m_AssetType = EAssetType::Mesh;
+		FLOW_ENGINE_LOG("MeshAsset::LoadAsset: Successfully loaded static mesh {0} (Size: {1})", LocalPath, m_AssetSize);
 
 		return true;
 	}
-
 }
 
