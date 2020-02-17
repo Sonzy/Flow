@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow/Core.h"
+#include "Flow\Assets\Meshes\MeshAsset.h"
 #include "Flow/Rendering/Core/RenderableBase.h"
 
 class aiMesh;
@@ -13,5 +14,7 @@ namespace Flow
 		StaticMesh(const std::string& LocalPath);
 
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
+
+		MeshAsset* m_Mesh;
 	};
 }

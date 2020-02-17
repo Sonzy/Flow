@@ -150,6 +150,9 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Frustrum.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
@@ -282,6 +285,9 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Frustrum.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
@@ -317,6 +323,17 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColourPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPerPixelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPerPixelVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturePS.hlsl">

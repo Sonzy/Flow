@@ -2,7 +2,6 @@
 #include "Flow\Assets\AssetBase.h"
 #include <string>
 #include "Flow\Helper\Maths.h"
-
 //class aiScene;
 
 namespace Flow
@@ -25,15 +24,14 @@ namespace Flow
 
 	struct MeshVertex
 	{
-	public:
-		MeshVertex(Vector VertexPos, Vector TexCoord)
-			: VertexPosition(VertexPos), TextureCoord(TexCoord)
+		MeshVertex(Vector Pos, Vector Norm, Vector Tex)
+			: Position(Pos), Normal(Norm), TexCoord(Tex)
 		{}
-		
-		Vector VertexPosition;
-		Vector TextureCoord;
-	};
 
+		Vector Position;
+		Vector Normal;
+		Vector TexCoord;
+	};
 
 	class MeshAsset : public AssetBase
 	{
@@ -44,15 +42,18 @@ namespace Flow
 
 		virtual bool LoadAsset(const std::string& LocalPath) override;
 
-		const std::vector<MeshVertex>& GetVertices() {	return m_Vertices;	};
 		const std::vector<MeshFace>& GetFaces() { return m_Faces; };
-
 		const size_t GetNumFaces() { return m_Faces.size(); };
+
+		std::vector<MeshVertex> GetVertices() const;
 
 	protected:
 
+		void GenerateAssetSize();
 
-		std::vector<MeshVertex> m_Vertices;
+		std::vector<Vector> m_Vertices;
+		std::vector<Vector> m_Normals;
+		std::vector<Vector> m_TexCoords;
 		std::vector<MeshFace> m_Faces;
 	};
 }

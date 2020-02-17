@@ -10,9 +10,6 @@
 #include <Assimp/postprocess.h>
 
 #include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Meshes\MeshAsset.h"
-#include "Flow\Assets\Textures\TextureAsset.h"
-
 
 namespace Flow
 {
@@ -23,18 +20,20 @@ namespace Flow
 			// Define Vertex Layout
 			VertexLayout Layout;
 			Layout.Append(ElementType::Position3D);
+			Layout.Append(ElementType::Normal);
 			Layout.Append(ElementType::Texture2D);
 
 			// Define Vertex Buffer information
 			VertexBuffer VBuffer(Layout);
 
-			MeshAsset* LoadedMesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
-			CHECK_RETURN(!LoadedMesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
+			MeshAsset* m_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
+			CHECK_RETURN(!m_Mesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
 
 			for (auto& Vertex : LoadedMesh->GetVertices())
 			{
 				VBuffer.EmplaceBack(
 					DirectX::XMFLOAT3{ Vertex.VertexPosition.X ,  Vertex.VertexPosition.Y,  Vertex.VertexPosition.Z },
+					DirectX::XMFLOAT3{ Vertex.Normal.X ,  Vertex.Normal.Y,  Vertex.Normal.Z },
 					DirectX::XMFLOAT2 { Vertex.TextureCoord.X,  Vertex.TextureCoord.Y}
 				);
 			}
@@ -57,10 +56,10 @@ namespace Flow
 
 			std::wstring Local = Application::GetApplication().GetLocalFilePathWide();
 			//Bind Shaders
-			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
+			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
 			auto vShaderByteCode = vShader->GetByteCode();
 			AddStaticBindable(std::move(vShader));
-			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso"));
+			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso"));
 
 			//Bind Index Buffer
 			AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));

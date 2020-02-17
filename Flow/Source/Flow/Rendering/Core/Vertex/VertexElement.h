@@ -15,15 +15,15 @@ namespace Flow
 
 	};
 
-	enum class ElementType
+	enum class ElementType : unsigned char
 	{
-		Position2D,
-		Position3D,
-		Texture2D,
-		Normal,
-		Float3Colour,
-		Float4Colour,
-		RGBAColour,
+		Position2D = 0b1,
+		Position3D = 0b11,
+		Texture2D = 0b111,
+		Normal = 0b1111,
+		Float3Colour = 0b11111,
+		Float4Colour = 0b111111,
+		RGBAColour = 0b1111111,
 	};
 
 	/* Describes the layout of a vertex, meta template programmed for ease of use */
