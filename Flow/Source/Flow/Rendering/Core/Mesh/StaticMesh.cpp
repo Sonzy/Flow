@@ -13,6 +13,8 @@
 
 #include "Flow\Assets\AssetSystem.h"
 
+#include "Flow\Rendering\Core\Materials\Material.h"
+
 namespace Flow
 {
 	StaticMesh::StaticMesh(const std::string& LocalPath)
@@ -53,20 +55,15 @@ namespace Flow
 			//Add Vertex Buffer Bind
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
-			AddStaticBindable(std::make_unique<Texture>(AssetSystem::GetAsset<TextureAsset>("CharacterTexture")));
-			AddStaticBindable(std::make_unique<Sampler>());
-
-			//Bind Shaders
-			auto vShader = std::make_unique<VertexShader>(AssetSystem::GetAsset<ShaderAsset>("TexturedVS")->GetPath());
-			auto vShaderByteCode = vShader->GetByteCode();
-			AddStaticBindable(std::move(vShader));
-			AddStaticBindable(std::make_unique<PixelShader>(AssetSystem::GetAsset<ShaderAsset>("TexturedPS")->GetPath()));
+			//Bind Material
+			m_Material = new Material(this);
+			m_Material->SetTexture("CharacterTexture");
+			m_Material->SetPixelShader("TexturedPS");
+			m_Material->SetVertexShader("TexturedVS");
+			m_Material->BindMaterial(VBuffer);
 
 			//Bind Index Buffer
 			AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
-
-			//Bind Input Layout
-			AddStaticBindable(std::make_unique<InputLayout>(VBuffer.GetLayout().GetD3DLayout(), vShaderByteCode));
 
 			//Bind Topology
 			AddStaticBindable (std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));

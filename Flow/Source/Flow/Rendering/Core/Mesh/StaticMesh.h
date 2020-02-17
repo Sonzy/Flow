@@ -5,8 +5,11 @@
 
 class aiMesh;
 
+
 namespace Flow
 {
+	class Material;
+
 	class FLOW_API StaticMesh : public RenderableBase
 	{
 	public:
@@ -16,5 +19,6 @@ namespace Flow
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
 
 		MeshAsset* m_Mesh;
+		Material* m_Material;
 	};
 }

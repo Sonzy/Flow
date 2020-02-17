@@ -35,14 +35,14 @@ namespace Flow
 
 
 		//TODO: Load assets somewhere
-		AssetSystem::LoadAsset("Box2", "Flow\\Assets\\Models\\Box2.obj");
-		AssetSystem::LoadAsset("Box", "Flow\\Assets\\Models\\Box.obj");
-		AssetSystem::LoadAsset("WeirdBox", "Flow\\Assets\\Models\\WeirdBox.obj"); 
-		AssetSystem::LoadAsset("Hat_FancyMan", "Flow\\Assets\\Models\\Hat_FancyMan.obj");
-		AssetSystem::LoadAsset("ExampleRed", "Flow\\Assets\\Textures\\ExampleRed.png");
-		AssetSystem::LoadAsset("TestTexture", "Flow\\Assets\\Textures\\TestTexture.png");
-		AssetSystem::LoadAsset("TestTextureFlip", "Flow\\Assets\\Textures\\TestTextureFlip.png");
-		AssetSystem::LoadAsset("CharacterTexture", "Flow\\Assets\\Textures\\CharacterTexture.png"); 
+		AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
+		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
+		AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
+		AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
+		AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
+		AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
+		AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
+		AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
 		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
 		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
 		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourVS.cso");

@@ -27,7 +27,7 @@ namespace Flow
 
 		void BindAll();
 	protected:
-
+	
 		template<class T>
 		T* GetBindable() noexcept
 		{
@@ -39,6 +39,7 @@ namespace Flow
 			return nullptr;
 		}
 
+		friend class Material;
 		void AddBind(std::unique_ptr<Bindable> bind);
 		static void AddStaticBindable(std::unique_ptr<Bindable> Bind);
 
