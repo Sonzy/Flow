@@ -92,10 +92,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Example Layer.cpp" />
+    <ClCompile Include="Source\ExampleWorldObject.cpp" />
     <ClCompile Include="Source\SandboxApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Example Layer.h" />
+    <ClInclude Include="Source\ExampleWorldObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

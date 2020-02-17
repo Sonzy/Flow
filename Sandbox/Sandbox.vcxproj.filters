@@ -21,9 +21,15 @@
     <ClCompile Include="Source\Example Layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ExampleWorldObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Example Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ExampleWorldObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

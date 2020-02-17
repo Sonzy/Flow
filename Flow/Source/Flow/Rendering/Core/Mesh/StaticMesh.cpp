@@ -19,6 +19,8 @@ namespace Flow
 {
 	StaticMesh::StaticMesh(const std::string& LocalPath)
 	{
+		m_Material = new Material(this);
+
 		if (!StaticInitialised())
 		{
 			// Define Vertex Layout
@@ -56,7 +58,7 @@ namespace Flow
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
 			//Bind Material
-			m_Material = new Material(this);
+
 			m_Material->SetTexture("CharacterTexture");
 			m_Material->SetPixelShader("TexturedPS");
 			m_Material->SetVertexShader("TexturedVS");
@@ -70,9 +72,14 @@ namespace Flow
 		}
 		else
 			SetIndexFromStatic();
-			
+
 		//Bind Transform
 		AddBind(std::make_unique<TransformConstantBuffer>(this));
+	}
+
+	void StaticMesh::UpdateMaterialBinds()
+	{
+		FLOW_ENGINE_LOG("TODO: StaticMesh::UpdateMaterialBinds");
 	}
 
 

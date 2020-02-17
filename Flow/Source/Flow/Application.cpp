@@ -10,6 +10,8 @@
 
 #include "Flow\Assets\AssetSystem.h"
 
+#include "Flow\GameFramework\World.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow
@@ -47,6 +49,9 @@ namespace Flow
 		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
 		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourVS.cso");
 		AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
+
+		//Create the game world
+		GameWorld = new World();
 	}
 
 	Application::~Application()
@@ -63,6 +68,8 @@ namespace Flow
 			MainWindow->PreUpdate();
 			MainWindow->OnUpdate();
 
+			//TODO: Check where to move the world since I'm using layers
+			GameWorld->Tick(DeltaTime);
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate(DeltaTime);
@@ -118,6 +125,11 @@ namespace Flow
 		return *Instance;
 	}
 
+	World* Application::GetWorld()
+	{
+		return Instance->GameWorld;
+	}
+
 	std::string Application::GetLocalFilePath()
 	{
 		return LocalPath;
@@ -135,9 +147,19 @@ namespace Flow
 
 	void Application::RenderApplicationDebug(float DeltaTime)
 	{
+		TimeSinceFrameRateCheck += DeltaTime;
+		FrameCounter++;
+
+		if (FrameCounter > 5)
+		{
+			FrameTimer = TimeSinceFrameRateCheck / 5;
+			TimeSinceFrameRateCheck = 0;
+			FrameCounter = 0;
+		}	
+
 		if (ImGui::Begin("Application Statistics"))
 		{
-			ImGui::Text("Framerate: %.1f", 1 / DeltaTime);
+			ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
 			ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);
 
 			PROCESS_MEMORY_COUNTERS MemoryData;

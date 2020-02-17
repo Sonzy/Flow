@@ -124,6 +124,12 @@
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Gameobject.h" />
+    <ClInclude Include="Source\Flow\GameFramework\World.h" />
+    <ClInclude Include="Source\Flow\GameFramework\WorldObject.h" />
     <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Helper\Timer.h" />
@@ -269,6 +275,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Gameobject.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\WorldObject.cpp" />
     <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
     <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />

@@ -16,6 +16,8 @@ namespace Flow
 
 		StaticMesh(const std::string& LocalPath);
 
+		void UpdateMaterialBinds();
+
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
 
 		MeshAsset* m_Mesh;

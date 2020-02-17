@@ -9,7 +9,7 @@
 
 namespace Flow
 {
-	class Material
+	class FLOW_API Material
 	{
 	public:
 		Material(StaticMesh* Parent);

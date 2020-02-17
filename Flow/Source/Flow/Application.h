@@ -13,6 +13,8 @@
 
 namespace Flow
 {
+	class World;
+
 	class FLOW_API Application
 	{
 	
@@ -32,6 +34,7 @@ namespace Flow
 		bool OnWindowClosed(WindowClosedEvent& e);
 
 		static Application& GetApplication();
+		static World* GetWorld();
 
 		/* Returns path to Flow solution directory */
 		std::string GetLocalFilePath();
@@ -47,15 +50,31 @@ namespace Flow
 		void RenderApplicationDebug(float DeltaTime);
 
 	private:
+
+		//= Application =============
+
 		static Application* Instance;
 		std::unique_ptr<Window> MainWindow;
 		ImGuiLayer* m_ImGuiLayer;
 		bool bRunning = true;
 
+		//= Game ====================
+
+		World* GameWorld;
+
+		//= Debug ===================
+
+		float TimeSinceFrameRateCheck = 0.0f;
+		int FrameCounter = 0;
+		float FrameTimer = 0.0f;
+
+		//= Helper ===============
+
 		LayerStack m_LayerStack;
 		Timer m_Timer;
 
-		std::vector<std::shared_ptr<Flow::StaticMesh>> TestMesh;
+		//= Paths =================
+
 		std::string LocalPath;
 	};
 

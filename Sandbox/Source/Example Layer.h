@@ -4,6 +4,8 @@
 #include "Flow\Rendering\Core\Lights\PointLight.h"
 #include <vector>
 
+#include "ExampleWorldObject.h"
+
 class ExampleLayer : public Flow::Layer
 {
 public:
@@ -16,4 +18,6 @@ public:
 private:
 	std::vector<std::shared_ptr<Flow::StaticMesh>> TestMesh;
 	std::shared_ptr<Flow::PointLight> Light;
+
+	std::shared_ptr<ExampleWorldObject> TestWorldObject;
 };
