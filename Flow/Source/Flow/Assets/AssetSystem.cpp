@@ -3,6 +3,7 @@
 
 #include "Meshes\MeshAsset.h"
 #include "Textures\TextureAsset.h"
+#include "Shaders\ShaderAsset.h"
 #include "Flow\Assets\Textures\GDIPlusManager.h"
 
 #include "ThirdParty\ImGui\imgui.h"
@@ -76,6 +77,9 @@ namespace Flow
 
 		if (Extension._Equal("obj"))
 			return EAssetType::Mesh;
+
+		if (Extension._Equal("cso"))
+			return EAssetType::Shader;
 		
 		return EAssetType::None;
 	}
@@ -93,6 +97,11 @@ namespace Flow
 		{
 			TextureAsset* Texture = new TextureAsset();
 			return Texture;
+		}
+		case EAssetType::Shader:
+		{
+			ShaderAsset* Shader = new ShaderAsset();
+			return Shader;
 		}
 		default:
 			FLOW_ENGINE_ERROR("AssetSystem::CreateAsset: Case Error");
@@ -132,6 +141,18 @@ namespace Flow
 				ImGui::TreePop();
 			}
 
+			if (ImGui::TreeNode("Shaders"))
+			{
+				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				{
+					//First: Name, Second: AssetPtr
+					if (Asset.second->GetAssetType() != EAssetType::Shader)
+						continue;
+
+					ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());
+				}
+				ImGui::TreePop();
+			}
 
 		}
 		ImGui::End();

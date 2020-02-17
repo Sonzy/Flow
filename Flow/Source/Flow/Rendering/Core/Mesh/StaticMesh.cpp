@@ -9,6 +9,8 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
+#include "Flow\Assets\Shaders\ShaderAsset.h"
+
 #include "Flow\Assets\AssetSystem.h"
 
 namespace Flow
@@ -29,18 +31,18 @@ namespace Flow
 			MeshAsset* m_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
 			CHECK_RETURN(!m_Mesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
 
-			for (auto& Vertex : LoadedMesh->GetVertices())
+			for (auto& Vertex : m_Mesh->GetVertices())
 			{
-				VBuffer.EmplaceBack(
-					DirectX::XMFLOAT3{ Vertex.VertexPosition.X ,  Vertex.VertexPosition.Y,  Vertex.VertexPosition.Z },
+				VBuffer.EmplaceBack( //TODO: Dont actually need to know whats in here, just need to know the stride and offsets
+					DirectX::XMFLOAT3{ Vertex.Position.X ,  Vertex.Position.Y,  Vertex.Position.Z },
 					DirectX::XMFLOAT3{ Vertex.Normal.X ,  Vertex.Normal.Y,  Vertex.Normal.Z },
-					DirectX::XMFLOAT2 { Vertex.TextureCoord.X,  Vertex.TextureCoord.Y}
+					DirectX::XMFLOAT2 { Vertex.TexCoord.X,  Vertex.TexCoord.Y}
 				);
 			}
 
 			std::vector<unsigned short> indices;
-			indices.reserve(LoadedMesh->GetNumFaces() * 3); //Using triangles, change for quads
-			for (auto& Face : LoadedMesh->GetFaces())
+			indices.reserve(m_Mesh->GetNumFaces() * 3); //Using triangles, change for quads
+			for (auto& Face : m_Mesh->GetFaces())
 			{
 				assert(Face.m_NumIndices == 3);
 				indices.push_back(Face.m_Indices[0]);
@@ -54,12 +56,11 @@ namespace Flow
 			AddStaticBindable(std::make_unique<Texture>(AssetSystem::GetAsset<TextureAsset>("CharacterTexture")));
 			AddStaticBindable(std::make_unique<Sampler>());
 
-			std::wstring Local = Application::GetApplication().GetLocalFilePathWide();
 			//Bind Shaders
-			auto vShader = std::make_unique<VertexShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
+			auto vShader = std::make_unique<VertexShader>(AssetSystem::GetAsset<ShaderAsset>("TexturedVS")->GetPath());
 			auto vShaderByteCode = vShader->GetByteCode();
 			AddStaticBindable(std::move(vShader));
-			AddStaticBindable(std::make_unique<PixelShader>(Local + L"Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso"));
+			AddStaticBindable(std::make_unique<PixelShader>(AssetSystem::GetAsset<ShaderAsset>("TexturedPS")->GetPath()));
 
 			//Bind Index Buffer
 			AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));

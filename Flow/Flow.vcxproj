@@ -111,6 +111,7 @@
     <ClInclude Include="Source\Flow\Assets\AssetBase.h" />
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
+    <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="Source\Flow\Assets\AssetBase.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />

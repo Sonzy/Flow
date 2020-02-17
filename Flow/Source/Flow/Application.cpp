@@ -43,6 +43,10 @@ namespace Flow
 		AssetSystem::LoadAsset("TestTexture", "Flow\\Assets\\Textures\\TestTexture.png");
 		AssetSystem::LoadAsset("TestTextureFlip", "Flow\\Assets\\Textures\\TestTextureFlip.png");
 		AssetSystem::LoadAsset("CharacterTexture", "Flow\\Assets\\Textures\\CharacterTexture.png"); 
+		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
+		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourVS.cso");
+		AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
 	}
 
 	Application::~Application()

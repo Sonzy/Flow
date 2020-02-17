@@ -6,7 +6,8 @@ namespace Flow
 	{
 		None,
 		Mesh,
-		Texture
+		Texture,
+		Shader
 	};
 
 	class AssetBase
