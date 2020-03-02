@@ -5,6 +5,7 @@
 namespace Flow
 {
 	class WorldObject;
+	class WorldComponent;
 
 	class FLOW_API Component : public GameObject
 	{
@@ -13,14 +14,15 @@ namespace Flow
 
 		void AddChild(Component* Child);
 
-		Component* GetParentComponent();
+		WorldComponent* GetParentComponent();
 		WorldObject* GetParentWorldObject();
+
+		void SetParent(WorldObject* Parent);
 
 		virtual void Tick(float DeltaTime) override;
 
 	protected:
 
-		Component* m_ParentComponent;
-		std::vector<Component*> m_Children;
+		WorldObject* m_ParentObject;
 	};
 }

@@ -9,5 +9,11 @@ namespace Flow
 		GameObject();
 
 		virtual void Tick(float DeltaTime);
+
+		const std::string& GetName();
+
+	protected:
+
+		std::string m_ObjectName;
 	};
 }

@@ -8,6 +8,7 @@
 *.obj
 !Flow/Assets/Models/*.obj
 
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -34,3 +35,6 @@
 Bin
 Intermediate
 .vs
+
+# DLL
+opencv_world420d.dll

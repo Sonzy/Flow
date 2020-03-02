@@ -58,7 +58,6 @@ namespace Flow
 			AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
 
 			//Bind Material
-
 			m_Material->SetTexture("CharacterTexture");
 			m_Material->SetPixelShader("TexturedPS");
 			m_Material->SetVertexShader("TexturedVS");

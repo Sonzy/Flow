@@ -8,31 +8,28 @@
 #include "Flow\Application.h"
 #include "Flow\GameFramework\World.h"
 
+#include "Content\OpenCVTest.h"
 
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
+	//TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
+	CVTest = Flow::Application::GetWorld()->SpawnWorldObject<OpenCVTest>();
 }
 
 void ExampleLayer::OnUpdate(float DeltaTime)
 {
-	Flow::RenderCommand::GetCamera().Tick(DeltaTime);
-
 	//Light->Bind(Flow::RenderCommand::GetCamera().GetMatrix());
 
 	int Count = 0;
 	Flow::Renderer::BeginScene();
-	for (auto Mesh : TestMesh)
-	{
-		//Count += Flow::Renderer::SubmitWithoutDraw(reinterpret_cast<Flow::Renderable*>(Mesh.get()));
-		//Flow::Renderer::Submit(reinterpret_cast<Flow::Renderable*>(Mesh.get()));
-		Flow::Renderer::Submit(Mesh.get());
-		
-	}
 
-	//Flow::Renderer::Submit(Light->GetMesh());
+	//TestWorldObject->Render();
+	CVTest->Render();
+
 	Flow::Renderer::EndScene();
+
+	Flow::RenderCommand::GetCamera().Tick(DeltaTime);
 }
 
 void ExampleLayer::OnImGuiRender()

@@ -5,6 +5,12 @@
 namespace Flow
 {
 	World::World()
+		: m_WorldName("Unnamed World")
+	{
+	}
+
+	World::World(const std::string& WorldName)
+		: m_WorldName(WorldName)
 	{
 	}
 
@@ -14,5 +20,9 @@ namespace Flow
 		{
 			WorldObj->Tick(DeltaTime);
 		}
+	}
+	const std::string& World::GetName()
+	{
+		return m_WorldName;
 	}
 }

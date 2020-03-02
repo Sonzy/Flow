@@ -11,6 +11,7 @@ namespace Flow
 	{
 	public:
 		World();
+		World(const std::string& WorldName);
 
 		template<typename T>
 		std::shared_ptr<T> SpawnWorldObject()
@@ -23,8 +24,12 @@ namespace Flow
 
 		void Tick(float DeltaTime);
 
+		const std::string& GetName();
+
 	private:
+		friend class Inspector;
 
 		std::vector<std::shared_ptr<WorldObject>> m_WorldObjects;
+		std::string m_WorldName;
 	};
 }

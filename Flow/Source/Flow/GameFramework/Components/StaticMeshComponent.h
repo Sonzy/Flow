@@ -4,17 +4,22 @@
 
 namespace Flow
 {
+	//class MeshAsset;
+
 	class FLOW_API StaticMeshComponent : public WorldComponent
 	{
 	public:
 		StaticMeshComponent();
 
 		void InitialiseComponent(const std::string& MeshName);
-
 		virtual void Tick(float DeltaTime) override;
+
+		void SetStaticMesh(const std::string& MeshName);
+
+		virtual void Render() override;
 
 	protected:
 
-		std::shared_ptr<StaticMesh> m_StaticMesh;
+		StaticMesh* m_StaticMesh;
 	};
 }

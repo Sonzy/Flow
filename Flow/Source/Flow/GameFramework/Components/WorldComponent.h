@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Flow\Helper\Maths.h"
 
 namespace Flow
 {
@@ -9,5 +10,17 @@ namespace Flow
 		WorldComponent();
 
 		virtual void Tick(float DeltaTime) override;
+
+		Vector GetWorldLocation();
+		void SetWorldLocation(Vector& NewLocation);
+		void SetRelativeLocation(const Vector& NewLocation);
+
+		virtual void Render();
+
+	protected:
+
+		std::vector<Component*> m_Children;
+		Component* m_ParentComponent;
+		Vector m_RelativeLocation;
 	};
 }

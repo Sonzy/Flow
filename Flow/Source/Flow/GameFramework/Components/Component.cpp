@@ -11,7 +11,7 @@ namespace Flow
 	{
 	}
 
-	Component* Component::GetParentComponent()
+	WorldComponent* Component::GetParentComponent()
 	{
 		return nullptr;
 	}
@@ -21,12 +21,14 @@ namespace Flow
 		return nullptr;
 	}
 
+	void Component::SetParent(WorldObject* Parent)
+	{
+		m_ParentObject = Parent;
+	}
+
 	void Component::Tick(float DeltaTime)
 	{
-		for (auto& Child : m_Children)
-		{
-			Child->Tick(DeltaTime);
-		}
+
 	}
 }
 

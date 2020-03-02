@@ -14,6 +14,7 @@
 namespace Flow
 {
 	class World;
+	class Inspector;
 
 	class FLOW_API Application
 	{
@@ -61,6 +62,10 @@ namespace Flow
 		//= Game ====================
 
 		World* GameWorld;
+
+		//= Editor ==================
+
+		Inspector* m_Inspector;
 
 		//= Debug ===================
 

@@ -44,9 +44,30 @@ struct Vector
 
 	}
 
+	Vector()
+		: X(0), Y(0), Z(0)
+	{}
+
 	DirectX::XMFLOAT3 ToDXFloat3() const
 	{
 		return {X, Y, Z};
+	}
+
+	void operator+=(const Vector& Other)
+	{
+		X += Other.X;
+		Y += Other.Y;
+		Z += Other.Z;
+	}
+
+	Vector operator+(const Vector& Other)
+	{
+		return Vector(X + Other.X, Y + Other.Y, Z + Other.Z);
+	}
+
+	Vector operator-(const Vector& Other)
+	{
+		return Vector(X - Other.X, Y - Other.Y, Z - Other.Z);
 	}
 };
 

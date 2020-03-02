@@ -6,6 +6,8 @@
 
 #include "ExampleWorldObject.h"
 
+class OpenCVTest;
+
 class ExampleLayer : public Flow::Layer
 {
 public:
@@ -20,4 +22,5 @@ private:
 	std::shared_ptr<Flow::PointLight> Light;
 
 	std::shared_ptr<ExampleWorldObject> TestWorldObject;
+	std::shared_ptr<OpenCVTest> CVTest;
 };

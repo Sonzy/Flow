@@ -12,6 +12,8 @@
 
 #include "Flow\GameFramework\World.h"
 
+#include "Flow\Editor\Inspector.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow
@@ -41,17 +43,22 @@ namespace Flow
 		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
 		AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
 		AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
+		AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
 		AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
 		AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
 		AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
 		AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
-		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
-		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+		AssetSystem::LoadAsset("TexturedLightVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
+		AssetSystem::LoadAsset("TexturedLightPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
+		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
 		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourVS.cso");
 		AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
 
 		//Create the game world
-		GameWorld = new World();
+		GameWorld = new World("Game World");
+
+		m_Inspector = new Inspector();
 	}
 
 	Application::~Application()
@@ -75,14 +82,22 @@ namespace Flow
 				layer->OnUpdate(DeltaTime);
 			}
 
-			//ImGui UI Rendering
+			//= UI Rendering =
+
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnImGuiRender();
 			}
+
+			m_Inspector->SetCurrentWorld(GameWorld);
+			m_Inspector->RenderInspector();
+			m_Inspector->RenderHeirarchy();
 			RenderApplicationDebug(DeltaTime);
+
 			m_ImGuiLayer->End();
+
+			//= Post Update =
 
 			MainWindow->PostUpdate();
 		}

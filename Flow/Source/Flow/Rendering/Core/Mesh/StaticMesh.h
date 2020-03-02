@@ -20,6 +20,8 @@ namespace Flow
 
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
 
+	protected:
+
 		MeshAsset* m_Mesh;
 		Material* m_Material;
 	};
