@@ -9,12 +9,14 @@
 #include "Flow\GameFramework\World.h"
 
 #include "Content\OpenCVTest.h"
+#include "Content\MultiuseCube.h"
 
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	//TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
-	CVTest = Flow::Application::GetWorld()->SpawnWorldObject<OpenCVTest>();
+	TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
+	Cube = Flow::Application::GetWorld()->SpawnWorldObject<MultiuseCube>();
+	//CVTest = Flow::Application::GetWorld()->SpawnWorldObject<OpenCVTest>();
 }
 
 void ExampleLayer::OnUpdate(float DeltaTime)
@@ -25,7 +27,8 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	Flow::Renderer::BeginScene();
 
 	//TestWorldObject->Render();
-	CVTest->Render();
+	Cube->Render();
+	//CVTest->Render();
 
 	Flow::Renderer::EndScene();
 

@@ -45,6 +45,8 @@ namespace Flow
 		virtual void EnableVSync(bool bEnabled) = 0;
 		virtual bool IsVSyncEnabled() const = 0;
 
+		virtual void Resize(int Width, int Height) = 0;
+
 	protected:
 		WindowProperties Props;
 	};

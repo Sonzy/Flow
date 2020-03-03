@@ -11,6 +11,7 @@ namespace Flow
 	{
 	public:
 		Component();
+		Component(const std::string& Name);
 
 		void AddChild(Component* Child);
 

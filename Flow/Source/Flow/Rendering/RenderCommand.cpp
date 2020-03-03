@@ -27,6 +27,11 @@ namespace Flow
 		return s_RendererAPI->GetCamera();
 	}
 
+	void RenderCommand::Resize(int Width, int Height)
+	{
+		s_RendererAPI->Resize(Width, Height);
+	}
+
 	void RenderCommand::SetClearColour(float R, float G, float B, float A)
 	{
 		s_RendererAPI->SetClearColour(R, G, B, A);

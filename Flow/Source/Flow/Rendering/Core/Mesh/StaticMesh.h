@@ -2,6 +2,7 @@
 #include "Flow/Core.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
 #include "Flow/Rendering/Core/RenderableBase.h"
+#include <DirectXMath.h>
 
 class aiMesh;
 
@@ -16,7 +17,7 @@ namespace Flow
 
 		StaticMesh(const std::string& LocalPath);
 
-		void UpdateMaterialBinds();
+		void InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
 
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
 
@@ -24,5 +25,7 @@ namespace Flow
 
 		MeshAsset* m_Mesh;
 		Material* m_Material;
+
+		static std::vector<D3D11_INPUT_ELEMENT_DESC> m_VertexLayout;
 	};
 }

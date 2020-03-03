@@ -14,6 +14,10 @@
 
 #include "Flow\Editor\Inspector.h"
 
+//TODO: Load somewhere else
+#include "Flow\Assets\Materials\Mat_FlatColour.h"
+#include "Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow
@@ -37,23 +41,31 @@ namespace Flow
 		std::string ExeDir = std::string(Path);
 		LocalPath = ExeDir.substr(0, ExeDir.find("bin")); 
 
-
 		//TODO: Load assets somewhere
+		//= Models =
 		AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
 		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
 		AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
 		AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
 		AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
+
+		//= Textures =
 		AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
 		AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
 		AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
 		AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
+
+		//= Shaders =
 		AssetSystem::LoadAsset("TexturedLightVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
 		AssetSystem::LoadAsset("TexturedLightPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
 		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
 		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
-		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourVS.cso");
+		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
 		AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
+
+		//= Materials =
+		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
+		AssetSystem::CreateMaterial<Mat_Hat_FancyMan>("Mat_HatFancyMan");
 
 		//Create the game world
 		GameWorld = new World("Game World");
@@ -107,6 +119,7 @@ namespace Flow
 	{
 		EventDispatcher Dispatcher(e);
 		Dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowClosed));
+		Dispatcher.Dispatch<WindowResizedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowResized));
 
 		for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
 		{
@@ -133,6 +146,14 @@ namespace Flow
 		bRunning = false;
 		FLOW_ENGINE_LOG("Window Closed");
 		return true;
+	}
+
+	bool Application::OnWindowResized(WindowResizedEvent& e)
+	{
+		FLOW_ENGINE_LOG("Window Resized to ({0}, {1})", e.GetWidth(), e.GetHeight());
+		//MainWindow->Resize(e.GetWidth(), e.GetHeight());
+		RenderCommand::Resize(e.GetWidth(), e.GetHeight());
+		return false;
 	}
 
 	Application& Application::GetApplication()

@@ -17,9 +17,11 @@ namespace Flow
 		static ID3D11Device* DX11GetDevice();
 		static ID3D11DeviceContext* DX11GetContext();
 
+		//= General ===================
+
 		static Camera& GetCamera();
 
-
+		static void Resize(int Width, int Height);
 		static void SetClearColour(float R, float G, float B, float A);
 
 		static void DrawIndexed(int Count);

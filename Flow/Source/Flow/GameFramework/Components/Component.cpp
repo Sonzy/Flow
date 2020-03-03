@@ -4,6 +4,12 @@
 namespace Flow
 {
 	Component::Component()
+		: GameObject("Unnamed Component")
+	{
+	}
+
+	Component::Component(const std::string& Name)
+		: GameObject(Name)
 	{
 	}
 

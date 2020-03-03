@@ -7,6 +7,7 @@
 #include "ExampleWorldObject.h"
 
 class OpenCVTest;
+class MultiuseCube;
 
 class ExampleLayer : public Flow::Layer
 {
@@ -23,4 +24,5 @@ private:
 
 	std::shared_ptr<ExampleWorldObject> TestWorldObject;
 	std::shared_ptr<OpenCVTest> CVTest;
+	std::shared_ptr<MultiuseCube> Cube;
 };

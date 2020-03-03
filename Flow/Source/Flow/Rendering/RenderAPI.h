@@ -27,6 +27,8 @@ namespace Flow
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
+		virtual void Resize(int Width, int Height) = 0;
+
 		virtual Camera& GetCamera() = 0;
 
 		static API GetAPI() { return s_API; };

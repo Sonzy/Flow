@@ -80,6 +80,15 @@ namespace Flow
 		}
 	}
 
+	void Renderable::RefreshStaticBinds()
+	{
+		for (auto& b : m_StaticBinds)
+		{
+			b->Bind();
+			b->bBound = true;
+		}
+	}
+
 	const std::vector<std::unique_ptr<Bindable>>& Renderable::GetStaticBindables() const
 	{
 		return m_StaticBinds;

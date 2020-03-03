@@ -111,7 +111,9 @@
     <ClInclude Include="Source\Flow\Application.h" />
     <ClInclude Include="Source\Flow\Assets\AssetBase.h" />
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
@@ -265,7 +267,9 @@
     <ClCompile Include="Source\Flow\Application.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetBase.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />

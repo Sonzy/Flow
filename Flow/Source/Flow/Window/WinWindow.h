@@ -26,6 +26,8 @@ namespace Flow
 
 		HWND& GetWindowHandle();
 
+		void Resize(int Width, int Height) override;
+
 	private:
 		friend class WindowClass;
 

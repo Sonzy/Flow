@@ -33,6 +33,7 @@ namespace Flow
 		void PushOverlay(Layer* layer);
 
 		bool OnWindowClosed(WindowClosedEvent& e);
+		bool OnWindowResized(WindowResizedEvent& e);
 
 		static Application& GetApplication();
 		static World* GetWorld();

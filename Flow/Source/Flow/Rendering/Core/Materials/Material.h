@@ -12,16 +12,18 @@ namespace Flow
 	class FLOW_API Material
 	{
 	public:
-		Material(StaticMesh* Parent);
+		Material();
 
-		void BindMaterial(const VertexBuffer& VB);
+
+		void BindMaterial(StaticMesh* Parent, const VertexBuffer& VB);
+		virtual void BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout);
+
+
 		void SetTexture(const std::string& TextureName);
 		void SetPixelShader(const std::string& ShaderName);
 		void SetVertexShader(const std::string& ShaderName);
 
 	protected:
-
-		StaticMesh* m_Parent;
 		//TODO: Multiple textures/shaders etc
 
 		TextureAsset* m_Texture;

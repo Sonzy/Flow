@@ -5,7 +5,12 @@
 namespace Flow
 {
 	WorldComponent::WorldComponent()
-		: m_ParentComponent(nullptr)
+		: Component("Unnamed WorldComponent"), m_ParentComponent(nullptr)
+	{
+	}
+
+	WorldComponent::WorldComponent(const std::string& Name)
+		: Component(Name), m_ParentComponent(nullptr)
 	{
 	}
 

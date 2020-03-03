@@ -21,6 +21,8 @@ namespace Flow
 
 		virtual void DrawIndexed(int Count) override;
 
+		virtual void Resize(int Width, int Height);
+
 		virtual Camera& GetCamera() override;
 
 		ID3D11Device* GetDevice();

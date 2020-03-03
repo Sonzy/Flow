@@ -143,6 +143,59 @@ namespace Flow
 		Context->DrawIndexed(Count, 0, 0);
 	}
 
+	void DX11RenderAPI::Resize(int Width, int Height)
+	{
+		HRESULT ResultHandle;
+
+		Context->OMSetRenderTargets(0, 0, 0);
+		RenderTarget->Release();
+
+		CATCH_ERROR_DX(SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
+
+		// Create render target view and populate backbuffer
+		Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
+		CATCH_ERROR_DX(SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
+		CATCH_ERROR_DX(Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, RenderTarget.GetAddressOf()));
+
+		DepthStencilView->Release();
+
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
+		D3D11_TEXTURE2D_DESC DepthDescription = {};
+		DepthDescription.Width = Width;
+		DepthDescription.Height = Height;
+		DepthDescription.MipLevels = 1u;
+		DepthDescription.ArraySize = 1u;
+		DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthDescription.SampleDesc.Count = 1u;
+		DepthDescription.SampleDesc.Quality = 0u;
+		DepthDescription.Usage = D3D11_USAGE_DEFAULT;
+		DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		CATCH_ERROR_DX(Device->CreateTexture2D(&DepthDescription, nullptr, &DepthStencil));
+
+		// Create the depth stencil view
+		D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
+		DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		DepthStencilViewDescription.Texture2D.MipSlice = 0u;
+		CATCH_ERROR_DX(Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, DepthStencilView.GetAddressOf()));
+
+		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), DepthStencilView.Get());
+
+		//Setup Viewport
+		D3D11_VIEWPORT Viewport;
+		Viewport.Width = Width;
+		Viewport.Height = Height;
+		Viewport.MinDepth = 0.0f;
+		Viewport.MaxDepth = 1.0f; //Disable depth for testing
+		Viewport.TopLeftX = 0.0f;
+		Viewport.TopLeftY = 0.0f;
+
+		Context->RSSetViewports(1u, &Viewport);
+
+		//TODO: Dont Hard Code
+		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)Width / (float)Height, 0.5f, 500.0f));
+	}
+
 	Camera& DX11RenderAPI::GetCamera()
 	{
 		return m_MainCamera;

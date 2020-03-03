@@ -26,6 +26,69 @@ namespace Flow
 		Vector GetScale() { return m_Scale; }
 
 		void BindAll();
+		void RefreshStaticBinds();
+
+		void AddBind(std::unique_ptr<Bindable> bind);
+		static void AddStaticBindable(std::unique_ptr<Bindable> Bind);
+
+		bool StaticInitialised() { return !m_StaticBinds.empty(); }
+
+
+		/* Replaces an existing bindable, if specified, will add the bindable anyway if it doesnt exist */
+		// TODO: Validate type
+		template<class T>
+		bool ReplaceBindable(std::unique_ptr<T> NewBind, bool bInsertAnyway = false) noexcept
+		{
+			assert("MUST use AddIndexBuffer to bind index buffer" && typeid(*NewBind) != typeid(IndexBuffer));
+
+			for (int i = 0; i < m_Binds.size(); i++)
+			{
+				if (auto pt = dynamic_cast<T*>(m_Binds[i].get()))
+				{
+					m_Binds[i] = std::move(NewBind);
+					return true;
+				}
+			}
+
+			m_Binds.push_back(std::move(NewBind));
+			return false;
+		}
+
+		template<class T>
+		bool ReplaceStaticBindable(std::unique_ptr<T> NewBind) noexcept
+		{
+			assert("USE ADD INDEX BUFFER TO BIND INDEX BUFFER" && typeid(*NewBind) != typeid(Bindable));
+
+			for (int i = 0; i < m_StaticBinds.size(); i++)
+			{
+				if (auto pt = dynamic_cast<T*>(m_StaticBinds[i].get()))
+				{
+					m_StaticBinds[i] = std::move(NewBind);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		template<class T>
+		bool ReplaceOrAddStaticBindable(std::unique_ptr<T> NewBind) noexcept
+		{
+			assert("USE ADD INDEX BUFFER TO BIND INDEX BUFFER" && typeid(*NewBind) != typeid(Bindable));
+
+			for (int i = 0; i < m_StaticBinds.size(); i++)
+			{
+				if (auto pt = dynamic_cast<T*>(m_StaticBinds[i].get()))
+				{
+					m_StaticBinds[i] = std::move(NewBind);
+					return true;
+				}
+			}
+
+			m_StaticBinds.push_back(std::move(NewBind));
+			return false;
+		}
+
 	protected:
 	
 		template<class T>
@@ -39,14 +102,11 @@ namespace Flow
 			return nullptr;
 		}
 
-		friend class Material;
-		void AddBind(std::unique_ptr<Bindable> bind);
-		static void AddStaticBindable(std::unique_ptr<Bindable> Bind);
 
 		void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuffer);
 		void SetIndexFromStatic();
 
-		bool StaticInitialised() { return !m_StaticBinds.empty(); }
+
 
 
 

@@ -10,6 +10,11 @@ namespace Flow
 
 	}
 
+	WorldObject::WorldObject(const std::string& Name)
+		: GameObject(Name), m_RootComponent(nullptr)
+	{
+	}
+
 	void WorldObject::Tick(float DeltaTime)
 	{
 		GameObject::Tick(DeltaTime);

@@ -14,25 +14,27 @@
 
 namespace Flow
 {
-	Material::Material(StaticMesh* Parent)
+	Material::Material()
 	{
-		CHECK_RETURN(!Parent, "Material::Material: Parent was nullptr");
-
-		m_Parent = Parent;
 	}
 
 
-	void Material::BindMaterial(const VertexBuffer& VB)
+	void Material::BindMaterial(StaticMesh* Parent, const VertexBuffer& VB)
 	{
-		m_Parent->AddStaticBindable(std::make_unique<Texture>(m_Texture));
-		m_Parent->AddStaticBindable(std::make_unique<Sampler>());
+		BindMaterial(Parent, VB.GetLayout().GetD3DLayout());
+	}
+
+	void Material::BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout)
+	{
+		Parent->AddStaticBindable(std::make_unique<Texture>(m_Texture));
+		Parent->AddStaticBindable(std::make_unique<Sampler>());
 
 		auto vShader = std::make_unique<VertexShader>(m_VertexShader->GetPath());
 		auto vShaderByteCode = vShader->GetByteCode();
-		m_Parent->AddStaticBindable(std::move(vShader));
-		m_Parent->AddStaticBindable(std::make_unique<PixelShader>(m_PixelShader->GetPath()));
+		Parent->AddStaticBindable(std::move(vShader));
+		Parent->AddStaticBindable(std::make_unique<PixelShader>(m_PixelShader->GetPath()));
 
-		m_Parent->AddStaticBindable(std::make_unique<InputLayout>(VB.GetLayout().GetD3DLayout(), vShaderByteCode));
+		Parent->AddStaticBindable(std::make_unique<InputLayout>(VertexLayout, vShaderByteCode));
 	}
 
 	void Material::SetTexture(const std::string& TextureName)

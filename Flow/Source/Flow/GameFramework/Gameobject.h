@@ -6,7 +6,8 @@ namespace Flow
 	class FLOW_API GameObject
 	{
 	public:
-		GameObject();
+		GameObject(); 
+		GameObject(const std::string& Name);
 
 		virtual void Tick(float DeltaTime);
 

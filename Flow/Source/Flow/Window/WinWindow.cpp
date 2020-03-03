@@ -37,9 +37,9 @@ namespace Flow
 		WindowRegion.top = 100;
 		WindowRegion.bottom = Properties.Height + WindowRegion.top;
 
-		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
+		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME;
 
-		result = AdjustWindowRect(&WindowRegion, WindowStyle, FALSE);
+		result = AdjustWindowRect(&WindowRegion, WindowStyle, TRUE);
 		FLOW_ASSERT(result, "WinWindow::Initialise: Failed to adjust the window rect");
 
 		WindowHandle = CreateWindowEx(
@@ -150,6 +150,12 @@ namespace Flow
 				e = &Event;
 				break;
 			}
+			case WM_SIZE:
+			{
+				WindowResizedEvent Event(LOWORD(lParam), HIWORD(lParam));
+				e = &Event;
+				break;
+			}
 
 			//= Mouse Events =====================
 
@@ -235,7 +241,7 @@ namespace Flow
 
 
 		//If we have a handled event, call the callback
-		if (e)
+		if (e && m_WindowData.EventCallback)
 			m_WindowData.EventCallback(*e);
 		else if(bHandled)
 		{
@@ -263,6 +269,11 @@ namespace Flow
 	HWND& WinWindow::GetWindowHandle()
 	{
 		return WindowHandle;
+	}
+
+	void WinWindow::Resize(int Width, int Height)
+	{
+
 	}
 
 	//= Window Class ===========================

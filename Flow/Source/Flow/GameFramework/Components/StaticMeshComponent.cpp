@@ -8,13 +8,23 @@
 namespace Flow
 {
 	StaticMeshComponent::StaticMeshComponent()
-		: m_StaticMesh(nullptr)
+		: WorldComponent("Unnamed StaticMesh Component"), m_StaticMesh(nullptr)
 	{
 	}
 
-	void StaticMeshComponent::InitialiseComponent(const std::string& MeshName)
+	StaticMeshComponent::StaticMeshComponent(const std::string& Name)
+		: WorldComponent(Name), m_StaticMesh(nullptr)
 	{
-		m_StaticMesh = new StaticMesh(MeshName);
+	}
+
+	void StaticMeshComponent::InitialiseComponent(const std::string& MeshName, Material* OverrideMaterial)
+	{
+		bOverrideMaterial = (bool)OverrideMaterial;
+
+		if (OverrideMaterial)
+			SetMaterial(OverrideMaterial);
+
+		SetStaticMesh(MeshName);
 	}
 
 	void StaticMeshComponent::Tick(float DeltaTime)
@@ -29,6 +39,12 @@ namespace Flow
 			delete m_StaticMesh;
 
 		m_StaticMesh = new StaticMesh(MeshName);
+		m_StaticMesh->InitialiseStaticMesh(MeshName, bOverrideMaterial ? m_Material : nullptr);
+	}
+
+	void StaticMeshComponent::SetMaterial(Material* NewMaterial)
+	{
+		m_Material = NewMaterial;
 	}
 
 	void StaticMeshComponent::Render()

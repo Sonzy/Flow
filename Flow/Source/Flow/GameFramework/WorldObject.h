@@ -12,6 +12,7 @@ namespace Flow
 	{
 	public:
 		WorldObject();
+		WorldObject(const std::string& Name);
 
 		virtual void Tick(float DeltaTime) override;
 
@@ -22,12 +23,12 @@ namespace Flow
 	protected:
 
 		template <typename T>
-		std::shared_ptr<T> CreateComponent()
+		std::shared_ptr<T> CreateComponent(const std::string& NewName)
 		{
 			//TODO: Check if T is a component
 			FLOW_ENGINE_WARNING("TODO: WorldObject::CreateComponent<T>: Check if T is a component");
 
-			std::shared_ptr<T> NewComponent = std::make_shared<T>();
+			std::shared_ptr<T> NewComponent = std::make_shared<T>(NewName);
 			Component* Comp = static_cast<Component*>(NewComponent.get());
 			Comp->SetParent(this);
 			return NewComponent;

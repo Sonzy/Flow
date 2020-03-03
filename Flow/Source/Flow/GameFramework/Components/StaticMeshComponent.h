@@ -10,16 +10,22 @@ namespace Flow
 	{
 	public:
 		StaticMeshComponent();
+		StaticMeshComponent(const std::string& Name);
+		
 
-		void InitialiseComponent(const std::string& MeshName);
+		void InitialiseComponent(const std::string& MeshName, Material* OverrideMaterial);
 		virtual void Tick(float DeltaTime) override;
 
 		void SetStaticMesh(const std::string& MeshName);
+		void SetMaterial(Material* NewMaterial);
 
 		virtual void Render() override;
 
 	protected:
 
 		StaticMesh* m_StaticMesh;
+		bool bOverrideMaterial = true;
+
+		Material* m_Material;
 	};
 }
