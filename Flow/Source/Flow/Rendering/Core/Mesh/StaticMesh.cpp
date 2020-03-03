@@ -27,14 +27,7 @@ namespace Flow
 
 	void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride)
 	{
-		if (!StaticInitialised())
-		{
-			//Bind Topology
-			AddStaticBindable(std::make_unique<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-		}
-		else
-			SetIndexFromStatic();
-
+		AddBind(std::make_shared<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 		// Define Vertex Layout
 		VertexLayout Layout;
@@ -71,7 +64,7 @@ namespace Flow
 		}
 
 		//Add Vertex Buffer Bind
-		AddStaticBindable(std::make_unique<BindableVertexBuffer>(VBuffer));
+		AddBind(std::make_shared<BindableVertexBuffer>(VBuffer));
 
 		if (!MaterialOverride)
 		{
@@ -82,11 +75,10 @@ namespace Flow
 			MaterialOverride->BindMaterial(this, m_VertexLayout);
 
 		//Bind Index Buffer
-		if(GetIndexBuffer()) //TODO: Whole framework needs changing, canny have 1 index buffer per. Might have to mvoe all this to static mesh asset
-		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(indices));
+		AddBind(std::make_shared<IndexBuffer>(indices));
 
 		//Bind Transform
-		AddBind(std::make_unique<TransformConstantBuffer>(this));
+		AddBind(std::make_shared<TransformConstantBuffer>(this));
 	}
 
 	DirectX::XMMATRIX StaticMesh::GetTransformXM() const

@@ -28,11 +28,7 @@ namespace Flow
 		void BindAll();
 		void RefreshStaticBinds();
 
-		void AddBind(std::unique_ptr<Bindable> bind);
-		static void AddStaticBindable(std::unique_ptr<Bindable> Bind);
-
-		bool StaticInitialised() { return !m_StaticBinds.empty(); }
-
+		void AddBind(std::shared_ptr<Bindable> bind);
 
 		/* Replaces an existing bindable, if specified, will add the bindable anyway if it doesnt exist */
 		// TODO: Validate type
@@ -102,26 +98,13 @@ namespace Flow
 			return nullptr;
 		}
 
-
-		void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuffer);
-		void SetIndexFromStatic();
-
-
-
-
-
-	private:
-		const std::vector<std::unique_ptr<Bindable>>& GetStaticBindables() const;
-
-	private:
-		const IndexBuffer* m_IndexBuffer = nullptr;
-		std::vector<std::unique_ptr<Bindable>> m_Binds;
-
-		static std::vector<std::unique_ptr<Bindable>> m_StaticBinds;
-
 	protected:
 		Vector m_Position;
 		Vector m_Scale;
 		Rotator m_Rotation;
+
+	private:
+		std::vector<std::shared_ptr<Bindable>> m_Binds;
+		const IndexBuffer* m_IndexBuffer = nullptr;
 	};
 }

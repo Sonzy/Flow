@@ -3,39 +3,16 @@
 
 namespace Flow
 {
-	std::vector<std::unique_ptr<Bindable>> Renderable::m_StaticBinds;
-
-	void Renderable::AddBind(std::unique_ptr<Bindable> bind)
+	void Renderable::AddBind(std::shared_ptr<Bindable> bind)
 	{
-		assert("MUST use AddIndexBuffer to bind index buffer" && typeid(*bind) != typeid(IndexBuffer));
-		m_Binds.push_back(std::move(bind));
-	}
-
-	void Renderable::AddStaticBindable(std::unique_ptr<Bindable> Bind)
-	{
-		assert("USE ADD INDEX BUFFER TO BIND INDEX BUFFER" && typeid(*Bind) != typeid(Bindable));
-		m_StaticBinds.push_back(std::move(Bind));
-	}
-	
-	void Renderable::AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuffer)
-	{
-		assert("Attempting to add a 2nd index buffer" && m_IndexBuffer == nullptr);
-		m_IndexBuffer = ibuffer.get();
-		m_StaticBinds.push_back(std::move(ibuffer));
-	}
-	
-	void Renderable::SetIndexFromStatic()
-	{
-		assert("Attempting to add a 2nd index buffer" && m_IndexBuffer == nullptr);
-		for (const auto& b : m_StaticBinds)
+		//If index buffer, only allow single bind.
+		if (typeid(*bind) == typeid(IndexBuffer))
 		{
-			if (const auto p = dynamic_cast<IndexBuffer*>(b.get()))
-			{
-				m_IndexBuffer = p;
-				return;
-			}
+			assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
+			m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
 		}
-		assert("Failed to find index buffer in static binds" && m_IndexBuffer != nullptr);
+
+		m_Binds.push_back(std::move(bind));
 	}
 
 	Renderable::Renderable()
@@ -69,29 +46,6 @@ namespace Flow
 		{
 			b->Bind();
 		}
-
-		for (auto& b : m_StaticBinds)
-		{
-			if (!b->bCheckBound || !b->bBound)
-			{
-				b->Bind();
-				b->bBound = true;
-			}
-		}
-	}
-
-	void Renderable::RefreshStaticBinds()
-	{
-		for (auto& b : m_StaticBinds)
-		{
-			b->Bind();
-			b->bBound = true;
-		}
-	}
-
-	const std::vector<std::unique_ptr<Bindable>>& Renderable::GetStaticBindables() const
-	{
-		return m_StaticBinds;
 	}
 }
 

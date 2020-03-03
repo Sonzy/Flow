@@ -26,18 +26,8 @@ namespace Flow
 		for (unsigned int i = 0; i < Mesh->mNumVertices; i++)
 		{
 			m_Vertices.emplace_back( Vector(Mesh->mVertices[i].x, Mesh->mVertices[i].y, Mesh->mVertices[i].z) );
-		}
-
-		//Load normals
-		for (unsigned int i = 0; i < Mesh->mNumVertices; i++)
-		{
-			m_Normals.emplace_back( Vector(Mesh->mNormals[i].x, Mesh->mNormals[i].y, Mesh->mNormals[i].z) );
-		}
-
-		//Load texcoords
-		for (unsigned int i = 0; i < Mesh->mNumVertices; i++)
-		{
-			m_TexCoords.emplace_back( Vector(Mesh->mTextureCoords[0][i].x, Mesh->mTextureCoords[0][i].y, Mesh->mTextureCoords[0][i].z) );
+			m_Normals.emplace_back(Vector(Mesh->mNormals[i].x, Mesh->mNormals[i].y, Mesh->mNormals[i].z));
+			m_TexCoords.emplace_back(Vector(Mesh->mTextureCoords[0][i].x, Mesh->mTextureCoords[0][i].y, Mesh->mTextureCoords[0][i].z));
 		}
 
 		//Load the faces

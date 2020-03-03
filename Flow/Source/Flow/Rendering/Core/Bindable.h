@@ -11,8 +11,10 @@ namespace Flow
 	{
 	public:
 		virtual void Bind() = 0;
+		virtual std::string GetUID() const = 0;
+
+	public:
 		bool bBound = false;
 		bool bCheckBound = false;
-
 	};
 }

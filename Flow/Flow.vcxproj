@@ -145,6 +145,7 @@
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h" />
@@ -296,6 +297,7 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />
