@@ -12,19 +12,44 @@ namespace Flow
 {
 	DX11RenderAPI::~DX11RenderAPI()
 	{
-		FLOW_ENGINE_LOG("DX11RenderAPI::Destruction");
+		FLOW_ENGINE_LOG("DX11RenderAPI::Shutdown");
 
-		CREATE_RESULT_HANDLE();
+		//CREATE_RESULT_HANDLE();
+		//
+		////TODO: Fix the log spam on close
+		//CATCH_ERROR_DX(Device->QueryInterface(__uuidof(ID3D11Debug), &Debug2));
+		//
+		//Debug2 ? (void)Debug2->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL) : FLOW_ENGINE_ERROR("Failed to query");
 
-		//TODO: Fix the log spam on close
-		CATCH_ERROR_DX(Device->QueryInterface(__uuidof(ID3D11Debug), &Debug2));
-
-		if (Debug2)
-			//Debug->ReportLiveObjects(DXGI_DEBUG_ALL, D3D11_RLDO_DETAIL);
-			Debug2->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-		else
-			FLOW_ENGINE_ERROR("Failed to query");
-
+		//if (SwapChain)
+		//{
+		//	SwapChain->Release();
+		//	//SwapChain.Reset();
+		//}
+		//
+		//if (Device)
+		//{
+		//	Device->Release();
+		//	//Device.Reset();
+		//}
+		//
+		//if (Context)
+		//{
+		//	Context->Release();
+		//	//Context.Reset();
+		//}
+		//
+		//if (RenderTarget)
+		//{
+		//	RenderTarget->Release();
+		//	//RenderTarget.Reset();
+		//}
+		//
+		//if (DepthStencilView)
+		//{
+		//	DepthStencilView->Release();
+		//	//DepthStencilView.Reset();
+		//}
 	}
 
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
@@ -114,8 +139,8 @@ namespace Flow
 
 		//Setup Viewport
 		D3D11_VIEWPORT Viewport;
-		Viewport.Width = ViewportWidth;
-		Viewport.Height = ViewportHeight;
+		Viewport.Width = (FLOAT)ViewportWidth;
+		Viewport.Height = (FLOAT)ViewportHeight;
 		Viewport.MinDepth = 0.0f;
 		Viewport.MaxDepth = 1.0f; //Disable depth for testing
 		Viewport.TopLeftX = 0.0f;
@@ -202,8 +227,8 @@ namespace Flow
 
 		//Setup Viewport
 		D3D11_VIEWPORT Viewport;
-		Viewport.Width = Width;
-		Viewport.Height = Height;
+		Viewport.Width = (FLOAT)Width;
+		Viewport.Height = (FLOAT)Height;
 		Viewport.MinDepth = 0.0f;
 		Viewport.MaxDepth = 1.0f; //Disable depth for testing
 		Viewport.TopLeftX = 0.0f;

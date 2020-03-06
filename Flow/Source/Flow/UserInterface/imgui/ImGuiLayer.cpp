@@ -21,6 +21,8 @@ namespace Flow
 
 	ImGuiLayer::~ImGuiLayer()
 	{
+		ImGui_ImplWin32_Shutdown();
+		ImGui_ImplDX11_Shutdown();
 	}
 
 	void ImGuiLayer::OnAttach()
@@ -48,7 +50,7 @@ namespace Flow
 		Application& app = Application::GetApplication();
 		WinWindow* Window = static_cast<WinWindow*>(&app.GetWindow());
 
-		io.DisplaySize = ImVec2(Window->GetWidth(), Window->GetHeight());
+		io.DisplaySize = ImVec2((float)Window->GetWidth(), (float)Window->GetHeight());
 
 #ifdef  FLOW_PLATFORM_WINDOWS
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
@@ -84,7 +86,7 @@ namespace Flow
 	{
 		Application& app = Application::GetApplication();
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -149,7 +151,7 @@ namespace Flow
 	bool ImGuiLayer::OnMouseMoved(MouseMovedEvent& e)
 	{
 		ImGuiIO& IO = ImGui::GetIO();
-		IO.MousePos = ImVec2(e.GetX(), e.GetY());
+		IO.MousePos = ImVec2((float)e.GetX(), (float)e.GetY());
 		return false;
 	}
 

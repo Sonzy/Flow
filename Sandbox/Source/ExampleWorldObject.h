@@ -7,6 +7,7 @@ class ExampleWorldObject : public Flow::WorldObject
 public:
 	ExampleWorldObject();
 	ExampleWorldObject(const std::string& NewName);
+	~ExampleWorldObject() = default;
 
 protected:
 

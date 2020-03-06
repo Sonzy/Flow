@@ -18,12 +18,6 @@ namespace Flow
 	{
 	}
 
-
-	void Material::BindMaterial(StaticMesh* Parent, const VertexBuffer& VB)
-	{
-		BindMaterial(Parent, VB);
-	}
-
 	void Material::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
 	{
 		Parent->AddBind(Texture::Resolve(m_Texture, 0));

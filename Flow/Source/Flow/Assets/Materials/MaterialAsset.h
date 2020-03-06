@@ -9,8 +9,8 @@ namespace Flow
 	{
 	public:
 
-		MaterialAsset()
-		{};
+		MaterialAsset();
+		~MaterialAsset();
 
 		template<typename T>
 		T* CreateMaterial()

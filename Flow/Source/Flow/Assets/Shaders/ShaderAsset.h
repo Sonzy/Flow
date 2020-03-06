@@ -4,7 +4,7 @@
 namespace Flow
 {
 	/* For now, shader asset just stores the path to the shader since I need a platform agnostic way of storing the shader, not sure how other platforms handle shaders so will set up later */
-	class ShaderAsset : public AssetBase
+	class FLOW_API ShaderAsset : public AssetBase
 	{
 	public:
 		ShaderAsset();

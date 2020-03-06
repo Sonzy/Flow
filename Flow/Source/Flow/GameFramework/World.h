@@ -12,6 +12,7 @@ namespace Flow
 	public:
 		World();
 		World(const std::string& WorldName);
+		~World();
 
 		template<typename T>
 		std::shared_ptr<T> SpawnWorldObject()

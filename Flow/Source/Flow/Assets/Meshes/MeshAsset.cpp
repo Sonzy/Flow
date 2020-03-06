@@ -10,6 +10,14 @@
 
 namespace Flow
 {
+	MeshAsset::~MeshAsset()
+	{
+		m_Vertices.clear();
+		m_Normals.clear();
+		m_TexCoords.clear();
+		m_Faces.clear();
+	}
+
 	bool MeshAsset::LoadAsset(const std::string& LocalPath)
 	{
 		Assimp::Importer Importer;

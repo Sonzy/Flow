@@ -13,6 +13,10 @@ namespace Flow
 	{
 	}
 
+	Component::~Component()
+	{
+	}
+
 	void Component::AddChild(Component* Child)
 	{
 	}

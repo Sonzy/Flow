@@ -17,6 +17,11 @@ namespace Flow
 	{
 	}
 
+	void AssetSystem::Shutdown()
+	{
+		delete s_AssetSystem;
+	}
+
 	AssetSystem::~AssetSystem()
 	{
 		//Unload all assets

@@ -14,6 +14,11 @@ namespace Flow
 	{
 	}
 
+	WorldComponent::~WorldComponent()
+	{
+		m_Children.clear();
+	}
+
 	void WorldComponent::Tick(float DeltaTime)
 	{
 		for (auto& Child : m_Children)

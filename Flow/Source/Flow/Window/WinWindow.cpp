@@ -217,13 +217,13 @@ namespace Flow
 			case WM_SYSKEYDOWN:
 			case WM_KEYDOWN:
 			{
-				KeyPressedEvent Event(wParam, 0);
+				KeyPressedEvent Event(static_cast<int>(wParam), 0);
 				e = &Event;
 				break;
 			}
 			case WM_KEYUP:
 			{
-				KeyReleasedEvent Event(wParam);
+				KeyReleasedEvent Event(static_cast<int>(wParam));
 				e = &Event;
 				break;
 			}

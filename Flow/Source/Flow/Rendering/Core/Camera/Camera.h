@@ -1,7 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Flow/Helper/Maths.h"
-#include "Frustrum.h"
 
 namespace Flow
 {
@@ -29,8 +28,6 @@ namespace Flow
 
 		DirectX::XMFLOAT3 GetPosition() const;
 
-		const Frustrum& GetFrustrum() const;
-
 	private:
 
 		Vector m_Position;
@@ -44,7 +41,5 @@ namespace Flow
 
 		float m_CameraSpeed = 1.0f;
 		float m_RotationSpeed = 0.005f;
-
-		Frustrum m_Frustrum;
 	};
 }

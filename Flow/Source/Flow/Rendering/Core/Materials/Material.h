@@ -14,8 +14,6 @@ namespace Flow
 	public:
 		Material();
 
-
-		void BindMaterial(StaticMesh* Parent, const VertexBuffer& VB);
 		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout);
 
 

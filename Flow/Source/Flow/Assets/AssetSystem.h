@@ -13,6 +13,7 @@ namespace Flow
 
 		AssetSystem();
 		AssetSystem(const AssetSystem&) = delete;
+		static void Shutdown();
 
 		~AssetSystem();
 

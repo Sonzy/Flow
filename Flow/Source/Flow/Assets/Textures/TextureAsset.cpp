@@ -8,18 +8,22 @@
 
 namespace Flow
 {
+	TextureAsset::~TextureAsset()
+	{
+	}
+
 	bool TextureAsset::LoadAsset(const std::string& FilePath)
 	{
 		m_TextureBuffer.release();
 
 		//Convert to Wstring and load as a bitmap
-		std::wstring WidePath = Application::GetApplication().GetLocalFilePathWide();
-		WidePath.append(std::wstring(FilePath.begin(), FilePath.end()));
-		Gdiplus::Bitmap BitMapTexture(WidePath.c_str());
+		std::string Path = Application::GetApplication().GetLocalFilePath() + FilePath;
+		std::wstring WidePath = std::wstring(Path.begin(), Path.end());
 
+		Gdiplus::Bitmap BitMapTexture(WidePath.c_str());
 		Gdiplus::Status Status = BitMapTexture.GetLastStatus();
-		CHECK_RETURN_FALSE(Status != Gdiplus::Status::Ok,
-			(L"TextureAsset::LoadTexture: Failed to load asset {0} {1}", Status, std::string(WidePath.begin(), WidePath.end())));
+
+		CHECK_RETURN_FALSE(Status != Gdiplus::Status::Ok, ("TextureAsset::LoadTexture: Failed to load asset {0} {1}", Status, Path));
 
 		m_TextureWidth = BitMapTexture.GetWidth();
 		m_TextureHeight = BitMapTexture.GetHeight();

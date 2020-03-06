@@ -92,9 +92,9 @@ namespace Flow
 		{
 			if (m_LastMousePos != Pos)
 			{
-				IntVector2D Direction = m_LastMousePos - Pos;
-				Direction.X *= 0.25f; //Horizontal Sensitivity
-				Direction.Y *= 0.15f; //Vertical Sensitivity
+				Vector Direction = (m_LastMousePos - Pos);
+				Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
+				Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
 				Rotate(Rotator(-Direction.Y, 0.0f, -Direction.X));
 			}
 		}
@@ -102,9 +102,6 @@ namespace Flow
 		Translate(Translation.ToDXFloat3());
 
 		m_LastMousePos = Pos;
-
-
-		m_Frustrum.UpdateFrustrum(500.0f, m_Projection, GetMatrix());
 	}
 
 	void Camera::RenderIMGUIWindow()
@@ -151,9 +148,5 @@ namespace Flow
 	DirectX::XMFLOAT3 Camera::GetPosition() const
 	{
 		return m_Position.ToDXFloat3();
-	}
-	const Frustrum& Camera::GetFrustrum() const
-	{
-		return m_Frustrum;
 	}
 }

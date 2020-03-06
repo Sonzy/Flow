@@ -17,6 +17,11 @@ namespace Flow
 	{
 	}
 
+	StaticMeshComponent::~StaticMeshComponent()
+	{
+		delete m_StaticMesh;
+	}
+
 	void StaticMeshComponent::InitialiseComponent(const std::string& MeshName, Material* OverrideMaterial)
 	{
 		bOverrideMaterial = (bool)OverrideMaterial;

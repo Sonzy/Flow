@@ -11,6 +11,7 @@ namespace Flow
 	public:
 		StaticMeshComponent();
 		StaticMeshComponent(const std::string& Name);
+		virtual ~StaticMeshComponent();
 		
 
 		void InitialiseComponent(const std::string& MeshName, Material* OverrideMaterial);

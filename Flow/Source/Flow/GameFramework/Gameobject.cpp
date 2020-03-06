@@ -11,6 +11,10 @@ Flow::GameObject::GameObject(const std::string& Name)
 {
 }
 
+Flow::GameObject::~GameObject()
+{
+}
+
 void Flow::GameObject::Tick(float DeltaTime)
 {
 }

@@ -18,7 +18,7 @@ namespace Flow
 		else if (m_AssetSize > 1000)
 			sprintf_s(Buffer, "%.1f KB", (float)m_AssetSize / 1000);
 		else
-			sprintf_s(Buffer, "%d B", m_AssetSize);
+			sprintf_s(Buffer, "%zu B", m_AssetSize);
 
 		return Buffer;
 	}

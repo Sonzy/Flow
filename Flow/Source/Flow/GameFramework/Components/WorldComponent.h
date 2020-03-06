@@ -9,6 +9,7 @@ namespace Flow
 	public:
 		WorldComponent();
 		WorldComponent(const std::string& Name);
+		virtual ~WorldComponent();
 
 		virtual void Tick(float DeltaTime) override;
 

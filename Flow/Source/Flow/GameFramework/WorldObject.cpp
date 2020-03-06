@@ -15,11 +15,18 @@ namespace Flow
 	{
 	}
 
+	WorldObject::~WorldObject()
+	{
+		m_RootComponent = nullptr;
+		FLOW_ENGINE_LOG("WorldObject::~WorldObject");
+	}
+
 	void WorldObject::Tick(float DeltaTime)
 	{
 		GameObject::Tick(DeltaTime);
-
-		m_RootComponent->Tick(DeltaTime);
+		
+		if(m_RootComponent)
+			m_RootComponent->Tick(DeltaTime);
 	}
 	WorldComponent* WorldObject::GetRootComponent()
 	{
@@ -28,6 +35,7 @@ namespace Flow
 
 	void WorldObject::Render()
 	{
-		m_RootComponent->Render();
+		if(m_RootComponent)
+			m_RootComponent->Render();
 	}
 }

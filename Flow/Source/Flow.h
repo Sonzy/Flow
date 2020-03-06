@@ -14,3 +14,7 @@
 #include "Flow/Rendering/Renderer.h"
 #include "Flow/Rendering/Core/RenderableBase.h"
 #include "Flow/Rendering/Core/Camera/Camera.h"
+
+
+//Suppressed Warnings:
+//4251 - DLL style interfaces

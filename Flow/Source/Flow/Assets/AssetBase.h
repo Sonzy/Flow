@@ -10,7 +10,7 @@ namespace Flow
 		Shader
 	};
 
-	class AssetBase
+	class FLOW_API AssetBase
 	{
 	public:
 
@@ -26,7 +26,7 @@ namespace Flow
 		EAssetType GetAssetType() { return m_AssetType; }
 	protected:
 		std::string m_AssetName;
-		size_t m_AssetSize;
+		size_t m_AssetSize = 0;
 		EAssetType m_AssetType = EAssetType::None;
 	};
 }

@@ -8,6 +8,7 @@ namespace Flow
 	public:
 		GameObject(); 
 		GameObject(const std::string& Name);
+		virtual ~GameObject();
 
 		virtual void Tick(float DeltaTime);
 

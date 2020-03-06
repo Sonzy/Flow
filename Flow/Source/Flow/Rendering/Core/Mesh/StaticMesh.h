@@ -4,9 +4,6 @@
 #include "Flow/Rendering/Core/RenderableBase.h"
 #include <DirectXMath.h>
 
-class aiMesh;
-
-
 namespace Flow
 {
 	class Material;

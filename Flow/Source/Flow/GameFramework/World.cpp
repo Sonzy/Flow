@@ -14,6 +14,11 @@ namespace Flow
 	{
 	}
 
+	World::~World()
+	{
+		m_WorldObjects.clear();
+	}
+
 	void World::Tick(float DeltaTime)
 	{
 		for (auto& WorldObj : m_WorldObjects)

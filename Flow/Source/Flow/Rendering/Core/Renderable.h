@@ -11,6 +11,7 @@ namespace Flow
 	public:
 		Renderable();
 		Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector Unique ptr errors, but deleting lvalue copy constructor doesnt.
+		virtual ~Renderable();
 
 		virtual void Update(float deltaTime) {};
 

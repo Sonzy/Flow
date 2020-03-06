@@ -19,11 +19,12 @@ namespace Flow
 		{}
 	};
 
-	class TextureAsset : public AssetBase
+	class FLOW_API TextureAsset : public AssetBase
 	{
 
 	public:
 		TextureAsset() {};
+		~TextureAsset();
 
 		virtual bool LoadAsset(const std::string& FilePath) override;
 

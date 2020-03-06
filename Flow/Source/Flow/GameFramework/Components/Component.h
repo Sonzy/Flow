@@ -12,6 +12,7 @@ namespace Flow
 	public:
 		Component();
 		Component(const std::string& Name);
+		virtual ~Component();
 
 		void AddChild(Component* Child);
 

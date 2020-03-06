@@ -18,6 +18,17 @@ ExampleLayer::ExampleLayer()
 	{
 		Actors.push_back(Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>());
 	}
+
+	Vector a;
+	a += Vector(1.0f, 1.0f, 1.0f);
+
+	IntVector2D Test = IntVector2D(2);
+	Test += IntVector2D(3);
+}
+
+ExampleLayer::~ExampleLayer()
+{
+	Actors.clear();
 }
 
 void ExampleLayer::OnUpdate(float DeltaTime)

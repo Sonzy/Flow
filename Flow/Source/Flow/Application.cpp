@@ -75,9 +75,10 @@ namespace Flow
 
 	Application::~Application()
 	{
-		FLOW_ENGINE_LOG("~Application()");
+		FLOW_ENGINE_LOG("Shutting Down Engine");
 
 		RenderCommand::Shutdown();
+		AssetSystem::Shutdown();
 	}
 
 	void Application::Run()

@@ -2,7 +2,6 @@
 #include "Flow\Assets\AssetBase.h"
 #include <string>
 #include "Flow\Helper\Maths.h"
-//class aiScene;
 
 namespace Flow
 {
@@ -15,7 +14,7 @@ namespace Flow
 			: m_NumIndices(NumIndices)
 		{
 			m_Indices.reserve(m_NumIndices);
-			for (int i = 0; i < m_NumIndices; i++)
+			for (unsigned int i = 0; i < m_NumIndices; i++)
 			{
 				m_Indices.push_back(Indices[i]);
 			}
@@ -33,12 +32,12 @@ namespace Flow
 		Vector TexCoord;
 	};
 
-	class MeshAsset : public AssetBase
+	class FLOW_API MeshAsset : public AssetBase
 	{
 	public:
 
-		MeshAsset()
-		{};
+		MeshAsset()	{};
+		~MeshAsset();
 
 		virtual bool LoadAsset(const std::string& LocalPath) override;
 

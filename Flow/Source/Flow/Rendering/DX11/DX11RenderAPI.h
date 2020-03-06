@@ -38,8 +38,10 @@ namespace Flow
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RenderTarget = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11Device> Device = nullptr;
-		Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
-		Microsoft::WRL::ComPtr<ID3D11Debug> Debug2 = nullptr;
+
+		/* Debug interfaces */
+		//Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
+		//Microsoft::WRL::ComPtr<ID3D11Debug> Debug2 = nullptr;
 
 		float BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 

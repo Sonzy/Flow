@@ -13,6 +13,7 @@ namespace Flow
 	public:
 		WorldObject();
 		WorldObject(const std::string& Name);
+		virtual ~WorldObject();
 
 		virtual void Tick(float DeltaTime) override;
 

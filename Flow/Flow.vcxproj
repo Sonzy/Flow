@@ -68,6 +68,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +138,9 @@
     <ClInclude Include="Source\Flow\GameFramework\WorldObject.h" />
     <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
+    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Rotator.h" />
+    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector.h" />
+    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector2D.h" />
     <ClInclude Include="Source\Flow\Helper\Timer.h" />
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
@@ -162,7 +166,6 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
-    <ClInclude Include="Source\Flow\Rendering\Core\Camera\Frustrum.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.h" />
@@ -291,7 +294,6 @@
     <ClCompile Include="Source\Flow\GameFramework\Gameobject.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\WorldObject.cpp" />
-    <ClCompile Include="Source\Flow\Helper\Maths.cpp" />
     <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
@@ -309,7 +311,6 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Camera\Frustrum.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.cpp" />
