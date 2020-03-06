@@ -16,7 +16,7 @@ namespace Flow
 
 
 		void BindMaterial(StaticMesh* Parent, const VertexBuffer& VB);
-		virtual void BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout);
+		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout);
 
 
 		void SetTexture(const std::string& TextureName);

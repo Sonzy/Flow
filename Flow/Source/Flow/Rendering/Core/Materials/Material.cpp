@@ -21,20 +21,20 @@ namespace Flow
 
 	void Material::BindMaterial(StaticMesh* Parent, const VertexBuffer& VB)
 	{
-		BindMaterial(Parent, VB.GetLayout().GetD3DLayout());
+		BindMaterial(Parent, VB);
 	}
 
-	void Material::BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout)
+	void Material::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
 	{
-		Parent->AddBind(std::make_unique<Texture>(m_Texture));
-		Parent->AddBind(std::make_unique<Sampler>());
+		Parent->AddBind(Texture::Resolve(m_Texture, 0));
+		Parent->AddBind(Sampler::Resolve());
 
-		auto vShader = std::make_unique<VertexShader>(m_VertexShader->GetPath());
-		auto vShaderByteCode = vShader->GetByteCode();
+		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 		Parent->AddBind(std::move(vShader));
-		Parent->AddBind(std::make_unique<PixelShader>(m_PixelShader->GetPath()));
+		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
 
-		Parent->AddBind(std::make_unique<InputLayout>(VertexLayout, vShaderByteCode));
+		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 	}
 
 	void Material::SetTexture(const std::string& TextureName)

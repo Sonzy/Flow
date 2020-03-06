@@ -9,6 +9,13 @@ namespace Flow
 		Sampler();
 		void Bind() override;
 
+
+		//= Bindable Interface =
+
+		static std::shared_ptr<Bindable> Resolve();
+		static std::string GenerateUID();
+		std::string GetUID() const override;
+
 	protected:
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_Sampler;
 	};

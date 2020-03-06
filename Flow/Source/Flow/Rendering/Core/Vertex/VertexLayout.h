@@ -16,6 +16,7 @@ namespace Flow
 		/* Gets the layout as a vector of Input Element Descriptons */
 		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const;
 
+		std::string GetCode() const;
 
 		/* Returns a const ref to the element in the layout*/
 		template<typename ElementType Type>

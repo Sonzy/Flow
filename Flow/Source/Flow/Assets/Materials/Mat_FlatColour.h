@@ -9,6 +9,6 @@ namespace Flow
 
 		Mat_FlatColour();
 
-		virtual void BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout);
+		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout) override;
 	};
 }

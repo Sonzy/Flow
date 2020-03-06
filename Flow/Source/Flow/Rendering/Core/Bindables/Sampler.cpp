@@ -1,6 +1,7 @@
 #include "Flowpch.h"
 #include "Sampler.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
+#include "BindableCodex.h"
 
 namespace Flow
 {
@@ -20,5 +21,17 @@ namespace Flow
 	void Sampler::Bind()
 	{
 		RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
+	}
+	std::shared_ptr<Bindable> Sampler::Resolve()
+	{
+		return BindableCodex::Resolve<Sampler>();
+	}
+	std::string Sampler::GenerateUID()
+	{
+		return typeid(Sampler).name();
+	}
+	std::string Sampler::GetUID() const
+	{
+		return GenerateUID();
 	}
 }

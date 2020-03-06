@@ -40,6 +40,8 @@ namespace Flow
 		m_AssetType = EAssetType::Texture;
 		FLOW_ENGINE_LOG("MeshAsset::LoadAsset: Successfully loaded texture {0} (Size: {1})", FilePath, m_AssetSize);
 
+		m_AssetPath = FilePath;
+
 		return true;
 	}
 }

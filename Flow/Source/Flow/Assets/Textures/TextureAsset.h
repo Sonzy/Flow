@@ -27,11 +27,12 @@ namespace Flow
 
 		virtual bool LoadAsset(const std::string& FilePath) override;
 
-		unsigned int GetWidth() { return m_TextureWidth; }
-		unsigned int GetHeight() { return m_TextureHeight; }
+		unsigned int GetWidth() const { return m_TextureWidth; }
+		unsigned int GetHeight() const { return m_TextureHeight; }
 
-		TexColor* GetBufferPtr() { return m_TextureBuffer.get(); }
-		
+		TexColor* GetBufferPtr() const { return m_TextureBuffer.get(); }
+
+		const std::string& GetAssetPath() const { return m_AssetPath; }		
 
 	protected:
 
@@ -39,5 +40,7 @@ namespace Flow
 
 		unsigned int m_TextureWidth = 0;
 		unsigned int m_TextureHeight = 0;
+
+		std::string m_AssetPath;
 	};
 }

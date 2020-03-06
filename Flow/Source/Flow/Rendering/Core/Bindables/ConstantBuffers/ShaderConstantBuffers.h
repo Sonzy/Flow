@@ -3,6 +3,7 @@
 
 namespace Flow
 {
+	//TODO: Might not want to use a constant buffer with the same signature multiple times. Might need to generate UID with a tag
 	template<typename C>
 	class PixelConstantBuffer : public ConstantBuffer<C>
 	{
@@ -16,6 +17,24 @@ namespace Flow
 		void Bind() override
 		{
 			RenderCommand::DX11GetContext()->PSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
+		}
+
+
+		//= Bindable Interface =
+
+		static std::shared_ptr<Bindable> Resolve()
+		{
+			BindableCodex::Resolve<PixelConstantBuffer>();
+		}
+
+		static std::string GenerateUID()
+		{
+			return typeid(PixelConstantBuffer).name();
+		}
+
+		std::string GetUID() const
+		{
+			return GenerateUID();
 		}
 	};
 
@@ -31,6 +50,23 @@ namespace Flow
 		void Bind() override
 		{
 			RenderCommand::DX11GetContext()->VSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
+		}
+
+		//= Bindable Interface =
+
+		static std::shared_ptr<Bindable> Resolve()
+		{
+			BindableCodex::Resolve<VertexConstantBuffer>();
+		}
+
+		static std::string GenerateUID()
+		{
+			return typeid(VertexConstantBuffer).name();
+		}
+
+		std::string GetUID() const
+		{
+			return GenerateUID();
 		}
 	};
 }

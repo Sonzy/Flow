@@ -1,11 +1,12 @@
 #include "Flowpch.h"
 #include "BindableVertexBuffer.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
+#include "BindableCodex.h"
 
 namespace Flow
 {
-	BindableVertexBuffer::BindableVertexBuffer(const VertexBuffer& Buffer)
-		: m_Stride((UINT)Buffer.GetLayout().GetSize())
+	BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer)
+		: m_Stride((UINT)Buffer.GetLayout().GetSize()), m_Tag(Tag)
 	{
 		CREATE_RESULT_HANDLE();
 
@@ -27,5 +28,19 @@ namespace Flow
 	{
 		const UINT offset = 0u;
 		RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, m_Buffer.GetAddressOf(), &m_Stride, &offset);
+	}
+	std::shared_ptr<Bindable> BindableVertexBuffer::Resolve(const std::string& Tag, const VertexBuffer& Buffer)
+	{
+		return BindableCodex::Resolve<BindableVertexBuffer>(Tag, Buffer);
+	}
+
+	std::string BindableVertexBuffer::GetUID() const
+	{
+		return GenerateUID(m_Tag);
+	}
+	std::string BindableVertexBuffer::GenerateUID_Internal(const std::string& Tag)
+	{
+		using namespace std::string_literals;
+		return typeid(BindableVertexBuffer).name() + "#"s + Tag;
 	}
 }

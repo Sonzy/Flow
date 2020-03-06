@@ -11,7 +11,15 @@ namespace Flow
 	{
 	public:
 		virtual void Bind() = 0;
-		virtual std::string GetUID() const = 0;
+
+		//static std::shared_ptr<Bindable> Resolve();
+		/* Generates the Unique ID for this bindable without an instance of the bindable */
+		//static std::string GenerateUID();
+		/* Returns the Unique ID of an existing bindable instance*/
+		virtual std::string GetUID() const {
+			assert(false && "Must be overriden if used");
+			return "";
+		};
 
 	public:
 		bool bBound = false;

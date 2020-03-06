@@ -48,6 +48,30 @@ namespace Flow
 		}
 	}
 
+	std::string Element::GetCode() const
+	{
+		switch (m_Type)
+		{
+		case ElementType::Position2D:
+			return VertexElement<ElementType::Position2D>::Code;
+		case ElementType::Position3D:
+			return VertexElement<ElementType::Position3D>::Code;
+		case ElementType::Texture2D:
+			return VertexElement<ElementType::Texture2D>::Code;
+		case ElementType::Normal:
+			return VertexElement<ElementType::Normal>::Code;
+		case ElementType::Float3Colour:
+			return VertexElement<ElementType::Float3Colour>::Code;
+		case ElementType::Float4Colour:
+			return VertexElement<ElementType::Float4Colour>::Code;
+		case ElementType::RGBAColour:
+			return VertexElement<ElementType::RGBAColour>::Code;
+		default:
+			FLOW_ENGINE_ERROR("VertexElement::GetCode: Case Error");
+			return "nullptr";
+		}
+	}
+
 	constexpr size_t Element::GetSizeOf(ElementType Type)
 	{
 		switch (Type)

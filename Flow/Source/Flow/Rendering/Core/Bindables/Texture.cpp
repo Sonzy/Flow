@@ -1,12 +1,18 @@
 #include "Flowpch.h"
 #include "Texture.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
+#include "BindableCodex.h"
+#include "Flow\Assets\AssetSystem.h"
 
 namespace Flow
 {
-	Texture::Texture(TextureAsset* Asset)
+	Texture::Texture(TextureAsset* Asset, UINT Slot)
 	{
 		HRESULT ResultHandle;
+
+		// Bindable context stuff
+		m_AssetName = Asset->GetAssetName();
+		m_Slot = Slot;
 
 		//Create the texture resource
 		D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -40,7 +46,20 @@ namespace Flow
 
 	void Texture::Bind()
 	{
-		RenderCommand::DX11GetContext()->PSSetShaderResources(0u, 1u, m_TextureView.GetAddressOf());
+		RenderCommand::DX11GetContext()->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
+	}
+	std::shared_ptr<Bindable> Texture::Resolve(TextureAsset* Asset, UINT Slot)
+	{
+		return BindableCodex::Resolve<Texture>(Asset, Slot);
+	}
+	std::string Texture::GenerateUID(TextureAsset* Asset, UINT Slot)
+	{
+		using namespace std::string_literals; //Using literal operator to force these to strings
+		return typeid(Texture).name() + "#"s + Asset->GetAssetPath() + "#"s + std::to_string(Slot);
+	}
+	std::string Texture::GetUID() const
+	{
+		return GenerateUID(AssetSystem::GetAsset<TextureAsset>(m_AssetName), m_Slot);
 	}
 }
 

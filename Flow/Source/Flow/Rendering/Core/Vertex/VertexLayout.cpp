@@ -35,5 +35,15 @@ namespace Flow
 		}
 		return VertexDescription;
 	}
+
+	std::string VertexLayout::GetCode() const
+	{
+		std::string Code;
+		for (const auto& El : m_Elements)
+		{
+			Code += El.GetCode();
+		}
+		return Code;
+	}
 }
 

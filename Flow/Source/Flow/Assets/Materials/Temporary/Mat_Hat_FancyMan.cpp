@@ -10,20 +10,16 @@ namespace Flow
 		SetVertexShader("TexturedVS");
 	}
 
-	void Flow::Mat_Hat_FancyMan::BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout)
+	void Flow::Mat_Hat_FancyMan::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
 	{
 		CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
 
-		Parent->ReplaceOrAddStaticBindable<Texture>(std::make_unique<Texture>(m_Texture));
-		Parent->ReplaceOrAddStaticBindable<Sampler>(std::make_unique<Sampler>());
-
-		auto vShader = std::make_unique<VertexShader>(m_VertexShader->GetPath());
-		auto vShaderByteCode = vShader->GetByteCode();
-		Parent->ReplaceOrAddStaticBindable<VertexShader>(std::move(vShader));
-		Parent->ReplaceOrAddStaticBindable<PixelShader>(std::make_unique<PixelShader>(m_PixelShader->GetPath()));
-		Parent->ReplaceOrAddStaticBindable<InputLayout>(std::make_unique<InputLayout>(VertexLayout, vShaderByteCode));
-
-		if (Parent->StaticInitialised())
-			Parent->RefreshStaticBinds();
+		Parent->AddBind(Texture::Resolve(m_Texture, 0));
+		Parent->AddBind(Sampler::Resolve());
+		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Parent->AddBind(std::move(vShader));
+		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
+		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 	}
 }

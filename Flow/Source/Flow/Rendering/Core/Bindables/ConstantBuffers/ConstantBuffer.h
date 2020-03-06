@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow/Rendering/Core/Bindable.h"
+#include "Flow\Rendering\Core\Bindables\BindableCodex.h"
 
 namespace Flow
 {

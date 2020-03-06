@@ -15,7 +15,7 @@ ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
 	TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
-	Cube = Flow::Application::GetWorld()->SpawnWorldObject<MultiuseCube>();
+	//Cube = Flow::Application::GetWorld()->SpawnWorldObject<MultiuseCube>();
 	//CVTest = Flow::Application::GetWorld()->SpawnWorldObject<OpenCVTest>();
 }
 
@@ -26,8 +26,8 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	//TestWorldObject->Render();
-	Cube->Render();
+	TestWorldObject->Render();
+	//Cube->Render();
 	//CVTest->Render();
 
 	Flow::Renderer::EndScene();

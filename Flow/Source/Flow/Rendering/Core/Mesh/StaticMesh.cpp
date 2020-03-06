@@ -27,7 +27,7 @@ namespace Flow
 
 	void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride)
 	{
-		AddBind(std::make_shared<Topology>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 		// Define Vertex Layout
 		VertexLayout Layout;
@@ -37,9 +37,6 @@ namespace Flow
 
 		// Define Vertex Buffer information
 		VertexBuffer VBuffer(Layout);
-
-		//Store D3D layout
-		m_VertexLayout = Layout.GetD3DLayout();
 
 		MeshAsset* m_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
 		CHECK_RETURN(!m_Mesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
@@ -64,18 +61,18 @@ namespace Flow
 		}
 
 		//Add Vertex Buffer Bind
-		AddBind(std::make_shared<BindableVertexBuffer>(VBuffer));
+		AddBind(BindableVertexBuffer::Resolve("MeshBuffer", VBuffer));
 
 		if (!MaterialOverride)
 		{
 			m_Material = new Mat_Hat_FancyMan();
-			m_Material->BindMaterial(this, m_VertexLayout);
+			m_Material->BindMaterial(this, Layout);
 		}
 		else
-			MaterialOverride->BindMaterial(this, m_VertexLayout);
+			MaterialOverride->BindMaterial(this, Layout);
 
 		//Bind Index Buffer
-		AddBind(std::make_shared<IndexBuffer>(indices));
+		AddBind(IndexBuffer::Resolve("MeshIndexBuffer", indices));
 
 		//Bind Transform
 		AddBind(std::make_shared<TransformConstantBuffer>(this));

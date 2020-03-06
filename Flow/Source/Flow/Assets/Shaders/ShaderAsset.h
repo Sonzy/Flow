@@ -11,10 +11,10 @@ namespace Flow
 
 		virtual bool LoadAsset(const std::string& AssetPath) override;
 
-		const std::wstring& GetPath() const;
+		const std::string& GetPath() const;
 
 	private:
 
-		std::wstring m_ShaderPath;
+		std::string m_ShaderPath;
 	};
 }

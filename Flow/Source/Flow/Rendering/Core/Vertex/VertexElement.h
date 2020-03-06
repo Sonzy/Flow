@@ -36,6 +36,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT2;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32_FLOAT;
 		static constexpr const char* SemanticName = "Position";
+		static constexpr const char* Code = "Pos2D";
 	};
 
 	template<>
@@ -44,6 +45,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT3;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		static constexpr const char* SemanticName = "Position";
+		static constexpr const char* Code = "Pos3D";
 	};
 
 	template<>
@@ -52,6 +54,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT2;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32_FLOAT;
 		static constexpr const char* SemanticName = "Texcoord";
+		static constexpr const char* Code = "Tex2D";
 	};
 
 	template<>
@@ -60,6 +63,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT3;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		static constexpr const char* SemanticName = "Normal";
+		static constexpr const char* Code = "Norm";
 	};
 
 	template<>
@@ -68,6 +72,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT3;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		static constexpr const char* SemanticName = "Color";
+		static constexpr const char* Code = "ColF3";
 	};
 
 	template<>
@@ -76,6 +81,7 @@ namespace Flow
 		using DataType = DirectX::XMFLOAT4;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		static constexpr const char* SemanticName = "Color";
+		static constexpr const char* Code = "ColF4";
 	};
 
 	template<>
@@ -84,6 +90,7 @@ namespace Flow
 		using DataType = RGBAColour;
 		static constexpr DXGI_FORMAT Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		static constexpr const char* SemanticName = "Color";
+		static constexpr const char* Code = "Col32b";
 	};
 
 	/* Single element of a vertex */
@@ -105,6 +112,8 @@ namespace Flow
 		ElementType GetType() const;
 		/* Translates the element to a DX11 element description */
 		D3D11_INPUT_ELEMENT_DESC GetDescription() const;
+
+		std::string GetCode() const;
 
 	private:
 		static constexpr size_t GetSizeOf(ElementType Type);

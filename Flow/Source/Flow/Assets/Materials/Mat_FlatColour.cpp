@@ -9,18 +9,15 @@ namespace Flow
 		SetPixelShader("SolidColourPS");
 	}
 
-	void Mat_FlatColour::BindMaterial(StaticMesh* Parent, const std::vector<D3D11_INPUT_ELEMENT_DESC>& VertexLayout)
+	void Mat_FlatColour::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
 	{
 		CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
 
-		auto vShader = std::make_unique<VertexShader>(m_VertexShader->GetPath());
-		auto vShaderByteCode = vShader->GetByteCode();
-		Parent->ReplaceOrAddStaticBindable<VertexShader>(std::move(vShader));
-		Parent->ReplaceOrAddStaticBindable<PixelShader>(std::make_unique<PixelShader>(m_PixelShader->GetPath()));
-		Parent->ReplaceOrAddStaticBindable<InputLayout>(std::make_unique<InputLayout>(VertexLayout, vShaderByteCode));
-
-		if (Parent->StaticInitialised())
-			Parent->RefreshStaticBinds();
+		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Parent->AddBind(std::move(vShader));
+		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
+		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 	}
 }
 
