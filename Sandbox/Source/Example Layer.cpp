@@ -14,9 +14,10 @@
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	TestWorldObject = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
-	//Cube = Flow::Application::GetWorld()->SpawnWorldObject<MultiuseCube>();
-	//CVTest = Flow::Application::GetWorld()->SpawnWorldObject<OpenCVTest>();
+	for (int i = 0; i < 5; i++)
+	{
+		Actors.push_back(Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>());
+	}
 }
 
 void ExampleLayer::OnUpdate(float DeltaTime)
@@ -26,9 +27,10 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	TestWorldObject->Render();
-	//Cube->Render();
-	//CVTest->Render();
+	for (auto& Actor : Actors)
+	{
+		Actor->Render();
+	}
 
 	Flow::Renderer::EndScene();
 

@@ -16,6 +16,7 @@ namespace Flow
 		};
 
 	public:
+		virtual ~RenderAPI() {};
 
 		virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) {};
 

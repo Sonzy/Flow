@@ -6,11 +6,15 @@
 #include <DirectXMath.h>
 #include "Flow/Rendering/Core/Camera/Camera.h"
 
+#include <dxgidebug.h>
+
 namespace Flow
 {
 	class DX11RenderAPI : public RenderAPI
 	{
 	public:
+		virtual ~DX11RenderAPI();
+
 		virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) override;
 
 		virtual void SetClearColour(float R, float G, float B, float A) override;
@@ -34,6 +38,8 @@ namespace Flow
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RenderTarget = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11Device> Device = nullptr;
+		Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
+		Microsoft::WRL::ComPtr<ID3D11Debug> Debug2 = nullptr;
 
 		float BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 

@@ -5,6 +5,9 @@
 namespace Flow
 {
 	int Renderer::s_ObjectsRendered = 0;
+	Renderer::~Renderer()
+	{
+	}
 	void Renderer::BeginScene()
 	{
 		s_ObjectsRendered = 0;

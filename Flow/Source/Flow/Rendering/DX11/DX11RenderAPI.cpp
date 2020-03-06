@@ -5,9 +5,28 @@
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+#pragma comment(lib, "dxguid.lib")
+
 
 namespace Flow
 {
+	DX11RenderAPI::~DX11RenderAPI()
+	{
+		FLOW_ENGINE_LOG("DX11RenderAPI::Destruction");
+
+		CREATE_RESULT_HANDLE();
+
+		//TODO: Fix the log spam on close
+		CATCH_ERROR_DX(Device->QueryInterface(__uuidof(ID3D11Debug), &Debug2));
+
+		if (Debug2)
+			//Debug->ReportLiveObjects(DXGI_DEBUG_ALL, D3D11_RLDO_DETAIL);
+			Debug2->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		else
+			FLOW_ENGINE_ERROR("Failed to query");
+
+	}
+
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 	{
 		HRESULT ResultHandle;

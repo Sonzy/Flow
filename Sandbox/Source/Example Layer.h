@@ -25,4 +25,6 @@ private:
 	std::shared_ptr<ExampleWorldObject> TestWorldObject;
 	std::shared_ptr<OpenCVTest> CVTest;
 	std::shared_ptr<MultiuseCube> Cube;
+
+	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;
 };

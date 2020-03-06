@@ -9,6 +9,7 @@ namespace Flow
 	class FLOW_API Renderer
 	{
 	public:
+		virtual ~Renderer();
 		static RenderAPI::API GetRenderAPI() { return RenderAPI::GetAPI(); };
 
 		virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) {}

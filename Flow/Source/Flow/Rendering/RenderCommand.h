@@ -30,6 +30,8 @@ namespace Flow
 		static void BeginFrame();
 		static void EndFrame();
 
+		static void Shutdown();
+
 	private:
 		static RenderAPI* s_RendererAPI;
 	};

@@ -54,5 +54,10 @@ namespace Flow
 	{
 		s_RendererAPI->EndFrame();
 	}
+
+	void RenderCommand::Shutdown()
+	{
+		delete s_RendererAPI;
+	}
 }
 
