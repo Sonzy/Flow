@@ -3,6 +3,7 @@
 #include "Gameobject.h"
 #include "Components\Component.h"
 #include <memory>
+#include <type_traits>
 
 namespace Flow
 {
@@ -26,8 +27,7 @@ namespace Flow
 		template <typename T>
 		std::shared_ptr<T> CreateComponent(const std::string& NewName)
 		{
-			//TODO: Check if T is a component
-			FLOW_ENGINE_WARNING("TODO: WorldObject::CreateComponent<T>: Check if T is a component");
+			static_assert(std::is_base_of<Component, T>::value, "Tried to create a component templated with a non-component type");
 
 			std::shared_ptr<T> NewComponent = std::make_shared<T>(NewName);
 			Component* Comp = static_cast<Component*>(NewComponent.get());

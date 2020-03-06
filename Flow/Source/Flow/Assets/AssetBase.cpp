@@ -23,4 +23,3 @@ namespace Flow
 		return Buffer;
 	}
 }
-
