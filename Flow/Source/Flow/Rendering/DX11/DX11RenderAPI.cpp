@@ -12,8 +12,6 @@ namespace Flow
 {
 	DX11RenderAPI::~DX11RenderAPI()
 	{
-		FLOW_ENGINE_LOG("DX11RenderAPI::Shutdown");
-
 		//CREATE_RESULT_HANDLE();
 		//
 		////TODO: Fix the log spam on close
@@ -149,7 +147,7 @@ namespace Flow
 		Context->RSSetViewports(1u, &Viewport);
 
 		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
-		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportWidth / (float)ViewportHeight, 0.5f, 500.0f));
+		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportWidth / (float)ViewportHeight, 0.5f, 2000.0f));
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{

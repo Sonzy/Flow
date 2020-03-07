@@ -14,8 +14,6 @@ namespace Flow
 		Component(const std::string& Name);
 		virtual ~Component();
 
-		void AddChild(Component* Child);
-
 		WorldComponent* GetParentComponent();
 		WorldObject* GetParentWorldObject();
 

@@ -5,12 +5,15 @@
 #include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
 
+#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
+#include "Flow\GameFramework\Components\RenderableComponent.h"
+
 
 #include "Flow\Assets\AssetSystem.h"
 #include "Flow\Assets\Shaders\ShaderAsset.h"
 #include "Flow\Assets\Textures\TextureAsset.h"
 
-#include "Flow\Rendering\Core\Renderable.h"
+#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
 
 namespace Flow
 {
@@ -19,6 +22,19 @@ namespace Flow
 	}
 
 	void Material::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
+	{
+		Parent->AddBind(Texture::Resolve(m_Texture, 0));
+		Parent->AddBind(Sampler::Resolve());
+
+		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Parent->AddBind(std::move(vShader));
+		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
+
+		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+	}
+
+	void Material::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
 	{
 		Parent->AddBind(Texture::Resolve(m_Texture, 0));
 		Parent->AddBind(Sampler::Resolve());

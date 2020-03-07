@@ -7,6 +7,12 @@ struct Rotator
 	float Roll;
 	float Yaw;
 
+	Rotator()
+		: Pitch(0), Roll(0), Yaw(0)
+	{
+
+	}
+
 	Rotator(float Pitch, float Roll, float Yaw)
 		: Pitch(Pitch), Roll(Roll), Yaw(Yaw)
 	{
@@ -32,6 +38,23 @@ struct Rotator
 		New.Pitch += Other.Pitch;
 		New.Roll += Other.Roll;
 		New.Yaw += Other.Yaw;
+
+		return New;
+	}
+
+	void operator-=(const Rotator& Other)
+	{
+		Pitch -= Other.Pitch;
+		Roll -= Other.Roll;
+		Yaw -= Other.Yaw;
+	}
+
+	Rotator operator-(const Rotator& Other)
+	{
+		Rotator New = Rotator(Pitch, Roll, Yaw);
+		New.Pitch -= Other.Pitch;
+		New.Roll -= Other.Roll;
+		New.Yaw -= Other.Yaw;
 
 		return New;
 	}

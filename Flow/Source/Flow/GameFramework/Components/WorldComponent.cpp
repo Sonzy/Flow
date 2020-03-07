@@ -27,27 +27,116 @@ namespace Flow
 		}
 	}
 
+	void WorldComponent::AddChild(WorldComponent* Child)
+	{
+		CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
+		m_Children.push_back(Child);
+	}
+
 	Vector WorldComponent::GetWorldLocation()
 	{
 		WorldComponent* Parent = GetParentComponent();
-		return Parent ? Parent->GetWorldLocation() + m_RelativeLocation : m_RelativeLocation;
+		return Parent ? Parent->GetWorldLocation() + m_RelativeTransform.m_Location : m_RelativeTransform.m_Location;
 	}
 
-	void WorldComponent::SetWorldLocation(Vector& NewLocation)
+	Vector WorldComponent::GetRelativeLocation()
+	{
+		return m_RelativeTransform.m_Location;
+	}
+
+	void WorldComponent::SetWorldLocation(Vector NewLocation)
 	{
 		Vector CurrentParentWorld;
 		
 		while (WorldComponent* Parent = GetParentComponent())
 		{
-			CurrentParentWorld += Parent->m_RelativeLocation;
+			CurrentParentWorld += Parent->m_RelativeTransform.m_Location;
 		}
 
-		m_RelativeLocation = NewLocation - CurrentParentWorld;
+		m_RelativeTransform.m_Location = NewLocation - CurrentParentWorld;
 	}
 
-	void WorldComponent::SetRelativeLocation(const Vector& NewLocation)
+	void WorldComponent::SetRelativeLocation(Vector NewLocation)
 	{
-		m_RelativeLocation = NewLocation;
+		m_RelativeTransform.m_Location = NewLocation;
+	}
+
+	Rotator WorldComponent::GetWorldRotation()
+	{
+		WorldComponent* Parent = GetParentComponent();
+		return Parent ? Parent->GetWorldRotation() + m_RelativeTransform.m_Rotation : m_RelativeTransform.m_Rotation;
+	}
+
+	Rotator WorldComponent::GetRelativeRotation()
+	{
+		return m_RelativeTransform.m_Rotation;
+	}
+
+	void WorldComponent::SetWorldRotation(Rotator NewRotation)
+	{
+		Rotator CurrentParentWorld;
+
+		while (WorldComponent* Parent = GetParentComponent())
+		{
+			CurrentParentWorld += Parent->m_RelativeTransform.m_Rotation;
+		}
+
+		m_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
+	}
+
+	void WorldComponent::SetRelativeRotation(Rotator NewRotation)
+	{
+		m_RelativeTransform.m_Rotation = NewRotation;
+	}
+
+	Vector WorldComponent::GetWorldScale()
+	{
+		WorldComponent* Parent = GetParentComponent();
+		return Parent ? Parent->GetWorldScale() + m_RelativeTransform.m_Scale : m_RelativeTransform.m_Scale;
+	}
+
+	Vector WorldComponent::GetRelativeScale()
+	{
+		return m_RelativeTransform.m_Scale;
+	}
+
+	void WorldComponent::SetWorldScale(Vector NewScale)
+	{
+		Vector CurrentParentWorld;
+
+		while (WorldComponent* Parent = GetParentComponent())
+		{
+			CurrentParentWorld += Parent->m_RelativeTransform.m_Scale;
+		}
+
+		m_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
+	}
+
+	void WorldComponent::SetRelativeScale(Vector NewScale)
+	{
+		m_RelativeTransform.m_Scale = NewScale;
+	}
+
+	Transform WorldComponent::GetWorldTransform()
+	{
+		return Transform(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
+	}
+
+	Transform WorldComponent::GetRelativeTransform()
+	{
+		return m_RelativeTransform;
+	}
+
+	void WorldComponent::SetWorldTransform(Transform NewTransform)
+	{
+		SetWorldLocation(NewTransform.m_Location);
+		SetWorldRotation(NewTransform.m_Rotation);
+		SetWorldScale(NewTransform.m_Scale);
+	}
+
+	void WorldComponent::SetRelativeTransform(Transform NewTransform)
+	{
+		m_RelativeTransform = NewTransform;
 	}
 
 	void WorldComponent::Render()

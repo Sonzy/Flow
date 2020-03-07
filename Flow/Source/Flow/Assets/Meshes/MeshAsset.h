@@ -3,8 +3,16 @@
 #include <string>
 #include "Flow\Helper\Maths.h"
 
+
+#include "Flow\Rendering\Core\Bindable.h"
+#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+
 namespace Flow
 {
+	class IndexBuffer;
+	class VertexLayout;
+	class Material;
+
 	struct MeshFace
 	{
 		unsigned int m_NumIndices;
@@ -46,6 +54,12 @@ namespace Flow
 
 		std::vector<MeshVertex> GetVertices() const;
 
+		//===============================
+
+		void SetMaterial(Material* NewMaterial);
+		std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);
+		const IndexBuffer* GetIndexBuffer() const;
+
 	protected:
 
 		void GenerateAssetSize();
@@ -54,5 +68,13 @@ namespace Flow
 		std::vector<Vector> m_Normals;
 		std::vector<Vector> m_TexCoords;
 		std::vector<MeshFace> m_Faces;
+
+		const IndexBuffer* m_IndexBuffer;
+		Material* m_Material;
+		VertexLayout m_VertexLayout;
+		std::vector<std::shared_ptr<Bindable>> m_Binds;
+
+	private:
+		void AddBind(std::shared_ptr<Bindable> newBind);
 	};
 }

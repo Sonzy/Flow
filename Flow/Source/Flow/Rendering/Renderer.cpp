@@ -1,5 +1,7 @@
 #include "Flowpch.h"
 #include "Renderer.h"
+#include "Flow\GameFramework\Components\RenderableComponent.h"
+
 namespace Flow
 {
 	int Renderer::s_ObjectsRendered = 0;
@@ -31,6 +33,15 @@ namespace Flow
 
 		Renderables->BindAll();
 		RenderCommand::DrawIndexed(Renderables->GetIndexBuffer().GetCount());
+		s_ObjectsRendered++;
+	}
+
+	void Renderer::Submit(RenderableComponent* const Renderable)
+	{
+		CHECK_RETURN(!Renderable, "Renderer::Submit: Renderable was nullptr");
+
+		Renderable->BindAll();
+		RenderCommand::DrawIndexed(Renderable->GetIndexBuffer().GetCount());
 		s_ObjectsRendered++;
 	}
 

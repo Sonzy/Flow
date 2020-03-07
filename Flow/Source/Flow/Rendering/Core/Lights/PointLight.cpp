@@ -1,6 +1,8 @@
 #include "Flowpch.h"
 #include "PointLight.h"
 #include "ThirdParty\ImGui\imgui.h"
+#include "Flow\Rendering\Renderer.h"
+#include "Flow\Rendering\Core\Mesh\StaticMesh.h"
 
 namespace Flow
 {
@@ -8,14 +10,16 @@ namespace Flow
 		: m_Mesh("Box"), m_PixelConstantBuffer(0)
 	{
 		Reset();
+		//m_Mesh.InitialiseStaticMesh("Box", nullptr);
+		//m_Mesh.SetScale(Vector(0.1f));
 	}
 
 	void PointLight::Reset()
 	{
 		m_ConstantBuffer = {
-			{0.0f, 15.0f, -10.0f},
-			{0.05f, 0.05f, 0.05f},
-			{1.0f, 1.0f, 1.0f},
+			{ 1.5f,14.0f,-4.5f },
+			{ 0.05f,0.05f,0.05f },
+			{ 1.0f,1.0f,1.0f },
 			1.0f,
 			1.0f,
 			0.045f,
@@ -23,16 +27,21 @@ namespace Flow
 		};
 	}
 
-	void PointLight::Bind(DirectX::FXMMATRIX ViewMatrix)
+	void PointLight::BindLight(DirectX::FXMMATRIX ViewMatrix)
 	{
 		auto Copy = m_ConstantBuffer;
 		const auto Position = DirectX::XMLoadFloat3(&m_ConstantBuffer.pos);
 
 		DirectX::XMStoreFloat3(&Copy.pos, DirectX::XMVector3Transform(Position, ViewMatrix));
-		m_Mesh.SetPosition(Vector(m_ConstantBuffer.pos.z, m_ConstantBuffer.pos.y, m_ConstantBuffer.pos.z));
+		m_Mesh.SetPosition(Vector(m_ConstantBuffer.pos.x, m_ConstantBuffer.pos.y, m_ConstantBuffer.pos.z));
 
 		m_PixelConstantBuffer.Update(Copy);
 		m_PixelConstantBuffer.Bind();
+
+		if (bDrawMesh)
+		{
+			Renderer::Submit(&m_Mesh);
+		}
 	}
 
 	void PointLight::RenderControlWindow()
@@ -40,9 +49,9 @@ namespace Flow
 		if (ImGui::Begin("Light"))
 		{
 			ImGui::Text("Position");
-			ImGui::SliderFloat("X", &m_ConstantBuffer.pos.x, -60.0f, 60.0f, "%.1f");
-			ImGui::SliderFloat("Y", &m_ConstantBuffer.pos.y, -60.0f, 60.0f, "%.1f");
-			ImGui::SliderFloat("Z", &m_ConstantBuffer.pos.z, -60.0f, 60.0f, "%.1f");
+			ImGui::SliderFloat("X", &m_ConstantBuffer.pos.x, -600.0f, 600.0f, "%.1f");
+			ImGui::SliderFloat("Y", &m_ConstantBuffer.pos.y, -600.0f, 600.0f, "%.1f");
+			ImGui::SliderFloat("Z", &m_ConstantBuffer.pos.z, -600.0f, 600.0f, "%.1f");
 
 			ImGui::Text("Intensity/Colour");
 			ImGui::SliderFloat("Intensity", &m_ConstantBuffer.diffuseIntensity, 0.1f, 5.0f, "%.2f");

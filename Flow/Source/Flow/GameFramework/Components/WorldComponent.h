@@ -13,9 +13,30 @@ namespace Flow
 
 		virtual void Tick(float DeltaTime) override;
 
+		void AddChild(WorldComponent* Child);
+
 		Vector GetWorldLocation();
-		void SetWorldLocation(Vector& NewLocation);
-		void SetRelativeLocation(const Vector& NewLocation);
+		Vector GetRelativeLocation();
+		void SetWorldLocation(Vector NewLocation);
+		void SetRelativeLocation(Vector NewLocation);
+
+		Rotator GetWorldRotation();
+		Rotator GetRelativeRotation();
+		void SetWorldRotation(Rotator NewRotation);
+		void SetRelativeRotation(Rotator NewRotation);
+
+		Vector GetWorldScale();
+		Vector GetRelativeScale();
+		void SetWorldScale(Vector NewScale);
+		void SetRelativeScale(Vector NewScale);
+
+		Transform GetWorldTransform();
+		Transform GetRelativeTransform();
+		void SetWorldTransform(Transform NewTransform);
+		void SetRelativeTransform(Transform NewTransform);
+
+
+
 
 		virtual void Render();
 
@@ -23,6 +44,7 @@ namespace Flow
 
 		std::vector<Component*> m_Children;
 		Component* m_ParentComponent;
-		Vector m_RelativeLocation;
+
+		Transform m_RelativeTransform;
 	};
 }

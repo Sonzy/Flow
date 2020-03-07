@@ -8,22 +8,18 @@
 #include "Flow\Application.h"
 #include "Flow\GameFramework\World.h"
 
-#include "Content\OpenCVTest.h"
-#include "Content\MultiuseCube.h"
+#include "Content/ExampleWorldObject.h"
+#include "Flow\Rendering\Core\Camera\Camera.h"
 
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		Actors.push_back(Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>());
 	}
 
-	Vector a;
-	a += Vector(1.0f, 1.0f, 1.0f);
-
-	IntVector2D Test = IntVector2D(2);
-	Test += IntVector2D(3);
+	Light = std::make_shared<Flow::PointLight>(500.0f);
 }
 
 ExampleLayer::~ExampleLayer()
@@ -33,10 +29,10 @@ ExampleLayer::~ExampleLayer()
 
 void ExampleLayer::OnUpdate(float DeltaTime)
 {
-	//Light->Bind(Flow::RenderCommand::GetCamera().GetMatrix());
-
 	int Count = 0;
 	Flow::Renderer::BeginScene();
+
+	Light->BindLight(Flow::RenderCommand::GetCamera().GetMatrix());
 
 	for (auto& Actor : Actors)
 	{
@@ -53,8 +49,7 @@ void ExampleLayer::OnImGuiRender()
 	Flow::RenderCommand::GetCamera().RenderIMGUIWindow();
 
 	Flow::AssetSystem::RenderDebugWindow(true);
-
-	//Light->RenderControlWindow();
+	Light->RenderControlWindow();
 }
 
 void ExampleLayer::OnAttach()

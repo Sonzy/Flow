@@ -6,6 +6,8 @@
 
 namespace Flow
 {
+	class RenderableComponent;
+
 	class FLOW_API Renderer
 	{
 	public:
@@ -18,7 +20,8 @@ namespace Flow
 		static void EndScene();
 
 		static int SubmitWithoutDraw(Renderable* Renderables);
-		static void Submit(Renderable* Renderables);
+		static void Submit(Renderable* const Renderables);
+		static void Submit(RenderableComponent* const Renderable);
 
 		static void Draw(int Count);
 

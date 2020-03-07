@@ -131,6 +131,7 @@
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Gameobject.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Helper\Maths.h" />
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Rotator.h" />
+    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Transform.h" />
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector.h" />
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector2D.h" />
     <ClInclude Include="Source\Flow\Helper\Timer.h" />
@@ -289,6 +291,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Gameobject.cpp" />
@@ -336,6 +339,7 @@
     <None Include="Source\Flow\ErrorHandling\DXGetErrorDescription.inl" />
     <None Include="Source\Flow\ErrorHandling\DXGetErrorString.inl" />
     <None Include="Source\Flow\ErrorHandling\DXTrace.inl" />
+    <None Include="Source\Flow\Rendering\Core\Shaders\ShaderHelpers.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\assimp-vc140-mt.lib" />
@@ -361,6 +365,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPhongVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

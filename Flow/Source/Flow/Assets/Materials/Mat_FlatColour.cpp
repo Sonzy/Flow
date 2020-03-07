@@ -1,6 +1,19 @@
 #include "Flowpch.h"
 #include "Mat_FlatColour.h"
 
+#include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
+#include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
+
+#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
+#include "Flow\GameFramework\Components\RenderableComponent.h"
+
+
+#include "Flow\Assets\AssetSystem.h"
+#include "Flow\Assets\Shaders\ShaderAsset.h"
+#include "Flow\Assets\Textures\TextureAsset.h"
+
+#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+
 namespace Flow
 {
 	Mat_FlatColour::Mat_FlatColour()

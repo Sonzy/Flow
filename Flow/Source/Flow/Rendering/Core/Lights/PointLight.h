@@ -13,7 +13,7 @@ namespace Flow
 
 		void Reset();
 
-		void Bind(DirectX::FXMMATRIX ViewMatrix);
+		void BindLight(DirectX::FXMMATRIX ViewMatrix);
 
 		void RenderControlWindow();
 
@@ -34,6 +34,7 @@ namespace Flow
 
 	private:
 		StaticMesh m_Mesh;
+		bool bDrawMesh = false;
 
 		LightConstantBuffer m_ConstantBuffer;
 		PixelConstantBuffer<LightConstantBuffer> m_PixelConstantBuffer;

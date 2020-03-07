@@ -22,20 +22,20 @@ namespace Flow
 
 		//= Bindable Interface =
 
-		static std::shared_ptr<Bindable> Resolve()
+		static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot)
 		{
-			BindableCodex::Resolve<PixelConstantBuffer>();
+			return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot);
 		}
 
-		static std::string GenerateUID()
+		static std::string GenerateUID(const C& Consts, UINT Slot)
 		{
 			return typeid(PixelConstantBuffer).name();
 		}
 
-		std::string GetUID() const
-		{
-			return GenerateUID();
-		}
+		//std::string GetUID() const
+		//{
+		//	return GenerateUID();
+		//}
 	};
 
 	template<typename C>

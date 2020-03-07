@@ -1,8 +1,7 @@
 #pragma once
 #include <math.h>
-#include "Maths\Transformations\Vector.h"
+#include "Maths\Transformations\Transform.h"
 #include "Maths\Transformations\Vector2D.h"
-#include "Maths\Transformations\Rotator.h"
 
 //Set the bit at the specified index to 1
 #define BITMASK(Bit) (1 << Bit)

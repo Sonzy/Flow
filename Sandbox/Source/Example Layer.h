@@ -3,11 +3,12 @@
 #include "Flow/Rendering/Core/Mesh/StaticMesh.h"
 #include "Flow\Rendering\Core\Lights\PointLight.h"
 #include <vector>
+#include <memory>
 
-#include "ExampleWorldObject.h"
-
-class OpenCVTest;
-class MultiuseCube;
+namespace Flow
+{
+	class WorldObject;
+}
 
 class ExampleLayer : public Flow::Layer
 {
@@ -21,9 +22,9 @@ public:
 
 private:
 
-	//std::shared_ptr<ExampleWorldObject> TestWorldObject;
-	//std::shared_ptr<OpenCVTest> CVTest;
-	//std::shared_ptr<MultiuseCube> Cube;
-
 	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;
+	std::shared_ptr<Flow::PointLight> Light;
+
+	std::shared_ptr<Flow::StaticMesh> Mesh1;
+	std::shared_ptr<Flow::StaticMesh> Mesh2;
 };

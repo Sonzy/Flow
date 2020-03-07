@@ -1,20 +1,21 @@
 #pragma once
 #include <string>
-#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
-#include "Flow/Rendering/Core/Vertex/VertexBuffer.h"
-
-#include "Flow\Assets\Shaders\ShaderAsset.h"
-#include "Flow\Assets\Textures\TextureAsset.h"
 
 namespace Flow
 {
+	class RenderableComponent;
+	class VertexLayout;
+	class ShaderAsset;
+	class TextureAsset;
+	class StaticMesh;
+
 	class FLOW_API Material
 	{
 	public:
 		Material();
 
 		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout);
+		virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout);
 
 
 		void SetTexture(const std::string& TextureName);

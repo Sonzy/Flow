@@ -43,21 +43,26 @@ namespace Flow
 
 		//TODO: Load assets somewhere
 		//= Models =
-		AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
-		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
-		AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
+		//AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
+		//AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
+		//AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
 		AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
-		AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
+		//AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
+		//AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
+		AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
 
 		//= Textures =
-		AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
-		AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
-		AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
+		//AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
+		//AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
+		//AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
 		AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
+		//AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
 
 		//= Shaders =
 		AssetSystem::LoadAsset("TexturedLightVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
 		AssetSystem::LoadAsset("TexturedLightPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+		AssetSystem::LoadAsset("TexturedPhongPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPhongPS.cso");
+		AssetSystem::LoadAsset("TexturedPhongVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPhongVS.cso");
 		AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
 		AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
 		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
@@ -153,8 +158,6 @@ namespace Flow
 
 	bool Application::OnWindowResized(WindowResizedEvent& e)
 	{
-		FLOW_ENGINE_LOG("Window Resized to ({0}, {1})", e.GetWidth(), e.GetHeight());
-		//MainWindow->Resize(e.GetWidth(), e.GetHeight());
 		RenderCommand::Resize(e.GetWidth(), e.GetHeight());
 		return false;
 	}
@@ -189,7 +192,7 @@ namespace Flow
 		TimeSinceFrameRateCheck += DeltaTime;
 		FrameCounter++;
 
-		if (FrameCounter > 5)
+		if (FrameCounter == 5)
 		{
 			FrameTimer = TimeSinceFrameRateCheck / 5;
 			TimeSinceFrameRateCheck = 0;

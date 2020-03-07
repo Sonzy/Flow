@@ -3,6 +3,10 @@
 #include <string>
 #include "AssetBase.h"
 #include <functional>
+
+#include "Flow\Assets\Materials\MaterialAsset.h"
+#include "Flow\Assets\Shaders\ShaderAsset.h"
+#include "Flow\Assets\Textures\TextureAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
 namespace Flow

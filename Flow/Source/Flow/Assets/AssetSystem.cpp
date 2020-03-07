@@ -52,6 +52,8 @@ namespace Flow
 
 			return true;
 		}
+		else
+			FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, AssetPath);
 
 		return false;
 	}
@@ -80,7 +82,7 @@ namespace Flow
 		if (Extension._Equal("jpg") || Extension._Equal("png"))
 			return EAssetType::Texture;
 
-		if (Extension._Equal("obj"))
+		if (Extension._Equal("obj") || Extension._Equal("FBX"))
 			return EAssetType::Mesh;
 
 		if (Extension._Equal("cso"))

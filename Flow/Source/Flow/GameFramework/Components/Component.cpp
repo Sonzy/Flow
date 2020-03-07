@@ -17,10 +17,6 @@ namespace Flow
 	{
 	}
 
-	void Component::AddChild(Component* Child)
-	{
-	}
-
 	WorldComponent* Component::GetParentComponent()
 	{
 		return nullptr;

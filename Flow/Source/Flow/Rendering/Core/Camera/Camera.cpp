@@ -8,9 +8,8 @@
 namespace Flow
 {
 	Camera::Camera()
-		: m_Position(0.0f), m_Rotation(0.0f), m_LastMousePos(Input::GetMousePosition())
+		: m_Position(0.0f,0.0f, -100.0f), m_Rotation(0.0f), m_LastMousePos(Input::GetMousePosition())
 	{
-		Reset();
 	}
 
 	DirectX::XMMATRIX Camera::GetMatrix() const

@@ -3,6 +3,7 @@
 #include "Vector.h"
 #include "Vector2D.h"
 #include <DirectXMath.h>
+#include "spdlog/fmt/ostr.h"
 
 struct Vector
 {
@@ -46,5 +47,11 @@ struct Vector
 	Vector operator-(const Vector& Other)
 	{
 		return Vector(X - Other.X, Y - Other.Y, Z - Other.Z);
+	}
+
+	template<typename OStream>
+	friend OStream& operator<<(OStream& os, const Vector& c)
+	{
+		return os << c.X << "," << c.Y << "," << c.Z;
 	}
 };
