@@ -30,10 +30,10 @@ namespace Flow
 	DirectX::XMMATRIX RenderableComponent::GetTransformXM()
 	{
 		Transform WorldTransform = GetWorldTransform();
-		return DirectX::XMMatrixRotationRollPitchYaw(WorldTransform.m_Rotation.Pitch, WorldTransform.m_Rotation.Yaw, WorldTransform.m_Rotation.Roll) * //Rotate around box centre
-			DirectX::XMMatrixTranslation(WorldTransform.m_Location.X, WorldTransform.m_Location.Y, WorldTransform.m_Location.Z) * //Move relative to origin
-			//DirectX::XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f); //Rotate around world centre
-			DirectX::XMMatrixScaling(WorldTransform.m_Scale.X, WorldTransform.m_Scale.Y, WorldTransform.m_Scale.Z);
+		return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.X, WorldTransform.m_Scale.Y, WorldTransform.m_Scale.Z) *
+			DirectX::XMMatrixRotationRollPitchYaw(WorldTransform.m_Rotation.Pitch, WorldTransform.m_Rotation.Yaw, WorldTransform.m_Rotation.Roll) * //Rotate around box centre
+			DirectX::XMMatrixTranslation(WorldTransform.m_Location.X, WorldTransform.m_Location.Y, WorldTransform.m_Location.Z);
+
 	}
 
 	void RenderableComponent::AddBind(std::shared_ptr<Bindable> bind)

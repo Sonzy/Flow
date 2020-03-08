@@ -61,7 +61,7 @@ namespace Flow
 		}
 
 		//Add Vertex Buffer Bind
-		AddBind(BindableVertexBuffer::Resolve("MeshBuffer", VBuffer));
+		AddBind(BindableVertexBuffer::Resolve(LocalPath, VBuffer));
 
 		if (!MaterialOverride)
 		{
@@ -72,7 +72,7 @@ namespace Flow
 			MaterialOverride->BindMaterial(this, Layout);
 
 		//Bind Index Buffer
-		AddBind(IndexBuffer::Resolve("MeshIndexBuffer", indices));
+		AddBind(IndexBuffer::Resolve(LocalPath, indices));
 
 		//Bind Transform
 		AddBind(std::make_shared<TransformConstantBuffer>(this));
@@ -80,8 +80,13 @@ namespace Flow
 
 	DirectX::XMMATRIX StaticMesh::GetTransformXM() const
 	{
-		return DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
-			DirectX::XMMatrixTranslation(m_Position.X, m_Position.Y, m_Position.Z) * //Move relative to origin
-			DirectX::XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f); //Rotate around world centre
+		//return DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
+		//	DirectX::XMMatrixTranslation(m_Position.X, m_Position.Y, m_Position.Z);// * //Move relative to origin
+		//	//DirectX::XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f); //Rotate around world centre
+		//	//DirectX::XMMatrixScaling(m_Scale.X, m_Scale.Y, m_Scale.Z);
+
+		return DirectX::XMMatrixScaling(m_Scale.X, m_Scale.Y, m_Scale.Z) *
+			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
+			DirectX::XMMatrixTranslation(m_Position.X, m_Position.Y, m_Position.Z);// * //Move relative to origin
 	}
 }

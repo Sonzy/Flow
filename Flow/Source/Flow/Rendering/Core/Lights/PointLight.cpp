@@ -3,6 +3,7 @@
 #include "ThirdParty\ImGui\imgui.h"
 #include "Flow\Rendering\Renderer.h"
 #include "Flow\Rendering\Core\Mesh\StaticMesh.h"
+#include "Flow\Assets\AssetSystem.h"
 
 namespace Flow
 {
@@ -10,8 +11,14 @@ namespace Flow
 		: m_Mesh("Box"), m_PixelConstantBuffer(0)
 	{
 		Reset();
-		//m_Mesh.InitialiseStaticMesh("Box", nullptr);
-		//m_Mesh.SetScale(Vector(0.1f));
+
+		m_Mesh.InitialiseStaticMesh("", nullptr);
+		m_Mesh.SetScale(Vector(0.1f));
+
+		Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour")->GetMaterial();
+
+		m_Mesh.InitialiseStaticMesh("Sphere", Material);
+		m_Mesh.SetScale(10.0f);
 	}
 
 	void PointLight::Reset()

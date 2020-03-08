@@ -34,7 +34,7 @@ namespace Flow
 
 	private:
 		StaticMesh m_Mesh;
-		bool bDrawMesh = false;
+		bool bDrawMesh = true;
 
 		LightConstantBuffer m_ConstantBuffer;
 		PixelConstantBuffer<LightConstantBuffer> m_PixelConstantBuffer;

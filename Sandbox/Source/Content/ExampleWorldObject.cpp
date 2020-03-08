@@ -33,7 +33,7 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 void ExampleWorldObject::Tick(float DeltaTime)
 {
 	//TestMesh2->SetRelativeLocation(TestMesh2->GetRelativeLocation() + Vector(1.0f, 0.0f, 0.0f));
-	//TestMesh2->SetRelativeRotation(TestMesh2->GetRelativeRotation() + Rotator(1.0f, 0.0f, 0.0f));
+	TestMesh2->SetRelativeRotation(TestMesh2->GetRelativeRotation() + Rotator(1.0f * DeltaTime, 0.0f, 0.0f));
 
 	//FLOW_LOG("TestMeshPosition: {0}", TestMesh->GetRelativeLocation());
 }

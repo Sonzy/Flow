@@ -113,10 +113,10 @@ namespace Flow
 		}
 
 		//Add Vertex Buffer Bind
-		m_Binds.push_back(BindableVertexBuffer::Resolve("MeshBuffer", VBuffer));
+		m_Binds.push_back(BindableVertexBuffer::Resolve(m_AssetName, VBuffer));
 
 		//Bind Index Buffer
-		std::shared_ptr<Bindable> Index = IndexBuffer::Resolve("MeshIndexBuffer", indices);
+		std::shared_ptr<Bindable> Index = IndexBuffer::Resolve(m_AssetName, indices);
 		assert("MeshAsset::GenerateBinds: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
 		m_Binds.push_back(Index);
 		m_IndexBuffer = static_cast<IndexBuffer*>(Index.get());

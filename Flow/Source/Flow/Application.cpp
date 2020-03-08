@@ -50,6 +50,7 @@ namespace Flow
 		//AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
 		//AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
 		AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
+		AssetSystem::LoadAsset("Sphere", "Flow/Assets/Models/Sphere.obj");
 
 		//= Textures =
 		//AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
