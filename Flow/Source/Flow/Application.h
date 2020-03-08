@@ -15,6 +15,7 @@ namespace Flow
 {
 	class World;
 	class Inspector;
+	class EditorLayer;
 
 	class FLOW_API Application
 	{
@@ -42,6 +43,8 @@ namespace Flow
 		std::string GetLocalFilePath();
 		std::wstring GetLocalFilePathWide();
 
+		Inspector* GetInspector();
+
 		Window& GetWindow();
 
 	public:
@@ -57,7 +60,10 @@ namespace Flow
 
 		static Application* Instance;
 		std::unique_ptr<Window> MainWindow;
+
 		ImGuiLayer* m_ImGuiLayer;
+		EditorLayer* m_EditorLayer;
+
 		bool bRunning = true;
 
 		//= Game ====================

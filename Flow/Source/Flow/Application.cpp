@@ -13,6 +13,7 @@
 #include "Flow\GameFramework\World.h"
 
 #include "Flow\Editor\Inspector.h"
+#include "Flow\Layers\EditorLayer.h"
 
 //TODO: Load somewhere else
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
@@ -34,6 +35,9 @@ namespace Flow
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+		m_EditorLayer = new EditorLayer();
+		PushLayer(m_EditorLayer);
 
 		//Get Local File Path
 		char Path[128];
@@ -181,6 +185,11 @@ namespace Flow
 	std::wstring Application::GetLocalFilePathWide()
 	{
 		return std::wstring(LocalPath.begin(), LocalPath.end());
+	}
+
+	Inspector* Application::GetInspector()
+	{
+		return m_Inspector;
 	}
 
 	Window& Application::GetWindow()

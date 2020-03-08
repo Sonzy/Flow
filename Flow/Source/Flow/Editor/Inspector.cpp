@@ -40,4 +40,10 @@ namespace Flow
 	{
 		m_CurrentWorld = WorldReference;
 	}
+
+	bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
+	{
+		FLOW_ENGINE_LOG("OnMouseClicked: TODO: collision with objects in scene");
+		return false;
+	}
 }

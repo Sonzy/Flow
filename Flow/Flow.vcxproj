@@ -147,6 +147,7 @@
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
     <ClInclude Include="Source\Flow\Input\WindowsInput.h" />
+    <ClInclude Include="Source\Flow\Layers\EditorLayer.h" />
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="Source\Flow\GameFramework\WorldObject.cpp" />
     <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
+    <ClCompile Include="Source\Flow\Layers\EditorLayer.cpp" />
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />

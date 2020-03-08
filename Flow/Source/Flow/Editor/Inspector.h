@@ -1,4 +1,5 @@
 #pragma once
+#include "Flow/Events/MouseEvent.h"
 
 namespace Flow
 {
@@ -14,6 +15,8 @@ namespace Flow
 		void RenderHeirarchy();
 
 		void SetCurrentWorld(World* WorldReference);
+
+		bool OnMouseClicked(MouseButtonPressedEvent& e);
 	private:
 
 		World* m_CurrentWorld;
