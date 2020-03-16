@@ -3,6 +3,12 @@
 #include <vector>
 #include <memory>
 
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;
+
 namespace Flow
 {
 	class WorldObject;
@@ -13,6 +19,8 @@ namespace Flow
 		World();
 		World(const std::string& WorldName);
 		~World();
+
+		void InitialisePhysics();
 
 		template<typename T>
 		std::shared_ptr<T> SpawnWorldObject()
@@ -32,5 +40,17 @@ namespace Flow
 
 		std::vector<std::shared_ptr<WorldObject>> m_WorldObjects;
 		std::string m_WorldName;
+
+		//=== World Physics ===
+
+		/* Default memory setup */
+		btDefaultCollisionConfiguration* CollisionConfig;
+		/* Default single threaded collision dispatcher */
+		btCollisionDispatcher* Dispatcher;
+		/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
+		btBroadphaseInterface* OverlappingPairCache;
+		/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
+		btSequentialImpulseConstraintSolver* Solver;
+		btDiscreteDynamicsWorld* PhysicsWorld;
 	};
 }

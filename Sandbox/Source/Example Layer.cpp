@@ -11,6 +11,9 @@
 #include "Content/ExampleWorldObject.h"
 #include "Flow\Rendering\Core\Camera\Camera.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
@@ -20,6 +23,26 @@ ExampleLayer::ExampleLayer()
 	}
 
 	Light = std::make_shared<Flow::PointLight>(500.0f);
+
+
+	///* collision configuration contains default setup for memory , collision setup .
+	//Advanced users can create their own configuration . */
+	//btDefaultCollisionConfiguration* CollisionConfig = new btDefaultCollisionConfiguration();
+	//
+	///// use the default collision dispatcher . For parallel processing you can use a diffent
+	////dispatcher(see Extras / BulletMultiThreaded)
+	//btCollisionDispatcher* dispatcher = new btCollisionDispatcher(CollisionConfig);
+	//
+	///// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
+	//btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+	//
+	///// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
+	//btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+	//
+	//btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,
+	//	overlappingPairCache, solver, CollisionConfig);
+	//
+	//dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
 ExampleLayer::~ExampleLayer()
