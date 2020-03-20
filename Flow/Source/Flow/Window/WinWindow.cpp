@@ -37,7 +37,7 @@ namespace Flow
 		WindowRegion.top = 100;
 		WindowRegion.bottom = Properties.Height + WindowRegion.top;
 
-		DWORD WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME;
+		WindowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME;
 
 		result = AdjustWindowRect(&WindowRegion, WindowStyle, TRUE);
 		FLOW_ASSERT(result, "WinWindow::Initialise: Failed to adjust the window rect");
@@ -96,6 +96,11 @@ namespace Flow
 	unsigned int WinWindow::GetHeight() const
 	{
 		return Props.Height;
+	}
+
+	void WinWindow::SetWindowSizeWithAdjust(RECT& rect) const
+	{
+		::AdjustWindowRectEx(&rect, 0, FALSE, WindowStyle);
 	}
 
 	void WinWindow::SetEventCallback(const EventCallbackFunction& Callback)

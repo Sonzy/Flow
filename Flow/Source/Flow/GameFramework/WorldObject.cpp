@@ -1,6 +1,7 @@
 #include "Flowpch.h"
 #include "WorldObject.h"
 #include "Components\WorldComponent.h"
+#include "ThirdParty\ImGui\imgui.h"
 
 namespace Flow
 {
@@ -37,5 +38,30 @@ namespace Flow
 	{
 		if(m_RootComponent)
 			m_RootComponent->Render();
+	}
+
+	bool WorldObject::IsSimulatingPhysics()
+	{
+		return SimulatePhysics;
+	}
+
+	bool WorldObject::CollisionEnabled()
+	{
+		return HasCollision;
+	}
+
+	void WorldObject::InitialisePhysics()
+	{
+		m_RootComponent->InitialisePhysics();
+	}
+
+	btRigidBody* WorldObject::GetRigidBody()
+	{
+		return m_RootComponent->GetRigidBody();
+	}
+
+	void WorldObject::DrawDetailsWindow()
+	{
+		ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
 	}
 }

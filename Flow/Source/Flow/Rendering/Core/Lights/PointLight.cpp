@@ -12,9 +12,6 @@ namespace Flow
 	{
 		Reset();
 
-		m_Mesh.InitialiseStaticMesh("", nullptr);
-		m_Mesh.SetScale(Vector(0.1f));
-
 		Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour")->GetMaterial();
 
 		m_Mesh.InitialiseStaticMesh("Sphere", Material);
@@ -24,7 +21,7 @@ namespace Flow
 	void PointLight::Reset()
 	{
 		m_ConstantBuffer = {
-			{ 1.5f,14.0f,-4.5f },
+			{ 1.5f,100.0f,-4.5f },
 			{ 0.05f,0.05f,0.05f },
 			{ 1.0f,1.0f,1.0f },
 			1.0f,

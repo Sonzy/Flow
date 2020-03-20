@@ -30,6 +30,8 @@ namespace Flow
 
 		virtual void Resize(int Width, int Height) = 0;
 
+		virtual Vector GetScreenToWorldDirection(int X, int Y) = 0;
+
 		virtual Camera& GetCamera() = 0;
 
 		static API GetAPI() { return s_API; };

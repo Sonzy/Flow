@@ -27,6 +27,8 @@ namespace Flow
 
 		virtual void Resize(int Width, int Height);
 
+		virtual Vector GetScreenToWorldDirection(int X, int Y);
+
 		virtual Camera& GetCamera() override;
 
 		ID3D11Device* GetDevice();

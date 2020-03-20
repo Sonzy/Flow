@@ -4,6 +4,7 @@
 #include "Flow\Rendering\RenderCommand.h"
 #include "Flow\Assets\AssetSystem.h"
 #include "Flow\Rendering\Core\Materials\Material.h"
+#include "Flow\Assets\Materials\MaterialAsset.h"
 
 #include "Flow\Application.h"
 #include "Flow\GameFramework\World.h"
@@ -13,6 +14,8 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+
+#include "Content\Wall.h"
 
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
@@ -24,25 +27,13 @@ ExampleLayer::ExampleLayer()
 
 	Light = std::make_shared<Flow::PointLight>(500.0f);
 
+	//Floor = std::make_shared<Flow::StaticMesh>("");
+	//BackWall = std::make_shared<Flow::StaticMesh>("");
 
-	///* collision configuration contains default setup for memory , collision setup .
-	//Advanced users can create their own configuration . */
-	//btDefaultCollisionConfiguration* CollisionConfig = new btDefaultCollisionConfiguration();
-	//
-	///// use the default collision dispatcher . For parallel processing you can use a diffent
-	////dispatcher(see Extras / BulletMultiThreaded)
-	//btCollisionDispatcher* dispatcher = new btCollisionDispatcher(CollisionConfig);
-	//
-	///// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
-	//btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-	//
-	///// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
-	//btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-	//
-	//btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,
-	//	overlappingPairCache, solver, CollisionConfig);
-	//
-	//dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	std::shared_ptr<Wall> WallPtr = Flow::Application::GetWorld()->SpawnWorldObject<Wall>();
+	Actors.push_back(WallPtr);
+	WallPtr->GetRootComponent()->SetRelativeScale(Vector(400, 10, 100));
+	WallPtr->GetRootComponent()->SetWorldLocation(Vector(0, -100, 0));
 }
 
 ExampleLayer::~ExampleLayer()
@@ -57,6 +48,8 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 
 	Light->BindLight(Flow::RenderCommand::GetCamera().GetMatrix());
 
+	//Flow::Renderer::Submit(Floor.get());
+//	Flow::Renderer::Submit(BackWall.get());
 	for (auto& Actor : Actors)
 	{
 		Actor->Render();

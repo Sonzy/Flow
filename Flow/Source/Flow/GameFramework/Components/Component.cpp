@@ -24,7 +24,7 @@ namespace Flow
 
 	WorldObject* Component::GetParentWorldObject()
 	{
-		return nullptr;
+		return m_ParentObject;
 	}
 
 	void Component::SetParent(WorldObject* Parent)

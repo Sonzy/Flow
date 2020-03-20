@@ -23,7 +23,6 @@ namespace Flow
 	Renderable::~Renderable()
 	{
 		m_Binds.clear();
-		FLOW_ENGINE_LOG("asdsadssadsa");
 	}
 
 	const IndexBuffer& Renderable::GetIndexBuffer()

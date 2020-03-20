@@ -2,6 +2,9 @@
 #include "Flow\Core.h"
 #include <vector>
 #include <memory>
+#include "Flow\Helper\Maths.h"
+
+#include "btBulletDynamicsCommon.h"
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -20,7 +23,7 @@ namespace Flow
 		World(const std::string& WorldName);
 		~World();
 
-		void InitialisePhysics();
+		void InitialiseWorld();
 
 		template<typename T>
 		std::shared_ptr<T> SpawnWorldObject()
@@ -34,6 +37,13 @@ namespace Flow
 		void Tick(float DeltaTime);
 
 		const std::string& GetName();
+
+		static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
+
+		btDiscreteDynamicsWorld* GetPhysicsWorld();
+
+	protected:
+		void InitialisePhysics();
 
 	private:
 		friend class Inspector;

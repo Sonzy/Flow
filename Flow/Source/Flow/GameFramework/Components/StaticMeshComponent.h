@@ -1,6 +1,9 @@
 #pragma once
 #include "Flow\GameFramework\Components\RenderableComponent.h"
 
+class btCollisionShape;
+class btRigidBody;
+
 namespace Flow
 {
 	class MeshAsset;
@@ -31,10 +34,28 @@ namespace Flow
 		//Temp - TODO: Actually use component movement for rendering
 		MeshAsset* GetMesh() { return m_StaticMesh; }
 
+		//= Physics ==========
+
+		//TODO: temporary physics stuff - need to make an actual optimised collision mesh
+		//Creates a heap allocated collision, generates it for now and returns it
+		void GenerateCollision();
+		void CreateRigidBody();
+
+		virtual void InitialisePhysics() override;
+		virtual btRigidBody* GetRigidBody() override;
+
+		void SetSimulatePhysics(bool Simulate);
+
+
 	protected:
+
+		bool SimulatePhysics = false;
 
 		MeshAsset* m_StaticMesh;
 		bool bOverrideMaterial = true;
 		Material* m_Material;
+
+		btCollisionShape* Collision;
+		btRigidBody* Body;
 	};
 }

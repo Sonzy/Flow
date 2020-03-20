@@ -27,4 +27,7 @@ private:
 
 	std::shared_ptr<Flow::StaticMesh> Mesh1;
 	std::shared_ptr<Flow::StaticMesh> Mesh2;
+
+	std::shared_ptr<Flow::StaticMesh> Floor;
+	std::shared_ptr<Flow::StaticMesh> BackWall;
 };

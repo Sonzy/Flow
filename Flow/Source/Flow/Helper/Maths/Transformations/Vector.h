@@ -49,6 +49,11 @@ struct Vector
 		return Vector(X - Other.X, Y - Other.Y, Z - Other.Z);
 	}
 
+	Vector operator*(const float& Other)
+	{
+		return Vector(X * Other, Y * Other, Z * Other);
+	}
+
 	template<typename OStream>
 	friend OStream& operator<<(OStream& os, const Vector& c)
 	{

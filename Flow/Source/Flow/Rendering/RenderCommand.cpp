@@ -59,5 +59,10 @@ namespace Flow
 	{
 		delete s_RendererAPI;
 	}
+
+	Vector RenderCommand::GetScreenToWorldDirectionVector(int X, int Y)
+	{
+		return s_RendererAPI->GetScreenToWorldDirection(X, Y);
+	}
 }
 

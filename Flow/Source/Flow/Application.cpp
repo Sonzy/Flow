@@ -36,9 +36,6 @@ namespace Flow
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		m_EditorLayer = new EditorLayer();
-		PushLayer(m_EditorLayer);
-
 		//Get Local File Path
 		char Path[128];
 		GetModuleFileName(nullptr, Path, sizeof(Path));
@@ -48,7 +45,7 @@ namespace Flow
 		//TODO: Load assets somewhere
 		//= Models =
 		//AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
-		//AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
+		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
 		//AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
 		AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
 		//AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
@@ -79,8 +76,10 @@ namespace Flow
 
 		//Create the game world
 		GameWorld = new World("Game World");
-
 		m_Inspector = new Inspector();
+
+		m_EditorLayer = new EditorLayer();
+		PushLayer(m_EditorLayer);
 	}
 
 	Application::~Application()
@@ -93,6 +92,8 @@ namespace Flow
 
 	void Application::Run()
 	{
+		GameWorld->InitialiseWorld();
+
 		while (bRunning)
 		{
 			float DeltaTime = m_Timer.Mark();
@@ -100,8 +101,11 @@ namespace Flow
 			MainWindow->PreUpdate();
 			MainWindow->OnUpdate();
 
-			//TODO: Check where to move the world since I'm using layers
-			GameWorld->Tick(DeltaTime);
+			if (!bPaused)
+			{
+				//TODO: Check where to move the world since I'm using layers
+				GameWorld->Tick(DeltaTime);
+			}
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate(DeltaTime);
@@ -211,6 +215,8 @@ namespace Flow
 
 		if (ImGui::Begin("Application Statistics"))
 		{
+			ImGui::Checkbox("Pause Editor", &bPaused);
+
 			ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
 			ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);
 

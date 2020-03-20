@@ -17,6 +17,8 @@ namespace Flow
 		unsigned int GetWidth() const override;
 		unsigned int GetHeight() const override;
 
+		void SetWindowSizeWithAdjust(RECT& rect) const;
+
 		void SetEventCallback(const EventCallbackFunction& Callback) override;
 
 		void EnableVSync(bool bEnabled) override;
@@ -40,6 +42,7 @@ namespace Flow
 	private:
 
 		HWND WindowHandle;
+		DWORD WindowStyle;
 
 		struct WindowData
 		{

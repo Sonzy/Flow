@@ -5,6 +5,8 @@
 #include <memory>
 #include <type_traits>
 
+#include "btBulletCollisionCommon.h"
+
 namespace Flow
 {
 	class WorldComponent;
@@ -22,8 +24,18 @@ namespace Flow
 
 		void Render();
 
+		bool IsSimulatingPhysics();
+		bool CollisionEnabled();
+
+		virtual void InitialisePhysics();
+		btRigidBody* GetRigidBody();
+
+		virtual void DrawDetailsWindow() override;
+
+
 	protected:
 
+		/* Creates a new component, assigns it's parent as this object and returns it */
 		template <typename T>
 		std::shared_ptr<T> CreateComponent(const std::string& NewName)
 		{
@@ -38,5 +50,11 @@ namespace Flow
 	protected:
 
 		WorldComponent* m_RootComponent;
+
+		//= Physics ===================
+
+		bool SimulatePhysics = false;
+		bool HasCollision = false;
+		int Tag;
 	};
 }

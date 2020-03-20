@@ -50,12 +50,19 @@ namespace Flow
 		Application& app = Application::GetApplication();
 		WinWindow* Window = static_cast<WinWindow*>(&app.GetWindow());
 
-		io.DisplaySize = ImVec2((float)Window->GetWidth(), (float)Window->GetHeight());
+
+
+		//io.DisplaySize = ImVec2((float)Window->GetWidth(), (float)Window->GetHeight());
+
 
 #ifdef  FLOW_PLATFORM_WINDOWS
 		ImGui_ImplWin32_Init(Window->GetWindowHandle());
 		ImGui_ImplDX11_Init(RenderCommand::DX11GetDevice(), RenderCommand::DX11GetContext());
 #endif
+
+		RECT rect;
+		::GetClientRect(Window->GetWindowHandle(), &rect);
+		io.DisplaySize = ImVec2((float)(rect.right - rect.left), (float)(rect.bottom - rect.top));
 
 		FLOW_ENGINE_LOG("Imgui Initialised.");
 	}
@@ -84,9 +91,9 @@ namespace Flow
 
 	void ImGuiLayer::End()
 	{
-		Application& app = Application::GetApplication();
-		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+		//Application& app = Application::GetApplication();
+		//ImGuiIO& io = ImGui::GetIO();
+		//io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -129,6 +136,9 @@ namespace Flow
 
 		ImGuiIO& IO = ImGui::GetIO();
 		IO.MouseDown[e.GetMouseButton()] = true;
+
+		if (IO.WantCaptureMouse)
+			return true;
 
 		return false;
 	}
@@ -197,29 +207,30 @@ namespace Flow
 
 	bool ImGuiLayer::OnWindowResized(WindowResizedEvent& e)
 	{
-		Application& App = Application::GetApplication();
-		WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
-		HWND Handle = Window->GetWindowHandle();
-		ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(Handle);
-
-		struct ImGuiViewportDataWin32
-		{
-			HWND    Hwnd;
-			bool    HwndOwned;
-			DWORD   DwStyle;
-			DWORD   DwExStyle;
-
-			ImGuiViewportDataWin32() { Hwnd = NULL; HwndOwned = false;  DwStyle = DwExStyle = 0; }
-			~ImGuiViewportDataWin32() { IM_ASSERT(Hwnd == NULL); }
-		};
-
-		//TODO: Dont hard code :shrug:
-
-		ImGuiViewportDataWin32* data = (ImGuiViewportDataWin32*)viewport->PlatformUserData;
-		RECT rect = { 0, 0, (LONG)e.GetWidth(), (LONG)e.GetHeight() };
-		::AdjustWindowRectEx(&rect, 0, FALSE, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME); // Client to Screen
+		//Application& App = Application::GetApplication();
+		//WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
+		//HWND Handle = Window->GetWindowHandle();
+		//ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(Handle);
+		//
+		//struct ImGuiViewportDataWin32
+		//{
+		//	HWND    Hwnd;
+		//	bool    HwndOwned;
+		//	DWORD   DwStyle;
+		//	DWORD   DwExStyle;
+		//
+		//	ImGuiViewportDataWin32() { Hwnd = NULL; HwndOwned = false;  DwStyle = DwExStyle = 0; }
+		//	~ImGuiViewportDataWin32() { IM_ASSERT(Hwnd == NULL); }
+		//};
+		//
+		////TODO: Dont hard code :shrug:
+		//
+		//RECT rect = { 0, 0, (LONG)e.GetWidth(), (LONG)e.GetHeight() };
+		//Window->SetWindowSizeWithAdjust(rect);
+	
+		//::AdjustWindowRectEx(&rect, 0, FALSE, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME); // Client to Screen
 		//::SetWindowPos(Handle, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
-
+		//ImGuiViewportDataWin32* data = (ImGuiViewportDataWin32*)viewport->PlatformUserData;
 		return false;
 	}
 }

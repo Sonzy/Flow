@@ -32,6 +32,10 @@ namespace Flow
 
 		static void Shutdown();
 
+		//= Helper ===============
+
+		static Vector GetScreenToWorldDirectionVector(int X, int Y);
+
 	private:
 		static RenderAPI* s_RendererAPI;
 	};

@@ -12,6 +12,9 @@ namespace Flow
 
 		virtual void Tick(float DeltaTime);
 
+		/* To be overriden, assumes Imgui::Begin and Imgui::End are being handled externally. Draws widgets for itself in here */
+		virtual void DrawDetailsWindow();
+
 		const std::string& GetName();
 
 	protected:

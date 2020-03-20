@@ -46,7 +46,6 @@ namespace Flow
 		Inspector* GetInspector();
 
 		Window& GetWindow();
-
 	public:
 		std::string ApplicationName;
 
@@ -65,6 +64,7 @@ namespace Flow
 		EditorLayer* m_EditorLayer;
 
 		bool bRunning = true;
+		bool bPaused = false;
 
 		//= Game ====================
 

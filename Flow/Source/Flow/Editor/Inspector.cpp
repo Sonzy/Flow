@@ -4,6 +4,19 @@
 #include "Flow\GameFramework\World.h"
 #include "Flow\GameFramework\WorldObject.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+
+#include "Flow\Rendering\RenderCommand.h"
+#include "Flow\Input\Input.h"
+
+#include "Flow\Application.h"
+#include "Flow\GameFramework\World.h"
+#include "btBulletDynamicsCommon.h"
+
+#include "Flow\GameFramework\Components\WorldComponent.h"
+
+
 namespace Flow
 {
 	Inspector::Inspector()
@@ -15,7 +28,10 @@ namespace Flow
 	{
 		if (ImGui::Begin("Inspector"))
 		{
-			ImGui::Text("Selected Item:");
+			ImGui::Text("Selected Item: ");
+
+			if (m_FocusedItem)
+				m_FocusedItem->DrawDetailsWindow();
 		}
 		ImGui::End();
 	}
@@ -43,7 +59,22 @@ namespace Flow
 
 	bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	{
-		FLOW_ENGINE_LOG("OnMouseClicked: TODO: collision with objects in scene");
-		return false;
+		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetPosition();
+		IntVector2D MousePosition = Input::GetMousePosition();
+		Vector Start = Vector(Pos.x, Pos.y, Pos.z);
+		Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
+		Vector End = Start + (Direction * 1000.0f);
+
+		btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
+
+		WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
+		std::string HitObjectName = HitObject ? HitObject->GetName() : "Nothing";
+
+		m_FocusedItem = HitObject;
+
+		if(false)
+			FLOW_ENGINE_LOG("Inspector::OnMouseClicked: Start: {0}, End: {1}, Hit: {2}", Start, End, HitObjectName);
+
+		return true;
 	}
 }

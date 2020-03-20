@@ -67,7 +67,7 @@ namespace Flow
 		//Error if the path doesnt exist in the system
 		if (s_AssetSystem->m_LoadedAssets.find(HashedName) == s_AssetSystem->m_LoadedAssets.end())
 		{
-			FLOW_ENGINE_ERROR("Tried to get asset from path ({0}) and failed", AssetName);
+			FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName);
 			return nullptr;
 		}
 

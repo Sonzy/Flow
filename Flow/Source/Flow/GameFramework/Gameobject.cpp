@@ -19,6 +19,10 @@ void Flow::GameObject::Tick(float DeltaTime)
 {
 }
 
+void Flow::GameObject::DrawDetailsWindow()
+{
+}
+
 const std::string& Flow::GameObject::GetName()
 {
 	return m_ObjectName;

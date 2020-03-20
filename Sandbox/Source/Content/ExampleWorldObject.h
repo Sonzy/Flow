@@ -11,6 +11,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void InitialisePhysics() override;
+
 protected:
 
 	std::shared_ptr<Flow::StaticMeshComponent> TestMesh;

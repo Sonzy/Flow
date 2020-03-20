@@ -2,6 +2,8 @@
 #include "Component.h"
 #include "Flow\Helper\Maths.h"
 
+class btRigidBody;
+
 namespace Flow
 {
 	class FLOW_API WorldComponent : public Component
@@ -35,10 +37,14 @@ namespace Flow
 		void SetWorldTransform(Transform NewTransform);
 		void SetRelativeTransform(Transform NewTransform);
 
-
+		virtual void InitialisePhysics();
+		virtual btRigidBody* GetRigidBody();
 
 
 		virtual void Render();
+
+		//TODO: Probs not safe lool
+		Vector* GetWriteablePosition();
 
 	protected:
 

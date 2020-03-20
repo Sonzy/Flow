@@ -3,6 +3,10 @@
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
 
+#include "Flow\Rendering\RenderCommand.h"
+
+
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -236,6 +240,30 @@ namespace Flow
 
 		//TODO: Dont Hard Code
 		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)Width / (float)Height, 0.5f, 500.0f));
+	}
+
+	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
+	{
+		FLOW_ENGINE_LOG("TODO: Dont hard code window size");
+		float Width = 1280.0f;
+		float Height = 720.0f;
+
+		//Normalise into +1 to -1
+		float MouseX = ((2 * X) / Width) - 1;
+		float MouseY = ((2 * Y) / Height) - 1;
+
+		// Get the inverse of the view matrix.
+		DirectX::XMMATRIX InverseMatrix = DirectX::XMMatrixInverse(nullptr, RenderCommand::GetCamera().GetMatrix());
+		DirectX::XMFLOAT4X4 Inverse;
+		DirectX::XMStoreFloat4x4(&Inverse, InverseMatrix);
+
+		// Calculate the direction of the picking ray in view space.
+		Vector Direction;
+		Direction.X = (MouseX * Inverse._11) + (MouseY * Inverse._21) + Inverse._31;
+		Direction.Y = (MouseX * Inverse._12) + (MouseY * Inverse._22) + Inverse._32;
+		Direction.Z = (MouseX * Inverse._13) + (MouseY * Inverse._23) + Inverse._33;
+
+		return Direction;
 	}
 
 	Camera& DX11RenderAPI::GetCamera()

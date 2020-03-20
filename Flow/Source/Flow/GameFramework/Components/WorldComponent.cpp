@@ -139,6 +139,15 @@ namespace Flow
 		m_RelativeTransform = NewTransform;
 	}
 
+	void WorldComponent::InitialisePhysics()
+	{
+	}
+
+	btRigidBody* WorldComponent::GetRigidBody()
+	{
+		return nullptr;
+	}
+
 	void WorldComponent::Render()
 	{
 		for (auto Child : m_Children)
@@ -146,6 +155,11 @@ namespace Flow
 			if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))
 				WorldChild->Render();
 		}
+	}
+
+	Vector* WorldComponent::GetWriteablePosition()
+	{
+		return &m_RelativeTransform.m_Location;
 	}
 }
 

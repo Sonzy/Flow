@@ -37,5 +37,5 @@ float4 main(float3 Pos : Position, float3 n : Normal, float2 tc : TexCoord) : SV
 	//// final color
     //return float4(saturate((diffuse + Ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
     
-    return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    return float4(0.25f,0.25f, 0.25f, 1.0f);
 }

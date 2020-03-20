@@ -6,10 +6,14 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+
 ExampleWorldObject::ExampleWorldObject()
 	: ExampleWorldObject("Example World Object")
 {
-
+	SimulatePhysics = true;
+	HasCollision = true;
 }
 
 ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
@@ -28,6 +32,8 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 	TestMesh2->InitialiseComponent(Mesh, Material);
 	TestMesh2->SetRelativeLocation(Vector(100.0f, 10.0f, 10.0f));
 	//TestMesh2->SetWorldRotation(Rotator(90.0f, 0.0f, 0.0f));
+
+	TestMesh->SetSimulatePhysics(true);
 }
 
 void ExampleWorldObject::Tick(float DeltaTime)
@@ -35,6 +41,12 @@ void ExampleWorldObject::Tick(float DeltaTime)
 	//TestMesh2->SetRelativeLocation(TestMesh2->GetRelativeLocation() + Vector(1.0f, 0.0f, 0.0f));
 	TestMesh2->SetRelativeRotation(TestMesh2->GetRelativeRotation() + Rotator(1.0f * DeltaTime, 0.0f, 0.0f));
 
+	TestMesh->Tick(DeltaTime);
+
 	//FLOW_LOG("TestMeshPosition: {0}", TestMesh->GetRelativeLocation());
 }
 
+void ExampleWorldObject::InitialisePhysics()
+{
+	WorldObject::InitialisePhysics();
+}
