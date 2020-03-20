@@ -215,7 +215,7 @@ namespace Flow
 
 		if (ImGui::Begin("Application Statistics"))
 		{
-			ImGui::Checkbox("Pause Editor", &bPaused);
+			ImGui::Checkbox("Pause Game", &bPaused);
 
 			ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
 			ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);

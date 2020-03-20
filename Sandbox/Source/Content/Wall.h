@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow\GameFramework\WorldObject.h"
+#include "Flow\Helper\Maths.h"
 
 namespace Flow
 {
@@ -17,6 +18,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void InitialisePhysics() override;
+
+	void UpdateScale(Vector Scale);
 
 protected:
 

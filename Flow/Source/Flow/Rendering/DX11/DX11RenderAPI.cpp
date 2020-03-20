@@ -4,6 +4,8 @@
 #include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
 
 #include "Flow\Rendering\RenderCommand.h"
+#include "Flow\Application.h"
+#include "Flow\Window\WinWindow.h"
 
 
 
@@ -249,13 +251,15 @@ namespace Flow
 
 	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
 	{
-		FLOW_ENGINE_LOG("TODO: Dont hard code window size");
-		float Width = 1280.0f;
-		float Height = 720.0f;
+		IntVector2D WinSize = WinWindow::GetAdjustedWindowSize();
+		float Width = WinSize.X;
+		float Height = WinSize.Y;
 
 		//Normalise into +1 to -1
 		float MouseX = ((2 * X) / Width) - 1;
-		float MouseY = ((2 * Y) / Height) - 1;
+		float MouseY = -(((2 * Y) / Height) - 1);
+
+		//FLOW_ENGINE_ERROR("X: {0}, Y: {1}", MouseX, MouseY);
 
 		//Adjust for the projection matrix
 		DirectX::XMFLOAT4X4 Projection;
@@ -273,6 +277,9 @@ namespace Flow
 		Direction.X = (MouseX * Inverse._11) + (MouseY * Inverse._21) + Inverse._31;
 		Direction.Y = (MouseX * Inverse._12) + (MouseY * Inverse._22) + Inverse._32;
 		Direction.Z = (MouseX * Inverse._13) + (MouseY * Inverse._23) + Inverse._33;
+
+		//TODO: Normalise direction
+		//FLOW_ENGINE_LOG("Direction: {0}", Direction);
 
 		return Direction;
 	}

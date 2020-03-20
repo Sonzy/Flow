@@ -32,6 +32,15 @@ struct Vector
 		return { X, Y, Z };
 	}
 
+	//Vector Normalize()
+	//{
+	//	const float SquareSum = X * X + Y * Y + Z * Z;
+	//	CHECK_RETURN_OBJECT(SquareSum <= 1.e-8f, *this, "Vector::Normalize: Failed to normalise the vector");
+	//
+	//	const float Scale = InvSqrt(SquareSum);
+	//	X *= Scale; Y *= Scale; Z *= Scale;
+	//}
+
 	void operator+=(const Vector& Other)
 	{
 		X += Other.X;

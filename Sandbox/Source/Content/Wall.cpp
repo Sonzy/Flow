@@ -8,8 +8,10 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
+#include "Flow\GameFramework\World.h"
+
 Wall::Wall()
-	: Wall("Unnamed Wall")
+	: Wall("Wall")
 {
 
 }
@@ -36,4 +38,12 @@ void Wall::InitialisePhysics()
 	WorldObject::InitialisePhysics();
 
 	WallMesh->InitialisePhysics();
+
+	//WallMesh->MovePhysicsBody(WallMesh->GetRelativeTransform());
+}
+
+void Wall::UpdateScale(Vector Scale)
+{
+	Transform WallTrans = WallMesh->GetRelativeTransform();
+	WallMesh->MovePhysicsBody(WallTrans);
 }

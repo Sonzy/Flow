@@ -6,6 +6,8 @@
 //TODO: Remove
 #include "Components\StaticMeshComponent.h"
 
+#include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
+
 namespace Flow
 {
 	WorldObject::WorldObject()
@@ -65,10 +67,11 @@ namespace Flow
 
 	void WorldObject::DrawDetailsWindow()
 	{
-		ImGui::Text(m_ObjectName.c_str());
+		ImGui::InputText("ObjectName", &m_ObjectName);
 
-		ImGui::Separator();
+		ImGui::Separator(); //==========================================
 
+		//Display Component node tree
 		if (ImGui::TreeNode(m_RootComponent->GetName().c_str()))
 		{
 			for (auto Child : m_RootComponent->GetChildren())
@@ -79,8 +82,9 @@ namespace Flow
 			ImGui::TreePop();
 		}
 
-		ImGui::Separator();
+		ImGui::Separator(); //==========================================
 
+		//Display World Object Transform
 		bool bUpdate = false;
 		bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
 		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_RootComponent->GetWriteableRotation(), 1);

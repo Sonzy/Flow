@@ -25,9 +25,6 @@ private:
 	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;
 	std::shared_ptr<Flow::PointLight> Light;
 
-	std::shared_ptr<Flow::StaticMesh> Mesh1;
-	std::shared_ptr<Flow::StaticMesh> Mesh2;
-
-	std::shared_ptr<Flow::StaticMesh> Floor;
-	std::shared_ptr<Flow::StaticMesh> BackWall;
+	std::shared_ptr<Flow::WorldObject> WallObj;
+	std::shared_ptr<Flow::WorldObject> Example;
 };

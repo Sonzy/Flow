@@ -207,30 +207,7 @@ namespace Flow
 
 	bool ImGuiLayer::OnWindowResized(WindowResizedEvent& e)
 	{
-		//Application& App = Application::GetApplication();
-		//WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
-		//HWND Handle = Window->GetWindowHandle();
-		//ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(Handle);
-		//
-		//struct ImGuiViewportDataWin32
-		//{
-		//	HWND    Hwnd;
-		//	bool    HwndOwned;
-		//	DWORD   DwStyle;
-		//	DWORD   DwExStyle;
-		//
-		//	ImGuiViewportDataWin32() { Hwnd = NULL; HwndOwned = false;  DwStyle = DwExStyle = 0; }
-		//	~ImGuiViewportDataWin32() { IM_ASSERT(Hwnd == NULL); }
-		//};
-		//
-		////TODO: Dont hard code :shrug:
-		//
-		//RECT rect = { 0, 0, (LONG)e.GetWidth(), (LONG)e.GetHeight() };
-		//Window->SetWindowSizeWithAdjust(rect);
-	
-		//::AdjustWindowRectEx(&rect, 0, FALSE, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_THICKFRAME); // Client to Screen
-		//::SetWindowPos(Handle, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
-		//ImGuiViewportDataWin32* data = (ImGuiViewportDataWin32*)viewport->PlatformUserData;
+
 		return false;
 	}
 }

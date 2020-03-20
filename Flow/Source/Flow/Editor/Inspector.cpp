@@ -73,8 +73,8 @@ namespace Flow
 
 		m_FocusedItem = HitObject;
 
-		if(false)
-			FLOW_ENGINE_LOG("Inspector::OnMouseClicked: Start: {0}, End: {1}, Hit: {2}", Start, End, HitObjectName);
+		Vector HitLoc = Vector(Ray.m_hitPointWorld.x(), Ray.m_hitPointWorld.y(), Ray.m_hitPointWorld.z());
+		//	FLOW_ENGINE_LOG("Inspector::OnMouseClicked: Start: {0}, End: {1}, Hit: {2}, HitLoc: {3}", Start, End, HitObjectName, HitLoc);
 
 		return true;
 	}

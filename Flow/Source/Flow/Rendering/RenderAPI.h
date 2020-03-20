@@ -46,6 +46,8 @@ namespace Flow
 	protected:
 
 		IntVector2D ViewportSize;
+		IntVector2D AdjustedViewportSize;
+
 		float NearPlane;
 		float FarPlane;
 	};

@@ -110,6 +110,9 @@ namespace Flow
 		}
 
 		Collision = Shape;
+
+		Transform trans = GetWorldTransform();
+		Collision->setLocalScaling(btVector3(trans.m_Scale.X, trans.m_Scale.Y, trans.m_Scale.Z));
 	}
 
 	void StaticMeshComponent::CreateRigidBody()
@@ -132,9 +135,10 @@ namespace Flow
 		//Create the construction info for the body
 		btRigidBody::btRigidBodyConstructionInfo bodyCI =
 			btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, Collision, bodyInertia);
-		bodyCI.m_restitution = 0.1f;
+		bodyCI.m_restitution = 0.4f;
 		bodyCI.m_friction = 0.5f;
-
+		bodyCI.m_rollingFriction = 0.1f;
+		bodyCI.m_spinningFriction = 0.1f;
 
 		Body = new btRigidBody(bodyCI);
 		Body->setUserPointer(this);

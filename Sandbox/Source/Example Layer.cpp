@@ -20,20 +20,16 @@
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
-	for (int i = 0; i < 1; i++)
-	{
-		Actors.push_back(Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>());
-	}
+	WallObj = Flow::Application::GetWorld()->SpawnWorldObject<Wall>();
+	Example = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>();
+
+	Actors.push_back(WallObj);
+	Actors.push_back(Example);
 
 	Light = std::make_shared<Flow::PointLight>(500.0f);
 
-	//Floor = std::make_shared<Flow::StaticMesh>("");
-	//BackWall = std::make_shared<Flow::StaticMesh>("");
-
-	std::shared_ptr<Wall> WallPtr = Flow::Application::GetWorld()->SpawnWorldObject<Wall>();
-	Actors.push_back(WallPtr);
-	WallPtr->GetRootComponent()->SetRelativeScale(Vector(400, 10, 100));
-	WallPtr->GetRootComponent()->SetWorldLocation(Vector(0, -100, 0));
+	WallObj->GetRootComponent()->SetRelativeScale(Vector(400, 10, 100));
+	WallObj->GetRootComponent()->SetWorldLocation(Vector(0, -40, 0));
 }
 
 ExampleLayer::~ExampleLayer()
@@ -48,8 +44,6 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 
 	Light->BindLight(Flow::RenderCommand::GetCamera().GetMatrix());
 
-	//Flow::Renderer::Submit(Floor.get());
-//	Flow::Renderer::Submit(BackWall.get());
 	for (auto& Actor : Actors)
 	{
 		Actor->Render();

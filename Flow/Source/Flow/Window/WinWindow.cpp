@@ -8,6 +8,8 @@
 
 #include "Flow/Rendering/Renderer.h"
 
+#include "Flow\Application.h"
+
 namespace Flow
 {
 	Window* Window::Create(const WindowProperties& Properties)
@@ -19,7 +21,12 @@ namespace Flow
 	{
 		Initialise(Properties);
 
-		RenderCommand::InitialiseDX11(GetWindowHandle(), Properties.Width, Properties.Height);
+		//TODO: Clean this up, we pass in the adjusted window rect value
+		RECT rect;
+		::GetClientRect(WindowHandle, &rect);
+		IntVector2D Adj =  IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
+
+		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.X, Adj.Y);
 	}
 
 	WinWindow::~WinWindow()
@@ -279,6 +286,14 @@ namespace Flow
 	void WinWindow::Resize(int Width, int Height)
 	{
 
+	}
+
+	IntVector2D WinWindow::GetAdjustedWindowSize()
+	{
+		WinWindow* Win = static_cast<WinWindow*>(&Application::GetApplication().GetWindow());
+		RECT rect;
+		::GetClientRect(Win->GetWindowHandle(), &rect);
+		return IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
 	}
 
 	//= Window Class ===========================
