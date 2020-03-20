@@ -9,6 +9,8 @@
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
+#include "Flow\GameFramework\World.h"
+
 namespace Flow
 {
 	StaticMeshComponent::StaticMeshComponent()
@@ -144,12 +146,37 @@ namespace Flow
 		GenerateCollision();
 		CreateRigidBody();
 	}
+
 	btRigidBody* StaticMeshComponent::GetRigidBody()
 	{
 		return Body;
 	}
+
 	void StaticMeshComponent::SetSimulatePhysics(bool Simulate)
 	{
 		SimulatePhysics = Simulate;
+	}
+
+	void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
+	{
+		btMotionState* motionState = Body->getMotionState();
+		btTransform Transform;
+		btQuaternion Rotation;
+		Rotation.setEulerZYX(NewTransform.m_Rotation.Yaw, NewTransform.m_Rotation.Pitch, NewTransform.m_Rotation.Roll);
+
+		//Set new transform
+		Transform.setOrigin(btVector3(NewTransform.m_Location.X, NewTransform.m_Location.Y, NewTransform.m_Location.Z));
+		Transform.setRotation(Rotation);
+
+		//Set Scale
+		Collision->setLocalScaling(btVector3(NewTransform.m_Scale.X, NewTransform.m_Scale.Y, NewTransform.m_Scale.Z));
+
+		//Update Transform
+		Body->setWorldTransform(Transform);
+		motionState->setWorldTransform(Transform);
+		World::GetPhysicsWorld()->updateSingleAabb(Body);
+
+		//Re-enable physics body
+		Body->activate();
 	}
 }

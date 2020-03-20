@@ -28,8 +28,6 @@ namespace Flow
 	{
 		if (ImGui::Begin("Inspector"))
 		{
-			ImGui::Text("Selected Item: ");
-
 			if (m_FocusedItem)
 				m_FocusedItem->DrawDetailsWindow();
 		}
@@ -59,6 +57,9 @@ namespace Flow
 
 	bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	{
+		if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
+			return false;
+
 		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetPosition();
 		IntVector2D MousePosition = Input::GetMousePosition();
 		Vector Start = Vector(Pos.x, Pos.y, Pos.z);

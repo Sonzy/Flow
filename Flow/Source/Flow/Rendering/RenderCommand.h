@@ -32,6 +32,8 @@ namespace Flow
 
 		static void Shutdown();
 
+		static IntVector2D GetWindowSize();
+
 		//= Helper ===============
 
 		static Vector GetScreenToWorldDirectionVector(int X, int Y);

@@ -161,6 +161,18 @@ namespace Flow
 	{
 		return &m_RelativeTransform.m_Location;
 	}
+	Rotator* WorldComponent::GetWriteableRotation()
+	{
+		return &m_RelativeTransform.m_Rotation;
+	}
+	Vector* WorldComponent::GetWriteableScale()
+	{
+		return &m_RelativeTransform.m_Scale;
+	}
+	std::vector<Component*> WorldComponent::GetChildren() const
+	{
+		return m_Children;
+	}
 }
 
 

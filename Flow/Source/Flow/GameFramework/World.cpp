@@ -76,6 +76,10 @@ namespace Flow
 	}
 	btDiscreteDynamicsWorld* World::GetPhysicsWorld()
 	{
-		return PhysicsWorld;
+		return Application::GetWorld()->PhysicsWorld;
+	}
+	World* World::GetWorld()
+	{
+		return Application::GetWorld();
 	}
 }

@@ -3,6 +3,9 @@
 #include "Components\WorldComponent.h"
 #include "ThirdParty\ImGui\imgui.h"
 
+//TODO: Remove
+#include "Components\StaticMeshComponent.h"
+
 namespace Flow
 {
 	WorldObject::WorldObject()
@@ -62,6 +65,32 @@ namespace Flow
 
 	void WorldObject::DrawDetailsWindow()
 	{
-		ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
+		ImGui::Text(m_ObjectName.c_str());
+
+		ImGui::Separator();
+
+		if (ImGui::TreeNode(m_RootComponent->GetName().c_str()))
+		{
+			for (auto Child : m_RootComponent->GetChildren())
+			{
+				ImGui::Text(Child->GetName().c_str());
+			}
+
+			ImGui::TreePop();
+		}
+
+		ImGui::Separator();
+
+		bool bUpdate = false;
+		bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
+		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_RootComponent->GetWriteableRotation(), 1);
+		bUpdate |= ImGui::InputFloat3("Scale", (float*)m_RootComponent->GetWriteableScale(), 1);
+
+		if (bUpdate)
+		{
+			//TEMP CAST
+			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(m_RootComponent))
+				Comp->MovePhysicsBody(m_RootComponent->GetRelativeTransform());
+		}
 	}
 }

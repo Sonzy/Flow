@@ -35,8 +35,18 @@ namespace Flow
 		virtual Camera& GetCamera() = 0;
 
 		static API GetAPI() { return s_API; };
+
+	public:
+
+		IntVector2D GetWindowSize() { return ViewportSize; }
 		
 	private:
 		static API s_API;
+
+	protected:
+
+		IntVector2D ViewportSize;
+		float NearPlane;
+		float FarPlane;
 	};
 }

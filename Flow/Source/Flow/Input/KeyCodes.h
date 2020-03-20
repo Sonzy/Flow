@@ -2,10 +2,10 @@
 
 #ifdef FLOW_PLATFORM_WINDOWS
 
-#define FLOW_MOUSE_LEFT			1
-#define FLOW_MOUSE_RIGHT		2
+#define FLOW_MOUSE_LEFT			0  //Changed this from 1
+#define FLOW_MOUSE_RIGHT		1  //Changed this from 2
 #define FLOW_KEY_BREAK			3
-#define FLOW_MOUSE_MIDDLE		4
+#define FLOW_MOUSE_MIDDLE		2  //Changed this from 4
 #define FLOW_KEY_BACKSPACE		8
 #define FLOW_KEY_TAB			9
 #define FLOW_KEY_CLEAR			12

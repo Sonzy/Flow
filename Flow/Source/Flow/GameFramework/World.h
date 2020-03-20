@@ -40,7 +40,8 @@ namespace Flow
 
 		static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
 
-		btDiscreteDynamicsWorld* GetPhysicsWorld();
+		static btDiscreteDynamicsWorld* GetPhysicsWorld();
+		static World* GetWorld();
 
 	protected:
 		void InitialisePhysics();

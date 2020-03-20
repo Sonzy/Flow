@@ -45,6 +45,10 @@ namespace Flow
 
 		//TODO: Probs not safe lool
 		Vector* GetWriteablePosition();
+		Rotator* GetWriteableRotation();
+		Vector* GetWriteableScale();
+
+		std::vector<Component*> GetChildren() const;
 
 	protected:
 

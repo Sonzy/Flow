@@ -60,6 +60,11 @@ namespace Flow
 		delete s_RendererAPI;
 	}
 
+	IntVector2D RenderCommand::GetWindowSize()
+	{
+		return s_RendererAPI->GetWindowSize();
+	}
+
 	Vector RenderCommand::GetScreenToWorldDirectionVector(int X, int Y)
 	{
 		return s_RendererAPI->GetScreenToWorldDirection(X, Y);

@@ -47,6 +47,10 @@ namespace Flow
 		void SetSimulatePhysics(bool Simulate);
 
 
+		//TODO: Temp movement with rigidbodies
+		void MovePhysicsBody(Transform NewTransform);
+
+
 	protected:
 
 		bool SimulatePhysics = false;
