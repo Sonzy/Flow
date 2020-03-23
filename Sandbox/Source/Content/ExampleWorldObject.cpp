@@ -25,7 +25,8 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 
 	m_RootComponent->AddChild(TestMesh2.get());
 
-	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Hat_Sherif");
+	//Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Hat_Sherif");
+	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("SelectionGizmo");
 	Flow::MeshAsset* Mesh2 = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Hat_FancyMan");
 	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_HatFancyMan")->GetMaterial();
 	TestMesh->InitialiseComponent(Mesh2, Material);

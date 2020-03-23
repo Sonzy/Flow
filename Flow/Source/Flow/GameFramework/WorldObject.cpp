@@ -39,9 +39,33 @@ namespace Flow
 		return m_RootComponent;
 	}
 
+	Vector WorldObject::GetLocation()
+	{
+		if(!m_RootComponent)
+			return Vector();
+		
+		return m_RootComponent->GetRelativeLocation();
+	}
+
+	Vector WorldObject::GetScale()
+	{
+		if (!m_RootComponent)
+			return Vector();
+
+		return m_RootComponent->GetRelativeScale();
+	}
+
+	Rotator WorldObject::GetRotation()
+	{
+		if (!m_RootComponent)
+			return Rotator();
+
+		return m_RootComponent->GetRelativeRotation();
+	}
+
 	void WorldObject::Render()
 	{
-		if(m_RootComponent)
+		if(m_RootComponent && Visible)
 			m_RootComponent->Render();
 	}
 
@@ -90,11 +114,14 @@ namespace Flow
 		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_RootComponent->GetWriteableRotation(), 1);
 		bUpdate |= ImGui::InputFloat3("Scale", (float*)m_RootComponent->GetWriteableScale(), 1);
 
+		//Update Object Transform
 		if (bUpdate)
 		{
 			//TEMP CAST
 			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(m_RootComponent))
 				Comp->MovePhysicsBody(m_RootComponent->GetRelativeTransform());
 		}
+
+		ImGui::Checkbox("Is Visible", &Visible);
 	}
 }

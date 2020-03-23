@@ -16,11 +16,13 @@
 
 #include "Flow\GameFramework\Components\WorldComponent.h"
 
+#include "Flow\Editor\SelectionGizmo.h"
+
 
 namespace Flow
 {
-	Inspector::Inspector()
-		: m_FocusedItem(nullptr)
+	Inspector::Inspector(SelectionGizmo* Selector)
+		: m_CurrentWorld(nullptr), m_FocusedItem(nullptr), m_Selector(Selector)
 	{
 	}
 
@@ -73,9 +75,37 @@ namespace Flow
 
 		m_FocusedItem = HitObject;
 
-		Vector HitLoc = Vector(Ray.m_hitPointWorld.x(), Ray.m_hitPointWorld.y(), Ray.m_hitPointWorld.z());
+		//Vector HitLoc = Vector(Ray.m_hitPointWorld.x(), Ray.m_hitPointWorld.y(), Ray.m_hitPointWorld.z());
 		//	FLOW_ENGINE_LOG("Inspector::OnMouseClicked: Start: {0}, End: {1}, Hit: {2}, HitLoc: {3}", Start, End, HitObjectName, HitLoc);
+		if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
+		{
+			FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
+		}
+
+		if (!m_FocusedItem)
+		{
+			m_Selector->SetVisibility(false);
+			m_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		}
+		else
+		{
+			m_Selector->UpdatePosition(HitObject->GetLocation());
+			//m_Selector->SetScale(HitObject->GetScale().X);
+			m_Selector->SetVisibility(true);
+		}
+
 
 		return true;
+	}
+
+	void Inspector::Update()
+	{
+		RenderInspector();
+		RenderHeirarchy();
+	}
+
+	SelectionGizmo* Inspector::GetSelector()
+	{
+		return m_Selector;
 	}
 }

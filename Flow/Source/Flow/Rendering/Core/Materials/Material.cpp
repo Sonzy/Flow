@@ -21,7 +21,7 @@ namespace Flow
 	{
 	}
 
-	void Material::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
+	void Material::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
 	{
 		Parent->AddBind(Texture::Resolve(m_Texture, 0));
 		Parent->AddBind(Sampler::Resolve());

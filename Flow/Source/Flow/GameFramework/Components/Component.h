@@ -18,11 +18,13 @@ namespace Flow
 		WorldObject* GetParentWorldObject();
 
 		void SetParent(WorldObject* Parent);
+		void SetParentComponent(WorldComponent* Parent);
 
 		virtual void Tick(float DeltaTime) override;
 
 	protected:
 
 		WorldObject* m_ParentObject;
+		WorldComponent* m_AttachedComponent;
 	};
 }

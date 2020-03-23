@@ -22,7 +22,7 @@ namespace Flow
 		SetPixelShader("SolidColourPS");
 	}
 
-	void Mat_FlatColour::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
+	void Mat_FlatColour::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
 	{
 		CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
 

@@ -9,8 +9,7 @@ namespace Flow
 
 		Mat_FlatColour();
 
-		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout) override;
+		virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout) override;
 		virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout) override;
-
 	};
 }

@@ -82,7 +82,7 @@ namespace Flow
 		if (Extension._Equal("jpg") || Extension._Equal("png"))
 			return EAssetType::Texture;
 
-		if (Extension._Equal("obj") || Extension._Equal("FBX"))
+		if (Extension._Equal("obj") || Extension._Equal("fbx"))
 			return EAssetType::Mesh;
 
 		if (Extension._Equal("cso"))

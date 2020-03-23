@@ -8,19 +8,20 @@ namespace Flow
 {
 	class MeshAsset;
 	class Material;
+	class Mesh;
 
 	class FLOW_API StaticMeshComponent : public RenderableComponent
 	{
 	public:
 		StaticMeshComponent();
-		StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr);
+		StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr, int MeshIndex = 0);
 		virtual ~StaticMeshComponent();
 		
 
 		void InitialiseComponent(MeshAsset* Mesh , Material* Material );
 		virtual void Tick(float DeltaTime) override;
 
-		void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material);
+		void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
 		void SetStaticMesh(const std::string& MeshName);
 		void SetMaterial(Material* NewMaterial);
 
@@ -32,7 +33,7 @@ namespace Flow
 
 
 		//Temp - TODO: Actually use component movement for rendering
-		MeshAsset* GetMesh() { return m_StaticMesh; }
+		Mesh* GetMesh() { return m_StaticMesh; }
 
 		//= Physics ==========
 
@@ -55,7 +56,7 @@ namespace Flow
 
 		bool SimulatePhysics = false;
 
-		MeshAsset* m_StaticMesh;
+		Mesh* m_StaticMesh;
 		bool bOverrideMaterial = true;
 		Material* m_Material;
 

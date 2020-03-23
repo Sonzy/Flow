@@ -7,14 +7,14 @@ namespace Flow
 	class VertexLayout;
 	class ShaderAsset;
 	class TextureAsset;
-	class StaticMesh;
+	class Renderable;
 
 	class FLOW_API Material
 	{
 	public:
 		Material();
 
-		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout);
+		virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout);
 		virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout);
 
 

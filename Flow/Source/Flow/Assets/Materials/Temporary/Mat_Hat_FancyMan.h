@@ -10,7 +10,7 @@ namespace Flow
 
 		Mat_Hat_FancyMan();
 
-		virtual void BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout) override;
+		virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout) override;
 		virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout) override;
 
 

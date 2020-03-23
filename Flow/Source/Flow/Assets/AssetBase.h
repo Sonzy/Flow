@@ -7,7 +7,8 @@ namespace Flow
 		None,
 		Mesh,
 		Texture,
-		Shader
+		Shader,
+		MultiMesh
 	};
 
 	class FLOW_API AssetBase

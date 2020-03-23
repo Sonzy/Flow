@@ -59,6 +59,15 @@ struct Rotator
 		return New;
 	}
 
+	static Rotator AsRadians(const Rotator& Rotation)
+	{
+		Rotator Rads;
+		Rads.Pitch = (Rotation.Pitch * 3.14159f) / 180.0f;
+		Rads.Roll = (Rotation.Roll * 3.14159f) / 180.0f;
+		Rads.Yaw = (Rotation.Yaw * 3.14159f) / 180.0f;
+		return Rads;
+	}
+
 private:
 
 	float WrapAngle(float Theta)

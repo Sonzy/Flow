@@ -4,6 +4,8 @@
 #include "Flow\Editor\Inspector.h"
 #include "Flow\Application.h"
 
+#include "Flow\Editor\SelectionGizmo.h"
+
 namespace Flow
 {
 	EditorLayer::EditorLayer()
@@ -28,6 +30,11 @@ namespace Flow
 	{
 		EventDispatcher Dispatcher(e);
 		Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonPressed));
+	}
+
+	void EditorLayer::OnUpdate(float DeltaTime)
+	{
+		m_Inspector->GetSelector()->Render();
 	}
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)

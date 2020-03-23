@@ -16,6 +16,7 @@ namespace Flow
 	class World;
 	class Inspector;
 	class EditorLayer;
+	class SelectionGizmo;
 
 	class FLOW_API Application
 	{
@@ -73,6 +74,7 @@ namespace Flow
 		//= Editor ==================
 
 		Inspector* m_Inspector;
+		SelectionGizmo* m_SelectionGizmo;
 
 		//= Debug ===================
 

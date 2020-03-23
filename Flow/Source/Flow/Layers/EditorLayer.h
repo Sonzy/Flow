@@ -5,6 +5,8 @@
 namespace Flow
 {
 	class Inspector;
+	class SelectionGizmo;
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -17,10 +19,12 @@ namespace Flow
 		virtual void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
 
+		virtual void OnUpdate(float DeltaTime) override;
+
 	protected:
 
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
-		Inspector* m_Inspector;		
+		Inspector* m_Inspector;
 	};
 }

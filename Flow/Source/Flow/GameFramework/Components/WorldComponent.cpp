@@ -31,11 +31,12 @@ namespace Flow
 	{
 		CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
 		m_Children.push_back(Child);
+		Child->SetParentComponent(this);
 	}
 
 	Vector WorldComponent::GetWorldLocation()
 	{
-		WorldComponent* Parent = GetParentComponent();
+		WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
 		return Parent ? Parent->GetWorldLocation() + m_RelativeTransform.m_Location : m_RelativeTransform.m_Location;
 	}
 
@@ -172,6 +173,14 @@ namespace Flow
 	std::vector<Component*> WorldComponent::GetChildren() const
 	{
 		return m_Children;
+	}
+	void WorldComponent::SetVisibility(bool Visible)
+	{
+		m_Visible = Visible;
+	}
+	bool WorldComponent::IsVisible() const
+	{
+		return m_Visible;
 	}
 }
 

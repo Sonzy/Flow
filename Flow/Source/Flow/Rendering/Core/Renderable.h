@@ -47,7 +47,6 @@ namespace Flow
 		Vector m_Scale;
 		Rotator m_Rotation;
 
-	private:
 		std::vector<std::shared_ptr<Bindable>> m_Binds;
 		const IndexBuffer* m_IndexBuffer = nullptr;
 	};

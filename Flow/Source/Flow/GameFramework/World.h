@@ -43,6 +43,8 @@ namespace Flow
 		static btDiscreteDynamicsWorld* GetPhysicsWorld();
 		static World* GetWorld();
 
+		void AddPhysicsObject(btCollisionObject* Obj);
+
 	protected:
 		void InitialisePhysics();
 

@@ -50,11 +50,16 @@ namespace Flow
 
 		std::vector<Component*> GetChildren() const;
 
+		void SetVisibility(bool Visible);
+		bool IsVisible() const;
+
 	protected:
 
 		std::vector<Component*> m_Children;
 		Component* m_ParentComponent;
 
 		Transform m_RelativeTransform;
+
+		bool m_Visible = true;
 	};
 }

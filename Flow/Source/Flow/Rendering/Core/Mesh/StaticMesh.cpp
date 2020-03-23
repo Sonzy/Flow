@@ -38,8 +38,9 @@ namespace Flow
 		// Define Vertex Buffer information
 		VertexBuffer VBuffer(Layout);
 
-		MeshAsset* m_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
-		CHECK_RETURN(!m_Mesh, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
+		MeshAsset* m_MeshAsset = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
+		CHECK_RETURN(!m_MeshAsset, "StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath);
+		Mesh* m_Mesh = m_MeshAsset->GetMesh(0);
 
 		for (auto& Vertex : m_Mesh->GetVertices())
 		{

@@ -116,11 +116,13 @@
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
+    <ClInclude Include="Source\Flow\Assets\Meshes\MultiMeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\Inspector.h" />
+    <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\ErrorHelpers.h" />
@@ -279,10 +281,12 @@
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Meshes\MultiMeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
+    <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />

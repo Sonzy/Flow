@@ -30,7 +30,7 @@ namespace Flow
 		};
 	}
 
-	void Flow::Mat_Hat_FancyMan::BindMaterial(StaticMesh* Parent, const VertexLayout& VertexLayout)
+	void Flow::Mat_Hat_FancyMan::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
 	{
 		CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
 

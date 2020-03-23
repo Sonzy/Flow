@@ -30,8 +30,9 @@ namespace Flow
 	DirectX::XMMATRIX RenderableComponent::GetTransformXM()
 	{
 		Transform WorldTransform = GetWorldTransform();
+		Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
 		return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.X, WorldTransform.m_Scale.Y, WorldTransform.m_Scale.Z) *
-			DirectX::XMMatrixRotationRollPitchYaw(WorldTransform.m_Rotation.Pitch, WorldTransform.m_Rotation.Yaw, WorldTransform.m_Rotation.Roll) * //Rotate around box centre
+			DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) * //Rotate around box centre
 			DirectX::XMMatrixTranslation(WorldTransform.m_Location.X, WorldTransform.m_Location.Y, WorldTransform.m_Location.Z);
 
 	}

@@ -14,6 +14,7 @@
 
 #include "Flow\Editor\Inspector.h"
 #include "Flow\Layers\EditorLayer.h"
+#include "Flow\Editor\SelectionGizmo.h"
 
 //TODO: Load somewhere else
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
@@ -52,6 +53,8 @@ namespace Flow
 		//AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
 		AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
 		AssetSystem::LoadAsset("Sphere", "Flow/Assets/Models/Sphere.obj");
+		AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
+		AssetSystem::LoadAsset("Gizmo", "Flow/Assets/Models/Gizmo.fbx");
 
 		//= Textures =
 		//AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
@@ -76,7 +79,13 @@ namespace Flow
 
 		//Create the game world
 		GameWorld = new World("Game World");
-		m_Inspector = new Inspector();
+
+		m_SelectionGizmo = new SelectionGizmo();
+		m_SelectionGizmo->GenerateCollision();
+		//m_SelectionGizmo->AddCollidersToWorld(GameWorld);
+
+		m_Inspector = new Inspector(m_SelectionGizmo);
+
 
 		m_EditorLayer = new EditorLayer();
 		PushLayer(m_EditorLayer);
@@ -93,6 +102,10 @@ namespace Flow
 	void Application::Run()
 	{
 		GameWorld->InitialiseWorld();
+		m_Inspector->SetCurrentWorld(GameWorld);
+
+		m_SelectionGizmo->GenerateCollision();
+		m_SelectionGizmo->AddCollidersToWorld(GameWorld);
 
 		while (bRunning)
 		{
@@ -106,6 +119,7 @@ namespace Flow
 				//TODO: Check where to move the world since I'm using layers
 				GameWorld->Tick(DeltaTime);
 			}
+
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate(DeltaTime);
@@ -119,9 +133,8 @@ namespace Flow
 				layer->OnImGuiRender();
 			}
 
-			m_Inspector->SetCurrentWorld(GameWorld);
-			m_Inspector->RenderInspector();
-			m_Inspector->RenderHeirarchy();
+			m_Inspector->Update();
+
 			RenderApplicationDebug(DeltaTime);
 
 			m_ImGuiLayer->End();

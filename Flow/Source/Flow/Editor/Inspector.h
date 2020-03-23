@@ -5,11 +5,12 @@ namespace Flow
 {
 	class WorldObject;
 	class World;
+	class SelectionGizmo;
 
 	class Inspector
 	{
 	public:
-		Inspector();
+		Inspector(SelectionGizmo* Selector);
 
 		void RenderInspector();
 		void RenderHeirarchy();
@@ -17,10 +18,15 @@ namespace Flow
 		void SetCurrentWorld(World* WorldReference);
 
 		bool OnMouseClicked(MouseButtonPressedEvent& e);
+
+		void Update();
+
+		SelectionGizmo* GetSelector();
 	private:
 
 		World* m_CurrentWorld;
 		WorldObject* m_FocusedItem;
+		SelectionGizmo* m_Selector;
 	};
 
 }

@@ -82,4 +82,9 @@ namespace Flow
 	{
 		return Application::GetWorld();
 	}
+
+	void World::AddPhysicsObject(btCollisionObject* Obj)
+	{
+		PhysicsWorld->addCollisionObject(Obj);
+	}
 }

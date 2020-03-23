@@ -6,6 +6,7 @@
 
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+#include "Flow\Rendering\Core\Renderable.h"
 
 namespace Flow
 {
@@ -40,41 +41,91 @@ namespace Flow
 		Vector TexCoord;
 	};
 
-	class FLOW_API MeshAsset : public AssetBase
+	//class FLOW_API MeshAsset : public AssetBase
+	//{
+	//public:
+	//
+	//	MeshAsset()	{};
+	//	~MeshAsset();
+	//
+	//	virtual bool LoadAsset(const std::string& LocalPath) override;
+	//
+	//	const std::vector<MeshFace>& GetFaces() { return m_Faces; };
+	//	const size_t GetNumFaces() { return m_Faces.size(); };
+	//
+	//	std::vector<MeshVertex> GetVertices() const;
+	//
+	//	//===============================
+	//
+	//	void SetMaterial(Material* NewMaterial);
+	//	std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);
+	//	const IndexBuffer* GetIndexBuffer() const;
+	//
+	//protected:
+	//
+	//	void GenerateAssetSize();
+	//
+	//	std::vector<Vector> m_Vertices;
+	//	std::vector<Vector> m_Normals;
+	//	std::vector<Vector> m_TexCoords;
+	//	std::vector<MeshFace> m_Faces;
+	//
+	//	const IndexBuffer* m_IndexBuffer;
+	//	Material* m_Material;
+	//	VertexLayout m_VertexLayout;
+	//	std::vector<std::shared_ptr<Bindable>> m_Binds;
+	//};
+
+	class IndexBuffer;
+	class Material;
+	class MeshAsset;
+
+	class Mesh
 	{
 	public:
-
-		MeshAsset()	{};
-		~MeshAsset();
-
-		virtual bool LoadAsset(const std::string& LocalPath) override;
-
-		const std::vector<MeshFace>& GetFaces() { return m_Faces; };
-		const size_t GetNumFaces() { return m_Faces.size(); };
-
-		std::vector<MeshVertex> GetVertices() const;
-
-		//===============================
-
-		void SetMaterial(Material* NewMaterial);
-		std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);
-		const IndexBuffer* GetIndexBuffer() const;
-
-	protected:
-
-		void GenerateAssetSize();
+		Mesh(MeshAsset* Parent, int MeshIndex);
 
 		std::vector<Vector> m_Vertices;
 		std::vector<Vector> m_Normals;
 		std::vector<Vector> m_TexCoords;
 		std::vector<MeshFace> m_Faces;
 
-		const IndexBuffer* m_IndexBuffer;
+
 		Material* m_Material;
 		VertexLayout m_VertexLayout;
+
+		const IndexBuffer* m_IndexBuffer;
 		std::vector<std::shared_ptr<Bindable>> m_Binds;
 
+	public:
+
+		const std::vector<MeshFace>& GetFaces() { return m_Faces; };
+		const size_t GetNumFaces() { return m_Faces.size(); };
+
+		std::vector<MeshVertex> GetVertices() const;
+
+		void SetMaterial(Material* NewMaterial);
+		std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);
+		const IndexBuffer* GetIndexBuffer() const;
+
+		MeshAsset* m_Parent;
+		int m_MeshIndex;
+	};
+
+	class FLOW_API MeshAsset : public AssetBase
+	{
+	public:
+		MeshAsset();
+		~MeshAsset();
+
+		virtual bool LoadAsset(const std::string& LocalPath) override;
+
+		Mesh* GetMesh(int Index) const;
+		std::vector<Mesh*> GetAllMeshes() const;
+
 	private:
-		void AddBind(std::shared_ptr<Bindable> newBind);
+		void GenerateAssetSize();
+
+		std::vector<Mesh*> m_Meshes;
 	};
 }

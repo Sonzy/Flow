@@ -5,6 +5,7 @@
 #include <memory>
 #include <type_traits>
 
+#include "Flow\Helper\Maths.h"
 #include "btBulletCollisionCommon.h"
 
 namespace Flow
@@ -21,6 +22,10 @@ namespace Flow
 		virtual void Tick(float DeltaTime) override;
 
 		WorldComponent* GetRootComponent();
+
+		Vector GetLocation();
+		Vector GetScale();
+		Rotator GetRotation();
 
 		void Render();
 
@@ -56,5 +61,6 @@ namespace Flow
 		bool SimulatePhysics = false;
 		bool HasCollision = false;
 		int Tag;
+		bool Visible = true;
 	};
 }

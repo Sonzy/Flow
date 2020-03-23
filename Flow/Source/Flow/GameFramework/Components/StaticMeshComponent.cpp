@@ -19,12 +19,12 @@ namespace Flow
 	{
 	}
 
-	StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material)
+	StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
 		: RenderableComponent(Name), m_StaticMesh(nullptr), m_Material(nullptr),
 		Body(nullptr), Collision(nullptr)
 	{
 		if (Mesh && Material)
-			SetMeshAndMaterial(Mesh, Material);
+			SetMeshAndMaterial(Mesh, Material, MeshIndex);
 	}
 
 	StaticMeshComponent::~StaticMeshComponent()
@@ -53,12 +53,12 @@ namespace Flow
 		}
 	}
 
-	void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* Mesh, Material* Material)
+	void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex)
 	{
 		CHECK_RETURN(!Mesh, "StaticMeshComponent::SetMeshAndMaterial: Mesh was nullptr");
 		CHECK_RETURN(!Material, "StaticMeshComponent::SetMeshAndMaterial: Material was nullptr");
 
-		m_StaticMesh = Mesh;
+		m_StaticMesh = Mesh->GetMesh(MeshIndex);
 		m_Material = Material;
 
 		RefreshBinds();
@@ -70,7 +70,7 @@ namespace Flow
 		MeshAsset* NewAsset = AssetSystem::GetAsset<MeshAsset>(MeshName);
 		CHECK_RETURN(!NewAsset, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
 
-		m_StaticMesh = NewAsset;
+		m_StaticMesh = NewAsset->GetMesh(0);
 
 		RefreshBinds(); //TODO: Dont call this twice? dunno
 	}
