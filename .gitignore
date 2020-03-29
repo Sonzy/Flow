@@ -6,8 +6,8 @@
 *.lo
 *.o
 *.obj
+!Flow/Assets/Collision/*.obj
 !Flow/Assets/Models/*.obj
-
 
 # Precompiled Headers
 *.gch
