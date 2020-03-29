@@ -19,6 +19,7 @@ namespace Flow
 		WorldObject(const std::string& Name);
 		virtual ~WorldObject();
 
+		virtual void BeginPlay();
 		virtual void Tick(float DeltaTime) override;
 
 		WorldComponent* GetRootComponent();
@@ -35,7 +36,7 @@ namespace Flow
 		virtual void InitialisePhysics();
 		btRigidBody* GetRigidBody();
 
-		virtual void DrawDetailsWindow() override;
+		virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
 
 	protected:

@@ -10,7 +10,13 @@ namespace Flow
 	public:
 		
 		ConstantBuffer(const C& consts, UINT slot)
-			: m_Slot(slot)
+			: ConstantBuffer(consts, slot, "")
+		{
+			
+		}
+
+		ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
+			: m_Slot(slot), Tag_(Tag)
 		{
 			HRESULT ResultHandle;
 
@@ -24,7 +30,7 @@ namespace Flow
 
 			D3D11_SUBRESOURCE_DATA csd = {};
 			csd.pSysMem = &consts;
-			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
+			CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 		}
 
 		ConstantBuffer(UINT slot)
@@ -59,5 +65,6 @@ namespace Flow
 	protected:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer;
 		UINT m_Slot;
+		std::string Tag_;
 	};
 }

@@ -7,6 +7,7 @@
 #include "Components\StaticMeshComponent.h"
 
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
+#include "Flow\GameFramework\World.h"
 
 namespace Flow
 {
@@ -25,6 +26,14 @@ namespace Flow
 	{
 		m_RootComponent = nullptr;
 		FLOW_ENGINE_LOG("WorldObject::~WorldObject");
+	}
+
+	void WorldObject::BeginPlay()
+	{
+		if (CollisionEnabled())
+		{
+			InitialisePhysics();
+		}
 	}
 
 	void WorldObject::Tick(float DeltaTime)
@@ -82,6 +91,7 @@ namespace Flow
 	void WorldObject::InitialisePhysics()
 	{
 		m_RootComponent->InitialisePhysics();
+		SimulatePhysics ? World::GetWorld()->AddPhysicsObject(m_RootComponent->GetRigidBody()) : World::GetWorld()->AddCollisionObject(m_RootComponent->GetRigidBody());
 	}
 
 	btRigidBody* WorldObject::GetRigidBody()
@@ -89,7 +99,7 @@ namespace Flow
 		return m_RootComponent->GetRigidBody();
 	}
 
-	void WorldObject::DrawDetailsWindow()
+	void WorldObject::DrawDetailsWindow(bool bDontUpdate)
 	{
 		ImGui::InputText("ObjectName", &m_ObjectName);
 
@@ -110,12 +120,16 @@ namespace Flow
 
 		//Display World Object Transform
 		bool bUpdate = false;
-		bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
+		bUpdate |= ImGui::InputFloat3("Position", m_RootComponent->GetXPointer(), 1);
 		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_RootComponent->GetWriteableRotation(), 1);
 		bUpdate |= ImGui::InputFloat3("Scale", (float*)m_RootComponent->GetWriteableScale(), 1);
+		//bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
+
+
+
 
 		//Update Object Transform
-		if (bUpdate)
+		if (bUpdate && !bDontUpdate)
 		{
 			//TEMP CAST
 			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(m_RootComponent))

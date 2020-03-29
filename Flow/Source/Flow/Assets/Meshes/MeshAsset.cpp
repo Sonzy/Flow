@@ -8,6 +8,8 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
+#include "Flow\Assets\AssetSystem.h"
+
 	//MeshAsset::~MeshAsset()
 	//{
 	//	m_Vertices.clear();
@@ -245,8 +247,13 @@ namespace Flow
 	//= Mesh ======================
 
 	Mesh::Mesh(MeshAsset* Parent, int MeshIndex)
-		: m_Parent(Parent), m_MeshIndex(MeshIndex)
+		: m_Parent(Parent), m_MeshIndex(MeshIndex), CollisionName_("")
 	{
+	}
+
+	const std::vector<Vector>& Mesh::GetCollisionVertices() const
+	{
+		return !CollisionName_.empty() ? AssetSystem::GetAsset<MeshAsset>(CollisionName_)->GetMesh(0)->m_Vertices : m_Vertices;
 	}
 
 	std::vector<MeshVertex> Mesh::GetVertices() const

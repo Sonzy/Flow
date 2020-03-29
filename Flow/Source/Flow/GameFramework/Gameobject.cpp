@@ -19,7 +19,7 @@ void Flow::GameObject::Tick(float DeltaTime)
 {
 }
 
-void Flow::GameObject::DrawDetailsWindow()
+void Flow::GameObject::DrawDetailsWindow(bool bDontUpdate)
 {
 }
 

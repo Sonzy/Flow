@@ -6,6 +6,8 @@
 
 #include "btBulletDynamicsCommon.h"
 
+#include "Flow\Helper\BulletDebugDrawing.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -25,10 +27,12 @@ namespace Flow
 
 		void InitialiseWorld();
 
+		void DispatchBeginPlay();
+
 		template<typename T>
-		std::shared_ptr<T> SpawnWorldObject()
+		std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
 		{
-			std::shared_ptr<T> NewObject = std::make_shared<T>();
+			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
 			m_WorldObjects.push_back(NewObject);
 
 			return NewObject;
@@ -43,7 +47,8 @@ namespace Flow
 		static btDiscreteDynamicsWorld* GetPhysicsWorld();
 		static World* GetWorld();
 
-		void AddPhysicsObject(btCollisionObject* Obj);
+		void AddPhysicsObject(btRigidBody* Obj);
+		void AddCollisionObject(btCollisionObject* Obj);
 
 	protected:
 		void InitialisePhysics();
@@ -65,5 +70,7 @@ namespace Flow
 		/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
 		btSequentialImpulseConstraintSolver* Solver;
 		btDiscreteDynamicsWorld* PhysicsWorld;
+
+		BulletDebugDraw DebugDrawer;
 	};
 }

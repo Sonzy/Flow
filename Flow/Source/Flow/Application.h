@@ -66,6 +66,7 @@ namespace Flow
 
 		bool bRunning = true;
 		bool bPaused = false;
+		bool DrawCollision_ = false;
 
 		//= Game ====================
 

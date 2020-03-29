@@ -48,6 +48,8 @@ namespace Flow
 		Rotator* GetWriteableRotation();
 		Vector* GetWriteableScale();
 
+		float* GetXPointer() { return &m_RelativeTransform.m_Location.X; }
+
 		std::vector<Component*> GetChildren() const;
 
 		void SetVisibility(bool Visible);

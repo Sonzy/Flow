@@ -83,11 +83,14 @@ namespace Flow
 		}
 
 		m_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
+
+		//TODO: UpdatePhysics Movement
 	}
 
 	void WorldComponent::SetRelativeRotation(Rotator NewRotation)
 	{
 		m_RelativeTransform.m_Rotation = NewRotation;
+		//TODO: UpdatePhysics Movement
 	}
 
 	Vector WorldComponent::GetWorldScale()

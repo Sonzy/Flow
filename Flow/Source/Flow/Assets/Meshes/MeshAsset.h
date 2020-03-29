@@ -90,12 +90,16 @@ namespace Flow
 		std::vector<Vector> m_TexCoords;
 		std::vector<MeshFace> m_Faces;
 
+		// Optional variable, allows for a mesh to be specified to be used for collision
+		std::string CollisionName_;
 
 		Material* m_Material;
 		VertexLayout m_VertexLayout;
 
 		const IndexBuffer* m_IndexBuffer;
 		std::vector<std::shared_ptr<Bindable>> m_Binds;
+
+		[[nodiscard]] const std::vector<Vector>& GetCollisionVertices() const;
 
 	public:
 

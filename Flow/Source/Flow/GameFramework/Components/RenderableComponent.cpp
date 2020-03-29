@@ -32,9 +32,9 @@ namespace Flow
 		Transform WorldTransform = GetWorldTransform();
 		Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
 		return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.X, WorldTransform.m_Scale.Y, WorldTransform.m_Scale.Z) *
-			DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) * //Rotate around box centre
+			DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) * 
+			//DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Roll, RadianRotation.Pitch, RadianRotation.Yaw) *
 			DirectX::XMMatrixTranslation(WorldTransform.m_Location.X, WorldTransform.m_Location.Y, WorldTransform.m_Location.Z);
-
 	}
 
 	void RenderableComponent::AddBind(std::shared_ptr<Bindable> bind)

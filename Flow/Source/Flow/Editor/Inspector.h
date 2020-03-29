@@ -27,6 +27,8 @@ namespace Flow
 		World* m_CurrentWorld;
 		WorldObject* m_FocusedItem;
 		SelectionGizmo* m_Selector;
+
+		bool ObjChanged;
 	};
 
 }

@@ -20,7 +20,7 @@ Wall::Wall(const std::string& NewName)
 	: WorldObject(NewName)
 {
 	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
-	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour")->GetMaterial();
+	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood")->GetMaterial();
 
 	WallMesh = CreateComponent<Flow::StaticMeshComponent>("Test Mesh");
 	WallMesh->InitialiseComponent(Mesh, Material);
@@ -37,7 +37,7 @@ void Wall::InitialisePhysics()
 {
 	WorldObject::InitialisePhysics();
 
-	WallMesh->InitialisePhysics();
+	//WallMesh->InitialisePhysics();
 
 	//WallMesh->MovePhysicsBody(WallMesh->GetRelativeTransform());
 }

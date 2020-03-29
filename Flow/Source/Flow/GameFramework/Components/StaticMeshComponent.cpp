@@ -41,15 +41,31 @@ namespace Flow
 	{
 		GameObject::Tick(DeltaTime);
 
-		if (Body)
+		if (Body)// && SimulatePhysics)
 		{
 			btVector3 Vec = Body->getWorldTransform().getOrigin();
 			Rotator Rotation;
-			Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Yaw, Rotation.Pitch, Rotation.Roll);
+			//Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Yaw, Rotation.Pitch, Rotation.Roll);
+			//Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Roll, Rotation.Yaw, Rotation.Pitch);
+			Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Roll, Rotation.Yaw, Rotation.Pitch);
+
 			//FLOW_ENGINE_LOG("Mesh Position: {0} {1} {2}", Vec.x(), Vec.y(), Vec.z());
+
+			//btScalar m[16];
+			//trans.getOpenGLMatrix(m);
+			//fAngZ = atan2f(m[1], m[5]);
+			//fAngY = atan2f(m[8], m[10]);
+			//fAngX = -asinf(m[9]);
+
+
+
+			Rotation = Rotator::AsDegrees(Rotation);
 
 			SetWorldLocation(Vector(Vec.x(), Vec.y(), Vec.z()));
 			SetWorldRotation(Rotation);
+
+			if(Body->getMass() > 0)
+				FLOW_ENGINE_LOG("MovePhysBody: ObjectRot: {0}, BulletRot {1}", GetWorldRotation(), Rotation);
 		}
 	}
 
@@ -102,10 +118,10 @@ namespace Flow
 	void StaticMeshComponent::GenerateCollision()
 	{
 		btConvexHullShape* Shape = new btConvexHullShape();
-		auto Vertices = m_StaticMesh->GetVertices();
+		auto Vertices = m_StaticMesh->GetCollisionVertices();
 		for (auto Vert : Vertices)
 		{
-			btVector3 btv = btVector3(Vert.Position.X, Vert.Position.Y, Vert.Position.Z);
+			btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
 			Shape->addPoint(btv);
 		}
 
@@ -119,16 +135,17 @@ namespace Flow
 	{
 		//Convert transform into BT Quaternion
 		btQuaternion Rotation;
-		Rotator Rot = GetWorldRotation();
+		Rotator Rot = Rotator::AsRadians(GetWorldRotation());
 		Vector Pos = GetWorldLocation();
-		Rotation.setEulerZYX(Rot.Yaw, Rot.Pitch, Rot.Roll);
+		Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
+		//Rotation.setEulerZYX(Rot.Yaw, Rot.Pitch, Rot.Roll);
 
 		//Setup the motion state
 		btVector3 Position = btVector3(Pos.X, Pos.Y, Pos.Z);
 		btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(Rotation, Position));
 
 		//Initialise the mass and intertia values
-		btScalar bodyMass = SimulatePhysics ?  1.0f : 0.0f;
+		btScalar bodyMass = SimulatePhysics ?  20.0f : 0.0f;
 		btVector3 bodyInertia;
 		Collision->calculateLocalInertia(bodyMass, bodyInertia);
 
@@ -137,8 +154,8 @@ namespace Flow
 			btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, Collision, bodyInertia);
 		bodyCI.m_restitution = 0.4f;
 		bodyCI.m_friction = 0.5f;
-		bodyCI.m_rollingFriction = 0.1f;
-		bodyCI.m_spinningFriction = 0.1f;
+		bodyCI.m_rollingFriction = 0.2f;
+		bodyCI.m_spinningFriction = 0.3f;
 
 		Body = new btRigidBody(bodyCI);
 		Body->setUserPointer(this);
@@ -166,7 +183,9 @@ namespace Flow
 		btMotionState* motionState = Body->getMotionState();
 		btTransform Transform;
 		btQuaternion Rotation;
-		Rotation.setEulerZYX(NewTransform.m_Rotation.Yaw, NewTransform.m_Rotation.Pitch, NewTransform.m_Rotation.Roll);
+		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.m_Rotation);
+		//Rotation.setEulerZYX(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
+		Rotation.setEulerZYX(RadiansRotation.Roll, RadiansRotation.Yaw, RadiansRotation.Pitch);
 
 		//Set new transform
 		Transform.setOrigin(btVector3(NewTransform.m_Location.X, NewTransform.m_Location.Y, NewTransform.m_Location.Z));

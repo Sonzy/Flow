@@ -105,9 +105,9 @@ namespace Flow
 
 	void SelectionGizmo::AddCollidersToWorld(World* World)
 	{
-		World->AddPhysicsObject(XGhost);
-		World->AddPhysicsObject(YGhost);
-		World->AddPhysicsObject(ZGhost);
+		//World->AddCollisionObject(XGhost);
+		//World->AddCollisionObject(YGhost);
+		//World->AddCollisionObject(ZGhost);
 	}
 
 	void SelectionGizmo::GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost)

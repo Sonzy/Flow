@@ -1,13 +1,3 @@
-//cbuffer CBuf
-//{
-//	float4 Colour;
-//};
-//
-//float4 main() : SV_TARGET
-//{
-//	return Colour;
-//}
-
 #include "ShaderHelpers.hlsli"
 
 cbuffer ObjectCBuf
@@ -15,6 +5,11 @@ cbuffer ObjectCBuf
     float3 specularColor;
     float specularWeight;
     float specularGloss;
+};
+
+cbuffer CBuf : register (b2)
+{
+    float4 Colour;
 };
 
 Texture2D tex : register(t0);
@@ -38,5 +33,5 @@ float4 main(float3 Pos : Position, float3 n : Normal, float2 tc : TexCoord) : SV
     //return float4(saturate((diffuse + Ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
     
     //return float4(0.25f,0.25f, 0.25f, 1.0f);
-    return float4(1.0f,1.0f, 1.0f, 1.0f);
+    return Colour;
 }

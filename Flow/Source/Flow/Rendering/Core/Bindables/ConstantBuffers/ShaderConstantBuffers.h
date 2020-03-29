@@ -11,6 +11,7 @@ namespace Flow
 		//or could do this->GetContext(gfx)->PSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
 		using ConstantBuffer<C>::m_ConstantBuffer;
 		using ConstantBuffer<C>::m_Slot;
+		using ConstantBuffer<C>::Tag_;
 	public:
 		using ConstantBuffer<C>::ConstantBuffer;
 
@@ -22,14 +23,20 @@ namespace Flow
 
 		//= Bindable Interface =
 
-		static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot)
+		static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot, const std::string& Tag)
 		{
-			return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot);
+			return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, Tag);
 		}
 
-		static std::string GenerateUID(const C& Consts, UINT Slot)
+		static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot)
 		{
-			return typeid(PixelConstantBuffer).name();
+			return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, "");
+		}
+
+		static std::string GenerateUID(const C& Consts, UINT Slot, const std::string& Tag)
+		{
+			using namespace std::string_literals;
+			return typeid(PixelConstantBuffer).name()+ "#"s + Tag;
 		}
 
 		//std::string GetUID() const
@@ -54,7 +61,7 @@ namespace Flow
 
 		//= Bindable Interface =
 
-		static std::shared_ptr<Bindable> Resolve()
+		static std::shared_ptr<VertexConstantBuffer> Resolve()
 		{
 			BindableCodex::Resolve<VertexConstantBuffer>();
 		}

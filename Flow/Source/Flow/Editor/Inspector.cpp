@@ -31,7 +31,7 @@ namespace Flow
 		if (ImGui::Begin("Inspector"))
 		{
 			if (m_FocusedItem)
-				m_FocusedItem->DrawDetailsWindow();
+				m_FocusedItem->DrawDetailsWindow(ObjChanged);
 		}
 		ImGui::End();
 	}
@@ -89,10 +89,14 @@ namespace Flow
 		}
 		else
 		{
-			m_Selector->UpdatePosition(HitObject->GetLocation());
+			//m_Selector->UpdatePosition(HitObject->GetLocation());
 			//m_Selector->SetScale(HitObject->GetScale().X);
-			m_Selector->SetVisibility(true);
+
+			//TODO: Re-enable when setting this back up
+			//m_Selector->SetVisibility(true);
 		}
+
+		ObjChanged = true;
 
 
 		return true;
@@ -102,6 +106,8 @@ namespace Flow
 	{
 		RenderInspector();
 		RenderHeirarchy();
+
+		ObjChanged = false;
 	}
 
 	SelectionGizmo* Inspector::GetSelector()

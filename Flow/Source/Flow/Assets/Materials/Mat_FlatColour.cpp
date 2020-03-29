@@ -18,8 +18,19 @@ namespace Flow
 {
 	Mat_FlatColour::Mat_FlatColour()
 	{
+		Buffer = {
+			DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)
+		};
+
 		SetVertexShader("SolidColourVS");
 		SetPixelShader("SolidColourPS");
+	}
+
+	void Mat_FlatColour::SetColour(Vector NewColour)
+	{
+		Buffer = {
+			DirectX::XMFLOAT4(NewColour.X, NewColour.Y, NewColour.Z, 1.0f)
+		};
 	}
 
 	void Mat_FlatColour::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
@@ -31,6 +42,8 @@ namespace Flow
 		Parent->AddBind(std::move(vShader));
 		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
 		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+
+		Parent->AddBind(PixelConstantBuffer<ColorBuffer>::Resolve(Buffer, 2u, GenerateTag()));
 	}
 
 	void Mat_FlatColour::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
@@ -42,6 +55,17 @@ namespace Flow
 		Parent->AddBind(std::move(vShader));
 		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
 		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+
+		Parent->AddBind(PixelConstantBuffer<ColorBuffer>::Resolve(Buffer, 2u, GenerateTag()));
+	}
+
+	std::string Mat_FlatColour::GenerateTag()
+	{
+		return std::string("FlatColour") +
+			std::to_string(Buffer.Colour.x) +
+			std::to_string(Buffer.Colour.x) +
+			std::to_string(Buffer.Colour.x) +
+			std::to_string(Buffer.Colour.x);
 	}
 }
 

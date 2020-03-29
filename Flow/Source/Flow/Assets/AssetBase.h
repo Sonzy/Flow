@@ -16,6 +16,7 @@ namespace Flow
 	public:
 
 		virtual bool LoadAsset(const std::string& LocalPath);
+
 		size_t GetAssetSize() const { return m_AssetSize;	}
 
 		/* */
