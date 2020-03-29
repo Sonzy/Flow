@@ -44,28 +44,16 @@ namespace Flow
 		if (Body)// && SimulatePhysics)
 		{
 			btVector3 Vec = Body->getWorldTransform().getOrigin();
-			Rotator Rotation;
-			//Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Yaw, Rotation.Pitch, Rotation.Roll);
-			//Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Roll, Rotation.Yaw, Rotation.Pitch);
-			Body->getWorldTransform().getRotation().getEulerZYX(Rotation.Roll, Rotation.Yaw, Rotation.Pitch);
 
-			//FLOW_ENGINE_LOG("Mesh Position: {0} {1} {2}", Vec.x(), Vec.y(), Vec.z());
-
-			//btScalar m[16];
-			//trans.getOpenGLMatrix(m);
-			//fAngZ = atan2f(m[1], m[5]);
-			//fAngY = atan2f(m[8], m[10]);
-			//fAngX = -asinf(m[9]);
-
-
-
-			Rotation = Rotator::AsDegrees(Rotation);
+			//Bullet returns the rotation in wrong euler order, use this to get in the correct order
+			btScalar m[16];
+			Body->getWorldTransform().getOpenGLMatrix(m);
+			float fAngZ = atan2f(m[1], m[5]);
+			float fAngY = atan2f(m[8], m[10]);
+			float fAngX = -asinf(m[9]);
 
 			SetWorldLocation(Vector(Vec.x(), Vec.y(), Vec.z()));
-			SetWorldRotation(Rotation);
-
-			if(Body->getMass() > 0)
-				FLOW_ENGINE_LOG("MovePhysBody: ObjectRot: {0}, BulletRot {1}", GetWorldRotation(), Rotation);
+			SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
 		}
 	}
 
@@ -138,7 +126,6 @@ namespace Flow
 		Rotator Rot = Rotator::AsRadians(GetWorldRotation());
 		Vector Pos = GetWorldLocation();
 		Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
-		//Rotation.setEulerZYX(Rot.Yaw, Rot.Pitch, Rot.Roll);
 
 		//Setup the motion state
 		btVector3 Position = btVector3(Pos.X, Pos.Y, Pos.Z);
@@ -184,7 +171,6 @@ namespace Flow
 		btTransform Transform;
 		btQuaternion Rotation;
 		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.m_Rotation);
-		//Rotation.setEulerZYX(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
 		Rotation.setEulerZYX(RadiansRotation.Roll, RadiansRotation.Yaw, RadiansRotation.Pitch);
 
 		//Set new transform

@@ -29,24 +29,24 @@ ExampleLayer::ExampleLayer()
 
 	//Example = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>("Testing World Object");
 
-	//Crate1_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
-	//Crate2_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
-	//Crate3_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate3");
-	//Crate4_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate4");
-	//Crate5_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate5");
-	//
-	//Chair1_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair1");
-	//Chair2_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair2");
-	//Chair3_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair3");
-	//Chair4_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair4");
+	Crate1_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
+	Crate2_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
+	Crate3_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate3");
+	Crate4_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate4");
+	Crate5_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate5");
+	
+	Chair1_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair1");
+	Chair2_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair2");
+	Chair3_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair3");
+	Chair4_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair4");
 	
 	Table1_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table1");
 	Table2_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table2");
 
 	Revolver_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Revolver");
-	//Blunderbuss_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Blunderbuss");
-	//Shotgun_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Shotgun");
-	//Rifle_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
+	Blunderbuss_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Blunderbuss");
+	Shotgun_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Shotgun");
+	Rifle_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
 	
 	Base = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
 
@@ -55,24 +55,24 @@ ExampleLayer::ExampleLayer()
 	//Actors.push_back(Example);
 	Actors.push_back(Base);
 	
-	//Actors.push_back(Crate1_);
-	//Actors.push_back(Crate2_);
-	//Actors.push_back(Crate3_);
-	//Actors.push_back(Crate4_);
-	//Actors.push_back(Crate5_);
-	//
-	//Actors.push_back(Chair1_);
-	//Actors.push_back(Chair2_);
-	//Actors.push_back(Chair3_);
-	//Actors.push_back(Chair4_);
+	Actors.push_back(Crate1_);
+	Actors.push_back(Crate2_);
+	Actors.push_back(Crate3_);
+	Actors.push_back(Crate4_);
+	Actors.push_back(Crate5_);
+	
+	Actors.push_back(Chair1_);
+	Actors.push_back(Chair2_);
+	Actors.push_back(Chair3_);
+	Actors.push_back(Chair4_);
 
 	Actors.push_back(Table1_);
 	Actors.push_back(Table2_);
 
 	Actors.push_back(Revolver_);
-	//Actors.push_back(Shotgun_);
-	//Actors.push_back(Blunderbuss_);
-	//Actors.push_back(Rifle_);
+	Actors.push_back(Shotgun_);
+	Actors.push_back(Blunderbuss_);
+	Actors.push_back(Rifle_);
 	
 
 
@@ -99,15 +99,15 @@ ExampleLayer::ExampleLayer()
 	Table1_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
 	Table2_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
 	
-	//Chair1_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	//Chair2_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	//Chair3_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	//Chair4_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
+	Chair1_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
+	Chair2_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
+	Chair3_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
+	Chair4_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
 
 	Revolver_->GetMeshComponent()->SetMeshAndMaterial(Revolver, Weapons->GetMaterial());
-	//Shotgun_->GetMeshComponent()->SetMeshAndMaterial(Shotgun, Weapons->GetMaterial());
-	//Blunderbuss_->GetMeshComponent()->SetMeshAndMaterial(Blunderbuss, Weapons->GetMaterial());
-	//Rifle_->GetMeshComponent()->SetMeshAndMaterial(Rifle, Weapons->GetMaterial());
+	Shotgun_->GetMeshComponent()->SetMeshAndMaterial(Shotgun, Weapons->GetMaterial());
+	Blunderbuss_->GetMeshComponent()->SetMeshAndMaterial(Blunderbuss, Weapons->GetMaterial());
+	Rifle_->GetMeshComponent()->SetMeshAndMaterial(Rifle, Weapons->GetMaterial());
 
 	//= Place everything in the level
 
@@ -120,58 +120,58 @@ ExampleLayer::ExampleLayer()
 
 	Base->GetRootComponent()->SetWorldLocation(Vector(37.5f, 8.0f, 0.0f));
 	
-	//Crate1_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, -10.0f));
-	//Crate2_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 3.0f));
-	//Crate3_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 16.0f));
-	//Crate4_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, -4.0f));
-	//Crate5_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, 10.0f));
-	//
-	//Chair1_->GetRootComponent()->SetWorldLocation(Vector(5.0f,  9.0f, 4.0f));
-	//Chair2_->GetRootComponent()->SetWorldLocation(Vector(20.0f, 9.0f, 10.0f));
-	//Chair3_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 9.0f, 10.0f));
-	//Chair4_->GetRootComponent()->SetWorldLocation(Vector(70.0f, 9.0f, 3.0f));
+	Crate1_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, -10.0f));
+	Crate2_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 3.0f));
+	Crate3_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 16.0f));
+	Crate4_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, -4.0f));
+	Crate5_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, 10.0f));
+	
+	Chair1_->GetRootComponent()->SetWorldLocation(Vector(5.0f,  9.0f, 4.0f));
+	Chair2_->GetRootComponent()->SetWorldLocation(Vector(20.0f, 9.0f, 10.0f));
+	Chair3_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 9.0f, 10.0f));
+	Chair4_->GetRootComponent()->SetWorldLocation(Vector(70.0f, 9.0f, 3.0f));
 	
 	Table1_->GetRootComponent()->SetWorldLocation(Vector(15.0f, 9.0f, 0.0f));
 	Table2_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 9.0f, 0.0f));
 
 	Revolver_->GetRootComponent()->SetWorldLocation(Vector(14.0f, 20.0f, 0.0f));
-	//Shotgun_->GetRootComponent()->SetWorldLocation(Vector(-15.0f, 20.0f, -13.0f));
-	//Blunderbuss_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 20.0f, 0.0f));
-	//Rifle_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 32.0f, 0.0f));
+	Shotgun_->GetRootComponent()->SetWorldLocation(Vector(-15.0f, 20.0f, -13.0f));
+	Blunderbuss_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 20.0f, 0.0f));
+	Rifle_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 32.0f, 0.0f));
 															   	
 	//= Rotation
-	//Crate1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//Crate2_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//Crate3_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//Crate4_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//Crate5_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//
-	//Chair1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 300.0f));
-	//Chair2_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 20.0f));
-	//Chair3_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
-	//Chair4_->GetRootComponent()->SetRelativeRotation(Rotator(0.0f, 0.0f, 70.0f));
+	Crate1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	Crate2_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	Crate3_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	Crate4_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	Crate5_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	
+	Chair1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 300.0f));
+	Chair2_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 20.0f));
+	Chair3_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	Chair4_->GetRootComponent()->SetRelativeRotation(Rotator(0.0f, 0.0f, 70.0f));
 
 	Table1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
 	Table2_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
 
 	Revolver_->GetRootComponent()->SetWorldRotation(Rotator(90.0f, 0.0f, 300.0f));
-	//Shotgun_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 170.0f));
-	//Blunderbuss_->GetRootComponent()->SetWorldRotation(Rotator(90.0f, 140.0f, 0.0f));
-	//Rifle_->GetRootComponent()->SetRelativeRotation(Rotator(90.0f, 90.0f, 0.0f));
+	Shotgun_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 170.0f));
+	Blunderbuss_->GetRootComponent()->SetWorldRotation(Rotator(90.0f, 140.0f, 0.0f));
+	Rifle_->GetRootComponent()->SetRelativeRotation(Rotator(90.0f, 90.0f, 0.0f));
 	
 	//= Scale
 	
 	Base->GetRootComponent()->SetWorldScale(Vector(50.0f, 1.0f, 30.0f));
 
-	//Chair1_->InitPhysics(false);
-	//Chair2_->InitPhysics(false);
-	//Chair3_->InitPhysics(false);
-	//Chair4_->InitPhysics(false);
+	Chair1_->InitPhysics(false);
+	Chair2_->InitPhysics(false);
+	Chair3_->InitPhysics(false);
+	Chair4_->InitPhysics(false);
 
 	Revolver_->InitPhysics(true);
-	//Shotgun_->InitPhysics(true);
-	//Blunderbuss_->InitPhysics(true);
-	//Rifle_->InitPhysics(true);
+	Shotgun_->InitPhysics(true);
+	Blunderbuss_->InitPhysics(true);
+	Rifle_->InitPhysics(true);
 }
 
 ExampleLayer::~ExampleLayer()

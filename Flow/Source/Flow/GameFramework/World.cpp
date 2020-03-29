@@ -64,7 +64,6 @@ namespace Flow
 
 	void World::Tick(float DeltaTime)
 	{
-		Line::Count = 0;
 		PhysicsWorld->stepSimulation(DeltaTime);
 		for (auto& WorldObj : m_WorldObjects)
 		{
