@@ -84,6 +84,8 @@ ExampleLayer::ExampleLayer()
 	Flow::MeshAsset* Box = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
 
 	Flow::MeshAsset* Shotgun = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun");
+	Flow::MeshAsset* ShotgunSmooth = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun_Smooth");
+	Flow::MeshAsset* ShotgunTest = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun_Test");
 	Flow::MeshAsset* Blunderbuss = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Blunderbuss");
 	Flow::MeshAsset* Rifle = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Rifle");
 	Flow::MeshAsset* Revolver = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Revolver");
@@ -92,8 +94,6 @@ ExampleLayer::ExampleLayer()
 	Flow::MaterialAsset* Weapons = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Weapons");
 	Flow::MaterialAsset* Wood = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood");
 	Flow::MaterialAsset* Sand = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Sand");
-
-	Shotgun->GetAllMeshes();
 
 	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand->GetMaterial());
 	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood->GetMaterial());

@@ -32,5 +32,7 @@ namespace Flow
 		bool OnKeyTyped(KeyTypedEvent& e);
 		bool OnKeyReleased(KeyReleasedEvent& e);
 		bool OnWindowResized(WindowResizedEvent& e);
+
+		void ConfigureStyle();
 	};
 }
