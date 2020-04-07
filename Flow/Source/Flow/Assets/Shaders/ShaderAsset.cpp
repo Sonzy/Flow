@@ -10,15 +10,15 @@ namespace Flow
 
 	bool ShaderAsset::LoadAsset(const std::string& AssetPath)
 	{
-		m_ShaderPath = Application::GetApplication().GetLocalFilePath() + AssetPath;
-		m_AssetSize = sizeof(m_ShaderPath);
+		ShaderPath_ = Application::GetApplication().GetLocalFilePath() + AssetPath;
+		AssetSize_ = sizeof(ShaderPath_);
 
 		return true;
 	}
 
 	const std::string& ShaderAsset::GetPath() const
 	{
-		return m_ShaderPath;
+		return ShaderPath_;
 	}
 
 }

@@ -6,18 +6,18 @@
 namespace Flow
 {
 	PixelShader::PixelShader(const std::string& LocalPath)
-		: m_AssetPath(LocalPath)
+		: ShaderPath_(LocalPath)
 	{
 		CREATE_RESULT_HANDLE();
 
 		Microsoft::WRL::ComPtr<ID3DBlob> Blob;
 		CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob));
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &PixelShader_));
 	}
 
 	void PixelShader::Bind()
 	{
-		RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+		RenderCommand::DX11GetContext()->PSSetShader(PixelShader_.Get(), nullptr, 0);
 	}
 	std::shared_ptr<Bindable> PixelShader::Resolve(const std::string& LocalPath)
 	{
@@ -30,6 +30,6 @@ namespace Flow
 	}
 	std::string PixelShader::GetUID() const
 	{
-		return GenerateUID(m_AssetPath);
+		return GenerateUID(ShaderPath_);
 	}
 }

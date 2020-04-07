@@ -18,9 +18,8 @@
 
 //TODO: Load somewhere else
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
-#include "Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h"
-#include "Flow\Assets\Materials\Temporary\Mat_WabbleProps.h"
-#include "Flow\Assets\Materials\Temporary\Mat_TexturedPhong.h"
+#include "Flow\Assets\Materials\Mat_TexturedPhong.h"
+#include "Flow\Assets\Meshes\MeshAsset.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -33,17 +32,17 @@ namespace Flow
 	{
 		Instance = this;
 
-		MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
-		MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+		MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
+		MainWindow_->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
-		m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);
+		ImGuiLayer_ = new ImGuiLayer();
+		PushOverlay(ImGuiLayer_);
 
 		//Get Local File Path
 		char Path[128];
 		GetModuleFileName(nullptr, Path, sizeof(Path));
 		std::string ExeDir = std::string(Path);
-		LocalPath = ExeDir.substr(0, ExeDir.find("bin")); 
+		LocalPath_ = ExeDir.substr(0, ExeDir.find("bin")); 
 
 		//TODO: Load assets somewhere
 		//= Models =
@@ -111,11 +110,12 @@ namespace Flow
 		//= Materials =
 		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
 		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Brown");
-		AssetSystem::CreateMaterial<Mat_Hat_FancyMan>("Mat_HatFancyMan");
-		AssetSystem::CreateMaterial<Mat_WabbleProps>("Mat_Wabble_Props");
+		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector(0.31, 0.08, 0));
+		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
+		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector(1.0f, 1.0f, 1.0f));
 
-		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props2");
-		Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props2")->GetMaterial());
+		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
+		Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
 		PropsMat->SetTexture("Wabble_Props");
 		PropsMat->SetPixelShader("TexturedPhongPS");
 		PropsMat->SetVertexShader("TexturedPhongVS");
@@ -138,20 +138,20 @@ namespace Flow
 		SandMat->SetPixelShader("TexturedPhongPS");
 		SandMat->SetVertexShader("TexturedPhongVS");
 
-		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector(0.31, 0.08, 0));
+
 
 		//Create the game world
-		GameWorld = new World("Game World");
+		GameWorld_ = new World("Game World");
 
-		m_SelectionGizmo = new SelectionGizmo();
-		m_SelectionGizmo->GenerateCollision();
-		//m_SelectionGizmo->AddCollidersToWorld(GameWorld);
+		SelectionGizmo_ = new SelectionGizmo();
+		SelectionGizmo_->GenerateCollision();
+		//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
 
-		m_Inspector = new Inspector(m_SelectionGizmo);
+		Inspector_ = new Inspector(SelectionGizmo_);
 
 
-		m_EditorLayer = new EditorLayer();
-		PushLayer(m_EditorLayer);
+		EditorLayer_ = new EditorLayer();
+		PushLayer(EditorLayer_);
 	}
 
 	Application::~Application()
@@ -164,28 +164,28 @@ namespace Flow
 
 	void Application::Run()
 	{
-		GameWorld->InitialiseWorld();
-		m_Inspector->SetCurrentWorld(GameWorld);
+		GameWorld_->InitialiseWorld();
+		Inspector_->SetCurrentWorld(GameWorld_);
 
-		m_SelectionGizmo->GenerateCollision();
-		m_SelectionGizmo->AddCollidersToWorld(GameWorld);
+		SelectionGizmo_->GenerateCollision();
+		SelectionGizmo_->AddCollidersToWorld(GameWorld_);
 
-		GameWorld->DispatchBeginPlay();
+		GameWorld_->DispatchBeginPlay();
 
-		while (bRunning)
+		while (Running_)
 		{
-			float DeltaTime = m_Timer.Mark();
+			float DeltaTime = Timer_.Mark();
 
-			MainWindow->PreUpdate();
-			MainWindow->OnUpdate();
+			MainWindow_->PreUpdate();
+			MainWindow_->OnUpdate();
 
-			if (!bPaused)
+			if (!Paused_)
 			{
 				//TODO: Check where to move the world since I'm using layers
-				GameWorld->Tick(DeltaTime);
+				GameWorld_->Tick(DeltaTime);
 			}
 
-			for (Layer* layer : m_LayerStack)
+			for (Layer* layer : LayerStack_)
 			{
 				layer->OnUpdate(DeltaTime);
 			}
@@ -193,25 +193,25 @@ namespace Flow
 			//= Debug Rendering =
 
 			if(DrawCollision_)
-				GameWorld->GetPhysicsWorld()->debugDrawWorld();
+				GameWorld_->GetPhysicsWorld()->debugDrawWorld();
 
 			//= UI Rendering =
 
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
+			ImGuiLayer_->Begin();
+			for (Layer* layer : LayerStack_)
 			{
 				layer->OnImGuiRender();
 			}
 
-			m_Inspector->Update();
+			Inspector_->Update();
 
 			RenderApplicationDebug(DeltaTime);
 
-			m_ImGuiLayer->End();
+			ImGuiLayer_->End();
 
 			//= Post Update =
 
-			MainWindow->PostUpdate();
+			MainWindow_->PostUpdate();
 		}
 	}
 
@@ -221,29 +221,29 @@ namespace Flow
 		Dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowClosed));
 		Dispatcher.Dispatch<WindowResizedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowResized));
 
-		for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
+		for (auto iterator = LayerStack_.end(); iterator != LayerStack_.begin();)
 		{
 			(*--iterator)->OnEvent(e);
-			if (e.bHandled)
+			if (e.Handled_)
 				break;
 		}
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
-		m_LayerStack.PushLayer(layer);
+		LayerStack_.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
-		m_LayerStack.PushOverlay(layer);
+		LayerStack_.PushOverlay(layer);
 		layer->OnAttach();
 	}
 
 	bool Application::OnWindowClosed(WindowClosedEvent& e)
 	{
-		bRunning = false;
+		Running_ = false;
 		FLOW_ENGINE_LOG("Window Closed");
 		return true;
 	}
@@ -261,27 +261,27 @@ namespace Flow
 
 	World* Application::GetWorld()
 	{
-		return Instance->GameWorld;
+		return Instance->GameWorld_;
 	}
 
 	std::string Application::GetLocalFilePath()
 	{
-		return LocalPath;
+		return LocalPath_;
 	}
 
 	std::wstring Application::GetLocalFilePathWide()
 	{
-		return std::wstring(LocalPath.begin(), LocalPath.end());
+		return std::wstring(LocalPath_.begin(), LocalPath_.end());
 	}
 
 	Inspector* Application::GetInspector()
 	{
-		return m_Inspector;
+		return Inspector_;
 	}
 
 	Window& Application::GetWindow()
 	{
-		return *MainWindow;
+		return *MainWindow_;
 	}
 
 	void Application::RenderApplicationDebug(float DeltaTime)
@@ -298,7 +298,7 @@ namespace Flow
 
 		if (ImGui::Begin("Application Statistics"))
 		{
-			ImGui::Checkbox("Pause Game", &bPaused);
+			ImGui::Checkbox("Pause Game", &Paused_);
 			ImGui::Checkbox("Draw Collision", &DrawCollision_);
 
 			ImGui::Text("Framerate: %.1f", 1 / FrameTimer);

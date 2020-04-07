@@ -4,10 +4,6 @@
 class btCollisionShape;
 class btGhostObject;
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
-
 namespace Flow
 {
 	class Mesh;
@@ -15,49 +11,49 @@ namespace Flow
 	class StaticMeshComponent;
 	class World;
 
+	/* Gizmo used for moving objects within the world within the editor */
 	class SelectionGizmo
 	{
 	public:
 		SelectionGizmo();
+		~SelectionGizmo();
 
-		//void RefreshBinds();
+		/* Generates the collision for all parts of the gizmo*/
 		void GenerateCollision();
 
 		void UpdatePosition(Vector Position);
 		void UpdateRotation(Rotator Rotation);
-
-
 		void SetScale(Vector Scale);
 
 		void Render();
 
-		Vector GetPosition();
-
-		StaticMeshComponent* ArrowX;
-		StaticMeshComponent* ArrowZ;
-		StaticMeshComponent* ArrowY;
-
-		Material* ArrowMaterial;
+		[[nodiscard]] Vector GetPosition()  const;
 
 		void SetVisibility(bool Visible);
 
-		bool Visible = false;
-
-		//= Collision ================
-
-		btCollisionShape* XCollision;
-		btGhostObject* XGhost;
-
-		btCollisionShape* YCollision;
-		btGhostObject* YGhost;
-
-		btCollisionShape* ZCollision;
-		btGhostObject* ZGhost;
-
+		/* Adds the collision data to the physics world. */
 		void AddCollidersToWorld(World* World);
 
 	private:
-
 		void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
+
+	private:
+
+		StaticMeshComponent* ArrowX_;
+		StaticMeshComponent* ArrowY_;
+		StaticMeshComponent* ArrowZ_;
+
+		Material* ArrowMaterial_;
+
+		bool Visible_ = false;
+
+		//= Collision ================
+
+		btCollisionShape* XCollision_;
+		btCollisionShape* YCollision_;
+		btCollisionShape* ZCollision_;
+		btGhostObject* XGhost_;
+		btGhostObject* YGhost_;
+		btGhostObject* ZGhost_;
 	};
 }

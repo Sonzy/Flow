@@ -5,6 +5,7 @@
 
 namespace Flow
 {
+	/* Material with lighting and a single texture. */
 	class FLOW_API Mat_TexturedPhong : public Material
 	{
 	public:
@@ -14,15 +15,6 @@ namespace Flow
 		virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout) override;
 		virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout) override;
 
-
-
-		struct ObjectLightBuffer
-		{
-			DirectX::XMFLOAT3 SpecularColour;
-			float SpecularWeight;
-			float SpecularGloss;
-			float Padding[3];
-
-		} buff;
+		ObjectLightBuffer LightCBuffer_;
 	};
 }

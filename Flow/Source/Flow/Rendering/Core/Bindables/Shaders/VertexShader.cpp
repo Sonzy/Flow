@@ -6,22 +6,22 @@
 namespace Flow
 {
 	VertexShader::VertexShader(const std::string& LocalPath)
-		: m_AssetPath(LocalPath)
+		: ShaderPath_(LocalPath)
 	{
 		CREATE_RESULT_HANDLE();
 
-		CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &m_Blob));
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader));
+		CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob_));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateVertexShader(Blob_->GetBufferPointer(), Blob_->GetBufferSize(), nullptr, &VertexShader_));
 	}
 
 	void VertexShader::Bind()
 	{
-		RenderCommand::DX11GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0);
+		RenderCommand::DX11GetContext()->VSSetShader(VertexShader_.Get(), nullptr, 0);
 	}
 
 	ID3DBlob* VertexShader::GetByteCode() const
 	{
-		return m_Blob.Get();
+		return Blob_.Get();
 	}
 	std::shared_ptr<Bindable> VertexShader::Resolve(const std::string& LocalPath)
 	{
@@ -34,7 +34,7 @@ namespace Flow
 	}
 	std::string VertexShader::GetUID() const
 	{
-		return GenerateUID(m_AssetPath);
+		return GenerateUID(ShaderPath_);
 	}
 }
 

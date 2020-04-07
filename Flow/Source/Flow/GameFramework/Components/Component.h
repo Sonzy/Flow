@@ -7,6 +7,7 @@ namespace Flow
 	class WorldObject;
 	class WorldComponent;
 
+	/* Base class for all components, contains attachment properties to a world object */
 	class FLOW_API Component : public GameObject
 	{
 	public:
@@ -24,7 +25,7 @@ namespace Flow
 
 	protected:
 
-		WorldObject* m_ParentObject;
-		WorldComponent* m_AttachedComponent;
+		WorldObject* ParentObject_;
+		WorldComponent* AttachedComponent_;
 	};
 }

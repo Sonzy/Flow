@@ -14,12 +14,9 @@
 #include "Flow\Assets\AssetSystem.h"
 
 #include "Flow\Rendering\Core\Materials\Material.h"
-#include "Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h"
 
 namespace Flow
 {
-	std::vector<D3D11_INPUT_ELEMENT_DESC> StaticMesh::m_VertexLayout;
-
 	StaticMesh::StaticMesh(const std::string& LocalPath)
 	{
 
@@ -45,9 +42,9 @@ namespace Flow
 		for (auto& Vertex : m_Mesh->GetVertices())
 		{
 			VBuffer.EmplaceBack( //TODO: Dont actually need to know whats in here, just need to know the stride and offsets
-				DirectX::XMFLOAT3{ Vertex.Position.X ,  Vertex.Position.Y,  Vertex.Position.Z },
-				DirectX::XMFLOAT3{ Vertex.Normal.X ,  Vertex.Normal.Y,  Vertex.Normal.Z },
-				DirectX::XMFLOAT2{ Vertex.TexCoord.X,  Vertex.TexCoord.Y }
+				DirectX::XMFLOAT3{ Vertex.Position_.X ,  Vertex.Position_.Y,  Vertex.Position_.Z },
+				DirectX::XMFLOAT3{ Vertex.Normal_.X ,  Vertex.Normal_.Y,  Vertex.Normal_.Z },
+				DirectX::XMFLOAT2{ Vertex.TexCoord_.X,  Vertex.TexCoord_.Y }
 			);
 		}
 
@@ -55,22 +52,16 @@ namespace Flow
 		indices.reserve(m_Mesh->GetNumFaces() * 3); //Using triangles, change for quads
 		for (auto& Face : m_Mesh->GetFaces())
 		{
-			assert(Face.m_NumIndices == 3);
-			indices.push_back(Face.m_Indices[0]);
-			indices.push_back(Face.m_Indices[1]);
-			indices.push_back(Face.m_Indices[2]);
+			assert(Face.NumIndices_ == 3);
+			indices.push_back(Face.Indices_[0]);
+			indices.push_back(Face.Indices_[1]);
+			indices.push_back(Face.Indices_[2]);
 		}
 
 		//Add Vertex Buffer Bind
 		AddBind(BindableVertexBuffer::Resolve(LocalPath, VBuffer));
 
-		if (!MaterialOverride)
-		{
-			m_Material = new Mat_Hat_FancyMan();
-			m_Material->BindMaterial(this, Layout);
-		}
-		else
-			MaterialOverride->BindMaterial(this, Layout);
+		MaterialOverride->BindMaterial(this, Layout);
 
 		//Bind Index Buffer
 		AddBind(IndexBuffer::Resolve(LocalPath, indices));
@@ -81,13 +72,8 @@ namespace Flow
 
 	DirectX::XMMATRIX StaticMesh::GetTransformXM() const
 	{
-		//return DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
-		//	DirectX::XMMatrixTranslation(m_Position.X, m_Position.Y, m_Position.Z);// * //Move relative to origin
-		//	//DirectX::XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f); //Rotate around world centre
-		//	//DirectX::XMMatrixScaling(m_Scale.X, m_Scale.Y, m_Scale.Z);
-
-		return DirectX::XMMatrixScaling(m_Scale.X, m_Scale.Y, m_Scale.Z) *
-			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
-			DirectX::XMMatrixTranslation(m_Position.X, m_Position.Y, m_Position.Z);// * //Move relative to origin
+		return DirectX::XMMatrixScaling(Scale_.X, Scale_.Y, Scale_.Z) *
+			DirectX::XMMatrixRotationRollPitchYaw(Rotation_.Pitch, Rotation_.Yaw, Rotation_.Roll) * //Rotate around box centre
+			DirectX::XMMatrixTranslation(Position_.X, Position_.Y, Position_.Z);// * //Move relative to origin
 	}
 }

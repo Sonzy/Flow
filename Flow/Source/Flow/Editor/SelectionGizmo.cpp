@@ -3,71 +3,82 @@
 
 #include "Flow\Rendering\Renderer.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
-
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
-#include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-
-#include "Flow\Assets\AssetSystem.h"
-
 #include "Flow\GameFramework\Components\StaticMeshComponent.h"
 
 #include "Flow/GameFramework/World.h"
+#include "Flow\Assets\AssetSystem.h"
 
-
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
 namespace Flow
 {
 	SelectionGizmo::SelectionGizmo()
 	{
 		MeshAsset* Meshes = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");
-		//MeshAsset* Meshes = AssetSystem::GetAsset<MeshAsset>("Gizmo");
-		//Material* Mat = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour")->GetMaterial();
-		Material* Mat = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_HatFancyMan")->GetMaterial();
-		ArrowX = new StaticMeshComponent("ArrowX", Meshes, Mat, 0);
-		ArrowY = new StaticMeshComponent("ArrowY", Meshes, Mat, 1);
-		ArrowZ = new StaticMeshComponent("ArrowZ", Meshes, Mat, 2);
+		Material* Mat = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour_White")->GetMaterial();
 
+		//Create and assign mesh components.
+		ArrowX_ = new StaticMeshComponent("ArrowX_", Meshes, Mat, 0);
+		ArrowY_ = new StaticMeshComponent("ArrowY_", Meshes, Mat, 1);
+		ArrowZ_ = new StaticMeshComponent("ArrowZ_", Meshes, Mat, 2);
+
+		//Init the transform
 		const int Scale = 1.0f;
+		ArrowX_->SetWorldScale(Scale);
+		ArrowY_->SetWorldScale(Scale);
+		ArrowZ_->SetWorldScale(Scale);
 
-		ArrowX->SetWorldScale(Scale);
-		ArrowY->SetWorldScale(Scale);
-		ArrowZ->SetWorldScale(Scale);
+		//Initialise the meshes
+		ArrowX_->RefreshBinds();
+		ArrowY_->RefreshBinds();
+		ArrowZ_->RefreshBinds();
+	}
 
-		//ArrowX->SetWorldRotation(Rotator(90.0f, 90.0f, 0.0f));
-		//ArrowY->SetWorldRotation(Rotator(0.0f, 180.0f, 0.0f));
-		//ArrowZ->SetWorldRotation(Rotator(0, 0.0f, 0.0f));
+	SelectionGizmo::~SelectionGizmo()
+	{
+		delete XGhost_;
+		delete YGhost_;
+		delete ZGhost_;
 
-		ArrowX->RefreshBinds();
-		ArrowY->RefreshBinds();
-		ArrowZ->RefreshBinds();
-	}	
+		delete ArrowX_;
+		delete ArrowY_;
+		delete ArrowZ_;
+
+		delete XCollision_;
+		delete YCollision_;
+		delete ZCollision_;
+	}
+
 
 	void SelectionGizmo::GenerateCollision()
 	{
-		XGhost = new btGhostObject();
-		YGhost = new btGhostObject();
-		ZGhost = new btGhostObject();
+		XGhost_ = new btGhostObject();
+		YGhost_ = new btGhostObject();
+		ZGhost_ = new btGhostObject();
 
-		GenerateCollisionData(ArrowX, XCollision, XGhost);
-		GenerateCollisionData(ArrowY, YCollision, YGhost);
-		GenerateCollisionData(ArrowZ, ZCollision, ZGhost);
+		//Create collision data for each arrow seperately
+		GenerateCollisionData(ArrowX_, XCollision_, XGhost_);
+		GenerateCollisionData(ArrowY_, YCollision_, YGhost_);
+		GenerateCollisionData(ArrowZ_, ZCollision_, ZGhost_);
 	}
 
 	void SelectionGizmo::UpdatePosition(Vector Position)
 	{
-		ArrowX->SetWorldLocation(Position);
-		ArrowY->SetWorldLocation(Position);
-		ArrowZ->SetWorldLocation(Position);
+		ArrowX_->SetWorldPosition(Position);
+		ArrowY_->SetWorldPosition(Position);
+		ArrowZ_->SetWorldPosition(Position);
 
 		btTransform Transform;
 		Transform.setOrigin(btVector3(Position.X, Position.Y, Position.Z));
-		XGhost->setWorldTransform(Transform);
-		YGhost->setWorldTransform(Transform);
-		ZGhost->setWorldTransform(Transform);
+		XGhost_->setWorldTransform(Transform);
+		YGhost_->setWorldTransform(Transform);
+		ZGhost_->setWorldTransform(Transform);
 
-		World::GetPhysicsWorld()->updateSingleAabb(XGhost);
-		World::GetPhysicsWorld()->updateSingleAabb(YGhost);
-		World::GetPhysicsWorld()->updateSingleAabb(ZGhost);
+		World::GetPhysicsWorld()->updateSingleAabb(XGhost_);
+		World::GetPhysicsWorld()->updateSingleAabb(YGhost_);
+		World::GetPhysicsWorld()->updateSingleAabb(ZGhost_);
 	}
 
 	void SelectionGizmo::UpdateRotation(Rotator Rotation)
@@ -76,38 +87,37 @@ namespace Flow
 
 	void SelectionGizmo::SetScale(Vector Scale)
 	{
-		ArrowX->SetRelativeScale(Scale);
-		ArrowY->SetRelativeScale(Scale);
-		ArrowZ->SetRelativeScale(Scale);
+		ArrowX_->SetRelativeScale(Scale);
+		ArrowY_->SetRelativeScale(Scale);
+		ArrowZ_->SetRelativeScale(Scale);
 	}
 
 	void SelectionGizmo::Render()
 	{
-		if (!Visible)
+		if (!Visible_)
 			return;
 
-		Flow::Renderer::Submit(ArrowX);
-		Flow::Renderer::Submit(ArrowY);
-		Flow::Renderer::Submit(ArrowZ);
+		Flow::Renderer::Submit(ArrowX_);
+		Flow::Renderer::Submit(ArrowY_);
+		Flow::Renderer::Submit(ArrowZ_);
 	}
 
-	Vector SelectionGizmo::GetPosition()
+	Vector SelectionGizmo::GetPosition() const
 	{
-		btVector3 T = XGhost->getWorldTransform().getOrigin();
+		btVector3 T = XGhost_->getWorldTransform().getOrigin();
 		return Vector(T.x(), T.y(), T.z());
-		//return ArrowX->GetWorldLocation();
 	}
 
 	void SelectionGizmo::SetVisibility(bool Visible)
 	{
-		this->Visible = Visible;
+		this->Visible_ = Visible;
 	}
 
 	void SelectionGizmo::AddCollidersToWorld(World* World)
 	{
-		//World->AddCollisionObject(XGhost);
-		//World->AddCollisionObject(YGhost);
-		//World->AddCollisionObject(ZGhost);
+		//World->AddCollisionObject(XGhost_);
+		//World->AddCollisionObject(YGhost_);
+		//World->AddCollisionObject(ZGhost_);
 	}
 
 	void SelectionGizmo::GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost)
@@ -117,18 +127,17 @@ namespace Flow
 		auto Vertices = Component->GetMesh()->GetVertices();
 		for (auto Vert : Vertices)
 		{
-			btVector3 btv = btVector3(Vert.Position.X, Vert.Position.Y, Vert.Position.Z);
+			btVector3 btv = btVector3(Vert.Position_.X, Vert.Position_.Y, Vert.Position_.Z);
 			Shape->addPoint(btv);
 		}
 		Collider = Shape;
 
 		//Create the ghost object
-
+		btTransform Transform;
+		Vector Location = Component->GetWorldPosition();
+		Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
 		Ghost->setCollisionShape(Collider);
-		btTransform XTransform;
-		Vector Trans = Component->GetWorldLocation();
-		XTransform.setOrigin(btVector3(Trans.X, Trans.Y, Trans.Z));
-		Ghost->setWorldTransform(XTransform);
+		Ghost->setWorldTransform(Transform);
 		Ghost->setUserPointer(this);
 	}
 }

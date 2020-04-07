@@ -18,9 +18,9 @@ namespace Flow
 		std::string GetUID() const override;
 
 	protected:
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_TextureView;
-		UINT m_Slot;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> TextureView_;
+		UINT Slot_;
 
-		std::string m_AssetName;//Used to generate the UID
+		std::string AssetName_;//Used to generate the UID
 	};
 }

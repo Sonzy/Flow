@@ -17,10 +17,10 @@ namespace Flow
 
 		void AddChild(WorldComponent* Child);
 
-		Vector GetWorldLocation();
-		Vector GetRelativeLocation();
-		void SetWorldLocation(Vector NewLocation);
-		void SetRelativeLocation(Vector NewLocation);
+		Vector GetWorldPosition();
+		Vector GetRelativePosition();
+		void SetWorldPosition(Vector NewPosition);
+		void SetRelativePosition(Vector NewPosition);
 
 		Rotator GetWorldRotation();
 		Rotator GetRelativeRotation();
@@ -48,7 +48,7 @@ namespace Flow
 		Rotator* GetWriteableRotation();
 		Vector* GetWriteableScale();
 
-		float* GetXPointer() { return &m_RelativeTransform.m_Location.X; }
+		float* GetXPointer() { return &RelativeTransform_.Position_.X; }
 
 		std::vector<Component*> GetChildren() const;
 
@@ -57,11 +57,11 @@ namespace Flow
 
 	protected:
 
-		std::vector<Component*> m_Children;
-		Component* m_ParentComponent;
+		std::vector<Component*> Children_;
+		Component* ParentComponent_;
 
-		Transform m_RelativeTransform;
+		Transform RelativeTransform_;
 
-		bool m_Visible = true;
+		bool Visible_ = true;
 	};
 }

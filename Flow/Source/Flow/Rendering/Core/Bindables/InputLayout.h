@@ -19,7 +19,7 @@ namespace Flow
 
 	private:
 		//Describe the input layout for the vertex shader
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
-		VertexLayout m_VertexLayout;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout_;
+		VertexLayout VertexLayout_;
 	};
 }

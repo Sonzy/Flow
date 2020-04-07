@@ -24,7 +24,7 @@ namespace Flow
 
 		virtual int getDebugMode() const;
 
-		int DebugMode;
+		int DebugMode_;
 
 		static Line* Get();
 

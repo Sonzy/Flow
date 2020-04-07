@@ -22,7 +22,7 @@ namespace Flow
 		struct ColorBuffer
 		{
 			DirectX::XMFLOAT4 Colour;
-		} Buffer;
+		} Colour_;
 
 		std::string GenerateTag();
 	};

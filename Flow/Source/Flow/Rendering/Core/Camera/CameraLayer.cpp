@@ -17,7 +17,7 @@ namespace Flow
 
 	void CameraLayer::OnAttach()
 	{
-		m_CameraReference = &RenderCommand::GetCamera();
+		CameraRef_ = &RenderCommand::GetCamera();
 	}
 
 	void CameraLayer::OnDetach()
@@ -26,8 +26,8 @@ namespace Flow
 
 	void CameraLayer::OnImGuiRender()
 	{
-		if(m_CameraReference)
-			m_CameraReference->RenderIMGUIWindow();
+		if(CameraRef_)
+			CameraRef_->RenderIMGUIWindow();
 	}
 
 	void CameraLayer::OnEvent(Event& e)
@@ -69,19 +69,19 @@ namespace Flow
 		{
 		case FLOW_KEY_W:
 			FLOW_ENGINE_LOG("Moving Camera W");
-			m_CameraReference->Translate(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+			CameraRef_->Translate(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 			break;
 		case FLOW_KEY_A:
 			FLOW_ENGINE_LOG("Moving Camera A");
-			m_CameraReference->Translate(DirectX::XMFLOAT3( 1.0f, 0.0f, 0.0f ));
+			CameraRef_->Translate(DirectX::XMFLOAT3( 1.0f, 0.0f, 0.0f ));
 			break;
 		case FLOW_KEY_S:
 			FLOW_ENGINE_LOG("Moving Camera S");
-			m_CameraReference->Translate(DirectX::XMFLOAT3( 0.0f, -1.0f, 0.0f ));
+			CameraRef_->Translate(DirectX::XMFLOAT3( 0.0f, -1.0f, 0.0f ));
 			break;
 		case FLOW_KEY_D:
 			FLOW_ENGINE_LOG("Moving Camera D");
-			m_CameraReference->Translate(DirectX::XMFLOAT3 (-1.0f, 0.0f, 0.0f ));
+			CameraRef_->Translate(DirectX::XMFLOAT3 (-1.0f, 0.0f, 0.0f ));
 			break;
 		}
 		return false;

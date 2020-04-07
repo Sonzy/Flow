@@ -58,9 +58,9 @@ namespace Flow
 
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 	{
-		NearPlane = 0.5f;
-		FarPlane = 2000.0f;
-		ViewportSize = IntVector2D(ViewportWidth, ViewportHeight);
+		NearPlane_ = 0.5f;
+		FarPlane_ = 2000.0f;
+		ViewportSize_ = IntVector2D(ViewportWidth, ViewportHeight);
 
 		HRESULT ResultHandle;
 
@@ -157,7 +157,7 @@ namespace Flow
 		Context->RSSetViewports(1u, &Viewport);
 
 		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
-		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportSize.X / (float)ViewportSize.Y, NearPlane, FarPlane));
+		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{
@@ -178,7 +178,7 @@ namespace Flow
 		Clear();
 
 		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
-		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportSize.X / (float)ViewportSize.Y, NearPlane, FarPlane));
+		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
 	void DX11RenderAPI::EndFrame()
@@ -199,7 +199,7 @@ namespace Flow
 	{
 		HRESULT ResultHandle;
 
-		ViewportSize = IntVector2D(Width, Height);
+		ViewportSize_ = IntVector2D(Width, Height);
 
 		Context->OMSetRenderTargets(0, 0, 0);
 		RenderTarget->Release();
@@ -246,7 +246,7 @@ namespace Flow
 
 		Context->RSSetViewports(1u, &Viewport);
 
-		m_MainCamera.SetProjection(DirectX::XMMatrixPerspectiveFovLH(m_MainCamera.GetFOV(), (float)ViewportSize.X / (float)ViewportSize.Y, NearPlane, FarPlane));
+		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
 	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
@@ -263,7 +263,7 @@ namespace Flow
 
 		//Adjust for the projection matrix
 		DirectX::XMFLOAT4X4 Projection;
-		DirectX::XMStoreFloat4x4(&Projection, m_MainCamera.GetProjection());
+		DirectX::XMStoreFloat4x4(&Projection, MainCamera_.GetProjection());
 		MouseX = MouseX / Projection._11;
 		MouseY = MouseY / Projection._22;		
 
@@ -286,7 +286,7 @@ namespace Flow
 
 	Camera& DX11RenderAPI::GetCamera()
 	{
-		return m_MainCamera;
+		return MainCamera_;
 	}
 
 	ID3D11Device* DX11RenderAPI::GetDevice()

@@ -16,7 +16,7 @@ namespace Flow
 		std::string GetUID() const override;
 
 	protected:
-		std::string m_AssetPath;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShader;
+		std::string ShaderPath_;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> PixelShader_;
 	};
 }

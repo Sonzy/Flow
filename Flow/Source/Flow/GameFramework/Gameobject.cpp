@@ -2,12 +2,12 @@
 #include "Gameobject.h"
 
 Flow::GameObject::GameObject()
-	: m_ObjectName("Unnamed Object")
+	: ObjectName_("Unnamed Object")
 {
 }
 
 Flow::GameObject::GameObject(const std::string& Name)
-	: m_ObjectName(Name)
+	: ObjectName_(Name)
 {
 }
 
@@ -25,5 +25,5 @@ void Flow::GameObject::DrawDetailsWindow(bool bDontUpdate)
 
 const std::string& Flow::GameObject::GetName()
 {
-	return m_ObjectName;
+	return ObjectName_;
 }

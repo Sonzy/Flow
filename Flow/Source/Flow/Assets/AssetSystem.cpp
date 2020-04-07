@@ -10,7 +10,7 @@
 
 namespace Flow
 {
-	AssetSystem* AssetSystem::s_AssetSystem = new AssetSystem();
+	AssetSystem* AssetSystem::AssetSystem_s = new AssetSystem();
 	GDIPlusManager s_GDIPlusManager;
 
 	AssetSystem::AssetSystem()
@@ -19,13 +19,13 @@ namespace Flow
 
 	void AssetSystem::Shutdown()
 	{
-		delete s_AssetSystem;
+		delete AssetSystem_s;
 	}
 
 	AssetSystem::~AssetSystem()
 	{
 		//Unload all assets
-		for (auto& Asset : m_LoadedAssets)
+		for (auto& Asset : LoadedAssets_)
 		{
 			delete Asset.second;
 		}
@@ -38,24 +38,27 @@ namespace Flow
 
 	bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& AssetPath)
 	{
+		//Create a new asset
 		AssetBase* NewAsset = CreateAsset(AssetSystem::GetAssetTypeFromFileExtension(AssetPath));
 		CHECK_RETURN_FALSE(!NewAsset, "AssetSystem::LoadAsset: Failed to create asset for file type.");
 
-		if (NewAsset->LoadAsset(AssetPath))
+		//Try to load asset, log if we fail
+		if (!NewAsset->LoadAsset(AssetPath))
 		{
-			NewAsset->SetAssetName(AssetName);
-			std::size_t HashedName = std::hash<std::string>{}(AssetName);
-			s_AssetSystem->m_LoadedAssets.insert({ HashedName, NewAsset });
-
-			s_AssetSystem->LoadedAssetSize += NewAsset->GetAssetSize();
-
-
-			return true;
-		}
-		else
 			FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, AssetPath);
+			delete NewAsset;
+			return false;
+		}
 
-		return false;
+		//Add the asset to the stored assets
+		NewAsset->SetAssetName(AssetName);
+		std::size_t HashedName = std::hash<std::string>{}(AssetName);
+		AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
+
+		//Update tracked data size
+		AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
+
+		return true;
 	}
 
 
@@ -65,13 +68,13 @@ namespace Flow
 		std::size_t HashedName = std::hash<std::string>{}(AssetName);
 
 		//Error if the path doesnt exist in the system
-		if (s_AssetSystem->m_LoadedAssets.find(HashedName) == s_AssetSystem->m_LoadedAssets.end())
+		if (AssetSystem_s->LoadedAssets_.find(HashedName) == AssetSystem_s->LoadedAssets_.end())
 		{
 			FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName);
 			return nullptr;
 		}
 
-		return s_AssetSystem->m_LoadedAssets[HashedName];
+		return AssetSystem_s->LoadedAssets_[HashedName];
 	}
 
 	//TODO: Come up wiht a better version of this
@@ -120,11 +123,11 @@ namespace Flow
 	{
 		if (ImGui::Begin("Asset System"))
 		{
-			ImGui::Text("Asset Memory usage: %.1f MB", (float)s_AssetSystem->LoadedAssetSize / 1048576);
+			ImGui::Text("Asset Memory usage: %.1f MB", (float)AssetSystem_s->LoadedAssetSize_ / 1048576);
 
 			if (ImGui::TreeNode("Meshes"))
 			{
-				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				for (auto Asset : AssetSystem_s->LoadedAssets_)
 				{
 					//First: Name, Second: AssetPtr
 					if (Asset.second->GetAssetType() != EAssetType::Mesh)
@@ -137,7 +140,7 @@ namespace Flow
 
 			if (ImGui::TreeNode("Textures"))
 			{
-				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				for (auto Asset : AssetSystem_s->LoadedAssets_)
 				{
 					//First: Name, Second: AssetPtr
 					if (Asset.second->GetAssetType() != EAssetType::Texture)
@@ -150,7 +153,7 @@ namespace Flow
 
 			if (ImGui::TreeNode("Shaders"))
 			{
-				for (auto Asset : s_AssetSystem->m_LoadedAssets)
+				for (auto Asset : AssetSystem_s->LoadedAssets_)
 				{
 					//First: Name, Second: AssetPtr
 					if (Asset.second->GetAssetType() != EAssetType::Shader)

@@ -33,7 +33,7 @@ namespace Flow
 		template<class T>
 		T* GetBindable() noexcept
 		{
-			for (auto& pb : m_Binds)
+			for (auto& pb : Binds_)
 			{
 				if (auto pt = dynamic_cast<T*>(pb.get()))
 					return pt;
@@ -41,7 +41,7 @@ namespace Flow
 			return nullptr;
 		}
 
-		std::vector<std::shared_ptr<Bindable>> m_Binds;
-		const IndexBuffer* m_IndexBuffer;
+		std::vector<std::shared_ptr<Bindable>> Binds_;
+		const IndexBuffer* IndexBuffer_;
 	};
 }

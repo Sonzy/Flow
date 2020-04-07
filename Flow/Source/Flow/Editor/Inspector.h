@@ -7,6 +7,8 @@ namespace Flow
 	class World;
 	class SelectionGizmo;
 
+	/*	Inspector within the editor. Provides details of the current selected object as well as modifiable properties of the object. 
+		Also displays the world heirarchy in the editor. */
 	class Inspector
 	{
 	public:
@@ -21,14 +23,16 @@ namespace Flow
 
 		void Update();
 
-		SelectionGizmo* GetSelector();
+		[[nodiscard]] SelectionGizmo* GetSelector() const;
 	private:
 
-		World* m_CurrentWorld;
-		WorldObject* m_FocusedItem;
-		SelectionGizmo* m_Selector;
+		World* CurrentWorld_;
+		WorldObject* FocusedItem_;
+		SelectionGizmo* Selector_;
 
-		bool ObjChanged;
+		// Whether the focused item has changed this frame, so dont apply modifiers
+		// to the new selected object from the previous one
+		bool FocusedItemChanged;
 	};
 
 }

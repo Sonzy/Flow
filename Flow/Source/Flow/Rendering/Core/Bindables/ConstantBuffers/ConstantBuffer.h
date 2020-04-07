@@ -16,7 +16,7 @@ namespace Flow
 		}
 
 		ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
-			: m_Slot(slot), Tag_(Tag)
+			: Slot_(slot), Tag_(Tag)
 		{
 			HRESULT ResultHandle;
 
@@ -30,11 +30,11 @@ namespace Flow
 
 			D3D11_SUBRESOURCE_DATA csd = {};
 			csd.pSysMem = &consts;
-			CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
+			CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &ConstantBuffer_));
 		}
 
 		ConstantBuffer(UINT slot)
-			: m_Slot(slot)
+			: Slot_(slot)
 		{
 			HRESULT ResultHandle;
 
@@ -46,7 +46,7 @@ namespace Flow
 			cbd.ByteWidth = sizeof(C);
 			cbd.StructureByteStride = 0u;
 
-			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &ConstantBuffer_));
 		}
 
 		void Update(const C& consts)
@@ -55,16 +55,16 @@ namespace Flow
 			D3D11_MAPPED_SUBRESOURCE MSR;
 
 			CATCH_ERROR_DX( RenderCommand::DX11GetContext()->Map(
-					m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+				ConstantBuffer_.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 			memcpy(MSR.pData, &consts, sizeof(consts));
 
-			RenderCommand::DX11GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
+			RenderCommand::DX11GetContext()->Unmap(ConstantBuffer_.Get(), 0u);
 		}
 
 	protected:
-		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer;
-		UINT m_Slot;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> ConstantBuffer_;
+		UINT Slot_;
 		std::string Tag_;
 	};
 }

@@ -40,8 +40,8 @@ namespace Flow
 			}
 		}
 
-		m_AssetSize = sizeof(TexColor) * (m_TextureHeight * m_TextureWidth);
-		m_AssetType = EAssetType::Texture;
+		AssetSize_ = sizeof(TexColor) * (m_TextureHeight * m_TextureWidth);
+		AssetType_ = EAssetType::Texture;
 
 		m_AssetPath = FilePath;
 

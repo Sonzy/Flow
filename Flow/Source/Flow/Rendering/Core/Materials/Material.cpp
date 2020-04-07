@@ -4,10 +4,12 @@
 #include "Flow\Application.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Flow\Rendering\Core\Bindables\InputLayout.h"
+#include "Flow\Rendering\Core\Bindables\Texture.h"
+#include "Flow\Rendering\Core\Bindables\Sampler.h"
 
-#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
+#include "Flow/Rendering/Core/Renderable.h"
 #include "Flow\GameFramework\Components\RenderableComponent.h"
-
 
 #include "Flow\Assets\AssetSystem.h"
 #include "Flow\Assets\Shaders\ShaderAsset.h"
@@ -23,47 +25,47 @@ namespace Flow
 
 	void Material::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
 	{
-		Parent->AddBind(Texture::Resolve(m_Texture, 0));
+		Parent->AddBind(Texture::Resolve(Texture_, 0));
 		Parent->AddBind(Sampler::Resolve());
 
-		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
+		auto vShader = VertexShader::Resolve(VertexShader_->GetPath());
 		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 		Parent->AddBind(std::move(vShader));
-		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
+		Parent->AddBind(PixelShader::Resolve(PixelShader_->GetPath()));
 
 		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 	}
 
 	void Material::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
 	{
-		Parent->AddBind(Texture::Resolve(m_Texture, 0));
+		Parent->AddBind(Texture::Resolve(Texture_, 0));
 		Parent->AddBind(Sampler::Resolve());
 
-		auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
-		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-		Parent->AddBind(std::move(vShader));
-		Parent->AddBind(PixelShader::Resolve(m_PixelShader->GetPath()));
+		auto VShader = VertexShader::Resolve(VertexShader_->GetPath());
+		auto VShaderByteCode = static_cast<VertexShader&>(*VShader).GetByteCode();
+		Parent->AddBind(std::move(VShader));
+		Parent->AddBind(PixelShader::Resolve(PixelShader_->GetPath()));
 
-		Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+		Parent->AddBind(InputLayout::Resolve(VertexLayout, VShaderByteCode));
 	}
 
 	void Material::SetTexture(const std::string& TextureName)
 	{
-		auto Temp = AssetSystem::GetAsset<TextureAsset>(TextureName);
+		auto NewTexture = AssetSystem::GetAsset<TextureAsset>(TextureName);
 
-		CHECK_RETURN(!Temp, "Material::SetShader: Texture was nullptr");
-		m_Texture = Temp;
+		CHECK_RETURN(!NewTexture, "Material::SetShader: Texture was nullptr");
+		Texture_ = NewTexture;
 	}
 
 	void Material::SetPixelShader(const std::string& ShaderName)
 	{
-		m_PixelShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
+		PixelShader_ = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
 
 	}
 
 	void Material::SetVertexShader(const std::string& ShaderName)
 	{
-		m_VertexShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
+		VertexShader_ = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
 	}
 }
 

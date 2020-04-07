@@ -47,6 +47,6 @@ namespace Flow
 
 		float BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 
-		Camera m_MainCamera;
+		Camera MainCamera_;
 	};
 }

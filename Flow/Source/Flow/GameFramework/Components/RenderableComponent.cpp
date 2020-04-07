@@ -5,18 +5,18 @@
 namespace Flow
 {
 	RenderableComponent::RenderableComponent()
-		: WorldComponent("Unnamed RenderableComponent"), m_IndexBuffer(nullptr)
+		: WorldComponent("Unnamed RenderableComponent"), IndexBuffer_(nullptr)
 	{
 	}
 
 	RenderableComponent::RenderableComponent(const std::string& Name)
-		: WorldComponent(Name), m_IndexBuffer(nullptr)
+		: WorldComponent(Name), IndexBuffer_(nullptr)
 	{
 	}
 
 	void RenderableComponent::BindAll()
 	{
-		for (auto& b : m_Binds)
+		for (auto& b : Binds_)
 		{
 			b->Bind();
 		}
@@ -24,17 +24,16 @@ namespace Flow
 
 	const IndexBuffer& RenderableComponent::GetIndexBuffer() const
 	{
-		return *m_IndexBuffer;
+		return *IndexBuffer_;
 	}
 
 	DirectX::XMMATRIX RenderableComponent::GetTransformXM()
 	{
 		Transform WorldTransform = GetWorldTransform();
-		Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
-		return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.X, WorldTransform.m_Scale.Y, WorldTransform.m_Scale.Z) *
+		Rotator RadianRotation = Rotator::AsRadians(WorldTransform.Rotation_);
+		return 	DirectX::XMMatrixScaling(WorldTransform.Scale_.X, WorldTransform.Scale_.Y, WorldTransform.Scale_.Z) *
 			DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) * 
-			//DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Roll, RadianRotation.Pitch, RadianRotation.Yaw) *
-			DirectX::XMMatrixTranslation(WorldTransform.m_Location.X, WorldTransform.m_Location.Y, WorldTransform.m_Location.Z);
+			DirectX::XMMatrixTranslation(WorldTransform.Position_.X, WorldTransform.Position_.Y, WorldTransform.Position_.Z);
 	}
 
 	void RenderableComponent::AddBind(std::shared_ptr<Bindable> bind)
@@ -42,11 +41,11 @@ namespace Flow
 		//If index buffer, only allow single bind.
 		if (typeid(*bind) == typeid(IndexBuffer))
 		{
-			assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-			m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
+			assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
+			IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
 		}
 
-		m_Binds.push_back(std::move(bind));
+		Binds_.push_back(std::move(bind));
 	}
 	void RenderableComponent::RefreshBinds()
 	{

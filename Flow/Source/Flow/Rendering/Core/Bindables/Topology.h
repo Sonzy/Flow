@@ -15,6 +15,6 @@ namespace Flow
 		static std::string GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type);
 		std::string GetUID() const override;
 	protected:
-		D3D11_PRIMITIVE_TOPOLOGY m_Topology;
+		D3D11_PRIMITIVE_TOPOLOGY Topology_;
 	};
 }

@@ -22,7 +22,7 @@ namespace Flow
 		};
 
 	public:
-		bool bBound = false;
-		bool bCheckBound = false;
+		bool Bound_ = false;
+		bool CheckBound_ = false;
 	};
 }

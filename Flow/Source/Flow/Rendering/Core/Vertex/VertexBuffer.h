@@ -8,7 +8,7 @@ namespace Flow
 	{
 	public:
 		VertexBuffer(VertexLayout& Layout)
-			: m_Layout(Layout)
+			: VertexLayout_(Layout)
 		{
 
 		}
@@ -26,14 +26,14 @@ namespace Flow
 		template<typename ...Params>
 		void EmplaceBack(Params&&... params)
 		{
-			assert(sizeof...(params) == m_Layout.GetElementCount() && "Param count doesn't match number of vertex elements");
+			assert(sizeof...(params) == VertexLayout_.GetElementCount() && "Param count doesn't match number of vertex elements");
 
-			m_Buffer.resize(m_Buffer.size() + m_Layout.GetSize());
+			Buffer_.resize(Buffer_.size() + VertexLayout_.GetSize());
 			GetBack().SetAttributeByIndex(0u, std::forward<Params>(params)...);
 		}
 
 	private:
-		VertexLayout m_Layout;
-		std::vector<char> m_Buffer;
+		VertexLayout VertexLayout_;
+		std::vector<char> Buffer_;
 	};
 }

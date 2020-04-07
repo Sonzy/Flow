@@ -16,12 +16,12 @@ MeshWorldObject::MeshWorldObject()
 MeshWorldObject::MeshWorldObject(const std::string& NewName)
 	: Flow::WorldObject(NewName)
 {
-	SimulatePhysics = true;
-	HasCollision = true;
+	SimulatePhysics_ = true;
+	HasCollision_ = true;
 
 	//Initialise Components
 	MeshComponent = CreateComponent<Flow::StaticMeshComponent>("Mesh Component");
-	m_RootComponent = MeshComponent.get();
+	RootComponent_ = MeshComponent.get();
 
 	//Initialise Mesh Component
 	// Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>(MeshName);
@@ -34,18 +34,18 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName)
 MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& MeshName, const std::string& MaterialName)
 	: Flow::WorldObject(NewName), MeshName(MeshName), MaterialName(MaterialName)
 {
-	SimulatePhysics = true;
-	HasCollision = true;
+	SimulatePhysics_ = true;
+	HasCollision_ = true;
 
 	//Initialise Components
 	MeshComponent = CreateComponent<Flow::StaticMeshComponent>("Mesh Component");
-	m_RootComponent = MeshComponent.get();
+	RootComponent_ = MeshComponent.get();
 
 	//Initialise Mesh Component
 	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>(MeshName);
 	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>(MaterialName)->GetMaterial();
 	MeshComponent->InitialiseComponent(Mesh, Material);
-	MeshComponent->SetSimulatePhysics(SimulatePhysics);
+	MeshComponent->SetSimulatePhysics(SimulatePhysics_);
 	//MeshComponent->InitialisePhysics();
 }
 

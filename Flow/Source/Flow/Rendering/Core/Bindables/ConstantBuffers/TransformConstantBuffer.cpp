@@ -5,29 +5,29 @@
 
 namespace Flow
 {
-	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::m_VCBuffer;
+	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::VertexConstBuffer_;
 
 	TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
-		: m_Parent(Parent), m_ComponentParent(nullptr)
+		: ParentObject_(Parent), ParentComponent_(nullptr)
 	{
-		if (!m_VCBuffer)
-			m_VCBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+		if (!VertexConstBuffer_)
+			VertexConstBuffer_ = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
 	}
 
 	TransformConstantBuffer::TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot)
-		: m_Parent(nullptr), m_ComponentParent(Parent)
+		: ParentObject_(nullptr), ParentComponent_(Parent)
 	{
-		if (!m_VCBuffer)
-			m_VCBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+		if (!VertexConstBuffer_)
+			VertexConstBuffer_ = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
 	}
 
 	void TransformConstantBuffer::Bind()
 	{
 		DirectX::XMMATRIX ParentMatrix;
-		if (m_Parent)
-			ParentMatrix = m_Parent->GetTransformXM();
-		else if (m_ComponentParent)
-			ParentMatrix = m_ComponentParent->GetTransformXM();
+		if (ParentObject_)
+			ParentMatrix = ParentObject_->GetTransformXM();
+		else if (ParentComponent_)
+			ParentMatrix = ParentComponent_->GetTransformXM();
 		else
 			FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
@@ -42,7 +42,7 @@ namespace Flow
 		};
 
 		//Update and bind the constant buffers
-		m_VCBuffer->Update(transform);
-		m_VCBuffer->Bind();
+		VertexConstBuffer_->Update(transform);
+		VertexConstBuffer_->Bind();
 	}
 }

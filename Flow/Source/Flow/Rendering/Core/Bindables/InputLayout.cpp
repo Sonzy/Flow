@@ -6,22 +6,22 @@
 namespace Flow
 {
 	InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
-		: m_VertexLayout(std::move(Layout))
+		: VertexLayout_(std::move(Layout))
 	{
 		CREATE_RESULT_HANDLE();
 
-		const auto D3DLayout = m_VertexLayout.GetD3DLayout();
+		const auto D3DLayout = VertexLayout_.GetD3DLayout();
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateInputLayout(
 			D3DLayout.data(),
 			(UINT)D3DLayout.size(),
 			vertexShaderByteCode->GetBufferPointer(),
 			vertexShaderByteCode->GetBufferSize(),
-			&m_InputLayout));
+			&InputLayout_));
 	}
 
 	void InputLayout::Bind()
 	{
-		RenderCommand::DX11GetContext()->IASetInputLayout(m_InputLayout.Get());
+		RenderCommand::DX11GetContext()->IASetInputLayout(InputLayout_.Get());
 	}
 	std::shared_ptr<Bindable> InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 	{
@@ -34,6 +34,6 @@ namespace Flow
 	}
 	std::string InputLayout::GetUID() const
 	{
-		return GenerateUID(m_VertexLayout);
+		return GenerateUID(VertexLayout_);
 	}
 }

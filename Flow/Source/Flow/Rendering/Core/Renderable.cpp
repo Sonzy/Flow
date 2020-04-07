@@ -8,46 +8,46 @@ namespace Flow
 		//If index buffer, only allow single bind.
 		if (typeid(*bind) == typeid(IndexBuffer))
 		{
-			assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-			m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
+			assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
+			IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
 		}
 
-		m_Binds.push_back(std::move(bind));
+		Binds_.push_back(std::move(bind));
 	}
 
 	Renderable::Renderable()
-		: m_Position(0.0f), m_Rotation(0.0f), m_Scale(1.0f)
+		: Position_(0.0f), Rotation_(0.0f), Scale_(1.0f)
 	{
 	}
 
 	Renderable::~Renderable()
 	{
-		m_Binds.clear();
+		Binds_.clear();
 	}
 
 	const IndexBuffer& Renderable::GetIndexBuffer()
 	{
-		return *m_IndexBuffer;
+		return *IndexBuffer_;
 	}
 
 	void Renderable::SetPosition(Vector Location)
 	{
-		m_Position = Location;
+		Position_ = Location;
 	}
 
 	void Renderable::SetRotation(Rotator Rotation)
 	{
-		m_Rotation = Rotation;
+		Rotation_ = Rotation;
 	}
 
 	void Renderable::SetScale(Vector Scale)
 	{
-		m_Scale = Scale;
+		Scale_ = Scale;
 	}
 
 	void Renderable::BindAll()
 	{
-		for (auto& b : m_Binds)
+		for (auto& b : Binds_)
 		{
 			b->Bind();
 		}

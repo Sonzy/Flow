@@ -33,7 +33,7 @@ namespace Flow
 		std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
 		{
 			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
-			m_WorldObjects.push_back(NewObject);
+			WorldObjects_.push_back(NewObject);
 
 			return NewObject;
 		}
@@ -56,21 +56,21 @@ namespace Flow
 	private:
 		friend class Inspector;
 
-		std::vector<std::shared_ptr<WorldObject>> m_WorldObjects;
-		std::string m_WorldName;
+		std::vector<std::shared_ptr<WorldObject>> WorldObjects_;
+		std::string WorldName_;
 
 		//=== World Physics ===
 
 		/* Default memory setup */
-		btDefaultCollisionConfiguration* CollisionConfig;
+		btDefaultCollisionConfiguration* CollisionConfig_;
 		/* Default single threaded collision dispatcher */
-		btCollisionDispatcher* Dispatcher;
+		btCollisionDispatcher* Dispatcher_;
 		/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
-		btBroadphaseInterface* OverlappingPairCache;
+		btBroadphaseInterface* OverlappingPairCache_;
 		/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
-		btSequentialImpulseConstraintSolver* Solver;
-		btDiscreteDynamicsWorld* PhysicsWorld;
+		btSequentialImpulseConstraintSolver* Solver_;
+		btDiscreteDynamicsWorld* PhysicsWorld_;
 
-		BulletDebugDraw DebugDrawer;
+		BulletDebugDraw DebugDrawer_;
 	};
 }

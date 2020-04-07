@@ -17,10 +17,10 @@ namespace Flow
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* overlay);
 
-		std::vector<Layer*>::iterator begin() { return Layers.begin(); };
-		std::vector<Layer*>::iterator end() { return Layers.end(); };
+		std::vector<Layer*>::iterator begin() { return Layers_.begin(); };
+		std::vector<Layer*>::iterator end() { return Layers_.end(); };
 	private:
-		std::vector<Layer*> Layers;
-		unsigned int LayerInsertIndex = 0;
+		std::vector<Layer*> Layers_;
+		unsigned int LayerInsertIndex_ = 0;
 	};
 }

@@ -8,19 +8,19 @@
 namespace Flow
 {
 	PointLight::PointLight(float LightRadius)
-		: m_Mesh("Box"), m_PixelConstantBuffer(0)
+		: Mesh_("Box"), PixelConstantBuffer_(0)
 	{
 		Reset();
 
 		Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour")->GetMaterial();
 
-		m_Mesh.InitialiseStaticMesh("Sphere", Material);
-		m_Mesh.SetScale(10.0f);
+		Mesh_.InitialiseStaticMesh("Sphere", Material);
+		Mesh_.SetScale(10.0f);
 	}
 
 	void PointLight::Reset()
 	{
-		m_ConstantBuffer = {
+		ConstantBuffer_ = {
 			{ 1.5f,100.0f,-4.5f },
 			{ 0.05f,0.05f,0.05f },
 			{ 1.0f,1.0f,1.0f },
@@ -33,18 +33,18 @@ namespace Flow
 
 	void PointLight::BindLight(DirectX::FXMMATRIX ViewMatrix)
 	{
-		auto Copy = m_ConstantBuffer;
-		const auto Position = DirectX::XMLoadFloat3(&m_ConstantBuffer.pos);
+		auto Copy = ConstantBuffer_;
+		const auto Position = DirectX::XMLoadFloat3(&ConstantBuffer_.pos);
 
 		DirectX::XMStoreFloat3(&Copy.pos, DirectX::XMVector3Transform(Position, ViewMatrix));
-		m_Mesh.SetPosition(Vector(m_ConstantBuffer.pos.x, m_ConstantBuffer.pos.y, m_ConstantBuffer.pos.z));
+		Mesh_.SetPosition(Vector(ConstantBuffer_.pos.x, ConstantBuffer_.pos.y, ConstantBuffer_.pos.z));
 
-		m_PixelConstantBuffer.Update(Copy);
-		m_PixelConstantBuffer.Bind();
+		PixelConstantBuffer_.Update(Copy);
+		PixelConstantBuffer_.Bind();
 
-		if (bDrawMesh)
+		if (DrawMesh_)
 		{
-			Renderer::Submit(&m_Mesh);
+			Renderer::Submit(&Mesh_);
 		}
 	}
 
@@ -53,19 +53,19 @@ namespace Flow
 		if (ImGui::Begin("Light"))
 		{
 			ImGui::Text("Position");
-			ImGui::SliderFloat("X", &m_ConstantBuffer.pos.x, -600.0f, 600.0f, "%.1f");
-			ImGui::SliderFloat("Y", &m_ConstantBuffer.pos.y, -600.0f, 600.0f, "%.1f");
-			ImGui::SliderFloat("Z", &m_ConstantBuffer.pos.z, -600.0f, 600.0f, "%.1f");
+			ImGui::SliderFloat("X", &ConstantBuffer_.pos.x, -600.0f, 600.0f, "%.1f");
+			ImGui::SliderFloat("Y", &ConstantBuffer_.pos.y, -600.0f, 600.0f, "%.1f");
+			ImGui::SliderFloat("Z", &ConstantBuffer_.pos.z, -600.0f, 600.0f, "%.1f");
 
 			ImGui::Text("Intensity/Colour");
-			ImGui::SliderFloat("Intensity", &m_ConstantBuffer.diffuseIntensity, 0.1f, 5.0f, "%.2f");
-			ImGui::ColorEdit3("Diffuse", &m_ConstantBuffer.diffuseColor.x);
-			ImGui::ColorEdit3("Ambient", &m_ConstantBuffer.ambient.x);
+			ImGui::SliderFloat("Intensity", &ConstantBuffer_.diffuseIntensity, 0.1f, 5.0f, "%.2f");
+			ImGui::ColorEdit3("Diffuse", &ConstantBuffer_.diffuseColor.x);
+			ImGui::ColorEdit3("Ambient", &ConstantBuffer_.ambient.x);
 
 			ImGui::Text("Falloff");
-			ImGui::SliderFloat("Constant", &m_ConstantBuffer.attConst, 0.05f, 10.0f, "%.2f", 4);
-			ImGui::SliderFloat("Linear", &m_ConstantBuffer.attLin, 0.0001f, 4.0f, "%.4f", 8);
-			ImGui::SliderFloat("Quadratic", &m_ConstantBuffer.attQuad, 0.0000001f, 10.0f, "%.7f", 10);
+			ImGui::SliderFloat("Constant", &ConstantBuffer_.attConst, 0.05f, 10.0f, "%.2f", 4);
+			ImGui::SliderFloat("Linear", &ConstantBuffer_.attLin, 0.0001f, 4.0f, "%.4f", 8);
+			ImGui::SliderFloat("Quadratic", &ConstantBuffer_.attQuad, 0.0000001f, 10.0f, "%.7f", 10);
 
 			if (ImGui::Button("Reset"))
 			{

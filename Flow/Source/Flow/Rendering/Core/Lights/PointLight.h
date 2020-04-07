@@ -17,7 +17,7 @@ namespace Flow
 
 		void RenderControlWindow();
 
-		StaticMesh* GetMesh() { return &m_Mesh; }
+		StaticMesh* GetMesh() { return &Mesh_; }
 		
 	private:
 
@@ -33,10 +33,10 @@ namespace Flow
 		};
 
 	private:
-		StaticMesh m_Mesh;
-		bool bDrawMesh = true;
+		StaticMesh Mesh_;
+		bool DrawMesh_ = true;
 
-		LightConstantBuffer m_ConstantBuffer;
-		PixelConstantBuffer<LightConstantBuffer> m_PixelConstantBuffer;
+		LightConstantBuffer ConstantBuffer_;
+		PixelConstantBuffer<LightConstantBuffer> PixelConstantBuffer_;
 	};
 }

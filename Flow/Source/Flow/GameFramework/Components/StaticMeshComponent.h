@@ -33,12 +33,11 @@ namespace Flow
 
 
 		//Temp - TODO: Actually use component movement for rendering
-		Mesh* GetMesh() { return m_StaticMesh; }
+		Mesh* GetMesh() { return StaticMesh_; }
 
 		//= Physics ==========
 
-		//TODO: temporary physics stuff - need to make an actual optimised collision mesh
-		//Creates a heap allocated collision, generates it for now and returns it
+		/* Generates new collision from the mesh */
 		void GenerateCollision();
 		void CreateRigidBody();
 
@@ -54,13 +53,12 @@ namespace Flow
 
 	protected:
 
-		bool SimulatePhysics = false;
+		bool SimulatePhysics_ = false;
 
-		Mesh* m_StaticMesh;
-		bool bOverrideMaterial = true;
-		Material* m_Material;
+		Mesh* StaticMesh_;
+		Material* Material_;
 
-		btCollisionShape* Collision;
-		btRigidBody* Body;
+		btCollisionShape* Collision_;
+		btRigidBody* Body_;
 	};
 }

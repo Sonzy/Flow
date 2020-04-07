@@ -5,23 +5,23 @@ namespace Flow
 {
 	VertexLayout& VertexLayout::Append(ElementType type)
 	{
-		m_Elements.emplace_back(type, GetSize());
+		Elements_.emplace_back(type, GetSize());
 		return *this;
 	}
 
 	size_t VertexLayout::GetSize() const
 	{
-		return m_Elements.empty() ? 0u : m_Elements.back().GetOffsetAfter();
+		return Elements_.empty() ? 0u : Elements_.back().GetOffsetAfter();
 	}
 
 	const Element& VertexLayout::GetElementByIndex(size_t Index) const
 	{
-		return m_Elements[Index];
+		return Elements_[Index];
 	}
 
 	size_t VertexLayout::GetElementCount() const
 	{
-		return m_Elements.size();
+		return Elements_.size();
 	}
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> VertexLayout::GetD3DLayout() const
@@ -29,7 +29,7 @@ namespace Flow
 		std::vector<D3D11_INPUT_ELEMENT_DESC> VertexDescription;
 		VertexDescription.reserve(GetElementCount());
 
-		for (const auto& e : m_Elements)
+		for (const auto& e : Elements_)
 		{
 			VertexDescription.push_back(e.GetDescription());
 		}
@@ -39,7 +39,7 @@ namespace Flow
 	std::string VertexLayout::GetCode() const
 	{
 		std::string Code;
-		for (const auto& El : m_Elements)
+		for (const auto& El : Elements_)
 		{
 			Code += El.GetCode();
 		}

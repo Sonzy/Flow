@@ -5,31 +5,31 @@
 namespace Flow
 {
 	KeyEvent::KeyEvent(int KeyCode)
-		: KeyCode(KeyCode)
+		: KeyCode_(KeyCode)
 	{
 	
 	}
 
 	int KeyEvent::GetKeyCode() const
 	{
-		return KeyCode;
+		return KeyCode_;
 	}
 
 	KeyPressedEvent::KeyPressedEvent(int KeyCode, int RepeatCount)
-		: KeyEvent(KeyCode), RepeatCount(RepeatCount)
+		: KeyEvent(KeyCode), RepeatCount_(RepeatCount)
 	{
 		Input::OnKeyPressed(KeyCode);
 	}
 
 	int KeyPressedEvent::GetRepeatCount() const
 	{
-		return RepeatCount;
+		return RepeatCount_;
 	}
 
 	std::string KeyPressedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "KeyPressedEvent: " << KeyCode << " (" << RepeatCount << " repeats)";
+		ss << "KeyPressedEvent: " << KeyCode_ << " (" << RepeatCount_ << " repeats)";
 		return ss.str();
 	}
 	KeyReleasedEvent::KeyReleasedEvent(int KeyCode)
@@ -41,13 +41,13 @@ namespace Flow
 	std::string KeyReleasedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "KeyReleasedEvent: " << KeyCode;
+		ss << "KeyReleasedEvent: " << KeyCode_;
 		return ss.str();
 	}
 	std::string KeyTypedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "KeyTypedEvent: " << KeyCode;
+		ss << "KeyTypedEvent: " << KeyCode_;
 		return ss.str();
 	}
 }

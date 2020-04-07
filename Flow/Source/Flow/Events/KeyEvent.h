@@ -6,14 +6,14 @@ namespace Flow
 	class FLOW_API KeyEvent : public Event
 	{
 	public:
-		int GetKeyCode() const;
+		[[nodiscard]] int GetKeyCode() const;
 
 		EVENT_CLASS_CATEGORY(EventCategory::Keyboard | EventCategory::Input)
 	protected:
 		KeyEvent(int KeyCode);
 
 	protected:
-		int KeyCode;
+		int KeyCode_;
 	};
 
 
@@ -24,11 +24,11 @@ namespace Flow
 
 
 		int GetRepeatCount() const;
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		int RepeatCount;
+		int RepeatCount_;
 	};
 
 	class FLOW_API KeyReleasedEvent : public KeyEvent
@@ -37,7 +37,7 @@ namespace Flow
 		KeyReleasedEvent(int KeyCode);
 
 
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
@@ -47,11 +47,9 @@ namespace Flow
 	public:
 		KeyTypedEvent(int KeyCode)
 			: KeyEvent(KeyCode)
-		{
+		{}
 
-		}
-
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		EVENT_CLASS_TYPE(KeyTyped)
 	};

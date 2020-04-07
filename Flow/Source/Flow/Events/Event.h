@@ -46,7 +46,7 @@ namespace Flow
 
 	class FLOW_API Event
 	{
-		friend class EventDispatcher; //TODO
+		friend class EventDispatcher;
 	public:
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
@@ -56,7 +56,8 @@ namespace Flow
 
 		bool IsInCategory(EventCategory Category) const;
 
-		bool bHandled = false;
+		// Whether this event has already been handled
+		bool Handled_ = false;
 	};
 
 	class EventDispatcher
@@ -70,15 +71,15 @@ namespace Flow
 		template<typename T>
 		bool Dispatch(EventFunction<T> Function)
 		{
-			if (m_Event.GetEventType() != T::GetStaticType())
+			if (Event_.GetEventType() != T::GetStaticType())
 				return false;
 
-			m_Event.bHandled = Function(*(T*)&m_Event);
+			Event_.Handled_ = Function(*(T*)&Event_);
 			return true;
 		}
 
 	private:
-		Event& m_Event;
+		Event& Event_;
 	};
 
 	inline std::ostream& operator<<(std::ostream& os, const Event& e)

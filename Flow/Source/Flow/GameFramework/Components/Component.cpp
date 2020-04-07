@@ -9,7 +9,7 @@ namespace Flow
 	}
 
 	Component::Component(const std::string& Name)
-		: GameObject(Name), m_ParentObject(nullptr), m_AttachedComponent(nullptr)
+		: GameObject(Name), ParentObject_(nullptr), AttachedComponent_(nullptr)
 	{
 	}
 
@@ -19,22 +19,22 @@ namespace Flow
 
 	WorldComponent* Component::GetParentComponent()
 	{
-		return m_AttachedComponent;
+		return AttachedComponent_;
 	}
 
 	WorldObject* Component::GetParentWorldObject()
 	{
-		return m_ParentObject;
+		return ParentObject_;
 	}
 
 	void Component::SetParent(WorldObject* Parent)
 	{
-		m_ParentObject = Parent;
+		ParentObject_ = Parent;
 	}
 
 	void Component::SetParentComponent(WorldComponent* Parent)
 	{
-		m_AttachedComponent = Parent;
+		AttachedComponent_ = Parent;
 	}
 
 	void Component::Tick(float DeltaTime)

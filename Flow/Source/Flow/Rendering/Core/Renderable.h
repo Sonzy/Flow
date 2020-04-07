@@ -22,9 +22,9 @@ namespace Flow
 		void SetPosition(Vector Location);
 		void SetRotation(Rotator Rotation);
 		void SetScale(Vector Scale);
-		Vector GetPosition() { return m_Position; }
-		Rotator GetRotation() { return m_Rotation; }
-		Vector GetScale() { return m_Scale; }
+		Vector GetPosition() { return Position_; }
+		Rotator GetRotation() { return Rotation_; }
+		Vector GetScale() { return Scale_; }
 
 		void BindAll();
 		void AddBind(std::shared_ptr<Bindable> bind);
@@ -34,7 +34,7 @@ namespace Flow
 		template<class T>
 		T* GetBindable() noexcept
 		{
-			for (auto& pb : m_Binds)
+			for (auto& pb : Binds_)
 			{
 				if (auto pt = dynamic_cast<T*>(pb.get()))
 					return pt;
@@ -43,11 +43,11 @@ namespace Flow
 		}
 
 	protected:
-		Vector m_Position;
-		Vector m_Scale;
-		Rotator m_Rotation;
+		Vector Position_;
+		Vector Scale_;
+		Rotator Rotation_;
 
-		std::vector<std::shared_ptr<Bindable>> m_Binds;
-		const IndexBuffer* m_IndexBuffer = nullptr;
+		std::vector<std::shared_ptr<Bindable>> Binds_;
+		const IndexBuffer* IndexBuffer_ = nullptr;
 	};
 }

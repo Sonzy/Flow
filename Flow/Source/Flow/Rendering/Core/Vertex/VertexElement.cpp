@@ -5,27 +5,27 @@ namespace Flow
 {
 	size_t Element::GetOffset() const
 	{
-		return m_Offset;
+		return Offset_;
 	}
 
 	size_t Element::GetOffsetAfter() const
 	{
-		return m_Offset + GetSize();
+		return Offset_ + GetSize();
 	}
 
 	size_t Element::GetSize() const
 	{
-		return GetSizeOf(m_Type);
+		return GetSizeOf(ElementType_);
 	}
 
 	ElementType Element::GetType() const
 	{
-		return m_Type;
+		return ElementType_;
 	}
 
 	D3D11_INPUT_ELEMENT_DESC Element::GetDescription() const
 	{
-		switch (m_Type)
+		switch (ElementType_)
 		{
 		case ElementType::Position2D:
 			return GenerateDescription<ElementType::Position2D>(GetOffset());
@@ -50,7 +50,7 @@ namespace Flow
 
 	std::string Element::GetCode() const
 	{
-		switch (m_Type)
+		switch (ElementType_)
 		{
 		case ElementType::Position2D:
 			return VertexElement<ElementType::Position2D>::Code;

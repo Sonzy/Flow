@@ -38,17 +38,17 @@ namespace Flow
 
 	public:
 
-		IntVector2D GetWindowSize() { return ViewportSize; }
+		IntVector2D GetWindowSize() { return ViewportSize_; }
 		
 	private:
 		static API s_API;
 
 	protected:
 
-		IntVector2D ViewportSize;
-		IntVector2D AdjustedViewportSize;
+		IntVector2D ViewportSize_;
+		IntVector2D AdjustedViewportSize_;
 
-		float NearPlane;
-		float FarPlane;
+		float NearPlane_;
+		float FarPlane_;
 	};
 }

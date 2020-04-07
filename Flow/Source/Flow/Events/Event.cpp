@@ -14,7 +14,7 @@ namespace Flow
 	}
 
 	EventDispatcher::EventDispatcher(Event& event)
-		: m_Event(event)
+		: Event_(event)
 	{
 	}
 }

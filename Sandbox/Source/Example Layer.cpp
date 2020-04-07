@@ -88,10 +88,12 @@ ExampleLayer::ExampleLayer()
 	Flow::MeshAsset* Rifle = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Rifle");
 	Flow::MeshAsset* Revolver = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Revolver");
 
-	Flow::MaterialAsset* Props = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Props2");
+	Flow::MaterialAsset* Props = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Props");
 	Flow::MaterialAsset* Weapons = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Weapons");
 	Flow::MaterialAsset* Wood = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood");
 	Flow::MaterialAsset* Sand = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Sand");
+
+	Shotgun->GetAllMeshes();
 
 	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand->GetMaterial());
 	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood->GetMaterial());
@@ -114,30 +116,30 @@ ExampleLayer::ExampleLayer()
 	Light = std::make_shared<Flow::PointLight>(500.0f);
 	
 	WallObj->GetRootComponent()->SetRelativeScale(Vector(200, 10, 100));
-	WallObj->GetRootComponent()->SetWorldLocation(Vector(0, -3, 0));
+	WallObj->GetRootComponent()->SetWorldPosition(Vector(0, -3, 0));
 
 	//= Location
 
-	Base->GetRootComponent()->SetWorldLocation(Vector(37.5f, 8.0f, 0.0f));
+	Base->GetRootComponent()->SetWorldPosition(Vector(37.5f, 8.0f, 0.0f));
 	
-	Crate1_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, -10.0f));
-	Crate2_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 3.0f));
-	Crate3_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 10.0f, 16.0f));
-	Crate4_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, -4.0f));
-	Crate5_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 21.0f, 10.0f));
+	Crate1_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, -10.0f));
+	Crate2_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, 3.0f));
+	Crate3_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, 16.0f));
+	Crate4_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 21.0f, -4.0f));
+	Crate5_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 21.0f, 10.0f));
 	
-	Chair1_->GetRootComponent()->SetWorldLocation(Vector(5.0f,  9.0f, 4.0f));
-	Chair2_->GetRootComponent()->SetWorldLocation(Vector(20.0f, 9.0f, 10.0f));
-	Chair3_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 9.0f, 10.0f));
-	Chair4_->GetRootComponent()->SetWorldLocation(Vector(70.0f, 9.0f, 3.0f));
+	Chair1_->GetRootComponent()->SetWorldPosition(Vector(5.0f,  9.0f, 4.0f));
+	Chair2_->GetRootComponent()->SetWorldPosition(Vector(20.0f, 9.0f, 10.0f));
+	Chair3_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 9.0f, 10.0f));
+	Chair4_->GetRootComponent()->SetWorldPosition(Vector(70.0f, 9.0f, 3.0f));
 	
-	Table1_->GetRootComponent()->SetWorldLocation(Vector(15.0f, 9.0f, 0.0f));
-	Table2_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 9.0f, 0.0f));
+	Table1_->GetRootComponent()->SetWorldPosition(Vector(15.0f, 9.0f, 0.0f));
+	Table2_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 9.0f, 0.0f));
 
-	Revolver_->GetRootComponent()->SetWorldLocation(Vector(14.0f, 20.0f, 0.0f));
-	Shotgun_->GetRootComponent()->SetWorldLocation(Vector(-15.0f, 20.0f, -13.0f));
-	Blunderbuss_->GetRootComponent()->SetWorldLocation(Vector(60.0f, 20.0f, 0.0f));
-	Rifle_->GetRootComponent()->SetWorldLocation(Vector(-20.0f, 32.0f, 0.0f));
+	Revolver_->GetRootComponent()->SetWorldPosition(Vector(14.0f, 20.0f, 0.0f));
+	Shotgun_->GetRootComponent()->SetWorldPosition(Vector(-15.0f, 20.0f, -13.0f));
+	Blunderbuss_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 20.0f, 0.0f));
+	Rifle_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 32.0f, 0.0f));
 															   	
 	//= Rotation
 	Crate1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));

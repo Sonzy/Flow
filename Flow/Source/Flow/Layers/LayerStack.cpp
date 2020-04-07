@@ -9,39 +9,39 @@ namespace Flow
 
 	LayerStack::~LayerStack()
 	{
-		for (Layer* layer : Layers)
+		for (Layer* layer : Layers_)
 			delete layer;
 	}
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		Layers.emplace(Layers.begin() + LayerInsertIndex, layer);
-		LayerInsertIndex++;
+		Layers_.emplace(Layers_.begin() + LayerInsertIndex_, layer);
+		LayerInsertIndex_++;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-		Layers.emplace_back(overlay);
+		Layers_.emplace_back(overlay);
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
 	{
-		auto iterator = std::find(Layers.begin(), Layers.end(), layer);
+		auto iterator = std::find(Layers_.begin(), Layers_.end(), layer);
 
-		if (iterator != Layers.end())
+		if (iterator != Layers_.end())
 		{
-			Layers.erase(iterator);
-			LayerInsertIndex--;
+			Layers_.erase(iterator);
+			LayerInsertIndex_--;
 		}
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay)
 	{
-		auto iterator = std::find(Layers.begin(), Layers.end(), overlay);
+		auto iterator = std::find(Layers_.begin(), Layers_.end(), overlay);
 
-		if (iterator != Layers.end())
+		if (iterator != Layers_.end())
 		{
-			Layers.erase(iterator);
+			Layers_.erase(iterator);
 		}
 	}
 }

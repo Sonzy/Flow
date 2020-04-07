@@ -21,6 +21,6 @@ namespace Flow
 
 	protected:
 
-		std::string m_ObjectName;
+		std::string ObjectName_;
 	};
 }

@@ -34,6 +34,6 @@ namespace Flow
 		bool OnKeyReleased(KeyReleasedEvent& e);
 		bool OnWindowResized(WindowResizedEvent& e);
 
-		Camera* m_CameraReference;
+		Camera* CameraRef_;
 	};
 }

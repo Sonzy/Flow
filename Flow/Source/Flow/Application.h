@@ -9,8 +9,6 @@
 
 #include "UserInterface/imgui/ImGuiLayer.h"
 
-#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
-
 namespace Flow
 {
 	class World;
@@ -59,23 +57,23 @@ namespace Flow
 		//= Application =============
 
 		static Application* Instance;
-		std::unique_ptr<Window> MainWindow;
+		std::unique_ptr<Window> MainWindow_;
 
-		ImGuiLayer* m_ImGuiLayer;
-		EditorLayer* m_EditorLayer;
+		ImGuiLayer* ImGuiLayer_;
+		EditorLayer* EditorLayer_;
 
-		bool bRunning = true;
-		bool bPaused = false;
+		bool Running_ = true;
+		bool Paused_ = false;
 		bool DrawCollision_ = false;
 
 		//= Game ====================
 
-		World* GameWorld;
+		World* GameWorld_;
 
 		//= Editor ==================
 
-		Inspector* m_Inspector;
-		SelectionGizmo* m_SelectionGizmo;
+		Inspector* Inspector_;
+		SelectionGizmo* SelectionGizmo_;
 
 		//= Debug ===================
 
@@ -85,12 +83,12 @@ namespace Flow
 
 		//= Helper ===============
 
-		LayerStack m_LayerStack;
-		Timer m_Timer;
+		LayerStack LayerStack_;
+		Timer Timer_;
 
 		//= Paths =================
 
-		std::string LocalPath;
+		std::string LocalPath_;
 	};
 
 	//Is defined externally

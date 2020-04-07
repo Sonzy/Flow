@@ -5,15 +5,15 @@
 namespace Flow
 {
 	Topology::Topology(D3D11_PRIMITIVE_TOPOLOGY type)
-		: m_Topology(type)
+		: Topology_(type)
 	{
-		bCheckBound = true;
-		bBound = false;
+		CheckBound_ = true;
+		Bound_ = false;
 	}
 
 	void Topology::Bind() noexcept
 	{
-		RenderCommand::DX11GetContext()->IASetPrimitiveTopology(m_Topology);
+		RenderCommand::DX11GetContext()->IASetPrimitiveTopology(Topology_);
 	}
 
 	std::shared_ptr<Bindable> Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY type)
@@ -29,6 +29,6 @@ namespace Flow
 
 	std::string Topology::GetUID() const
 	{
-		return GenerateUID(m_Topology);
+		return GenerateUID(Topology_);
 	}
 }

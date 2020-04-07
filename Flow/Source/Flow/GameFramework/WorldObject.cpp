@@ -12,19 +12,19 @@
 namespace Flow
 {
 	WorldObject::WorldObject()
-		: m_RootComponent(nullptr)
+		: RootComponent_(nullptr)
 	{
 
 	}
 
 	WorldObject::WorldObject(const std::string& Name)
-		: GameObject(Name), m_RootComponent(nullptr)
+		: GameObject(Name), RootComponent_(nullptr)
 	{
 	}
 
 	WorldObject::~WorldObject()
 	{
-		m_RootComponent = nullptr;
+		RootComponent_ = nullptr;
 		FLOW_ENGINE_LOG("WorldObject::~WorldObject");
 	}
 
@@ -40,75 +40,75 @@ namespace Flow
 	{
 		GameObject::Tick(DeltaTime);
 		
-		if(m_RootComponent)
-			m_RootComponent->Tick(DeltaTime);
+		if(RootComponent_)
+			RootComponent_->Tick(DeltaTime);
 	}
 	WorldComponent* WorldObject::GetRootComponent()
 	{
-		return m_RootComponent;
+		return RootComponent_;
 	}
 
 	Vector WorldObject::GetLocation()
 	{
-		if(!m_RootComponent)
+		if(!RootComponent_)
 			return Vector();
 		
-		return m_RootComponent->GetRelativeLocation();
+		return RootComponent_->GetRelativePosition();
 	}
 
 	Vector WorldObject::GetScale()
 	{
-		if (!m_RootComponent)
+		if (!RootComponent_)
 			return Vector();
 
-		return m_RootComponent->GetRelativeScale();
+		return RootComponent_->GetRelativeScale();
 	}
 
 	Rotator WorldObject::GetRotation()
 	{
-		if (!m_RootComponent)
+		if (!RootComponent_)
 			return Rotator();
 
-		return m_RootComponent->GetRelativeRotation();
+		return RootComponent_->GetRelativeRotation();
 	}
 
 	void WorldObject::Render()
 	{
-		if(m_RootComponent && Visible)
-			m_RootComponent->Render();
+		if(RootComponent_ && Visible_)
+			RootComponent_->Render();
 	}
 
 	bool WorldObject::IsSimulatingPhysics()
 	{
-		return SimulatePhysics;
+		return SimulatePhysics_;
 	}
 
 	bool WorldObject::CollisionEnabled()
 	{
-		return HasCollision;
+		return HasCollision_;
 	}
 
 	void WorldObject::InitialisePhysics()
 	{
-		m_RootComponent->InitialisePhysics();
-		SimulatePhysics ? World::GetWorld()->AddPhysicsObject(m_RootComponent->GetRigidBody()) : World::GetWorld()->AddCollisionObject(m_RootComponent->GetRigidBody());
+		RootComponent_->InitialisePhysics();
+		SimulatePhysics_ ? World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody()) : World::GetWorld()->AddCollisionObject(RootComponent_->GetRigidBody());
 	}
 
 	btRigidBody* WorldObject::GetRigidBody()
 	{
-		return m_RootComponent->GetRigidBody();
+		return RootComponent_->GetRigidBody();
 	}
 
 	void WorldObject::DrawDetailsWindow(bool bDontUpdate)
 	{
-		ImGui::InputText("ObjectName", &m_ObjectName);
+		ImGui::InputText("ObjectName", &ObjectName_);
 
 		ImGui::Separator(); //==========================================
 
 		//Display Component node tree
-		if (ImGui::TreeNode(m_RootComponent->GetName().c_str()))
+		if (ImGui::TreeNode(RootComponent_->GetName().c_str()))
 		{
-			for (auto Child : m_RootComponent->GetChildren())
+			for (auto Child : RootComponent_->GetChildren())
 			{
 				ImGui::Text(Child->GetName().c_str());
 			}
@@ -120,22 +120,19 @@ namespace Flow
 
 		//Display World Object Transform
 		bool bUpdate = false;
-		bUpdate |= ImGui::InputFloat3("Position", m_RootComponent->GetXPointer(), 1);
-		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_RootComponent->GetWriteableRotation(), 1);
-		bUpdate |= ImGui::InputFloat3("Scale", (float*)m_RootComponent->GetWriteableScale(), 1);
+		bUpdate |= ImGui::InputFloat3("Position", RootComponent_->GetXPointer(), 1);
+		bUpdate |= ImGui::InputFloat3("Rotation", (float*)RootComponent_->GetWriteableRotation(), 1);
+		bUpdate |= ImGui::InputFloat3("Scale", (float*)RootComponent_->GetWriteableScale(), 1);
 		//bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
-
-
-
 
 		//Update Object Transform
 		if (bUpdate && !bDontUpdate)
 		{
 			//TEMP CAST
-			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(m_RootComponent))
-				Comp->MovePhysicsBody(m_RootComponent->GetRelativeTransform());
+			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(RootComponent_))
+				Comp->MovePhysicsBody(RootComponent_->GetRelativeTransform());
 		}
 
-		ImGui::Checkbox("Is Visible", &Visible);
+		ImGui::Checkbox("Is Visible", &Visible_);
 	}
 }

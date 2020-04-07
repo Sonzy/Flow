@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <DirectXMath.h>
 
 namespace Flow
 {
@@ -9,6 +10,7 @@ namespace Flow
 	class TextureAsset;
 	class Renderable;
 
+	/* Base class for materials. Allows for easy setting of textures and shaders. To be extended in the future for dynamic materials */
 	class FLOW_API Material
 	{
 	public:
@@ -23,10 +25,19 @@ namespace Flow
 		void SetVertexShader(const std::string& ShaderName);
 
 	protected:
-		//TODO: Multiple textures/shaders etc
+		//TODO: Multiple textures etc
 
-		TextureAsset* m_Texture;
-		ShaderAsset* m_VertexShader;
-		ShaderAsset* m_PixelShader;
+		TextureAsset* Texture_;
+		ShaderAsset* VertexShader_;
+		ShaderAsset* PixelShader_;
+	};
+
+	/* Struct used for sending light data vis */
+	struct ObjectLightBuffer
+	{
+		DirectX::XMFLOAT3 SpecularColour_;
+		float SpecularWeight_;
+		float SpecularGloss_;
+		float Padding_[3];
 	};
 }

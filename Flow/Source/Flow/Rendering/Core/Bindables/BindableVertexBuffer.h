@@ -30,8 +30,8 @@ namespace Flow
 
 		static std::string GenerateUID_Internal(const std::string& Tag);
 
-		std::string m_Tag; //Used to find the bindable in the codex
-		UINT m_Stride;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> m_Buffer;
+		std::string Tag_; //Used to find the bindable in the codex
+		UINT Stride_;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> Buffer_;
 	};
 }

@@ -114,9 +114,7 @@
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
-    <ClInclude Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.h" />
-    <ClInclude Include="Source\Flow\Assets\Materials\Temporary\Mat_TexturedPhong.h" />
-    <ClInclude Include="Source\Flow\Assets\Materials\Temporary\Mat_WabbleProps.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
@@ -176,7 +174,6 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Line.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
-    <ClInclude Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
@@ -282,9 +279,7 @@
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
-    <ClCompile Include="Source\Flow\Assets\Materials\Temporary\Mat_Hat_FancyMan.cpp" />
-    <ClCompile Include="Source\Flow\Assets\Materials\Temporary\Mat_TexturedPhong.cpp" />
-    <ClCompile Include="Source\Flow\Assets\Materials\Temporary\Mat_WabbleProps.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />
@@ -329,7 +324,6 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Line.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Materials\MaterialVertexFormatter.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />

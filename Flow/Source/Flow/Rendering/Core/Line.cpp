@@ -9,9 +9,9 @@
 
 namespace Flow
 {
-	VertexLayout Line::Layout = VertexLayout();
-	std::vector<std::shared_ptr<Bindable>> Line::m_Binds = std::vector<std::shared_ptr<Bindable>>();
-	IndexBuffer* Line::m_IndexBuffer = nullptr;
+	VertexLayout Line::VertexLayout_ = VertexLayout();
+	std::vector<std::shared_ptr<Bindable>> Line::Binds_ = std::vector<std::shared_ptr<Bindable>>();
+	IndexBuffer* Line::IndexBuffer_ = nullptr;
 	int Line::Count = 0;
 
 	Line::Line()
@@ -23,7 +23,7 @@ namespace Flow
 		Line* LineObj = new Line();
 		LineObj->AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_LINELIST));
 
-		Layout.Append(ElementType::Position3D);
+		VertexLayout_.Append(ElementType::Position3D);
 
 		std::vector<unsigned short> indices;
 		indices.push_back(0);
@@ -36,7 +36,7 @@ namespace Flow
 		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShaderV")->GetPath());
 		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 		LineObj->AddBind(std::move(vShader));
-		LineObj->AddBind(InputLayout::Resolve(Layout, vShaderByteCode));
+		LineObj->AddBind(InputLayout::Resolve(VertexLayout_, vShaderByteCode));
 	}
 
 	void Line::DrawLine(Vector From, Vector To, Vector Colour)
@@ -44,7 +44,7 @@ namespace Flow
 		Line NewLine = Line();
 		
 		// Define Vertex Layout
-		VertexBuffer VBuffer(Layout);
+		VertexBuffer VBuffer(VertexLayout_);
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ From.X ,  From.Y,  From.Z });
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ To.X ,  To.Y,  To.Z });
 		
@@ -76,7 +76,7 @@ namespace Flow
 
 		NewLine.BindAll();
 		
-		RenderCommand::DrawIndexed(m_IndexBuffer->GetCount());
+		RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
 				
 		Count++;
 	}
@@ -91,16 +91,16 @@ namespace Flow
 		//If index buffer, only allow single bind.
 		if (typeid(*bind) == typeid(IndexBuffer))
 		{
-			assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-			m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
+			assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
+			IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
 		}
 
-		m_Binds.push_back(std::move(bind));
+		Binds_.push_back(std::move(bind));
 	}
 
 	void Line::BindAll()
 	{
-		for (auto& b : m_Binds)
+		for (auto& b : Binds_)
 		{
 			b->Bind();
 		}

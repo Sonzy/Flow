@@ -16,8 +16,8 @@ namespace Flow
 		EVENT_CLASS_TYPE(MouseMoved)
 		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input)
 	private:
-		int MouseX;
-		int MouseY;
+		int MouseX_;
+		int MouseY_;
 	};
 
 	class FLOW_API MouseScrolledEvent : public Event
@@ -34,8 +34,8 @@ namespace Flow
 		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input)
 
 	private:
-		float XOffset;
-		float YOffset;
+		float XOffset_;
+		float YOffset_;
 	};
 
 	class FLOW_API MouseButtonEvent : public Event
@@ -47,7 +47,7 @@ namespace Flow
 	protected:
 		MouseButtonEvent(int Button);
 
-		int Button;
+		int Button_;
 	};
 
 	/* Mouse button event, 0 = Left, 1 = Right, 2 = Middle */

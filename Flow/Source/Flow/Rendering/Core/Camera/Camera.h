@@ -30,16 +30,16 @@ namespace Flow
 
 	private:
 
-		Vector m_Position;
-		Rotator m_Rotation; //Pitch Roll Yaw
+		Vector Position_;
+		Rotator Rotation_; //Pitch Roll Yaw
 
-		IntVector2D m_LastMousePos;
+		IntVector2D LastMousePosition_;
 
-		DirectX::XMMATRIX m_Projection;
+		DirectX::XMMATRIX Projection_;
 
 		float m_FOV = Math::PI / 2;
 
-		float m_CameraSpeed = 1.0f;
-		float m_RotationSpeed = 0.005f;
+		float CameraSpeed_ = 1.0f;
+		float RotationSpeed_ = 0.005f;
 	};
 }

@@ -17,6 +17,6 @@ namespace Flow
 		std::string GetUID() const override;
 
 	protected:
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_Sampler;
+		Microsoft::WRL::ComPtr<ID3D11SamplerState> Sampler_;
 	};
 }

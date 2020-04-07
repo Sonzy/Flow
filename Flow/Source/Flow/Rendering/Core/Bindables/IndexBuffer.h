@@ -31,10 +31,10 @@ namespace Flow
 
 		static std::string GenerateUID_Internal(const std::string& Tag);
 
-		std::string m_Tag;
+		std::string Tag_;
 	public:
 
-		UINT m_Count;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> m_IndexBuffer;
+		UINT Count_;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer_;
 	};
 }

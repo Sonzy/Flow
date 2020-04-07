@@ -6,7 +6,7 @@
 namespace Flow
 {
 	BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer)
-		: m_Stride((UINT)Buffer.GetLayout().GetSize()), m_Tag(Tag)
+		: Stride_((UINT)Buffer.GetLayout().GetSize()), Tag_(Tag)
 	{
 		CREATE_RESULT_HANDLE();
 
@@ -16,18 +16,18 @@ namespace Flow
 		BufferDescription.CPUAccessFlags = 0u;
 		BufferDescription.MiscFlags = 0u;
 		BufferDescription.ByteWidth = UINT(Buffer.GetBufferSizeAsBytes());
-		BufferDescription.StructureByteStride = m_Stride;
+		BufferDescription.StructureByteStride = Stride_;
 
 		D3D11_SUBRESOURCE_DATA SubresourceData = {};
 		SubresourceData.pSysMem = Buffer.GetData();
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &m_Buffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &Buffer_));
 	}
 
 	void BindableVertexBuffer::Bind()
 	{
 		const UINT offset = 0u;
-		RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, m_Buffer.GetAddressOf(), &m_Stride, &offset);
+		RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, Buffer_.GetAddressOf(), &Stride_, &offset);
 	}
 	std::shared_ptr<Bindable> BindableVertexBuffer::Resolve(const std::string& Tag, const VertexBuffer& Buffer)
 	{
@@ -36,7 +36,7 @@ namespace Flow
 
 	std::string BindableVertexBuffer::GetUID() const
 	{
-		return GenerateUID(m_Tag);
+		return GenerateUID(Tag_);
 	}
 	std::string BindableVertexBuffer::GenerateUID_Internal(const std::string& Tag)
 	{

@@ -22,7 +22,7 @@
 namespace Flow
 {
 	Inspector::Inspector(SelectionGizmo* Selector)
-		: m_CurrentWorld(nullptr), m_FocusedItem(nullptr), m_Selector(Selector)
+		: CurrentWorld_(nullptr), FocusedItem_(nullptr), Selector_(Selector)
 	{
 	}
 
@@ -30,8 +30,8 @@ namespace Flow
 	{
 		if (ImGui::Begin("Inspector"))
 		{
-			if (m_FocusedItem)
-				m_FocusedItem->DrawDetailsWindow(ObjChanged);
+			if (FocusedItem_)
+				FocusedItem_->DrawDetailsWindow(FocusedItemChanged);
 		}
 		ImGui::End();
 	}
@@ -40,11 +40,11 @@ namespace Flow
 	{
 		if (ImGui::Begin("Heirarchy"))
 		{
-			ImGui::Text(std::string("Level: " + m_CurrentWorld->GetName()).c_str());
+			ImGui::Text(std::string("Level: " + CurrentWorld_->GetName()).c_str());
 
 			ImGui::Separator();
 
-			for (auto Object : m_CurrentWorld->m_WorldObjects)
+			for (auto Object : CurrentWorld_->WorldObjects_)
 			{
 				ImGui::Text(Object->GetName().c_str());
 			}
@@ -54,39 +54,41 @@ namespace Flow
 
 	void Inspector::SetCurrentWorld(World* WorldReference)
 	{
-		m_CurrentWorld = WorldReference;
+		CurrentWorld_ = WorldReference;
 	}
 
 	bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	{
+		//Ensure mouse left.
 		if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
 			return false;
 
+		//Calculate the ray bounds
 		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetPosition();
 		IntVector2D MousePosition = Input::GetMousePosition();
 		Vector Start = Vector(Pos.x, Pos.y, Pos.z);
 		Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
 		Vector End = Start + (Direction * 1000.0f);
 
+		//Raytrace into the world
 		btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
 
+		//If we hit something, if it was a world component, assign this to the focused item.
 		WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
-		std::string HitObjectName = HitObject ? HitObject->GetName() : "Nothing";
+		FocusedItem_ = HitObject;
 
-		m_FocusedItem = HitObject;
-
-		//Vector HitLoc = Vector(Ray.m_hitPointWorld.x(), Ray.m_hitPointWorld.y(), Ray.m_hitPointWorld.z());
-		//	FLOW_ENGINE_LOG("Inspector::OnMouseClicked: Start: {0}, End: {1}, Hit: {2}, HitLoc: {3}", Start, End, HitObjectName, HitLoc);
+		//TODO: If we hit, run selection gizmo logic.
 		if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
 		{
-			FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
+			//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
 		}
 
-		if (!m_FocusedItem)
+		if (!FocusedItem_)
 		{
-			m_Selector->SetVisibility(false);
-			m_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+			Selector_->SetVisibility(false);
+			Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
 		}
+		//If we have not hit anything, reset the selector
 		else
 		{
 			//m_Selector->UpdatePosition(HitObject->GetLocation());
@@ -96,9 +98,7 @@ namespace Flow
 			//m_Selector->SetVisibility(true);
 		}
 
-		ObjChanged = true;
-
-
+		FocusedItemChanged = true;
 		return true;
 	}
 
@@ -107,11 +107,11 @@ namespace Flow
 		RenderInspector();
 		RenderHeirarchy();
 
-		ObjChanged = false;
+		FocusedItemChanged = false;
 	}
 
-	SelectionGizmo* Inspector::GetSelector()
+	SelectionGizmo* Inspector::GetSelector() const
 	{
-		return m_Selector;
+		return Selector_;
 	}
 }

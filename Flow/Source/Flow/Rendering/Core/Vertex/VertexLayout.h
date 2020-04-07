@@ -22,17 +22,17 @@ namespace Flow
 		template<typename ElementType Type>
 		const Element& GetElement() const
 		{
-			for (auto& e : m_Elements)
+			for (auto& e : Elements_)
 			{
 				if (e.GetType() == Type)
 					return e;
 			}
 
 			FLOW_ENGINE_WARNING("VertexLayout::GetElement: Failed to get element type");
-			return m_Elements.front();
+			return Elements_.front();
 		}
 
 	private:
-		std::vector<Element> m_Elements;
+		std::vector<Element> Elements_;
 	};
 }

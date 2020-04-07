@@ -98,7 +98,7 @@ namespace Flow
 	{
 	public:
 		Element(ElementType Type, size_t Offset)
-			: m_Type(Type), m_Offset(Offset)
+			: ElementType_(Type), Offset_(Offset)
 		{
 
 		}
@@ -125,7 +125,7 @@ namespace Flow
 		}
 
 	private:
-		ElementType m_Type;
-		size_t m_Offset;
+		ElementType ElementType_;
+		size_t Offset_;
 	};
 }

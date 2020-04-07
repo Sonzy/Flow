@@ -25,9 +25,9 @@ namespace Flow
 		};
 
 	private:
-		std::string m_Tag;
-		static std::unique_ptr<VertexConstantBuffer<Transforms>> m_VCBuffer;
-		Renderable* m_Parent;
-		RenderableComponent* m_ComponentParent;
+		std::string Tag_;
+		static std::unique_ptr<VertexConstantBuffer<Transforms>> VertexConstBuffer_;
+		Renderable* ParentObject_;
+		RenderableComponent* ParentComponent_;
 	};
 }

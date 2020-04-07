@@ -27,13 +27,13 @@ namespace Flow
 		{
 			//Generate the UID for this asset
 			const auto GeneratedKey = T::GenerateUID(std::forward<Params>(P)...);
-			const auto FoundIndex = m_Binds.find(GeneratedKey);
+			const auto FoundIndex = Binds_.find(GeneratedKey);
 
 			//If we didnt find it, create a new one
-			if (FoundIndex == m_Binds.end())
+			if (FoundIndex == Binds_.end())
 			{
 				auto Bind = std::make_shared<T>(std::forward<Params>(P)...);
-				m_Binds[GeneratedKey] = Bind;
+				Binds_[GeneratedKey] = Bind;
 				return Bind;
 			}
 			else
@@ -44,7 +44,7 @@ namespace Flow
 		static BindableCodex& Get();
 
 	private:
-		std::unordered_map<std::string, std::shared_ptr<Bindable>> m_Binds;
+		std::unordered_map<std::string, std::shared_ptr<Bindable>> Binds_;
 
 	private:
 		static BindableCodex* s_Codex;

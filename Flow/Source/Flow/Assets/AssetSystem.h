@@ -11,6 +11,7 @@
 
 namespace Flow
 {
+	/* Asset management class used for managing all assets in the engine */
 	class FLOW_API AssetSystem
 	{
 	public:
@@ -23,9 +24,10 @@ namespace Flow
 
 		void InitialiseAssetSystem();
 
+		/* Loads an asset from the specified path, and stores it in the system so it can be accessed by the name. */
 		static bool LoadAsset(const std::string& AssetName, const std::string& FilePath);
 
-
+		/* Temp: Used to create a new material at runtime, templated on the material class */
 		template <typename T>
 		static bool CreateMaterial(const std::string& AssetName)
 		{
@@ -34,9 +36,9 @@ namespace Flow
 
 			NewAsset->SetAssetName(AssetName);
 			std::size_t HashedName = std::hash<std::string>{}(AssetName);
-			s_AssetSystem->m_LoadedAssets.insert({ HashedName, NewAsset });
+			AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
 
-			s_AssetSystem->LoadedAssetSize += NewAsset->GetAssetSize();
+			AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
 
 			return (bool)NewAsset;
 		}
@@ -48,6 +50,7 @@ namespace Flow
 		static EAssetType GetAssetTypeFromFileExtension(const std::string& AssetPath);
 		static AssetBase* CreateAsset(EAssetType Type);
 		
+		/* Renders an IMGUI window showing current asset system memory usage. */
 		static void RenderDebugWindow(bool Render);
 
 		template <typename T>
@@ -57,12 +60,11 @@ namespace Flow
 		}
 
 	public:
-		static AssetSystem* s_AssetSystem;
+		static AssetSystem* AssetSystem_s;
 
 		// Map of all loaded asset pointers as well as HashedFilePath to all loaded assets
-		std::unordered_map<size_t, AssetBase*> m_LoadedAssets;
+		std::unordered_map<size_t, AssetBase*> LoadedAssets_;
 
-		size_t LoadedAssetSize = 0;
-
+		size_t LoadedAssetSize_ = 0;
 	};
 }

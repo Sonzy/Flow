@@ -55,13 +55,13 @@ namespace Flow
 
 	protected:
 
-		WorldComponent* m_RootComponent;
+		WorldComponent* RootComponent_;
 
 		//= Physics ===================
 
-		bool SimulatePhysics = false;
-		bool HasCollision = false;
-		int Tag;
-		bool Visible = true;
+		bool SimulatePhysics_ = false;
+		bool HasCollision_ = false;
+		int Tag_;
+		bool Visible_ = true;
 	};
 }

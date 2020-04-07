@@ -5,7 +5,7 @@
 namespace Flow
 {
 	IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices)
-		: m_Count((UINT)Indices.size()), m_Tag(Tag)
+		: Count_((UINT)Indices.size()), Tag_(Tag)
 	{
 		CREATE_RESULT_HANDLE();
 
@@ -15,23 +15,23 @@ namespace Flow
 		IndexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
 		IndexBufferDescription.CPUAccessFlags = 0u;
 		IndexBufferDescription.MiscFlags = 0u;
-		IndexBufferDescription.ByteWidth = UINT(m_Count * sizeof(unsigned short));
+		IndexBufferDescription.ByteWidth = UINT(Count_ * sizeof(unsigned short));
 		IndexBufferDescription.StructureByteStride = sizeof(unsigned short);
 
 		D3D11_SUBRESOURCE_DATA SubresourceData = {};
 		SubresourceData.pSysMem = Indices.data();
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_IndexBuffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &IndexBuffer_));
 	}
 
 	void IndexBuffer::Bind()
 	{
-		RenderCommand::DX11GetContext()->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+		RenderCommand::DX11GetContext()->IASetIndexBuffer(IndexBuffer_.Get(), DXGI_FORMAT_R16_UINT, 0);
 	}
 
 	UINT IndexBuffer::GetCount() const
 	{
-		return m_Count;
+		return Count_;
 	}
 
 	std::shared_ptr<Bindable> IndexBuffer::Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices)
@@ -41,7 +41,7 @@ namespace Flow
 
 	std::string IndexBuffer::GetUID() const
 	{
-		return GenerateUID(m_Tag);
+		return GenerateUID(Tag_);
 	}
 
 	std::string IndexBuffer::GenerateUID_Internal(const std::string& Tag)

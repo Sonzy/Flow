@@ -13,34 +13,24 @@ namespace Flow
 	{	}
 
 	World::World(const std::string& WorldName)
-		: m_WorldName(WorldName)
+		: WorldName_(WorldName)
 	{
-		DebugDrawer.Init();
+		DebugDrawer_.Init();
 	}
 
 	World::~World()
 	{
-		m_WorldObjects.clear();
+		WorldObjects_.clear();
 	}
 
 	void World::InitialiseWorld()
 	{
 		InitialisePhysics();
-
-		//TODO: Temp, initialise object physics
-		//for (auto& WorldObj : m_WorldObjects)
-		//{
-		//	if (WorldObj->CollisionEnabled())
-		//	{
-		//		WorldObj->InitialisePhysics();
-		//		PhysicsWorld->addRigidBody(WorldObj->GetRigidBody());		
-		//	}
-		//}
 	}
 
 	void World::DispatchBeginPlay()
 	{
-		for (auto& WorldObj : m_WorldObjects)
+		for (auto& WorldObj : WorldObjects_)
 		{
 			WorldObj->BeginPlay();
 		}
@@ -49,30 +39,30 @@ namespace Flow
 	void World::InitialisePhysics()
 	{
 		/* Create the physics world */
-		CollisionConfig = new btDefaultCollisionConfiguration();
-		Dispatcher = new btCollisionDispatcher(CollisionConfig);
-		OverlappingPairCache = new btDbvtBroadphase();
-		Solver = new btSequentialImpulseConstraintSolver;
-		PhysicsWorld = new btDiscreteDynamicsWorld(Dispatcher, OverlappingPairCache, Solver, CollisionConfig);
+		CollisionConfig_ = new btDefaultCollisionConfiguration();
+		Dispatcher_ = new btCollisionDispatcher(CollisionConfig_);
+		OverlappingPairCache_ = new btDbvtBroadphase();
+		Solver_ = new btSequentialImpulseConstraintSolver;
+		PhysicsWorld_ = new btDiscreteDynamicsWorld(Dispatcher_, OverlappingPairCache_, Solver_, CollisionConfig_);
 
 		/* Initialise Physics world properties */
-		PhysicsWorld->setGravity(btVector3(0, -9.81, 0));
+		PhysicsWorld_->setGravity(btVector3(0, -9.81, 0));
 
-		PhysicsWorld->setDebugDrawer(&DebugDrawer);
-		PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+		PhysicsWorld_->setDebugDrawer(&DebugDrawer_);
+		PhysicsWorld_->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	}
 
 	void World::Tick(float DeltaTime)
 	{
-		PhysicsWorld->stepSimulation(DeltaTime);
-		for (auto& WorldObj : m_WorldObjects)
+		PhysicsWorld_->stepSimulation(DeltaTime);
+		for (auto& WorldObj : WorldObjects_)
 		{
 			WorldObj->Tick(DeltaTime);
 		}
 	}
 	const std::string& World::GetName()
 	{
-		return m_WorldName;
+		return WorldName_;
 	}
 
 	btCollisionWorld::ClosestRayResultCallback World::WorldTrace(Vector Start, Vector End)
@@ -81,14 +71,14 @@ namespace Flow
 		btVector3 InternaEnd = btVector3(End.X, End.Y, End.Z);
 
 		btCollisionWorld::ClosestRayResultCallback Result(InternalStart, InternaEnd);
-		Application::GetWorld()->PhysicsWorld->rayTest(InternalStart, InternaEnd, Result);
+		Application::GetWorld()->PhysicsWorld_->rayTest(InternalStart, InternaEnd, Result);
 
 		return Result;
 	}
 
 	btDiscreteDynamicsWorld* World::GetPhysicsWorld()
 	{
-		return Application::GetWorld()->PhysicsWorld;
+		return Application::GetWorld()->PhysicsWorld_;
 	}
 
 	World* World::GetWorld()
@@ -98,11 +88,11 @@ namespace Flow
 
 	void World::AddPhysicsObject(btRigidBody* Obj)
 	{
-		PhysicsWorld->addRigidBody(Obj);
+		PhysicsWorld_->addRigidBody(Obj);
 	}
 
 	void World::AddCollisionObject(btCollisionObject* Obj)
 	{
-		PhysicsWorld->addCollisionObject(Obj);
+		PhysicsWorld_->addCollisionObject(Obj);
 	}
 }

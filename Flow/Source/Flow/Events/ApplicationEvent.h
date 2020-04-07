@@ -8,16 +8,16 @@ namespace Flow
 	public:
 		WindowResizedEvent(unsigned int width, unsigned int height);
 
-		int GetWidth() const;
-		int GetHeight() const;
+		[[nodiscard]] int GetWidth() const;
+		[[nodiscard]] int GetHeight() const;
 
 		std::string ToString() const override;
 
 		EVENT_CLASS_TYPE(WindowResized)
 		EVENT_CLASS_CATEGORY(EventCategory::App)
 	private:
-		unsigned int Width;
-		unsigned int Height;
+		unsigned int Width_;
+		unsigned int Height_;
 	};
 
 	class FLOW_API WindowClosedEvent : public Event

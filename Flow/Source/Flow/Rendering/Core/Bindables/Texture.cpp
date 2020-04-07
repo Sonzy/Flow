@@ -11,8 +11,8 @@ namespace Flow
 		HRESULT ResultHandle;
 
 		// Bindable context stuff
-		m_AssetName = Asset->GetAssetName();
-		m_Slot = Slot;
+		AssetName_ = Asset->GetAssetName();
+		Slot_ = Slot;
 
 		//Create the texture resource
 		D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -41,12 +41,12 @@ namespace Flow
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = 1;
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &TextureView_));
 	}
 
 	void Texture::Bind()
 	{
-		RenderCommand::DX11GetContext()->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
+		RenderCommand::DX11GetContext()->PSSetShaderResources(Slot_, 1u, TextureView_.GetAddressOf());
 	}
 	std::shared_ptr<Bindable> Texture::Resolve(TextureAsset* Asset, UINT Slot)
 	{
@@ -59,7 +59,7 @@ namespace Flow
 	}
 	std::string Texture::GetUID() const
 	{
-		return GenerateUID(AssetSystem::GetAsset<TextureAsset>(m_AssetName), m_Slot);
+		return GenerateUID(AssetSystem::GetAsset<TextureAsset>(AssetName_), Slot_);
 	}
 }
 

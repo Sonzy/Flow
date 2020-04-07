@@ -8,25 +8,25 @@ namespace Flow
 	//= Mouse Moved ======================================================
 
 	MouseMovedEvent::MouseMovedEvent(int X, int Y)
-		: MouseX(X), MouseY(Y)
+		: MouseX_(X), MouseY_(Y)
 	{
 		Input::OnMouseMoved(X, Y);
 	}
 
 	int Flow::MouseMovedEvent::GetX() const
 	{
-		return MouseX;
+		return MouseX_;
 	}
 
 	int Flow::MouseMovedEvent::GetY() const
 	{
-		return MouseY;
+		return MouseY_;
 	}
 
 	std::string Flow::MouseMovedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "MouseMovedEvent: " << MouseX << ", " << MouseY;
+		ss << "MouseMovedEvent: " << MouseX_ << ", " << MouseY_;
 		return ss.str();
 	}
 
@@ -34,25 +34,25 @@ namespace Flow
 
 
 	MouseScrolledEvent::MouseScrolledEvent(float XOffset, float YOffset)
-		: XOffset(XOffset), YOffset(YOffset)
+		: XOffset_(XOffset), YOffset_(YOffset)
 	{
 
 	}
 
 	float MouseScrolledEvent::GetXOffset() const
 	{
-		return XOffset;
+		return XOffset_;
 	}
 
 	float MouseScrolledEvent::GetYOffset() const
 	{
-		return YOffset;
+		return YOffset_;
 	}
 
 	std::string MouseScrolledEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "MouseScrolledEvent: " << XOffset << ", " << YOffset;
+		ss << "MouseScrolledEvent: " << XOffset_ << ", " << YOffset_;
 		return ss.str();
 	}
 
@@ -62,11 +62,11 @@ namespace Flow
 
 	int MouseButtonEvent::GetMouseButton() const
 	{
-		return Button;
+		return Button_;
 	}
 
 	MouseButtonEvent::MouseButtonEvent(int Button)
-		: Button(Button)
+		: Button_(Button)
 	{
 	}
 
@@ -91,7 +91,7 @@ namespace Flow
 	std::string MouseButtonPressedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "MouseButtonPressedEvent: " << Button;
+		ss << "MouseButtonPressedEvent: " << Button_;
 		return ss.str();
 	}
 
@@ -115,7 +115,7 @@ namespace Flow
 	std::string MouseButtonReleasedEvent::ToString() const
 	{
 		std::stringstream ss;
-		ss << "MouseButtonReleasedEvent: " << Button;
+		ss << "MouseButtonReleasedEvent: " << Button_;
 		return ss.str();
 	}
 

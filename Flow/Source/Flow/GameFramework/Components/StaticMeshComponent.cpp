@@ -14,14 +14,14 @@
 namespace Flow
 {
 	StaticMeshComponent::StaticMeshComponent()
-		: RenderableComponent("Unnamed StaticMesh Component"), m_StaticMesh(nullptr), m_Material(nullptr),
-		Body(nullptr), Collision(nullptr)
+		: RenderableComponent("Unnamed StaticMesh Component"), StaticMesh_(nullptr), Material_(nullptr),
+		Body_(nullptr), Collision_(nullptr)
 	{
 	}
 
 	StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
-		: RenderableComponent(Name), m_StaticMesh(nullptr), m_Material(nullptr),
-		Body(nullptr), Collision(nullptr)
+		: RenderableComponent(Name), StaticMesh_(nullptr), Material_(nullptr),
+		Body_(nullptr), Collision_(nullptr)
 	{
 		if (Mesh && Material)
 			SetMeshAndMaterial(Mesh, Material, MeshIndex);
@@ -29,7 +29,8 @@ namespace Flow
 
 	StaticMeshComponent::~StaticMeshComponent()
 	{
-		delete m_StaticMesh;
+		delete StaticMesh_;
+		delete Collision_;
 	}
 
 	void StaticMeshComponent::InitialiseComponent(MeshAsset* Mesh, Material* Material)
@@ -41,18 +42,18 @@ namespace Flow
 	{
 		GameObject::Tick(DeltaTime);
 
-		if (Body)// && SimulatePhysics)
+		if (Body_)// && SimulatePhysics)
 		{
-			btVector3 Vec = Body->getWorldTransform().getOrigin();
+			btVector3 Vec = Body_->getWorldTransform().getOrigin();
 
 			//Bullet returns the rotation in wrong euler order, use this to get in the correct order
 			btScalar m[16];
-			Body->getWorldTransform().getOpenGLMatrix(m);
+			Body_->getWorldTransform().getOpenGLMatrix(m);
 			float fAngZ = atan2f(m[1], m[5]);
 			float fAngY = atan2f(m[8], m[10]);
 			float fAngX = -asinf(m[9]);
 
-			SetWorldLocation(Vector(Vec.x(), Vec.y(), Vec.z()));
+			SetWorldPosition(Vector(Vec.x(), Vec.y(), Vec.z()));
 			SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
 		}
 	}
@@ -62,8 +63,8 @@ namespace Flow
 		CHECK_RETURN(!Mesh, "StaticMeshComponent::SetMeshAndMaterial: Mesh was nullptr");
 		CHECK_RETURN(!Material, "StaticMeshComponent::SetMeshAndMaterial: Material was nullptr");
 
-		m_StaticMesh = Mesh->GetMesh(MeshIndex);
-		m_Material = Material;
+		StaticMesh_ = Mesh->GetMesh(MeshIndex);
+		Material_ = Material;
 
 		RefreshBinds();
 	}
@@ -74,14 +75,14 @@ namespace Flow
 		MeshAsset* NewAsset = AssetSystem::GetAsset<MeshAsset>(MeshName);
 		CHECK_RETURN(!NewAsset, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
 
-		m_StaticMesh = NewAsset->GetMesh(0);
+		StaticMesh_ = NewAsset->GetMesh(0);
 
 		RefreshBinds(); //TODO: Dont call this twice? dunno
 	}
 
 	void StaticMeshComponent::SetMaterial(Material* NewMaterial)
 	{
-		m_Material = NewMaterial;
+		Material_ = NewMaterial;
 
 		RefreshBinds();
 	}
@@ -96,27 +97,29 @@ namespace Flow
 	void StaticMeshComponent::RefreshBinds()
 	{
 		VertexLayout MeshLayout;
-		m_Binds = m_StaticMesh->GenerateBinds(MeshLayout);
-		m_IndexBuffer = m_StaticMesh->GetIndexBuffer();
+		Binds_ = StaticMesh_->GenerateBinds(MeshLayout);
+		IndexBuffer_ = StaticMesh_->GetIndexBuffer();
 
 		AddBind(std::make_shared<TransformConstantBuffer>(this));
-		m_Material->BindMaterial(this, MeshLayout);
+		Material_->BindMaterial(this, MeshLayout);
 	}
 
 	void StaticMeshComponent::GenerateCollision()
 	{
+		delete Collision_;
+
 		btConvexHullShape* Shape = new btConvexHullShape();
-		auto Vertices = m_StaticMesh->GetCollisionVertices();
+		auto Vertices = StaticMesh_->GetCollisionVertices();
 		for (auto Vert : Vertices)
 		{
 			btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
 			Shape->addPoint(btv);
 		}
 
-		Collision = Shape;
+		Collision_ = Shape;
 
 		Transform trans = GetWorldTransform();
-		Collision->setLocalScaling(btVector3(trans.m_Scale.X, trans.m_Scale.Y, trans.m_Scale.Z));
+		Collision_->setLocalScaling(btVector3(trans.Scale_.X, trans.Scale_.Y, trans.Scale_.Z));
 	}
 
 	void StaticMeshComponent::CreateRigidBody()
@@ -124,7 +127,7 @@ namespace Flow
 		//Convert transform into BT Quaternion
 		btQuaternion Rotation;
 		Rotator Rot = Rotator::AsRadians(GetWorldRotation());
-		Vector Pos = GetWorldLocation();
+		Vector Pos = GetWorldPosition();
 		Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
 
 		//Setup the motion state
@@ -132,21 +135,20 @@ namespace Flow
 		btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(Rotation, Position));
 
 		//Initialise the mass and intertia values
-		btScalar bodyMass = SimulatePhysics ?  20.0f : 0.0f;
+		btScalar bodyMass = SimulatePhysics_ ?  20.0f : 0.0f;
 		btVector3 bodyInertia;
-		Collision->calculateLocalInertia(bodyMass, bodyInertia);
+		Collision_->calculateLocalInertia(bodyMass, bodyInertia);
 
 		//Create the construction info for the body
 		btRigidBody::btRigidBodyConstructionInfo bodyCI =
-			btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, Collision, bodyInertia);
+			btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, Collision_, bodyInertia);
 		bodyCI.m_restitution = 0.4f;
 		bodyCI.m_friction = 0.5f;
 		bodyCI.m_rollingFriction = 0.2f;
 		bodyCI.m_spinningFriction = 0.3f;
 
-		Body = new btRigidBody(bodyCI);
-		Body->setUserPointer(this);
-		//Body->setLinearFactor(btVector3(1.0f, 1.0f, 0.0f)); //Constraints
+		Body_ = new btRigidBody(bodyCI);
+		Body_->setUserPointer(this);
 	}
 
 	void StaticMeshComponent::InitialisePhysics()
@@ -157,35 +159,35 @@ namespace Flow
 
 	btRigidBody* StaticMeshComponent::GetRigidBody()
 	{
-		return Body;
+		return Body_;
 	}
 
 	void StaticMeshComponent::SetSimulatePhysics(bool Simulate)
 	{
-		SimulatePhysics = Simulate;
+		SimulatePhysics_ = Simulate;
 	}
 
 	void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
 	{
-		btMotionState* motionState = Body->getMotionState();
+		btMotionState* motionState = Body_->getMotionState();
 		btTransform Transform;
 		btQuaternion Rotation;
-		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.m_Rotation);
+		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.Rotation_);
 		Rotation.setEulerZYX(RadiansRotation.Roll, RadiansRotation.Yaw, RadiansRotation.Pitch);
 
 		//Set new transform
-		Transform.setOrigin(btVector3(NewTransform.m_Location.X, NewTransform.m_Location.Y, NewTransform.m_Location.Z));
+		Transform.setOrigin(btVector3(NewTransform.Position_.X, NewTransform.Position_.Y, NewTransform.Position_.Z));
 		Transform.setRotation(Rotation);
 
 		//Set Scale
-		Collision->setLocalScaling(btVector3(NewTransform.m_Scale.X, NewTransform.m_Scale.Y, NewTransform.m_Scale.Z));
+		Collision_->setLocalScaling(btVector3(NewTransform.Scale_.X, NewTransform.Scale_.Y, NewTransform.Scale_.Z));
 
 		//Update Transform
-		Body->setWorldTransform(Transform);
+		Body_->setWorldTransform(Transform);
 		motionState->setWorldTransform(Transform);
-		World::GetPhysicsWorld()->updateSingleAabb(Body);
+		World::GetPhysicsWorld()->updateSingleAabb(Body_);
 
 		//Re-enable physics body
-		Body->activate();
+		Body_->activate();
 	}
 }

@@ -21,7 +21,7 @@ namespace Flow
 
 	void MaterialAsset::GenerateAssetSize()
 	{
-		m_AssetSize = sizeof(*m_Material);
+		AssetSize_ = sizeof(*m_Material);
 	}
 }
 

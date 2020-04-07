@@ -19,8 +19,8 @@ namespace Flow
 		std::string GetUID() const override;
 
 	protected:
-		std::string m_AssetPath;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VertexShader;
-		Microsoft::WRL::ComPtr<ID3DBlob> m_Blob;
+		std::string ShaderPath_;
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> VertexShader_;
+		Microsoft::WRL::ComPtr<ID3DBlob> Blob_;
 	};
 }

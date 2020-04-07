@@ -5,23 +5,23 @@
 namespace Flow
 {
 	WorldComponent::WorldComponent()
-		: Component("Unnamed WorldComponent"), m_ParentComponent(nullptr)
+		: Component("Unnamed WorldComponent"), ParentComponent_(nullptr)
 	{
 	}
 
 	WorldComponent::WorldComponent(const std::string& Name)
-		: Component(Name), m_ParentComponent(nullptr)
+		: Component(Name), ParentComponent_(nullptr)
 	{
 	}
 
 	WorldComponent::~WorldComponent()
 	{
-		m_Children.clear();
+		Children_.clear();
 	}
 
 	void WorldComponent::Tick(float DeltaTime)
 	{
-		for (auto& Child : m_Children)
+		for (auto& Child : Children_)
 		{
 			Child->Tick(DeltaTime);
 		}
@@ -30,47 +30,47 @@ namespace Flow
 	void WorldComponent::AddChild(WorldComponent* Child)
 	{
 		CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
-		m_Children.push_back(Child);
+		Children_.push_back(Child);
 		Child->SetParentComponent(this);
 	}
 
-	Vector WorldComponent::GetWorldLocation()
+	Vector WorldComponent::GetWorldPosition()
 	{
 		WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
-		return Parent ? Parent->GetWorldLocation() + m_RelativeTransform.m_Location : m_RelativeTransform.m_Location;
+		return Parent ? Parent->GetWorldPosition() + RelativeTransform_.Position_ : RelativeTransform_.Position_;
 	}
 
-	Vector WorldComponent::GetRelativeLocation()
+	Vector WorldComponent::GetRelativePosition()
 	{
-		return m_RelativeTransform.m_Location;
+		return RelativeTransform_.Position_;
 	}
 
-	void WorldComponent::SetWorldLocation(Vector NewLocation)
+	void WorldComponent::SetWorldPosition(Vector NewPosition)
 	{
 		Vector CurrentParentWorld;
 		
 		while (WorldComponent* Parent = GetParentComponent())
 		{
-			CurrentParentWorld += Parent->m_RelativeTransform.m_Location;
+			CurrentParentWorld += Parent->RelativeTransform_.Position_;
 		}
 
-		m_RelativeTransform.m_Location = NewLocation - CurrentParentWorld;
+		RelativeTransform_.Position_ = NewPosition - CurrentParentWorld;
 	}
 
-	void WorldComponent::SetRelativeLocation(Vector NewLocation)
+	void WorldComponent::SetRelativePosition(Vector NewPosition)
 	{
-		m_RelativeTransform.m_Location = NewLocation;
+		RelativeTransform_.Position_ = NewPosition;
 	}
 
 	Rotator WorldComponent::GetWorldRotation()
 	{
 		WorldComponent* Parent = GetParentComponent();
-		return Parent ? Parent->GetWorldRotation() + m_RelativeTransform.m_Rotation : m_RelativeTransform.m_Rotation;
+		return Parent ? Parent->GetWorldRotation() + RelativeTransform_.Rotation_ : RelativeTransform_.Rotation_;
 	}
 
 	Rotator WorldComponent::GetRelativeRotation()
 	{
-		return m_RelativeTransform.m_Rotation;
+		return RelativeTransform_.Rotation_;
 	}
 
 	void WorldComponent::SetWorldRotation(Rotator NewRotation)
@@ -79,29 +79,29 @@ namespace Flow
 
 		while (WorldComponent* Parent = GetParentComponent())
 		{
-			CurrentParentWorld += Parent->m_RelativeTransform.m_Rotation;
+			CurrentParentWorld += Parent->RelativeTransform_.Rotation_;
 		}
 
-		m_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
+		RelativeTransform_.Rotation_ = NewRotation - CurrentParentWorld;
 
 		//TODO: UpdatePhysics Movement
 	}
 
 	void WorldComponent::SetRelativeRotation(Rotator NewRotation)
 	{
-		m_RelativeTransform.m_Rotation = NewRotation;
+		RelativeTransform_.Rotation_ = NewRotation;
 		//TODO: UpdatePhysics Movement
 	}
 
 	Vector WorldComponent::GetWorldScale()
 	{
 		WorldComponent* Parent = GetParentComponent();
-		return Parent ? Parent->GetWorldScale() + m_RelativeTransform.m_Scale : m_RelativeTransform.m_Scale;
+		return Parent ? Parent->GetWorldScale() + RelativeTransform_.Scale_ : RelativeTransform_.Scale_;
 	}
 
 	Vector WorldComponent::GetRelativeScale()
 	{
-		return m_RelativeTransform.m_Scale;
+		return RelativeTransform_.Scale_;
 	}
 
 	void WorldComponent::SetWorldScale(Vector NewScale)
@@ -110,37 +110,37 @@ namespace Flow
 
 		while (WorldComponent* Parent = GetParentComponent())
 		{
-			CurrentParentWorld += Parent->m_RelativeTransform.m_Scale;
+			CurrentParentWorld += Parent->RelativeTransform_.Scale_;
 		}
 
-		m_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
+		RelativeTransform_.Scale_ = NewScale - CurrentParentWorld;
 	}
 
 	void WorldComponent::SetRelativeScale(Vector NewScale)
 	{
-		m_RelativeTransform.m_Scale = NewScale;
+		RelativeTransform_.Scale_ = NewScale;
 	}
 
 	Transform WorldComponent::GetWorldTransform()
 	{
-		return Transform(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
+		return Transform(GetWorldPosition(), GetWorldRotation(), GetWorldScale());
 	}
 
 	Transform WorldComponent::GetRelativeTransform()
 	{
-		return m_RelativeTransform;
+		return RelativeTransform_;
 	}
 
 	void WorldComponent::SetWorldTransform(Transform NewTransform)
 	{
-		SetWorldLocation(NewTransform.m_Location);
-		SetWorldRotation(NewTransform.m_Rotation);
-		SetWorldScale(NewTransform.m_Scale);
+		SetWorldPosition(NewTransform.Position_);
+		SetWorldRotation(NewTransform.Rotation_);
+		SetWorldScale(NewTransform.Scale_);
 	}
 
 	void WorldComponent::SetRelativeTransform(Transform NewTransform)
 	{
-		m_RelativeTransform = NewTransform;
+		RelativeTransform_ = NewTransform;
 	}
 
 	void WorldComponent::InitialisePhysics()
@@ -154,7 +154,7 @@ namespace Flow
 
 	void WorldComponent::Render()
 	{
-		for (auto Child : m_Children)
+		for (auto Child : Children_)
 		{
 			if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))
 				WorldChild->Render();
@@ -163,27 +163,27 @@ namespace Flow
 
 	Vector* WorldComponent::GetWriteablePosition()
 	{
-		return &m_RelativeTransform.m_Location;
+		return &RelativeTransform_.Position_;
 	}
 	Rotator* WorldComponent::GetWriteableRotation()
 	{
-		return &m_RelativeTransform.m_Rotation;
+		return &RelativeTransform_.Rotation_;
 	}
 	Vector* WorldComponent::GetWriteableScale()
 	{
-		return &m_RelativeTransform.m_Scale;
+		return &RelativeTransform_.Scale_;
 	}
 	std::vector<Component*> WorldComponent::GetChildren() const
 	{
-		return m_Children;
+		return Children_;
 	}
 	void WorldComponent::SetVisibility(bool Visible)
 	{
-		m_Visible = Visible;
+		Visible_ = Visible;
 	}
 	bool WorldComponent::IsVisible() const
 	{
-		return m_Visible;
+		return Visible_;
 	}
 }
 

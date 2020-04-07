@@ -25,9 +25,9 @@ namespace Flow
 		void AddBind(std::shared_ptr<Bindable> bind);
 		void BindAll();
 
-		static VertexLayout Layout;
-		static std::vector<std::shared_ptr<Bindable>> m_Binds;
-		static IndexBuffer* m_IndexBuffer;
+		static VertexLayout VertexLayout_;
+		static std::vector<std::shared_ptr<Bindable>> Binds_;
+		static IndexBuffer* IndexBuffer_;
 
 
 	};

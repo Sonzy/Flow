@@ -17,12 +17,5 @@ namespace Flow
 		void InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
 
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
-
-	protected:
-
-		MeshAsset* m_Mesh;
-		Material* m_Material;
-
-		static std::vector<D3D11_INPUT_ELEMENT_DESC> m_VertexLayout;
 	};
 }

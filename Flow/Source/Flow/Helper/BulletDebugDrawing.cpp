@@ -20,17 +20,18 @@ namespace Flow
 	}
 	void BulletDebugDraw::reportErrorWarning(const char* warningString)
 	{
+		FLOW_ENGINE_WARNING(warningString);
 	}
 	void BulletDebugDraw::draw3dText(const btVector3& location, const char* textString)
 	{
 	}
 	void BulletDebugDraw::setDebugMode(int debugMode)
 	{
-		DebugMode |= debugMode;
+		DebugMode_ |= debugMode;
 	}
 	int BulletDebugDraw::getDebugMode() const
 	{
-		return DebugMode;
+		return DebugMode_;
 	}
 
 	Line* BulletDebugDraw::Get()

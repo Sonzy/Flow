@@ -7,28 +7,28 @@ namespace Flow
 		None,
 		Mesh,
 		Texture,
-		Shader,
-		MultiMesh
+		Shader
 	};
 
+	/* Base class for assets. Manages naming and asset types */
 	class FLOW_API AssetBase
 	{
 	public:
 
 		virtual bool LoadAsset(const std::string& LocalPath);
 
-		size_t GetAssetSize() const { return m_AssetSize;	}
+		size_t GetAssetSize() const { return AssetSize_; }
 
-		/* */
+		/* Returns a string with the asset size */
 		std::string GetFormattedSize() const;
 
-		void SetAssetName(const std::string& Name) { m_AssetName = Name; }
-		const std::string& GetAssetName() { return m_AssetName; }
+		void SetAssetName(const std::string& Name) { AssetName_ = Name; }
+		const std::string& GetAssetName() { return AssetName_; }
 
-		EAssetType GetAssetType() { return m_AssetType; }
+		EAssetType GetAssetType() { return AssetType_; }
 	protected:
-		std::string m_AssetName;
-		size_t m_AssetSize = 0;
-		EAssetType m_AssetType = EAssetType::None;
+		std::string AssetName_;
+		size_t AssetSize_ = 0;
+		EAssetType AssetType_ = EAssetType::None;
 	};
 }

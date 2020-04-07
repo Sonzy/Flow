@@ -15,12 +15,12 @@ namespace Flow
 		SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &Sampler_));
 	}
 
 	void Sampler::Bind()
 	{
-		RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
+		RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, Sampler_.GetAddressOf());
 	}
 	std::shared_ptr<Bindable> Sampler::Resolve()
 	{
