@@ -30,7 +30,7 @@ namespace Flow
 
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = Asset->GetBufferPtr();
-		sd.SysMemPitch = Asset->GetWidth() * sizeof(TexColor);
+		sd.SysMemPitch = Asset->GetPitch();
 
 		Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, &sd, &pTexture));

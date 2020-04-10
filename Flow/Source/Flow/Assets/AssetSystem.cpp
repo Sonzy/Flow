@@ -4,14 +4,12 @@
 #include "Meshes\MeshAsset.h"
 #include "Textures\TextureAsset.h"
 #include "Shaders\ShaderAsset.h"
-#include "Flow\Assets\Textures\GDIPlusManager.h"
 
 #include "ThirdParty\ImGui\imgui.h"
 
 namespace Flow
 {
 	AssetSystem* AssetSystem::AssetSystem_s = new AssetSystem();
-	GDIPlusManager s_GDIPlusManager;
 
 	AssetSystem::AssetSystem()
 	{

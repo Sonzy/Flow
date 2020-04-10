@@ -64,7 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
@@ -72,8 +72,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world420d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Debug;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTexd.lib;opencv_world420d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -97,8 +97,8 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world420d.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Release;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;opencv_world420d.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
@@ -117,7 +117,6 @@
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
-    <ClInclude Include="Source\Flow\Assets\Textures\GDIPlusManager.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\Inspector.h" />
@@ -282,7 +281,6 @@
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
-    <ClCompile Include="Source\Flow\Assets\Textures\GDIPlusManager.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />

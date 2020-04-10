@@ -1,21 +1,21 @@
 #pragma once
 #include "Flow\Assets\AssetBase.h"
 #include <string>
+#include "DXTex\DirectXTex.h"
 
 namespace Flow
 {
-	//TODO: Come up with a better colour/texture class
 	class TexColor
 	{
 	public:
-		unsigned int m_DWord;
+		unsigned int Data_;
 
 		constexpr TexColor()
-			: m_DWord()
+			: Data_()
 		{}
 
 		constexpr TexColor(unsigned int DWord)
-			: m_DWord(DWord)
+			: Data_(DWord)
 		{}
 	};
 
@@ -28,20 +28,20 @@ namespace Flow
 
 		virtual bool LoadAsset(const std::string& FilePath) override;
 
-		unsigned int GetWidth() const { return m_TextureWidth; }
-		unsigned int GetHeight() const { return m_TextureHeight; }
+		unsigned int GetWidth() const { return (unsigned int)Image_.GetMetadata().width; }
+		unsigned int GetHeight() const { return (unsigned int)Image_.GetMetadata().height; }
 
-		TexColor* GetBufferPtr() const { return m_TextureBuffer.get(); }
+		unsigned int GetPitch() const { return (unsigned int)Image_.GetImage(0, 0, 0)->rowPitch; }
+
+		uint8_t* GetBufferPtr() const { return Image_.GetPixels(); }
 
 		const std::string& GetAssetPath() const { return m_AssetPath; }		
 
 	protected:
 
-		std::unique_ptr< TexColor[]> m_TextureBuffer;
+		DirectX::ScratchImage Image_;
 
-		unsigned int m_TextureWidth = 0;
-		unsigned int m_TextureHeight = 0;
-
+		static constexpr DXGI_FORMAT Format_ = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
 		std::string m_AssetPath;
 	};
 }
