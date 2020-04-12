@@ -161,6 +161,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\InputLayout.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\LayoutCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Sampler.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.h" />
@@ -314,6 +315,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\InputLayout.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\LayoutCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Sampler.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />

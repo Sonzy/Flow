@@ -3,24 +3,25 @@
 #include <optional>
 #include <memory>
 #include <vector>
+#include <DirectXMath.h>
+
+#define ELEMENT_TYPES \
+		X(Float) \
+		X(Float2) \
+		X(Float3) \
+		X(Float4) \
+		X(Matrix) \
+		X(Bool)
 
 namespace Flow
 {
-	#define ELEMENT_TYPES \
-		X(Float)\
-		X(Float2)\
-		X(Float3)\
-		X(Float4)\
-		X(Matrix)\
-		X(Bool)\
-
 	namespace DCB
 	{
-		enum Type
+		enum ElemType
 		{
 			#define X(Element) Element,
 			ELEMENT_TYPES
-			#undef X;
+			#undef X
 
 			Struct,
 			Array,
@@ -29,7 +30,7 @@ namespace Flow
 
 		//= Attributes for each type ==============
 
-		template<Type type>
+		template<ElemType type>
 		struct ElementType
 		{
 			static constexpr bool Valid_ = false;
@@ -48,28 +49,28 @@ namespace Flow
 		};
 		template<> struct ElementType<Float2>
 		{
-			using CPUType = float;
+			using CPUType = DirectX::XMFLOAT2;
 			static constexpr size_t HLSLSize_ = sizeof(CPUType); 
 			static constexpr const char* ElementCode_ = "F2";
 			static constexpr bool Valid_ = true;
 		};
 		template<> struct ElementType<Float3>
 		{
-			using CPUType = float; 
+			using CPUType = DirectX::XMFLOAT3;
 			static constexpr size_t HLSLSize_ = sizeof(CPUType); 
 			static constexpr const char* ElementCode_ = "F3"; 
 			static constexpr bool Valid_ = true; 
 		};
 		template<> struct ElementType<Float4>
 		{
-			using CPUType = float;
+			using CPUType = DirectX::XMFLOAT4;
 			static constexpr size_t HLSLSize_ = sizeof(CPUType);
 			static constexpr const char* ElementCode_ = "F4"; 
 			static constexpr bool Valid_ = true;
 		};
 		template<> struct ElementType<Matrix>
 		{
-			using CPUType = float; 
+			using CPUType = DirectX::XMFLOAT4X4;
 			static constexpr size_t HLSLSize_ = sizeof(CPUType);
 			static constexpr const char* ElementCode_ = "M4";
 			static constexpr bool Valid_ = true; 
@@ -85,7 +86,7 @@ namespace Flow
 		//Check that we have the definitions for all element types
 		#define X(Element) static_assert(ElementType<Element>::Valid_, "Missing attribute definition for " #Element);
 		ELEMENT_TYPES
-		#undef X;
+		#undef X
 
 		//= Reverse lookups from CPUType to ElementType ===========
 
@@ -98,7 +99,7 @@ namespace Flow
 		#define X(Element) \
 		template<> struct ReverseLookup<typename ElementType<Element>::CPUType> \
 		{ \
-			static constexpr Type Type_ = Element; \
+			static constexpr ElemType Type_ = Element; \
 			static constexpr bool Valid_ = true; \
 		};
 		ELEMENT_TYPES;
@@ -138,17 +139,18 @@ namespace Flow
 
 			//= Struct adding
 
-			LayoutElement& Add(Type AddedType, std::string Name);
-			template<Type Added>
+			LayoutElement& Add(ElemType AddedType, std::string Name);
+			template<ElemType Added>
 			LayoutElement& Add(std::string Key)
 			{
-				return Add(Added, std::move(key));
+				return Add(Added, std::move(Key));
 			}
 			
 			//= Array Adding
 			// Sets the type and the number of elements
-			LayoutElement& Set(Type AddedType, size_t Size);
-			template<Type TypeAdded>
+			LayoutElement& Set(ElemType AddedType, size_t Size);
+
+			template<ElemType TypeAdded>
 			LayoutElement& Set(size_t size)
 			{
 				return Set(TypeAdded, size);
@@ -158,9 +160,9 @@ namespace Flow
 			template<typename T>
 			size_t Resolve() const
 			{
-				switch (type)
+				switch (Type_)
 				{
-					#define X(Element) case Element: assert(typeid(ElementType<Element>::CPUType) == typeid(T)); return *offset;
+					#define X(Element) case Element: assert(typeid(ElementType<Element>::CPUType) == typeid(T)); return *Offset_;
 					ELEMENT_TYPES
 					#undef X
 
@@ -172,7 +174,10 @@ namespace Flow
 
 		private:
 			LayoutElement() = default;
-			LayoutElement(Type TypeIn);
+			LayoutElement(ElemType TypeIn);
+
+			std::string GetSignatureForStruct() const;
+			std::string GetSignatureForArray() const;
 
 			/* Sets all offsets, adds padding if needed */
 			size_t Finalize(size_t OffsetIn);
@@ -189,15 +194,15 @@ namespace Flow
 			/* Returns the value of the offset moved to the next 16-byte boundary if not on one */
 			static size_t AdvanceToBoundary(size_t Offset);
 			/* Returns true if the memory block crosses a boundary */
-			static bool CrossesBoundary(size_t Offset, size_t Size) noexcept;
+			static bool CrossesBoundary(size_t Offset, size_t Size);
 			/* Advance to the next offset if the memory block crosses a boundary */
-			static size_t AdvanceIfCrossesBoundary(size_t Offset, size_t Size) noexcept;
+			static size_t AdvanceIfCrossesBoundary(size_t Offset, size_t Size);
 			/* Checks the validity of the string for use as a struct key */
-			static bool ValidateSymbolName(const std::string& Name) noexcept;
+			static bool ValidateSymbolName(const std::string& Name);
 
 		private:
 			std::optional<size_t> Offset_;
-			Type Type_ = Empty;
+			ElemType Type_ = Empty;
 			std::unique_ptr<ExtraDataBase> ExtraData_;
 		};
 
@@ -218,9 +223,17 @@ namespace Flow
 			friend class LayoutCodex;
 		public:
 			RawLayout();
-			LayoutElement& Add(const std::string& Key);
+
+			template<ElemType type>
+			LayoutElement& Add(const std::string& Key)
+			{
+				return Root_->Add<type>(Key);
+			}
+
+			LayoutElement& operator[](const std::string& Key);
 		private:
 			void ClearRoot();
+			/* Finalizes the layout, then yields the root element*/
 			std::shared_ptr<LayoutElement> DeliverRoot();
 		};
 
@@ -336,9 +349,11 @@ namespace Flow
 				if (!Exists())
 					return false;
 
-				*this = val;
+				*this = Val;
 				return true;
 			}
+
+			bool Exists() const;
 
 		private:
 			ElementRef(const LayoutElement* Layout, char* Bytes, size_t Offset);
