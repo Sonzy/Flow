@@ -172,6 +172,7 @@ namespace Flow
 
 		GameWorld_->DispatchBeginPlay();
 
+		Timer_.Mark(); // Reset timer to avoid a long initial deltatime
 		while (Running_)
 		{
 			float DeltaTime = Timer_.Mark();

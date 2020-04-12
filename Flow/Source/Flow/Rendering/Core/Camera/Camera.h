@@ -39,7 +39,7 @@ namespace Flow
 
 		float m_FOV = Math::PI / 2;
 
-		float CameraSpeed_ = 1.0f;
+		float CameraSpeed_ = 0.2f;
 		float RotationSpeed_ = 0.005f;
 	};
 }

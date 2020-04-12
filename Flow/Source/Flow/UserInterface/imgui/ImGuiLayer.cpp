@@ -71,8 +71,8 @@ namespace Flow
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		//static bool bShowDemoWindow = true;
-		//ImGui::ShowDemoWindow(&bShowDemoWindow);
+		static bool bShowDemoWindow = true;
+		ImGui::ShowDemoWindow(&bShowDemoWindow);
 	}
 
 	void ImGuiLayer::Begin()

@@ -8,7 +8,7 @@
 namespace Flow
 {
 	Camera::Camera()
-		: Position_(0.0f,0.0f, -50.0f), Rotation_(0.0f), LastMousePosition_(Input::GetMousePosition())
+		: Position_(2.5f,3.5f, -5.0f), Rotation_(0.0f), LastMousePosition_(Input::GetMousePosition())
 	{
 	}
 
@@ -116,6 +116,7 @@ namespace Flow
 			ImGui::Text("Roll: %f", Rotation_.Roll);
 			ImGui::Text("Yaw: %f", Rotation_.Yaw);
 			ImGui::Text("Other");
+			ImGui::SliderFloat("Camera Speed", &CameraSpeed_, 0.1f, 2.0f, "%.1f");
 			ImGui::SliderAngle("Field Of View", &m_FOV, 60.0f, 100.0f);
 
 			if (ImGui::Button("Reset"))

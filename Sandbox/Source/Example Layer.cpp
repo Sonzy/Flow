@@ -115,31 +115,32 @@ ExampleLayer::ExampleLayer()
 
 	Light = std::make_shared<Flow::PointLight>(500.0f);
 	
-	WallObj->GetRootComponent()->SetRelativeScale(Vector(200, 10, 100));
-	WallObj->GetRootComponent()->SetWorldPosition(Vector(0, -3, 0));
+
+
 
 	//= Location
 
-	Base->GetRootComponent()->SetWorldPosition(Vector(37.5f, 8.0f, 0.0f));
+	Base->GetRootComponent()->SetWorldPosition(Vector(3.5f, 0.0f, 0.0f));
+	WallObj->GetRootComponent()->SetWorldPosition(Vector(0, -1.0f, 0));
 	
-	Crate1_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, -10.0f));
-	Crate2_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, 3.0f));
-	Crate3_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 10.0f, 16.0f));
-	Crate4_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 21.0f, -4.0f));
-	Crate5_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 21.0f, 10.0f));
+	Crate1_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, -1.0f));
+	Crate2_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, 0.3f));
+	Crate3_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, 1.6f));
+	Crate4_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 1.5f, -0.4f));
+	Crate5_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 1.5f, 1.0f));
 	
-	Chair1_->GetRootComponent()->SetWorldPosition(Vector(5.0f,  9.0f, 4.0f));
-	Chair2_->GetRootComponent()->SetWorldPosition(Vector(20.0f, 9.0f, 10.0f));
-	Chair3_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 9.0f, 10.0f));
-	Chair4_->GetRootComponent()->SetWorldPosition(Vector(70.0f, 9.0f, 3.0f));
+	Chair1_->GetRootComponent()->SetWorldPosition(Vector(0.5f,  0.4f, 0.4f));
+	Chair2_->GetRootComponent()->SetWorldPosition(Vector(2.0f, 0.4f, 1.0f));
+	Chair3_->GetRootComponent()->SetWorldPosition(Vector(5.0f, 0.4f, 1.0f));
+	Chair4_->GetRootComponent()->SetWorldPosition(Vector(6.0f, 0.4f, 0.3f));
 	
-	Table1_->GetRootComponent()->SetWorldPosition(Vector(15.0f, 9.0f, 0.0f));
-	Table2_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 9.0f, 0.0f));
+	Table1_->GetRootComponent()->SetWorldPosition(Vector(1.5f, 0.4f, 0.0f));
+	Table2_->GetRootComponent()->SetWorldPosition(Vector(5.0f, 0.4f, 0.0f));
 
-	Revolver_->GetRootComponent()->SetWorldPosition(Vector(14.0f, 20.0f, 0.0f));
-	Shotgun_->GetRootComponent()->SetWorldPosition(Vector(-15.0f, 20.0f, -13.0f));
-	Blunderbuss_->GetRootComponent()->SetWorldPosition(Vector(60.0f, 20.0f, 0.0f));
-	Rifle_->GetRootComponent()->SetWorldPosition(Vector(-20.0f, 32.0f, 0.0f));
+	Revolver_->GetRootComponent()->SetWorldPosition(Vector(1.5f, 0.8f, 0.0f));
+	Shotgun_->GetRootComponent()->SetWorldPosition(Vector(-1.5f, 1.2f, -1.3f));
+	Blunderbuss_->GetRootComponent()->SetWorldPosition(Vector(5.0f, 0.8f, 0.0f));
+	Rifle_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 2.2f, 0.0f));
 															   	
 	//= Rotation
 	Crate1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
@@ -163,7 +164,8 @@ ExampleLayer::ExampleLayer()
 	
 	//= Scale
 	
-	Base->GetRootComponent()->SetWorldScale(Vector(50.0f, 1.0f, 30.0f));
+	Base->GetRootComponent()->SetWorldScale(Vector(4.0f, 0.1f, 2.0f));
+	WallObj->GetRootComponent()->SetRelativeScale(Vector(20.0f, 1.0f, 10.0f));
 
 	Chair1_->InitPhysics(false);
 	Chair2_->InitPhysics(false);

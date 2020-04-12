@@ -156,6 +156,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ConstantBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.h" />
@@ -309,6 +310,7 @@
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\InputLayout.cpp" />

@@ -54,7 +54,7 @@ namespace Flow
 
 	void World::Tick(float DeltaTime)
 	{
-		PhysicsWorld_->stepSimulation(DeltaTime);
+		PhysicsWorld_->stepSimulation(DeltaTime, 0);
 		for (auto& WorldObj : WorldObjects_)
 		{
 			WorldObj->Tick(DeltaTime);

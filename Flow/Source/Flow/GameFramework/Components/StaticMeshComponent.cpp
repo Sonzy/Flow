@@ -46,7 +46,7 @@ namespace Flow
 		{
 			btVector3 Vec = Body_->getWorldTransform().getOrigin();
 
-			//Bullet returns the rotation in wrong euler order, use this to get in the correct order
+			//Need euler YZX 
 			btScalar m[16];
 			Body_->getWorldTransform().getOpenGLMatrix(m);
 			float fAngZ = atan2f(m[1], m[5]);
@@ -117,6 +117,7 @@ namespace Flow
 		}
 
 		Collision_ = Shape;
+		Collision_->setMargin(0.01f);
 
 		Transform trans = GetWorldTransform();
 		Collision_->setLocalScaling(btVector3(trans.Scale_.X, trans.Scale_.Y, trans.Scale_.Z));
@@ -173,7 +174,7 @@ namespace Flow
 		btTransform Transform;
 		btQuaternion Rotation;
 		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.Rotation_);
-		Rotation.setEulerZYX(RadiansRotation.Roll, RadiansRotation.Yaw, RadiansRotation.Pitch);
+		Rotation.setEuler(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
 
 		//Set new transform
 		Transform.setOrigin(btVector3(NewTransform.Position_.X, NewTransform.Position_.Y, NewTransform.Position_.Z));
