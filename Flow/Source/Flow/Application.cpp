@@ -93,6 +93,7 @@ namespace Flow
 		AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png"); 
 		AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
 		AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png"); 
+		AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png"); 
 		//AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
 
 		//= Shaders =
@@ -113,6 +114,8 @@ namespace Flow
 		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector(0.31, 0.08, 0));
 		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
 		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector(1.0f, 1.0f, 1.0f));
+		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
+		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector(0.52f, 0.8f, 1.0f));
 
 		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
 		Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
@@ -137,6 +140,12 @@ namespace Flow
 		SandMat->SetTexture("Wabble_Sand");
 		SandMat->SetPixelShader("TexturedPhongPS");
 		SandMat->SetVertexShader("TexturedPhongVS");
+
+		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
+		Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
+		SkyMat->SetTexture("SkyCube_Test");
+		SkyMat->SetPixelShader("TexturedPS");
+		SkyMat->SetVertexShader("TexturedVS");
 
 
 

@@ -30,10 +30,16 @@ namespace Flow
 		/* Renderable Component Interface */
 
 		virtual void RefreshBinds() override;
+		virtual DirectX::XMMATRIX GetTransformXM() override;
 
 
 		//Temp - TODO: Actually use component movement for rendering
 		Mesh* GetMesh() { return StaticMesh_; }
+
+		void EnableOutlineDrawing(bool Enabled) { DrawOutline_ = Enabled; RefreshBinds(); }
+		void DrawOutline();
+
+		virtual void DrawComponentDetailsWindow() override;
 
 		//= Physics ==========
 
@@ -51,14 +57,21 @@ namespace Flow
 		void MovePhysicsBody(Transform NewTransform);
 
 
+
+
 	protected:
 
 		bool SimulatePhysics_ = false;
+		bool DrawOutline_ = false;
 
 		Mesh* StaticMesh_;
 		Material* Material_;
 
 		btCollisionShape* Collision_;
 		btRigidBody* Body_;
+
+		std::vector<std::shared_ptr<Bindable>> OutlineEffect;
+		bool CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values
+		float OutlineThickness_ = 0.05f;
 	};
 }

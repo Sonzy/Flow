@@ -26,10 +26,13 @@ private:
 	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;
 	std::shared_ptr<Flow::PointLight> Light;
 
+	std::shared_ptr<MeshWorldObject> TestCube;
+
 	std::shared_ptr<Flow::WorldObject> Example;
 
 	std::shared_ptr<MeshWorldObject> WallObj;
 	std::shared_ptr<MeshWorldObject> Base;
+	std::shared_ptr<MeshWorldObject> Base2;
 
 	std::shared_ptr<MeshWorldObject> Crate1_;
 	std::shared_ptr<MeshWorldObject> Crate2_;

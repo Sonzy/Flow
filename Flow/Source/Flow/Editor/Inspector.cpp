@@ -15,6 +15,7 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Flow\GameFramework\Components\WorldComponent.h"
+#include "Flow\GameFramework\Components\StaticMeshComponent.h"
 
 #include "Flow\Editor\SelectionGizmo.h"
 
@@ -31,7 +32,17 @@ namespace Flow
 		if (ImGui::Begin("Inspector"))
 		{
 			if (FocusedItem_)
+			{
 				FocusedItem_->DrawDetailsWindow(FocusedItemChanged);
+
+				ImGui::Separator(); //==========================================
+
+				//TODO:
+				ImGui::Text((std::string("Selected Component: ") + FocusedItem_->GetRootComponent()->GetName()).c_str());
+
+				FocusedItem_->GetRootComponent()->DrawComponentDetailsWindow();
+			}
+
 		}
 		ImGui::End();
 	}
@@ -75,12 +86,21 @@ namespace Flow
 
 		//If we hit something, if it was a world component, assign this to the focused item.
 		WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
+
+		if (FocusedItem_ && HitObject != FocusedItem_)
+		{
+			if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
+				Comp->EnableOutlineDrawing(false);
+		}
+
 		FocusedItem_ = HitObject;
 
 		//TODO: If we hit, run selection gizmo logic.
 		if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
 		{
 			//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
+			if(StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
+				Comp->EnableOutlineDrawing(true);
 		}
 
 		if (!FocusedItem_)

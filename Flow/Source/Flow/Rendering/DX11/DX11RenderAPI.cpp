@@ -108,18 +108,18 @@ namespace Flow
 		CATCH_ERROR_DX(SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 		CATCH_ERROR_DX(Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &RenderTarget));
 
-		// Create Depth Stencil State
-		D3D11_DEPTH_STENCIL_DESC DepthStencilDescription = {};
-		DepthStencilDescription.DepthEnable = true;
-		DepthStencilDescription.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		DepthStencilDescription.DepthFunc = D3D11_COMPARISON_LESS;
-		DepthStencilDescription.StencilEnable = FALSE;
-
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilState = nullptr;
-		CATCH_ERROR_DX(Device->CreateDepthStencilState(&DepthStencilDescription, &DepthStencilState));
-
-		// Bind the Depth State
-		Context->OMSetDepthStencilState(DepthStencilState.Get(), 1u);
+		//// Create Depth Stencil State
+		//D3D11_DEPTH_STENCIL_DESC DepthStencilDescription = {};
+		//DepthStencilDescription.DepthEnable = true;
+		//DepthStencilDescription.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		//DepthStencilDescription.DepthFunc = D3D11_COMPARISON_LESS;
+		//DepthStencilDescription.StencilEnable = FALSE;
+		//
+		//Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilState = nullptr;
+		//CATCH_ERROR_DX(Device->CreateDepthStencilState(&DepthStencilDescription, &DepthStencilState));
+		//
+		//// Bind the Depth State
+		//Context->OMSetDepthStencilState(DepthStencilState.Get(), 1u);
 
 		// Create the depth stencil texture
 		Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
@@ -128,7 +128,8 @@ namespace Flow
 		DepthDescription.Height = ViewportHeight;
 		DepthDescription.MipLevels = 1u;
 		DepthDescription.ArraySize = 1u;
-		DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		//DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthDescription.SampleDesc.Count = 1u;
 		DepthDescription.SampleDesc.Quality = 0u;
 		DepthDescription.Usage = D3D11_USAGE_DEFAULT;
@@ -137,7 +138,8 @@ namespace Flow
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
-		DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		//DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		DepthStencilViewDescription.Texture2D.MipSlice = 0u;
 		CATCH_ERROR_DX(Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &DepthStencilView));
@@ -170,7 +172,8 @@ namespace Flow
 	void DX11RenderAPI::Clear()
 	{
 		Context->ClearRenderTargetView(RenderTarget.Get(), BackgroundColour);
-		Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+		//Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+		Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 	}
 
 	void DX11RenderAPI::BeginFrame()
@@ -219,7 +222,8 @@ namespace Flow
 		DepthDescription.Height = Height;
 		DepthDescription.MipLevels = 1u;
 		DepthDescription.ArraySize = 1u;
-		DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		//DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthDescription.SampleDesc.Count = 1u;
 		DepthDescription.SampleDesc.Quality = 0u;
 		DepthDescription.Usage = D3D11_USAGE_DEFAULT;
@@ -228,7 +232,8 @@ namespace Flow
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
-		DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		//DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+		DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		DepthStencilViewDescription.Texture2D.MipSlice = 0u;
 		CATCH_ERROR_DX(Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, DepthStencilView.GetAddressOf()));

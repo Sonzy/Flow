@@ -135,6 +135,11 @@ namespace Flow
 				Comp->MovePhysicsBody(RootComponent_->GetRelativeTransform());
 		}
 
-		ImGui::Checkbox("Is Visible", &Visible_);
+		ImGui::Checkbox("Is Visible", &Visible_);		
+	}
+
+	void WorldObject::SetVisibility(bool Visible)
+	{
+		Visible_ = Visible;
 	}
 }

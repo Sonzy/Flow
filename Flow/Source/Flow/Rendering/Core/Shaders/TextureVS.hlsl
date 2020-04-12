@@ -2,20 +2,22 @@ cbuffer CBuf
 {
     matrix modelView;
     matrix modelViewProj;
-
-    float3 Scale;
 }
 
 struct VSOut
 {
+    float3 viewPos : Position;
+    float3 n : Normal;
     float2 tex : TexCoord;
-    float4 pos : SV_Position;
+    float4 Pos : SV_Position;
 };
 
-VSOut main(float3 pos : Position, float2 tex : TexCoord)
+VSOut main(float3 pos : Position, float3 n : Normal, float2 tex : TexCoord)
 {
     VSOut vso;
-    vso.pos = mul(float4(pos * Scale, 1.0f), modelView);
+    vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
     vso.tex = tex;
+    vso.n = mul(n, (float3x3) modelView);
+    vso.Pos = mul(float4(pos, 1.0f), modelViewProj);
     return vso;
 }

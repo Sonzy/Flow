@@ -38,6 +38,7 @@ namespace Flow
 
 		virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
+		void SetVisibility(bool Visible);
 
 	protected:
 

@@ -23,6 +23,8 @@ namespace Flow
 
 		virtual void Tick(float DeltaTime) override;
 
+		virtual void DrawComponentDetailsWindow();
+
 	protected:
 
 		WorldObject* ParentObject_;

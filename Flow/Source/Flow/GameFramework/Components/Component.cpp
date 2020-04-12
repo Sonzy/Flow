@@ -41,6 +41,10 @@ namespace Flow
 	{
 
 	}
+
+	void Component::DrawComponentDetailsWindow()
+	{
+	}
 }
 
 

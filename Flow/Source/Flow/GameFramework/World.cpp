@@ -6,6 +6,8 @@
 
 #include "ThirdParty\Bullet\LinearMath\btIDebugDraw.h"
 
+#include "Flow\GameFramework\Other\Skybox.h"
+
 namespace Flow
 {
 	World::World()
@@ -26,6 +28,8 @@ namespace Flow
 	void World::InitialiseWorld()
 	{
 		InitialisePhysics();
+
+		Skybox_ = new Skybox();
 	}
 
 	void World::DispatchBeginPlay()
@@ -59,6 +63,8 @@ namespace Flow
 		{
 			WorldObj->Tick(DeltaTime);
 		}
+
+		Flow::Renderer::Submit(Skybox_);
 	}
 	const std::string& World::GetName()
 	{

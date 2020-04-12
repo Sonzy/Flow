@@ -26,8 +26,7 @@ ExampleLayer::ExampleLayer()
 	//= Create Objects in level ===========
 
 	WallObj = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Floor");
-
-	//Example = Flow::Application::GetWorld()->SpawnWorldObject<ExampleWorldObject>("Testing World Object");
+	TestCube = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("TestCube");
 
 	Crate1_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
 	Crate2_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
@@ -54,6 +53,7 @@ ExampleLayer::ExampleLayer()
 	Actors.push_back(WallObj);
 	//Actors.push_back(Example);
 	Actors.push_back(Base);
+	Actors.push_back(TestCube);
 	
 	Actors.push_back(Crate1_);
 	Actors.push_back(Crate2_);
@@ -94,9 +94,13 @@ ExampleLayer::ExampleLayer()
 	Flow::MaterialAsset* Weapons = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Weapons");
 	Flow::MaterialAsset* Wood = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood");
 	Flow::MaterialAsset* Sand = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Sand");
+	Flow::MaterialAsset* SkyCube = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_SkyCube");
 
 	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand->GetMaterial());
 	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood->GetMaterial());
+	TestCube->GetMeshComponent()->SetMeshAndMaterial(Box, SkyCube->GetMaterial());
+	//Base->GetMeshComponent()->EnableOutlineDrawing(true);
+	//Base->GetMeshComponent()->RefreshBinds();
 	
 	Table1_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
 	Table2_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
@@ -115,13 +119,11 @@ ExampleLayer::ExampleLayer()
 
 	Light = std::make_shared<Flow::PointLight>(500.0f);
 	
-
-
-
 	//= Location
 
 	Base->GetRootComponent()->SetWorldPosition(Vector(3.5f, 0.0f, 0.0f));
 	WallObj->GetRootComponent()->SetWorldPosition(Vector(0, -1.0f, 0));
+	TestCube->GetRootComponent()->SetWorldPosition(Vector(0, 5.0f, 0));
 	
 	Crate1_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, -1.0f));
 	Crate2_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, 0.3f));

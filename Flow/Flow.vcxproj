@@ -135,6 +135,7 @@
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Gameobject.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Other\Skybox.h" />
     <ClInclude Include="Source\Flow\GameFramework\World.h" />
     <ClInclude Include="Source\Flow\GameFramework\WorldObject.h" />
     <ClInclude Include="Source\Flow\Helper\BulletDebugDrawing.h" />
@@ -162,9 +163,11 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\InputLayout.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\LayoutCodex.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Rasterizer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Sampler.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Stencil.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Texture.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Topology.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBuffer.h" />
@@ -300,6 +303,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Gameobject.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Other\Skybox.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\WorldObject.cpp" />
     <ClCompile Include="Source\Flow\Helper\BulletDebugDrawing.cpp" />
@@ -316,9 +320,11 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\InputLayout.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\LayoutCodex.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Rasterizer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Sampler.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\PixelShader.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Shaders\VertexShader.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Stencil.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Texture.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
@@ -364,6 +370,10 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SkyboxTemp.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColorVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

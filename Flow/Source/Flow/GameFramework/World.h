@@ -17,6 +17,7 @@ class btDiscreteDynamicsWorld;
 namespace Flow
 {
 	class WorldObject;
+	class Skybox;
 
 	class FLOW_API World
 	{
@@ -72,5 +73,8 @@ namespace Flow
 		btDiscreteDynamicsWorld* PhysicsWorld_;
 
 		BulletDebugDraw DebugDrawer_;
+
+		//= Other =======
+		Skybox* Skybox_;
 	};
 }

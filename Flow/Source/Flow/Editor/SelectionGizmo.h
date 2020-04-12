@@ -1,6 +1,9 @@
 #pragma once
 #include "Flow\Helper\Maths.h"
 
+#include "Flow\Rendering\Core\Bindable.h"
+#include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
+
 class btCollisionShape;
 class btGhostObject;
 
