@@ -5,6 +5,8 @@
 
 namespace Flow
 {
+	class Controller;
+
 	class FLOW_API Layer
 	{
 	public:
@@ -18,8 +20,12 @@ namespace Flow
 
 		virtual void OnImGuiRender();
 
+
+
 		const std::string& GetName() const;
 	protected:
 		std::string Name;
+
+
 	};
 }

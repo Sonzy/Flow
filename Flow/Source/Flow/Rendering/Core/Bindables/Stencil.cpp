@@ -23,7 +23,6 @@ namespace Flow
 			Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 			break;
 		case StencilMode::Off:
-			FLOW_ENGINE_WARNING("Stencil::Stencil: Created a stencil with the mode StencilMode::Off");
 			break;
 		}
 		

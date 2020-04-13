@@ -34,13 +34,28 @@ namespace Flow
 		Child->SetParentComponent(this);
 	}
 
-	Vector WorldComponent::GetWorldPosition()
+	Vector WorldComponent::GetWorldPosition() const
 	{
 		WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
-		return Parent ? Parent->GetWorldPosition() + RelativeTransform_.Position_ : RelativeTransform_.Position_;
+		//return Parent ? Parent->GetWorldPosition() + RelativeTransform_.Position_ : RelativeTransform_.Position_;
+
+		if (Parent)
+		{
+			Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
+
+			DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&RelativeTransform_.Position_.ToDXFloat3());
+			DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
+			DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
+			DirectX::XMFLOAT3 RotatedPos;
+			DirectX::XMStoreFloat3(&RotatedPos, NewPosition);
+
+			return Parent->GetWorldPosition() + Vector(RotatedPos.x, RotatedPos.y, RotatedPos.z);
+		}
+		else
+			return RelativeTransform_.Position_;
 	}
 
-	Vector WorldComponent::GetRelativePosition()
+	Vector WorldComponent::GetRelativePosition() const
 	{
 		return RelativeTransform_.Position_;
 	}
@@ -62,13 +77,18 @@ namespace Flow
 		RelativeTransform_.Position_ = NewPosition;
 	}
 
-	Rotator WorldComponent::GetWorldRotation()
+	void WorldComponent::AddRelativePosition(Vector Position)
+	{
+		RelativeTransform_.Position_ += Position;
+	}
+
+	Rotator WorldComponent::GetWorldRotation() const
 	{
 		WorldComponent* Parent = GetParentComponent();
 		return Parent ? Parent->GetWorldRotation() + RelativeTransform_.Rotation_ : RelativeTransform_.Rotation_;
 	}
 
-	Rotator WorldComponent::GetRelativeRotation()
+	Rotator WorldComponent::GetRelativeRotation() const
 	{
 		return RelativeTransform_.Rotation_;
 	}
@@ -93,13 +113,18 @@ namespace Flow
 		//TODO: UpdatePhysics Movement
 	}
 
-	Vector WorldComponent::GetWorldScale()
+	void WorldComponent::AddRelativeRotation(Rotator Rotation)
+	{
+		RelativeTransform_.Rotation_ += Rotation;
+	}
+
+	Vector WorldComponent::GetWorldScale() const
 	{
 		WorldComponent* Parent = GetParentComponent();
 		return Parent ? Parent->GetWorldScale() + RelativeTransform_.Scale_ : RelativeTransform_.Scale_;
 	}
 
-	Vector WorldComponent::GetRelativeScale()
+	Vector WorldComponent::GetRelativeScale() const
 	{
 		return RelativeTransform_.Scale_;
 	}
@@ -121,12 +146,12 @@ namespace Flow
 		RelativeTransform_.Scale_ = NewScale;
 	}
 
-	Transform WorldComponent::GetWorldTransform()
+	Transform WorldComponent::GetWorldTransform() const
 	{
 		return Transform(GetWorldPosition(), GetWorldRotation(), GetWorldScale());
 	}
 
-	Transform WorldComponent::GetRelativeTransform()
+	Transform WorldComponent::GetRelativeTransform() const
 	{
 		return RelativeTransform_;
 	}

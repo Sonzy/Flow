@@ -3,6 +3,11 @@
 
 #include "Flow/Rendering/DX11/DX11RenderAPI.h"
 
+#include "Flow\Application.h"
+#include "Flow\GameFramework\World.h"
+#include "Flow\GameFramework\Controllers\Controller.h"
+#include "Flow\GameFramework\Components\CameraComponent.h"
+
 namespace Flow
 {
 	RenderAPI* RenderCommand::s_RendererAPI = new DX11RenderAPI();
@@ -22,9 +27,9 @@ namespace Flow
 		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetContext();
 	}
 
-	Camera& RenderCommand::GetCamera()
+	CameraComponent& RenderCommand::GetCamera()
 	{
-		return s_RendererAPI->GetCamera();
+		return *Application::GetWorld()->GetLocalController()->GetCamera();
 	}
 
 	void RenderCommand::Resize(int Width, int Height)

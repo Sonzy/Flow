@@ -9,7 +9,7 @@
 #include "Flow\Application.h"
 #include "Flow\GameFramework\World.h"
 
-#include "Content/ExampleWorldObject.h"
+#include "Content\WorldObjects\ExampleWorldObject.h"
 #include "Flow\Rendering\Core\Camera\Camera.h"
 
 #include "btBulletCollisionCommon.h"
@@ -19,6 +19,8 @@
 #include "Content\Crate.h"
 
 #include "Flow\Rendering\Core\Line.h"
+
+#include "Flow\GameFramework\Components\CameraComponent.h"
 
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
@@ -190,10 +192,10 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	Light->BindLight(Flow::RenderCommand::GetCamera().GetMatrix());
+	Light->BindLight(Flow::RenderCommand::GetCamera().GetViewMatrix());
 	//Flow::Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
 
-	Flow::RenderCommand::GetCamera().Tick(DeltaTime);
+	//Flow::RenderCommand::GetCamera().Tick(DeltaTime);
 
 	for (auto& Actor : Actors)
 	{
@@ -205,7 +207,7 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 
 void ExampleLayer::OnImGuiRender()
 {
-	Flow::RenderCommand::GetCamera().RenderIMGUIWindow();
+	//Flow::RenderCommand::GetCamera().RenderIMGUIWindow();
 
 	Flow::AssetSystem::RenderDebugWindow(true);
 	Light->RenderControlWindow();

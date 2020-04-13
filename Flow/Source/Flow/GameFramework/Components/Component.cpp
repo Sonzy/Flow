@@ -17,12 +17,12 @@ namespace Flow
 	{
 	}
 
-	WorldComponent* Component::GetParentComponent()
+	WorldComponent* Component::GetParentComponent() const
 	{
 		return AttachedComponent_;
 	}
 
-	WorldObject* Component::GetParentWorldObject()
+	WorldObject* Component::GetParentWorldObject() const
 	{
 		return ParentObject_;
 	}

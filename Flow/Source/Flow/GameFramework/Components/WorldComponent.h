@@ -17,23 +17,25 @@ namespace Flow
 
 		void AddChild(WorldComponent* Child);
 
-		Vector GetWorldPosition();
-		Vector GetRelativePosition();
+		Vector GetWorldPosition() const;
+		Vector GetRelativePosition() const;
 		void SetWorldPosition(Vector NewPosition);
 		void SetRelativePosition(Vector NewPosition);
+		void AddRelativePosition(Vector Position);
 
-		Rotator GetWorldRotation();
-		Rotator GetRelativeRotation();
+		Rotator GetWorldRotation() const;
+		Rotator GetRelativeRotation() const;
 		void SetWorldRotation(Rotator NewRotation);
 		void SetRelativeRotation(Rotator NewRotation);
+		void AddRelativeRotation(Rotator Rotation);
 
-		Vector GetWorldScale();
-		Vector GetRelativeScale();
+		Vector GetWorldScale() const;
+		Vector GetRelativeScale() const;
 		void SetWorldScale(Vector NewScale);
 		void SetRelativeScale(Vector NewScale);
 
-		Transform GetWorldTransform();
-		Transform GetRelativeTransform();
+		Transform GetWorldTransform() const;
+		Transform GetRelativeTransform() const;
 		void SetWorldTransform(Transform NewTransform);
 		void SetRelativeTransform(Transform NewTransform);
 

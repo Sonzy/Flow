@@ -18,6 +18,7 @@ namespace Flow
 {
 	class WorldObject;
 	class Skybox;
+	class Controller;
 
 	class FLOW_API World
 	{
@@ -51,6 +52,12 @@ namespace Flow
 		void AddPhysicsObject(btRigidBody* Obj);
 		void AddCollisionObject(btCollisionObject* Obj);
 
+		//= Controllers ========
+
+		void RegisterController(std::shared_ptr<Controller> NewController);
+		void DeRegisterController(std::shared_ptr<Controller> OldController);
+		Controller* GetLocalController() const;
+
 	protected:
 		void InitialisePhysics();
 
@@ -76,5 +83,9 @@ namespace Flow
 
 		//= Other =======
 		Skybox* Skybox_;
+
+		//= Controllers =======
+
+		std::vector<std::shared_ptr<Controller>> RegisteredControllers_;
 	};
 }

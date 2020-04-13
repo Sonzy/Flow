@@ -29,8 +29,6 @@ namespace Flow
 
 		virtual Vector GetScreenToWorldDirection(int X, int Y);
 
-		virtual Camera& GetCamera() override;
-
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
 
@@ -47,6 +45,6 @@ namespace Flow
 
 		float BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 
-		Camera MainCamera_;
+		//Camera MainCamera_;
 	};
 }

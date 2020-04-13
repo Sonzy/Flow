@@ -7,6 +7,10 @@
 #include "Flow\Application.h"
 #include "Flow\Window\WinWindow.h"
 
+#include "Flow\GameFramework\World.h"
+#include "Flow\GameFramework\Controllers\PlayerController.h"
+#include "Flow\GameFramework\Components\CameraComponent.h"
+
 
 
 #pragma comment(lib, "d3d11.lib")
@@ -18,42 +22,6 @@ namespace Flow
 {
 	DX11RenderAPI::~DX11RenderAPI()
 	{
-		//CREATE_RESULT_HANDLE();
-		//
-		////TODO: Fix the log spam on close
-		//CATCH_ERROR_DX(Device->QueryInterface(__uuidof(ID3D11Debug), &Debug2));
-		//
-		//Debug2 ? (void)Debug2->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL) : FLOW_ENGINE_ERROR("Failed to query");
-
-		//if (SwapChain)
-		//{
-		//	SwapChain->Release();
-		//	//SwapChain.Reset();
-		//}
-		//
-		//if (Device)
-		//{
-		//	Device->Release();
-		//	//Device.Reset();
-		//}
-		//
-		//if (Context)
-		//{
-		//	Context->Release();
-		//	//Context.Reset();
-		//}
-		//
-		//if (RenderTarget)
-		//{
-		//	RenderTarget->Release();
-		//	//RenderTarget.Reset();
-		//}
-		//
-		//if (DepthStencilView)
-		//{
-		//	DepthStencilView->Release();
-		//	//DepthStencilView.Reset();
-		//}
 	}
 
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
@@ -72,14 +40,12 @@ namespace Flow
 		SwapchainDesc.BufferDesc.RefreshRate.Numerator = 0;
 		SwapchainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 		SwapchainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		SwapchainDesc.SampleDesc.Count = 1;
+		SwapchainDesc.SampleDesc.Count = 1u;
 		SwapchainDesc.SampleDesc.Quality = 0;
 		SwapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		//SwapchainDesc.BufferCount = 1;
 		SwapchainDesc.BufferCount = 2; //flip discard
 		SwapchainDesc.OutputWindow = WindowHandle;
 		SwapchainDesc.Windowed = TRUE;
-		//SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; //TODO: Check the flip discard stuff
 		SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; //flip discard
 		SwapchainDesc.Flags = 0;
 
@@ -108,19 +74,6 @@ namespace Flow
 		CATCH_ERROR_DX(SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 		CATCH_ERROR_DX(Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &RenderTarget));
 
-		//// Create Depth Stencil State
-		//D3D11_DEPTH_STENCIL_DESC DepthStencilDescription = {};
-		//DepthStencilDescription.DepthEnable = true;
-		//DepthStencilDescription.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		//DepthStencilDescription.DepthFunc = D3D11_COMPARISON_LESS;
-		//DepthStencilDescription.StencilEnable = FALSE;
-		//
-		//Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilState = nullptr;
-		//CATCH_ERROR_DX(Device->CreateDepthStencilState(&DepthStencilDescription, &DepthStencilState));
-		//
-		//// Bind the Depth State
-		//Context->OMSetDepthStencilState(DepthStencilState.Get(), 1u);
-
 		// Create the depth stencil texture
 		Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
 		D3D11_TEXTURE2D_DESC DepthDescription = {};
@@ -128,9 +81,8 @@ namespace Flow
 		DepthDescription.Height = ViewportHeight;
 		DepthDescription.MipLevels = 1u;
 		DepthDescription.ArraySize = 1u;
-		//DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
-		DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		DepthDescription.SampleDesc.Count = 1u;
+		DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; //24 bit depth, 8 bit stencil
+		DepthDescription.SampleDesc.Count= 1u;
 		DepthDescription.SampleDesc.Quality = 0u;
 		DepthDescription.Usage = D3D11_USAGE_DEFAULT;
 		DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -138,7 +90,6 @@ namespace Flow
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
-		//DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
 		DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		DepthStencilViewDescription.Texture2D.MipSlice = 0u;
@@ -152,14 +103,11 @@ namespace Flow
 		Viewport.Width = (FLOAT)ViewportWidth;
 		Viewport.Height = (FLOAT)ViewportHeight;
 		Viewport.MinDepth = 0.0f;
-		Viewport.MaxDepth = 1.0f; //Disable depth for testing
+		Viewport.MaxDepth = 1.0f;
 		Viewport.TopLeftX = 0.0f;
 		Viewport.TopLeftY = 0.0f;
 
 		Context->RSSetViewports(1u, &Viewport);
-
-		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
-		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{
@@ -172,7 +120,6 @@ namespace Flow
 	void DX11RenderAPI::Clear()
 	{
 		Context->ClearRenderTargetView(RenderTarget.Get(), BackgroundColour);
-		//Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 		Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 	}
 
@@ -180,8 +127,9 @@ namespace Flow
 	{
 		Clear();
 
-		//Init Camera Projection														//Make sure these are floats so we can actually divide lool
-		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
+		//Init Camera Projection	
+		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+		MainCamera->SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera->GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
 	void DX11RenderAPI::EndFrame()
@@ -189,7 +137,6 @@ namespace Flow
 		HRESULT ResultHandle;
 		CATCH_ERROR_DX(SwapChain->Present(1, 0));
 
-		//Rebind the render target after present to use DXGI_SWAP_EFFECT_FLIP_DISCARD
 		Context->OMSetRenderTargets(1u, RenderTarget.GetAddressOf(), DepthStencilView.Get());
 	}
 
@@ -222,7 +169,6 @@ namespace Flow
 		DepthDescription.Height = Height;
 		DepthDescription.MipLevels = 1u;
 		DepthDescription.ArraySize = 1u;
-		//DepthDescription.Format = DXGI_FORMAT_D32_FLOAT;
 		DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthDescription.SampleDesc.Count = 1u;
 		DepthDescription.SampleDesc.Quality = 0u;
@@ -232,7 +178,6 @@ namespace Flow
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
-		//DepthStencilViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
 		DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		DepthStencilViewDescription.Texture2D.MipSlice = 0u;
@@ -251,11 +196,14 @@ namespace Flow
 
 		Context->RSSetViewports(1u, &Viewport);
 
-		MainCamera_.SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera_.GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
+		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+		MainCamera->SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera->GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
 	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
 	{
+		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+
 		IntVector2D WinSize = WinWindow::GetAdjustedWindowSize();
 		float Width = WinSize.X;
 		float Height = WinSize.Y;
@@ -268,12 +216,12 @@ namespace Flow
 
 		//Adjust for the projection matrix
 		DirectX::XMFLOAT4X4 Projection;
-		DirectX::XMStoreFloat4x4(&Projection, MainCamera_.GetProjection());
+		DirectX::XMStoreFloat4x4(&Projection, MainCamera->GetProjectionMatrix());
 		MouseX = MouseX / Projection._11;
 		MouseY = MouseY / Projection._22;		
 
 		// Get the inverse of the view matrix.
-		DirectX::XMMATRIX InverseMatrix = DirectX::XMMatrixInverse(nullptr, RenderCommand::GetCamera().GetMatrix());
+		DirectX::XMMATRIX InverseMatrix = DirectX::XMMatrixInverse(nullptr, RenderCommand::GetCamera().GetViewMatrix());
 		DirectX::XMFLOAT4X4 Inverse;
 		DirectX::XMStoreFloat4x4(&Inverse, InverseMatrix);
 
@@ -287,11 +235,6 @@ namespace Flow
 		//FLOW_ENGINE_LOG("Direction: {0}", Direction);
 
 		return Direction;
-	}
-
-	Camera& DX11RenderAPI::GetCamera()
-	{
-		return MainCamera_;
 	}
 
 	ID3D11Device* DX11RenderAPI::GetDevice()

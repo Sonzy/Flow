@@ -44,9 +44,9 @@ namespace Flow
 
 	void StaticMeshComponent::Tick(float DeltaTime)
 	{
-		GameObject::Tick(DeltaTime);
+		WorldComponent::Tick(DeltaTime);
 		
-		if (Body_)// && SimulatePhysics)
+		if (Body_ && SimulatePhysics_)
 		{
 			btVector3 Vec = Body_->getWorldTransform().getOrigin();
 
@@ -59,6 +59,11 @@ namespace Flow
 
 			SetWorldPosition(Vector(Vec.x(), Vec.y(), Vec.z()));
 			SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
+		}
+
+		if (!SimulatePhysics_ && Body_)
+		{
+			MovePhysicsBody(GetWorldTransform());
 		}
 	}
 

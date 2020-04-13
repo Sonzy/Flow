@@ -1,5 +1,6 @@
 #include "Flowpch.h"
 #include "Layer.h"
+#include "Flow\Helper\HelperMacros.h"
 
 Flow::Layer::Layer(const std::string& Name)
 	:Name(Name)

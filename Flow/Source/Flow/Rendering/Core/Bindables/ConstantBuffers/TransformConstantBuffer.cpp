@@ -3,6 +3,8 @@
 #include "Flow/Rendering/Core/Camera/Camera.h"
 #include "Flow\GameFramework\Components\RenderableComponent.h"
 
+#include "Flow\GameFramework\Components\CameraComponent.h"
+
 namespace Flow
 {
 	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::VertexConstBuffer_;
@@ -32,13 +34,13 @@ namespace Flow
 			FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
 		//Generate the transformation from the parent.
-		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetMatrix();
+		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetViewMatrix();
 		const Transforms transform =
 		{
 			DirectX::XMMatrixTranspose(modelView),
 			DirectX::XMMatrixTranspose(
 				modelView *
-				RenderCommand::GetCamera().GetProjection())
+				RenderCommand::GetCamera().GetProjectionMatrix())
 		};
 
 		//Update and bind the constant buffers

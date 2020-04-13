@@ -19,6 +19,8 @@
 
 #include "Flow\Editor\SelectionGizmo.h"
 
+#include "Flow\GameFramework\Components\CameraComponent.h"
+
 
 namespace Flow
 {
@@ -57,7 +59,14 @@ namespace Flow
 
 			for (auto Object : CurrentWorld_->WorldObjects_)
 			{
-				ImGui::Text(Object->GetName().c_str());
+				if (ImGui::Button(Object->GetName().c_str()))
+				{
+					//TODO: Select object on click
+					FocusedItem_ = Object.get();
+
+					if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
+						Comp->EnableOutlineDrawing(true);
+				}
 			}
 		}
 		ImGui::End();
@@ -75,7 +84,7 @@ namespace Flow
 			return false;
 
 		//Calculate the ray bounds
-		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetPosition();
+		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetWorldPosition().ToDXFloat3();
 		IntVector2D MousePosition = Input::GetMousePosition();
 		Vector Start = Vector(Pos.x, Pos.y, Pos.z);
 		Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
@@ -105,8 +114,8 @@ namespace Flow
 
 		if (!FocusedItem_)
 		{
-			Selector_->SetVisibility(false);
-			Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
+			//Selector_->SetVisibility(false);
+			//Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
 		}
 		//If we have not hit anything, reset the selector
 		else

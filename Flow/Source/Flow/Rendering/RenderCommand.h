@@ -7,6 +7,8 @@
 
 namespace Flow
 {
+	class CameraComponent;
+
 	class FLOW_API RenderCommand
 	{
 	public:
@@ -19,7 +21,7 @@ namespace Flow
 
 		//= General ===================
 
-		static Camera& GetCamera();
+		static CameraComponent& GetCamera();
 
 		static void Resize(int Width, int Height);
 		static void SetClearColour(float R, float G, float B, float A);

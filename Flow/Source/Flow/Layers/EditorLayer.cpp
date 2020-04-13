@@ -34,7 +34,7 @@ namespace Flow
 
 	void EditorLayer::OnUpdate(float DeltaTime)
 	{
-		m_Inspector->GetSelector()->Render();
+		//m_Inspector->GetSelector()->Render();
 	}
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)

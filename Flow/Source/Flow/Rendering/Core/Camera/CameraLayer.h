@@ -11,6 +11,8 @@
 
 namespace Flow
 {
+	class CameraComponent;
+
 	/* Temporary for testing camera movement */
 	class FLOW_API CameraLayer : public Layer
 	{
@@ -34,6 +36,6 @@ namespace Flow
 		bool OnKeyReleased(KeyReleasedEvent& e);
 		bool OnWindowResized(WindowResizedEvent& e);
 
-		Camera* CameraRef_;
+		CameraComponent* CameraRef_;
 	};
 }

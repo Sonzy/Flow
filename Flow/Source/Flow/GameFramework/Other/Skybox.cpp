@@ -17,6 +17,7 @@
 #include "Flow\Rendering\Core\Vertex\VertexBuffer.h"
 
 #include "Flow\Rendering\Core\Camera\Camera.h"
+#include "Flow\GameFramework\Components\CameraComponent.h"
 
 
 namespace Flow
@@ -75,7 +76,7 @@ namespace Flow
 
 	DirectX::XMMATRIX Skybox::GetTransformXM() const
 	{
-		DirectX::XMFLOAT3 CamPos = RenderCommand::GetCamera().GetPosition();
+		DirectX::XMFLOAT3 CamPos = RenderCommand::GetCamera().GetWorldPosition().ToDXFloat3();
 		return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
 			DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 	}

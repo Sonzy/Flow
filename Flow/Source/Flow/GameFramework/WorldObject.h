@@ -11,6 +11,7 @@
 namespace Flow
 {
 	class WorldComponent;
+	class Controller;
 
 	class FLOW_API WorldObject : public GameObject
 	{
@@ -64,5 +65,11 @@ namespace Flow
 		bool HasCollision_ = false;
 		int Tag_;
 		bool Visible_ = true;
+
+
+		//= Controller
+
+		Controller* CurrentController_;
+
 	};
 }

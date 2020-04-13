@@ -7,6 +7,8 @@
 #include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
 
+#include "Flow\GameFramework\Components\CameraComponent.h"
+
 namespace Flow
 {
 	VertexLayout Line::VertexLayout_ = VertexLayout();
@@ -62,7 +64,7 @@ namespace Flow
 		//Initialise VertexConstBuffer
 		struct LineTransform
 		{
-			DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetCamera().GetMatrix() * RenderCommand::GetCamera().GetProjection());
+			DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetCamera().GetViewMatrix() * RenderCommand::GetCamera().GetProjectionMatrix());
 		} Trans;
 		
 		std::shared_ptr<VertexConstantBuffer<LineTransform>> VCB = std::make_shared<VertexConstantBuffer<LineTransform>>(0);

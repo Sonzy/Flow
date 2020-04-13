@@ -8,6 +8,9 @@
 
 #include "Flow\GameFramework\Other\Skybox.h"
 
+#include "Flow\GameFramework\Controllers\Controller.h"
+#include "Flow\GameFramework\Controllers\PlayerController.h"
+
 namespace Flow
 {
 	World::World()
@@ -30,6 +33,9 @@ namespace Flow
 		InitialisePhysics();
 
 		Skybox_ = new Skybox();
+
+		std::shared_ptr<PlayerController> NewLocalController = SpawnWorldObject<PlayerController>("NewLocalController");
+		RegisteredControllers_.push_back(NewLocalController);
 	}
 
 	void World::DispatchBeginPlay()
@@ -100,5 +106,34 @@ namespace Flow
 	void World::AddCollisionObject(btCollisionObject* Obj)
 	{
 		PhysicsWorld_->addCollisionObject(Obj);
+	}
+
+	void World::RegisterController(std::shared_ptr<Controller> NewController)
+	{
+		CHECK_RETURN(!NewController, "Layer::DeRegisterController: Tried to register null controller");
+		RegisteredControllers_.push_back(NewController);
+	}
+
+	void World::DeRegisterController(std::shared_ptr<Controller> OldController)
+	{
+		CHECK_RETURN(!OldController, "Layer::DeRegisterController: Tried to deregister null controller");
+
+		auto FoundIterator = std::find(RegisteredControllers_.begin(), RegisteredControllers_.end(), OldController);
+
+		if (FoundIterator == RegisteredControllers_.end())
+			FLOW_ENGINE_WARNING("Tried to remove controller ");
+
+		RegisteredControllers_.erase(FoundIterator);
+	}
+
+	Controller* World::GetLocalController() const
+	{
+		for (auto& Controller : RegisteredControllers_)
+		{
+			if (Controller->IsLocalController())
+				return Controller.get();
+		}
+
+		return nullptr;
 	}
 }
