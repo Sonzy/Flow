@@ -59,7 +59,7 @@ void PlayerPlane::Tick(float DeltaTime)
 		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, 1.0f, 0.0f));
 
 	if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
-		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(1.0f, 0.0f, 0.0f)));
+		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(-1.0f, 0.0f, 0.0f)));
 
 	//RootComponent_->AddRelativeRotation(Rotator(1.0f, 0.0f, 0.0f));
 
@@ -75,5 +75,5 @@ void PlayerPlane::Tick(float DeltaTime)
 	Vector Rotated = RootComponent_->GetWorldRotation().RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_));
 	RootComponent_->AddRelativePosition(Rotated);
 
-	FLOW_ENGINE_LOG("Rotation: {0}, RotatedVector{1}", RootComponent_->GetWorldRotation(), Rotated);
+	//FLOW_ENGINE_LOG("Rotation: {0}, RotatedVector{1}", RootComponent_->GetWorldRotation(), Rotated);
 }

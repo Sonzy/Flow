@@ -122,7 +122,7 @@ namespace Flow
 
 		//Display World Object Transform
 		bool bUpdate = false;
-		bUpdate |= ImGui::InputFloat3("Position", RootComponent_->GetXPointer(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+		bUpdate |= ImGui::InputFloat3("Position", (float*)RootComponent_->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
 		bUpdate |= ImGui::InputFloat3("Rotation", (float*)RootComponent_->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
 		bUpdate |= ImGui::InputFloat3("Scale", (float*)RootComponent_->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
 		//bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
