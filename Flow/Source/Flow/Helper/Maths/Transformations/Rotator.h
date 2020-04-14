@@ -67,6 +67,14 @@ struct Rotator
 		Yaw *= Other;
 	}
 
+	//TODO: Do operator that takes mod into account
+	bool operator==(const Rotator& Other)
+	{
+		return Pitch == Other.Pitch &&
+			Roll == Other.Roll &&
+			Yaw == Other.Yaw;
+	}
+
 	Vector RotateVector(Vector Other)
 	{
 		Rotator Radians = Rotator::AsRadians(*this);
@@ -76,10 +84,13 @@ struct Rotator
 		return Vector(Rotated.x, Rotated.y, Rotated.z);
 	}
 
-	Rotator RotateRotator(Rotator Other)
+	Rotator RotateRotator(Rotator Other, bool IsRadians = false)
 	{
-		Rotator RotRadians = Rotator::AsRadians(*this);
-		Rotator OtherRotRadians = Rotator::AsRadians(Other);
+		if (*this == Rotator(0.0f))
+			return Other;
+
+		Rotator RotRadians = IsRadians ? *this : Rotator::AsRadians(*this);
+		Rotator OtherRotRadians = IsRadians ? Other : Rotator::AsRadians(Other);
 
 		DirectX::XMVECTOR ParentQuat = DirectX::XMQuaternionRotationRollPitchYaw(RotRadians.Pitch, RotRadians.Yaw, RotRadians.Roll);
 		DirectX::XMVECTOR OtherQuat = DirectX::XMQuaternionRotationRollPitchYaw(OtherRotRadians.Pitch, OtherRotRadians.Yaw, OtherRotRadians.Roll);
@@ -95,6 +106,8 @@ struct Rotator
 		float fAngX = -asinf(EditMatrix._32);
 
 		Rotator NewRotation = Rotator(fAngX, fAngZ, fAngY);
+
+		FLOW_ENGINE_LOG("Rotating {0} by {1} to get {2}", Other, *this, Rotator::AsDegrees(NewRotation));
 		return Rotator::AsDegrees(NewRotation);
 	}
 
