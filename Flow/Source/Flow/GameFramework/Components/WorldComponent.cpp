@@ -97,10 +97,8 @@ namespace Flow
 	{
 		Rotator CurrentParentWorld;
 
-		while (WorldComponent* Parent = GetParentComponent())
-		{
-			CurrentParentWorld += Parent->RelativeTransform_.Rotation_;
-		}
+		if (WorldComponent* Parent = GetParentComponent())
+			CurrentParentWorld = Parent->GetWorldRotation();
 
 		RelativeTransform_.Rotation_ = NewRotation - CurrentParentWorld;
 

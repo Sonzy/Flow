@@ -84,6 +84,7 @@ struct Rotator
 		return Vector(Rotated.x, Rotated.y, Rotated.z);
 	}
 
+	//TODO: Need to figure out this logic
 	Rotator RotateRotator(Rotator Other, bool IsRadians = false)
 	{
 		if (*this == Rotator(0.0f))
@@ -107,7 +108,7 @@ struct Rotator
 
 		Rotator NewRotation = Rotator(fAngX, fAngZ, fAngY);
 
-		FLOW_ENGINE_LOG("Rotating {0} by {1} to get {2}", Other, *this, Rotator::AsDegrees(NewRotation));
+		//FLOW_ENGINE_LOG("Rotating {0} by {1} to get {2}", Other, *this, Rotator::AsDegrees(NewRotation));
 		return Rotator::AsDegrees(NewRotation);
 	}
 

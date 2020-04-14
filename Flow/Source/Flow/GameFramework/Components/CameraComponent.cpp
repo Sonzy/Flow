@@ -17,6 +17,8 @@ namespace Flow
 
 	void CameraComponent::Tick(float DeltaTime)
 	{
+		return;
+
 		IntVector2D Pos = Input::GetMousePosition();
 
 		Vector Translation(0.0f);
@@ -41,17 +43,11 @@ namespace Flow
 			if (LastMousePosition_ != Pos)
 			{
 				Vector Direction = (LastMousePosition_ - Pos);
-				Direction.X = Direction.X * 0.00025f; //Horizontal Sensitivity
-				Direction.Y = Direction.Y * 0.00015f;  //Vertical Sensitivity
-				Rotator Test = Rotator(0.0f, GetWorldRotation().Roll, 0.0f);
-				//Rotator Test = GetWorldRotation();
-				//Rotator Change = Test.RotateRotator(Rotator(-Direction.Y, 0.0f, -Direction.X), true);
-				Rotator Change = Test.RotateRotator(Rotator(1.0f, 0.0f, 0.0f), false);
-				//Rotator Change = Rotator(-Direction.Y, 0.0f, -Direction.X);
-				//SetRelativeRotation(GetRelativeRotation() + Change);
-				AddRelativeRotation(Change);
-
-		
+				Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
+				Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
+				Rotator Test = GetWorldRotation();
+				Rotator Change = Test.RotateRotator(Rotator(-Direction.Y, 0.0f, -Direction.X), false);
+				SetWorldRotation(Change);
 			}
 		}
 

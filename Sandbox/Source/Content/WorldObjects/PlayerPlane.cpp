@@ -32,7 +32,7 @@ PlayerPlane::PlayerPlane(const std::string& Name)
 	auto Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_CharacterPlane")->GetMaterial();
 	PlaneMesh_->SetMeshAndMaterial(Mesh, Material);
 
-	PlayerCamera_->SetRelativePosition(Vector(0.0f, 8.0f, -15.0f));
+	PlayerCamera_->SetRelativePosition(Vector(0.0f, 8.0f, -20.0f));
 
 	//Init Collision
 	PlaneMesh_->SetSimulatePhysics(false);
@@ -61,19 +61,29 @@ void PlayerPlane::Tick(float DeltaTime)
 	if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
 		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(-1.0f, 0.0f, 0.0f)));
 
-	//RootComponent_->AddRelativeRotation(Rotator(1.0f, 0.0f, 0.0f));
+	if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
+		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(1.0f, 0.0f, 0.0f)));
 
-	//if (Flow::Input::IsKeyPressed(FLOW_KEY_W))
-	//	RootComponent_->AddRelativePosition(Vector(0.0f, 0.0f, 1.0f));
-	//if (Flow::Input::IsKeyPressed(FLOW_KEY_A))
-	//	RootComponent_->AddRelativePosition(Vector(-1.0f, 0.0f, 0.0f));
-	//if (Flow::Input::IsKeyPressed(FLOW_KEY_S))
-	//	RootComponent_->AddRelativePosition(Vector(0.0f, 0.0f, -1.0f));
-	//if (Flow::Input::IsKeyPressed(FLOW_KEY_D))
-	//	RootComponent_->AddRelativePosition(Vector(1.0f, 0.0f, 0.0f));
-
+	//Move forward relative to the current rotation
 	Vector Rotated = RootComponent_->GetWorldRotation().RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_));
 	RootComponent_->AddRelativePosition(Rotated);
 
-	//FLOW_ENGINE_LOG("Rotation: {0}, RotatedVector{1}", RootComponent_->GetWorldRotation(), Rotated);
+
+	//TODO: Check if this works for find look at rotation as a temp
+	//DirectX::XMVECTOR CameraTarget = DirectX::XMLoadFloat3(&PlaneMesh_->GetWorldPosition().ToDXFloat3());
+	//DirectX::XMVECTOR CameraPosition = DirectX::XMLoadFloat3(&PlayerCamera_->GetWorldPosition().ToDXFloat3());
+	//
+	//Rotator WorldRotation = RootComponent_->GetWorldRotation();
+	//DirectX::XMVECTOR UpVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	//DirectX::XMVECTOR RotationQuat = DirectX::XMQuaternionRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll);
+	//
+	//
+	//DirectX::XMMATRIX Rotation = DirectX::XMMatrixLookAtLH(CameraTarget, CameraPosition, DirectX::XMVector3Rotate(UpVector, RotationQuat));
+	//DirectX::XMFLOAT4X4 EditMatrix;
+	//DirectX::XMStoreFloat4x4(&EditMatrix, Rotation);
+	//float fAngZ = atan2f(EditMatrix._12, EditMatrix._22);
+	//float fAngY = atan2f(EditMatrix._31, EditMatrix._33);
+	//float fAngX = -asinf(EditMatrix._32);
+
+	//PlayerCamera_->SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
 }
