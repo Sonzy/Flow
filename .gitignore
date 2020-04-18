@@ -8,6 +8,8 @@
 *.obj
 !Flow/Assets/Collision/*.obj
 !Flow/Assets/Models/*.obj
+!Sandbox/Assets/Collision/*.obj
+!Sandbox/Assets/Models/*.obj
 
 # Precompiled Headers
 *.gch
