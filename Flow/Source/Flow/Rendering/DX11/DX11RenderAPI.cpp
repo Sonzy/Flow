@@ -108,6 +108,21 @@ namespace Flow
 		Viewport.TopLeftY = 0.0f;
 
 		Context->RSSetViewports(1u, &Viewport);
+
+
+
+
+
+		//=========================================
+
+		//D3D11_DEPTH_STENCIL_DESC Description = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+		//Description.DepthEnable = true;
+		//RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description, &BasicDepthStencil_);
+		//
+		//D3D11_DEPTH_STENCIL_DESC Description2 = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+		//Description2.DepthEnable = false;
+		//Description2.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		//RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description2, &NoDepthStencil_);
 	}
 	void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 	{
@@ -200,6 +215,17 @@ namespace Flow
 		MainCamera->SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera->GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
+	void DX11RenderAPI::EnableDepth()
+	{
+		RenderCommand::DX11GetContext()->OMSetDepthStencilState(BasicDepthStencil_.Get(), 0xFF);
+	}
+
+	void DX11RenderAPI::DisableDepth()
+	{
+		//RenderCommand::DX11GetContext()->OMSetDepthStencilState(NoDepthStencil_.Get(), 0xFF);
+		RenderCommand::DX11GetContext()->OMSetDepthStencilState(NoDepthStencil_.Get(), 1);
+	}
+
 	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
 	{
 		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
@@ -245,5 +271,10 @@ namespace Flow
 	ID3D11DeviceContext* DX11RenderAPI::GetContext()
 	{
 		return Context.Get();
+	}
+
+	DirectX::XMMATRIX DX11RenderAPI::GetOrthographicMatrix()
+	{
+		return DirectX::XMMatrixOrthographicLH((float)ViewportSize_.X, (float)ViewportSize_.Y, NearPlane_, FarPlane_);
 	}
 }

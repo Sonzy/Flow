@@ -22,9 +22,14 @@
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
+#include "Flow\Assets\Materials\Mat_FlatColour.h"
+#include "Flow\Assets\Materials\Mat_TexturedPhong.h"
+#include "Flow\Assets\Meshes\MeshAsset.h"
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
+	LoadAssets();
 	//= Create Objects in level ===========
 
 	WallObj = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Floor");
@@ -216,4 +221,82 @@ void ExampleLayer::OnImGuiRender()
 void ExampleLayer::OnAttach()
 {
 	Layer::OnAttach();
+}
+
+void ExampleLayer::LoadAssets()
+{
+	//TODO: Load assets somewhere
+	//= Models =
+	Flow::AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
+	Flow::AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
+	Flow::AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
+	Flow::AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
+	Flow::AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
+	Flow::AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
+	Flow::AssetSystem::LoadAsset("Sphere", "Flow/Assets/Models/Sphere.obj");
+	Flow::AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Crate", "Flow/Assets/Models/Wabble_Crate.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Chair", "Flow/Assets/Models/Wabble_Chair.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Table", "Flow/Assets/Models/Wabble_Table.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Revolver", "Flow/Assets/Models/Wabble_Revolver.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Rifle", "Flow/Assets/Models/Wabble_Rifle.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Shotgun", "Flow/Assets/Models/Wabble_Shotgun.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Blunderbuss", "Flow/Assets/Models/Wabble_Blunderbuss.obj");
+
+	//= Collision ======================
+
+	Flow::AssetSystem::LoadAsset("Wabble_Table_Collision", "Flow/Assets/Collision/Collision_Wabble_Table.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Chair_Collision", "Flow/Assets/Collision/Collision_Wabble_Chair.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Shotgun_Collision", "Flow/Assets/Collision/Collision_Wabble_Shotgun.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Rifle_Collision", "Flow/Assets/Collision/Collision_Wabble_Rifle.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Revolver_Collision", "Flow/Assets/Collision/Collision_Wabble_Revolver.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Blunderbuss_Collision", "Flow/Assets/Collision/Collision_Wabble_Blunderbuss.obj");
+	Flow::AssetSystem::LoadAsset("Wabble_Crate_Collision", "Flow/Assets/Collision/Collision_Wabble_Crate.obj");
+
+
+	//Assign Collisions to meshes
+
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Table")->GetMesh(0)->CollisionName_ = "Wabble_Table_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Chair")->GetMesh(0)->CollisionName_ = "Wabble_Chair_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun")->GetMesh(0)->CollisionName_ = "Wabble_Shotgun_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Rifle")->GetMesh(0)->CollisionName_ = "Wabble_Rifle_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Revolver")->GetMesh(0)->CollisionName_ = "Wabble_Revolver_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Blunderbuss")->GetMesh(0)->CollisionName_ = "Wabble_Blunderbuss_Collision";
+	Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Crate")->GetMesh(0)->CollisionName_ = "Wabble_Crate_Collision";
+
+	//= Textures =
+	Flow::AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
+	Flow::AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
+	Flow::AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
+	Flow::AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
+	Flow::AssetSystem::LoadAsset("Wabble_Props", "Flow/Assets/Textures/Wabble_Props.png"); 
+	Flow::AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png"); 
+	Flow::AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
+	Flow::AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png"); 
+	Flow::AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
+
+
+	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_Wabble_Props");
+	Flow::Mat_TexturedPhong* PropsMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
+	PropsMat->SetTexture("Wabble_Props");
+	PropsMat->SetPixelShader("TexturedPhongPS");
+	PropsMat->SetVertexShader("TexturedPhongVS");
+	
+	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_Wabble_Weapons");
+	Flow::Mat_TexturedPhong* WeaponsMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Weapons")->GetMaterial());
+	WeaponsMat->SetTexture("Wabble_Weapons");
+	WeaponsMat->SetPixelShader("TexturedPhongPS");
+	WeaponsMat->SetVertexShader("TexturedPhongVS");
+	
+	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_Wood");
+	Flow::Mat_TexturedPhong* WoodMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood")->GetMaterial());
+	WoodMat->SetTexture("Wabble_Wood");
+	WoodMat->SetPixelShader("TexturedPhongPS");
+	WoodMat->SetVertexShader("TexturedPhongVS");
+	
+	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_Sand");
+	Flow::Mat_TexturedPhong* SandMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Sand")->GetMaterial());
+	SandMat->SetTexture("Wabble_Sand");
+	SandMat->SetPixelShader("TexturedPhongPS");
+	SandMat->SetVertexShader("TexturedPhongVS");
 }

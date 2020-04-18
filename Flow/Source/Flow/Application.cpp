@@ -208,15 +208,18 @@ namespace Flow
 			//= UI Rendering =
 
 			ImGuiLayer_->Begin();
-			for (Layer* layer : LayerStack_)
+			UIConfigRender();
+			if (RenderUI)
 			{
-				layer->OnImGuiRender();
+				for (Layer* layer : LayerStack_)
+				{
+					layer->OnImGuiRender();
+				}
+
+				Inspector_->Update();
+
+				RenderApplicationDebug(DeltaTime);
 			}
-
-			Inspector_->Update();
-
-			RenderApplicationDebug(DeltaTime);
-
 			ImGuiLayer_->End();
 
 			//= Post Update =
@@ -318,6 +321,15 @@ namespace Flow
 			GetProcessMemoryInfo(GetCurrentProcess(), &MemoryData, sizeof(MemoryData));
 
 			ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
+		}
+		ImGui::End();
+	}
+
+	void Application::UIConfigRender()
+	{
+		if(ImGui::Begin("UI Config"))
+		{
+			ImGui::Checkbox("Render Editor UI", &RenderUI);
 		}
 		ImGui::End();
 	}

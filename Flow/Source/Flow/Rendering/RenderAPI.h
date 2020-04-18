@@ -32,6 +32,9 @@ namespace Flow
 
 		virtual Vector GetScreenToWorldDirection(int X, int Y) = 0;
 
+		virtual void EnableDepth() = 0;
+		virtual void DisableDepth() = 0;
+
 		static API GetAPI() { return s_API; };
 
 	public:

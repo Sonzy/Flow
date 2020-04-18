@@ -51,6 +51,7 @@ namespace Flow
 	private:
 
 		void RenderApplicationDebug(float DeltaTime);
+		void UIConfigRender();
 
 	private:
 
@@ -65,6 +66,7 @@ namespace Flow
 		bool Running_ = true;
 		bool Paused_ = false;
 		bool DrawCollision_ = false;
+		bool RenderUI = true;
 
 		//= Game ====================
 

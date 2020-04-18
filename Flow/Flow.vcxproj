@@ -73,7 +73,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Debug;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTexd.lib;opencv_world420d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTexd.lib;opencv_world430d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
@@ -98,7 +98,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Release;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTex.lib;opencv_world420d.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;opencv_world430d.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
@@ -157,6 +157,7 @@
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
+    <ClInclude Include="Source\Flow\Misc\OpenCVTesting.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderableBase.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Sprite.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\Vertex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexElement.h" />
@@ -321,6 +323,7 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
+    <ClCompile Include="Source\Flow\Misc\OpenCVTesting.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.cpp" />
@@ -342,6 +345,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Sprite.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.cpp" />
@@ -392,6 +396,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPerPixelPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

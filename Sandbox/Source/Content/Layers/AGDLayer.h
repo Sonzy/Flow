@@ -4,6 +4,8 @@
 namespace Flow
 {
 	class WorldObject;
+	class Sprite;
+	class OpenCVTesting;
 }
 
 class MeshWorldObject;
@@ -29,4 +31,12 @@ private:
 	//std::shared_ptr<MeshWorldObject> PlaneTest_;
 	std::shared_ptr<Flow::WorldObject> Player_;
 	std::shared_ptr<Flow::WorldObject> Base_;
+
+	std::shared_ptr<Flow::Sprite> Sprite_;
+
+	std::shared_ptr<Flow::OpenCVTesting> CVTesting_;
+
+	//TESTING
+
+	bool DrawLast = true;
 };

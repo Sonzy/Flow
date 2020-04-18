@@ -21,6 +21,8 @@ public:
 	virtual void OnImGuiRender() override;
 	virtual void OnAttach() override;
 
+	void LoadAssets();
+
 private:
 
 	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;

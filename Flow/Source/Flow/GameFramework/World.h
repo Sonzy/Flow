@@ -52,6 +52,8 @@ namespace Flow
 		void AddPhysicsObject(btRigidBody* Obj);
 		void AddCollisionObject(btCollisionObject* Obj);
 
+		void DrawWorldSettings();
+
 		//= Controllers ========
 
 		void RegisterController(std::shared_ptr<Controller> NewController);
@@ -87,5 +89,10 @@ namespace Flow
 		//= Controllers =======
 
 		std::vector<std::shared_ptr<Controller>> RegisteredControllers_;
+
+
+		// Controls
+
+		bool DrawSkybox_ = true;
 	};
 }

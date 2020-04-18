@@ -17,6 +17,11 @@ namespace Flow
 		constexpr TexColor(unsigned int DWord)
 			: Data_(DWord)
 		{}
+
+		constexpr TexColor(unsigned char r, unsigned char g, unsigned char b) noexcept
+			:
+			Data_((255u << 24u) | (r << 16u) | (g << 8u) | b)
+		{}
 	};
 
 	class FLOW_API TextureAsset : public AssetBase
@@ -36,6 +41,12 @@ namespace Flow
 		uint8_t* GetBufferPtr() const { return Image_.GetPixels(); }
 
 		const std::string& GetAssetPath() const { return m_AssetPath; }		
+
+
+		void AlterPixel(unsigned int x, unsigned int y, TexColor Colour);
+
+		//DONT USE, TEMP Hack for the project
+		void OverwriteAssetPath(const std::string& NewPath);
 
 	protected:
 

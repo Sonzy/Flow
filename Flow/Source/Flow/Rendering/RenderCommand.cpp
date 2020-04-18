@@ -27,6 +27,11 @@ namespace Flow
 		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetContext();
 	}
 
+	DirectX::XMMATRIX RenderCommand::DX11GetOrthographicMatrix()
+	{
+		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetOrthographicMatrix();
+	}
+
 	CameraComponent& RenderCommand::GetCamera()
 	{
 		return *Application::GetWorld()->GetLocalController()->GetCamera();
@@ -63,6 +68,16 @@ namespace Flow
 	void RenderCommand::Shutdown()
 	{
 		delete s_RendererAPI;
+	}
+
+	void RenderCommand::DisableDepth()
+	{
+		dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->DisableDepth();
+	}
+
+	void RenderCommand::EnableDepth()
+	{
+		dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->EnableDepth();
 	}
 
 	IntVector2D RenderCommand::GetWindowSize()

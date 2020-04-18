@@ -121,7 +121,7 @@ namespace Flow
 		//TODO: Temp stencil testing
 		if (DrawOutline_)
 		{
-			AddBind(std::make_shared<Stencil>(StencilMode::Write));
+			AddBind(std::make_shared<Stencil>(StencilMode::Write, DepthMode::On));
 			VertexBuffer Dummy = VertexBuffer(MeshLayout);
 			std::vector<unsigned short> Dummy2;
 
@@ -141,7 +141,7 @@ namespace Flow
 			OutlineEffect.push_back(InputLayout::Resolve(MeshLayout, VSByteCode));
 			OutlineEffect.push_back(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 			OutlineEffect.push_back(Transform);
-			OutlineEffect.push_back(std::make_shared<Stencil>(StencilMode::Mask));
+			OutlineEffect.push_back(std::make_shared<Stencil>(StencilMode::Mask, DepthMode::Off));
 		}
 		else
 			AddBind(std::make_shared<Stencil>(StencilMode::Off));

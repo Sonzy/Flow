@@ -16,9 +16,9 @@ namespace Flow
 		void SetFOV(float FOV);
 		void SetProjection(DirectX::XMMATRIX Projection);
 
-
 		DirectX::XMMATRIX GetViewMatrix() const;
 		DirectX::XMMATRIX GetProjectionMatrix() const;
+
 		float GetFOV() const;
 
 	private:

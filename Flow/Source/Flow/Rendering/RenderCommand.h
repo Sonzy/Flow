@@ -18,6 +18,7 @@ namespace Flow
 		static void InitialiseDX11(HWND WindowHandle, int ViewportWidth, int ViewportHeight);
 		static ID3D11Device* DX11GetDevice();
 		static ID3D11DeviceContext* DX11GetContext();
+		static DirectX::XMMATRIX DX11GetOrthographicMatrix();
 
 		//= General ===================
 
@@ -33,6 +34,9 @@ namespace Flow
 		static void EndFrame();
 
 		static void Shutdown();
+
+		static void DisableDepth();
+		static void EnableDepth();
 
 		static IntVector2D GetWindowSize();
 

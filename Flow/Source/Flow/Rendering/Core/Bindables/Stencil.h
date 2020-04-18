@@ -11,11 +11,17 @@ namespace Flow
 		Mask
 	};
 
+	enum class DepthMode
+	{
+		Off,
+		On
+	};
+
 
 	class Stencil : public Bindable
 	{
 	public:
-		Stencil(StencilMode mode);
+		Stencil(StencilMode mode, DepthMode Depth = DepthMode::On);
 
 		virtual void Bind() override;
 	private:

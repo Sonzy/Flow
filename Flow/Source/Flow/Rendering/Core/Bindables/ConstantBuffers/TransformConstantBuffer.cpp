@@ -37,7 +37,8 @@ namespace Flow
 		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetViewMatrix();
 		const Transforms transform =
 		{
-			DirectX::XMMatrixTranspose(modelView),
+			//DirectX::XMMatrixTranspose(modelView),
+			modelView,
 			DirectX::XMMatrixTranspose(
 				modelView *
 				RenderCommand::GetCamera().GetProjectionMatrix())

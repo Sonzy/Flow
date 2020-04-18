@@ -18,6 +18,11 @@
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 
 #include "Content\WorldObjects\PlayerPlane.h"
+#include "Flow\Rendering\Core\Sprite.h"
+
+#include "ThirdParty\ImGui\imgui.h"
+
+#include "Flow\Misc\OpenCVTesting.h"
 
 AGDLayer::AGDLayer()
 	: Layer("Advance Games Dev Example")
@@ -46,6 +51,15 @@ AGDLayer::AGDLayer()
 	static_cast<Flow::StaticMeshComponent*>(Base_->GetRootComponent())->SetMeshAndMaterial(Box, Wood->GetMaterial());
 	Base_->GetRootComponent()->SetWorldScale(Vector(400.0f, 0.1f, 200.0f));
 	WorldObjects_.push_back(Base_);
+
+
+	Flow::TextureAsset* Texture = Flow::AssetSystem::GetAsset<Flow::TextureAsset>("TestSprite");
+	//Sprite_ = std::make_shared<Flow::Sprite>(Texture);
+	//
+	//Sprite_->SetScale(Vector(512.0f, 512.0f, 1.0f));
+	//Sprite_->SetPosition(Vector(0.0f, 0.0f, 0.0f));
+
+	CVTesting_ = std::make_shared<Flow::OpenCVTesting>();
 }
 
 AGDLayer::~AGDLayer()
@@ -57,20 +71,32 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	//Light->BindLight(Flow::RenderCommand::GetCamera().GetMatrix());
-
-	//Flow::RenderCommand::GetCamera().Tick(DeltaTime);
-
+	//Sprite_->Update();
+	//Flow::Renderer::Submit(Sprite_.get());
 	for (auto& Actor : WorldObjects_)
 	{
 		Actor->Render();
 	}
+
+	//Flow::RenderCommand::DisableDepth();
+
+	//Flow::RenderCommand::EnableDepth();
 
 	Flow::Renderer::EndScene();
 }
 
 void AGDLayer::OnImGuiRender()
 {
+	Flow::Application::GetWorld()->DrawWorldSettings();
+	//Sprite_->ControlWindow();
+
+	CVTesting_->RenderToIMGUI();
+
+	if( ImGui::Begin("SpriteDrawing")) 
+	{
+		ImGui::Checkbox("Draw Last", &DrawLast);
+	}
+	ImGui::End();
 }
 
 void AGDLayer::OnAttach()

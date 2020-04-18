@@ -27,10 +27,15 @@ namespace Flow
 
 		virtual void Resize(int Width, int Height);
 
+		virtual void EnableDepth();
+		virtual void DisableDepth();
+
 		virtual Vector GetScreenToWorldDirection(int X, int Y);
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
+
+		DirectX::XMMATRIX GetOrthographicMatrix();
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain> SwapChain = nullptr;
@@ -38,6 +43,10 @@ namespace Flow
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RenderTarget = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11Device> Device = nullptr;
+
+
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> BasicDepthStencil_;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> NoDepthStencil_;
 
 		/* Debug interfaces */
 		//Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;

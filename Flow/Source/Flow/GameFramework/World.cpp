@@ -11,6 +11,9 @@
 #include "Flow\GameFramework\Controllers\Controller.h"
 #include "Flow\GameFramework\Controllers\PlayerController.h"
 
+#include "ThirdParty\ImGui\imgui.h"
+#include "Flow\Assets\AssetSystem.h"
+
 namespace Flow
 {
 	World::World()
@@ -64,13 +67,14 @@ namespace Flow
 
 	void World::Tick(float DeltaTime)
 	{
+		if (DrawSkybox_)
+			Flow::Renderer::Submit(Skybox_);
+
 		PhysicsWorld_->stepSimulation(DeltaTime, 0);
 		for (auto& WorldObj : WorldObjects_)
 		{
 			WorldObj->Tick(DeltaTime);
 		}
-
-		Flow::Renderer::Submit(Skybox_);
 	}
 	const std::string& World::GetName()
 	{
@@ -106,6 +110,18 @@ namespace Flow
 	void World::AddCollisionObject(btCollisionObject* Obj)
 	{
 		PhysicsWorld_->addCollisionObject(Obj);
+	}
+
+	void World::DrawWorldSettings()
+	{
+		//auto Tex = reinterpret_cast<Texture*>(Texture::Resolve(AssetSystem::GetAsset<TextureAsset>("TestSprite"), 0).get());
+
+		if (ImGui::Begin("World Settings"))
+		{
+			ImGui::Checkbox("Draw Skybox", &DrawSkybox_);
+			//ImGui::Image((void*)Tex->GetTextureUnsafe(), ImVec2(128, 128));
+		}
+		ImGui::End();
 	}
 
 	void World::RegisterController(std::shared_ptr<Controller> NewController)

@@ -37,4 +37,7 @@ Intermediate
 .vs
 
 # DLL
-opencv_world420d.dll
+Flow/opencv_world430d.dll
+Flow/opencv_world430.dll
+Sandbox/opencv_world430d.dll
+Sandbox/opencv_world430.dll

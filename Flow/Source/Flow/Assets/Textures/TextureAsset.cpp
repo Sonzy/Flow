@@ -33,5 +33,20 @@ namespace Flow
 
 		return true;
 	}
+
+	void TextureAsset::AlterPixel(unsigned int x, unsigned int y, TexColor Colour)
+	{
+		assert(x >= 0);
+		assert(y >= 0);
+		assert(x < GetWidth());
+		assert(y < GetHeight());
+		auto& ImageData = *Image_.GetImage(0, 0, 0);
+		reinterpret_cast<TexColor*>(&ImageData.pixels[y * ImageData.rowPitch])[x] = Colour;
+	}
+
+	void TextureAsset::OverwriteAssetPath(const std::string& NewPath)
+	{
+		m_AssetPath = NewPath;
+	}
 }
 

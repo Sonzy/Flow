@@ -23,20 +23,6 @@ namespace Flow
 
 		Vector Translation(0.0f);
 
-		//if (Input::IsKeyPressed(FLOW_KEY_W))
-		//	Translation.Z = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_A))
-		//	Translation.X = -1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_S))
-		//	Translation.Z = -1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_D))
-		//	Translation.X = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-		//	Translation.Y = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
-		//	Translation.Y = -1.0f;
-		FLOW_ENGINE_LOG("Rot: {0}", GetWorldRotation());
-
 		//Camera rotation
 		if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 		{
