@@ -8,9 +8,6 @@
 
 #include "Flow\Helper\Instrumentation.h"
 
-#include <opencv2\video\tracking.hpp>
-#include <opencv2\core\ocl.hpp>
-
 #include <opencv2\tracking.hpp>
 
 Flow::OpenCVTesting::OpenCVTesting()
