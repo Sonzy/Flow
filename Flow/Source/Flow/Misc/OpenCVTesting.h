@@ -9,6 +9,8 @@
 
 #include <thread>
 
+#include "Flow\Helper\Timer.h"
+
 namespace Flow
 {
 	class TextureAsset;
@@ -28,5 +30,9 @@ namespace Flow
 		
 		std::thread* ReadThread;
 		bool ReadData = true;
+		bool SuccessRead = false;
+
+		Flow::Timer ReadTimer;
+		float FPS = 30.0f;
 	};
 }
