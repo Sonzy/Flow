@@ -34,18 +34,21 @@ void Flow::OpenCVTesting::Update()
 	{
 		PROFILE_CURRENT_SCOPE("Image Conversion");
 
-		int Channels = Frame_.channels();
-		cv::Scalar_<uint8_t> Pixel; //BGR
-		for (int i = 0; i < Frame_.rows; i++)
-		{
-			uint8_t* Row = reinterpret_cast<uint8_t*>(&Frame_.row(i)); //Might not work with updated api
-			for (int j = 0; j < Frame_.cols; j++)
-			{
-				cv::Vec3f Vector = Frame_.at<cv::Vec3b>(i, j);
-				//CaptureTexture_->AlterPixel(j, i, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
-				CaptureTexture_->AlterPixel(j, i, std::move(TexColor(Vector.val[2], Vector.val[1], Vector.val[0])));
-			}
-		}
+		//int Channels = Frame_.channels();
+		//cv::Scalar_<uint8_t> Pixel; //BGR
+		//for (int i = 0; i < Frame_.rows; i++)
+		//{
+		//	uint8_t* Row = reinterpret_cast<uint8_t*>(&Frame_.row(i)); //Might not work with updated api
+		//	for (int j = 0; j < Frame_.cols; j++)
+		//	{
+		//		cv::Vec3f Vector = Frame_.at<cv::Vec3b>(i, j);
+		//		//CaptureTexture_->AlterPixel(j, i, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
+		//		CaptureTexture_->AlterPixel(j, i, std::move(TexColor(Vector.val[2], Vector.val[1], Vector.val[0])));
+		//	}
+		//}
+
+		cv::imwrite("Assets/Textures/WebcamOutput.png", Frame_);
+		CaptureTexture_->UpdateFromFile("Sandbox/Assets/Textures/WebcamOutput.png");
 	}
 }
 

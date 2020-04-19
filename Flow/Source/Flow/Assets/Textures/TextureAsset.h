@@ -44,6 +44,8 @@ namespace Flow
 
 		void LoadFromCVMAT(const cv::Mat& MatToLoad);
 
+		void UpdateFromFile(const std::string& FilePath);
+
 		unsigned int GetPitch() const { return (unsigned int)Image_.GetImage(0, 0, 0)->rowPitch; }
 
 		uint8_t* GetBufferPtr() const { return Image_.GetPixels(); }
