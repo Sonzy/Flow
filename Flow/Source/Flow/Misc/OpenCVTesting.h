@@ -4,6 +4,8 @@
 #include <opencv2\core.hpp>
 #include <opencv2\videoio.hpp>
 #include <opencv2\highgui.hpp>
+#include <opencv2\tracking.hpp>
+#include <opencv2\core\cvstd_wrapper.hpp>
 
 #include <thread>
 
@@ -21,6 +23,8 @@ namespace Flow
 
 		cv::Mat Frame_;
 		cv::VideoCapture Capture_;
+		cv::Ptr<cv::Tracker> Tracker_;
+		cv::Rect2d BoundingBox_;
 		
 		std::thread* ReadThread;
 		bool ReadData = true;
