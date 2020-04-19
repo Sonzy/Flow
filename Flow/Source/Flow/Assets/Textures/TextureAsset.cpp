@@ -42,6 +42,8 @@ namespace Flow
 
 	void TextureAsset::AlterPixel(unsigned int x, unsigned int y, TexColor Colour)
 	{
+		PROFILE_FUNCTION();
+
 		CHECK_RETURN(x < 0, ("TextureAsset::AlterPixel: X Was less than 0 ( {0} )", x));
 		CHECK_RETURN(y < 0, ("TextureAsset::AlterPixel: Y was less than 0 ( {0} )", y));
 		CHECK_RETURN(x >= GetWidth(), ("TextureAsset::AlterPixel: X was more than width (X: {0}) (Width: {1})", x, GetWidth()));

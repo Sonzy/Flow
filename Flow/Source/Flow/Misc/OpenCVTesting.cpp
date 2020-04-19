@@ -31,21 +31,22 @@ void Flow::OpenCVTesting::Update()
 
 	Capture_.read(Frame_);
 
-
-	//TODO: Convert to readable format and display
-	
-	int Channels = Frame_.channels();
-	cv::Scalar_<uint8_t> Pixel; //BGR
-	for (int i = 0; i < Frame_.rows; i++)
 	{
-		uint8_t* Row = reinterpret_cast<uint8_t*>(&Frame_.row(i)); //Might not work with updated api
-		for (int j = 0; j < Frame_.cols; j++)
+		PROFILE_CURRENT_SCOPE("Image Conversion");
+
+		int Channels = Frame_.channels();
+		cv::Scalar_<uint8_t> Pixel; //BGR
+		for (int i = 0; i < Frame_.rows; i++)
 		{
-			cv::Vec3f Vector = Frame_.at<cv::Vec3b>(i, j);
-			//CaptureTexture_->AlterPixel(j, i, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
-			CaptureTexture_->AlterPixel(j, i, TexColor(Vector.val[2], Vector.val[1], Vector.val[0]));
+			uint8_t* Row = reinterpret_cast<uint8_t*>(&Frame_.row(i)); //Might not work with updated api
+			for (int j = 0; j < Frame_.cols; j++)
+			{
+				cv::Vec3f Vector = Frame_.at<cv::Vec3b>(i, j);
+				//CaptureTexture_->AlterPixel(j, i, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
+				CaptureTexture_->AlterPixel(j, i, std::move(TexColor(Vector.val[2], Vector.val[1], Vector.val[0])));
+			}
 		}
-	}	
+	}
 }
 
 void Flow::OpenCVTesting::RenderToIMGUI()
