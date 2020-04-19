@@ -51,7 +51,7 @@ void Flow::OpenCVTesting::RenderToIMGUI()
 
 	if (ImGui::Begin("OpenCV"))
 	{
-		ImGui::Image((void*)Tex2->GetTextureUnsafe(), ImVec2(128, 128));
+		ImGui::Image((void*)Tex2->GetTextureUnsafe(), ImVec2(CaptureTexture_->GetWidth(), CaptureTexture_->GetHeight()));
 	}
 	ImGui::End();
 }
