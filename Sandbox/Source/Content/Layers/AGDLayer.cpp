@@ -71,6 +71,8 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
+
+	CVTesting_->Update();
 	//Sprite_->Update();
 	//Flow::Renderer::Submit(Sprite_.get());
 	for (auto& Actor : WorldObjects_)

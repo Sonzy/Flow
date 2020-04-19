@@ -3,6 +3,8 @@
 #include <string>
 #include "DXTex\DirectXTex.h"
 
+#include "opencv2\highgui.hpp"
+
 namespace Flow
 {
 	class TexColor
@@ -32,9 +34,15 @@ namespace Flow
 		~TextureAsset();
 
 		virtual bool LoadAsset(const std::string& FilePath) override;
+		void ManualInit(size_t Width, size_t Height);
 
-		unsigned int GetWidth() const { return (unsigned int)Image_.GetMetadata().width; }
-		unsigned int GetHeight() const { return (unsigned int)Image_.GetMetadata().height; }
+		unsigned int GetWidth() const; 
+		unsigned int GetHeight() const;
+
+		size_t GetWidthSizeT() const;
+		size_t GetHeightSizeT() const;
+
+		void LoadFromCVMAT(const cv::Mat& MatToLoad);
 
 		unsigned int GetPitch() const { return (unsigned int)Image_.GetImage(0, 0, 0)->rowPitch; }
 

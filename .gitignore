@@ -43,3 +43,4 @@ Flow/opencv_world430d.dll
 Flow/opencv_world430.dll
 Sandbox/opencv_world430d.dll
 Sandbox/opencv_world430.dll
+Sandbox/opencv_videoio_ffmpeg430_64.dll

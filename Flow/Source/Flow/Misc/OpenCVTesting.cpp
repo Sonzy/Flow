@@ -7,12 +7,16 @@
 #include "Flow\Assets\AssetSystem.h"
 
 Flow::OpenCVTesting::OpenCVTesting()
+	: CaptureTexture_(nullptr)
 {
 	Capture_.open(0);
 	CHECK_RETURN(!Capture_.isOpened(), "OpenCVTesting::OpenCVTesting: Failed to open video capture");
 
 	CaptureTexture_ = new TextureAsset();
 	CaptureTexture_->OverwriteAssetPath("OpenCVCamera");
+
+	Capture_.read(Frame_);
+	CaptureTexture_->ManualInit(Frame_.cols, Frame_.rows);
 }
 
 void Flow::OpenCVTesting::Update()
@@ -20,6 +24,7 @@ void Flow::OpenCVTesting::Update()
 	CHECK_RETURN(!Capture_.isOpened(), "OpenCVTesting::OpenCVTesting: Cannot update from capture");
 
 	Capture_.read(Frame_);
+
 
 	//TODO: Convert to readable format and display
 	
@@ -30,15 +35,19 @@ void Flow::OpenCVTesting::Update()
 		uint8_t* Row = reinterpret_cast<uint8_t*>(&Frame_.row(i)); //Might not work with updated api
 		for (int j = 0; j < Frame_.cols; j++)
 		{
-			CaptureTexture_->AlterPixel(i, j, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
+			cv::Vec3f Vector = Frame_.at<cv::Vec3b>(i, j);
+			//CaptureTexture_->AlterPixel(j, i, TexColor(Row[j * Channels + 2], Row[j * Channels + 1], Row[j * Channels + 0]));
+			CaptureTexture_->AlterPixel(j, i, TexColor(Vector.val[2], Vector.val[1], Vector.val[0]));
 		}
 	}	
 }
 
 void Flow::OpenCVTesting::RenderToIMGUI()
 {
+	CHECK_RETURN(!CaptureTexture_, "Capture was nullptr");
 	//auto Tex = reinterpret_cast<Texture*>(Texture::Resolve(AssetSystem::GetAsset<TextureAsset>("TestSprite"), 0).get());
 	auto Tex2 = reinterpret_cast<Texture*>(Texture::Resolve(CaptureTexture_, 0).get());
+	Tex2->Update(CaptureTexture_);
 
 	if (ImGui::Begin("OpenCV"))
 	{
