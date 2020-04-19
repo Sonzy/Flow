@@ -13,6 +13,8 @@ namespace Flow
 
 	void BulletDebugDraw::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
+		PROFILE_FUNCTION();
+
 		Line::DrawLine(Vector(from.x(), from.y(), from.z()), Vector(to.x(), to.y(), to.z()), Vector(color.x(), color.y(), color.z()));
 	}
 	void BulletDebugDraw::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)

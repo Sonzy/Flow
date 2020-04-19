@@ -15,6 +15,7 @@ namespace Flow
 	std::vector<std::shared_ptr<Bindable>> Line::Binds_ = std::vector<std::shared_ptr<Bindable>>();
 	IndexBuffer* Line::IndexBuffer_ = nullptr;
 	int Line::Count = 0;
+	int Line::IndexBufferCount = 0;
 
 	Line::Line()
 	{
@@ -64,7 +65,8 @@ namespace Flow
 		//Initialise VertexConstBuffer
 		struct LineTransform
 		{
-			DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetCamera().GetViewMatrix() * RenderCommand::GetCamera().GetProjectionMatrix());
+			//DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetCamera().GetViewMatrix() * RenderCommand::GetCamera().GetProjectionMatrix());
+			DirectX::XMMATRIX ViewProjectionMatrix = RenderCommand::GetCamera().GetTransposedCachedViewProjectionMatrix();
 		} Trans;
 		
 		std::shared_ptr<VertexConstantBuffer<LineTransform>> VCB = std::make_shared<VertexConstantBuffer<LineTransform>>(0);
@@ -78,8 +80,9 @@ namespace Flow
 
 		NewLine.BindAll();
 		
-		RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
+		//RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
 				
+		IndexBufferCount = IndexBuffer_->GetCount();
 		Count++;
 	}
 

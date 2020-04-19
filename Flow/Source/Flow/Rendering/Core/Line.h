@@ -20,6 +20,7 @@ namespace Flow
 		virtual DirectX::XMMATRIX GetTransformXM() const override;
 
 		static int Count;
+		static int IndexBufferCount;
 	protected:
 
 		void AddBind(std::shared_ptr<Bindable> bind);

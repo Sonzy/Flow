@@ -22,6 +22,7 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
 #include "Flow\Helper\Instrumentation.h"
+#include "Flow\GameFramework\Components\CameraComponent.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -222,9 +223,25 @@ namespace Flow
 
 
 			//= Debug Rendering =
+			
+			{
+				PROFILE_CURRENT_SCOPE("Construct Debug World");
 
-			if(DrawCollision_)
-				GameWorld_->GetPhysicsWorld()->debugDrawWorld();
+				if (DrawCollision_)
+				{
+					RenderCommand::GetCamera().CacheViewProjection();
+					Line::Count = 0;
+					GameWorld_->GetPhysicsWorld()->debugDrawWorld();
+				}
+			}
+
+
+			{
+				PROFILE_CURRENT_SCOPE("Draw Debug World");
+
+				RenderCommand::DrawIndexed(Line::IndexBufferCount * Line::Count);
+			}
+	
 
 			//= UI Rendering =
 

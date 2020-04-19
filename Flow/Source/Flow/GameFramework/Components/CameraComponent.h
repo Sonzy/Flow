@@ -19,6 +19,10 @@ namespace Flow
 		DirectX::XMMATRIX GetViewMatrix() const;
 		DirectX::XMMATRIX GetProjectionMatrix() const;
 
+		void CacheViewProjection();
+		DirectX::XMMATRIX GetCachedViewProjectionMatrix() const;
+		DirectX::XMMATRIX GetTransposedCachedViewProjectionMatrix() const;
+
 		float GetFOV() const;
 
 	private:
@@ -29,5 +33,8 @@ namespace Flow
 
 		float MovementSpeed_;
 		float RotationSpeed_;
+
+		DirectX::XMMATRIX CachedViewProj;
+		DirectX::XMMATRIX CachedTransposedViewProj;
 	};
 }

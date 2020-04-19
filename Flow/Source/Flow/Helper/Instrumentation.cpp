@@ -25,6 +25,8 @@ void Instrumentor::EndSession()
 
 void Instrumentor::WriteProfile(const ProfileResult& Result)
 {
+	std::lock_guard<std::mutex> Lock(Lock_);
+
 	if (ProfileCount_++ > 0)
 		OutputStream_ << ",";
 

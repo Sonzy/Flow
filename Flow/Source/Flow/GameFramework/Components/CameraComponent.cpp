@@ -88,6 +88,22 @@ namespace Flow
 		return Projection_;
 	}
 
+	void CameraComponent::CacheViewProjection()
+	{
+		CachedViewProj = GetViewMatrix() * GetProjectionMatrix();
+		CachedTransposedViewProj = DirectX::XMMatrixTranspose(GetViewMatrix() * GetProjectionMatrix());
+	}
+
+	DirectX::XMMATRIX CameraComponent::GetCachedViewProjectionMatrix() const
+	{
+		return CachedViewProj;
+	}
+
+	DirectX::XMMATRIX CameraComponent::GetTransposedCachedViewProjectionMatrix() const
+	{
+		return CachedTransposedViewProj;
+	}
+
 	float CameraComponent::GetFOV() const
 	{
 		return FOV_;

@@ -4,6 +4,8 @@
 #include <opencv2\videoio.hpp>
 #include <opencv2\highgui.hpp>
 
+#include <thread>
+
 namespace Flow
 {
 	class TextureAsset;
@@ -13,15 +15,20 @@ namespace Flow
 	{
 	public:
 		OpenCVTesting();
+		~OpenCVTesting();
 		void Update();
 
 		void RenderToIMGUI();
 
 		cv::Mat Frame_;
+		cv::Mat PaddedFrame_;
 		cv::VideoCapture Capture_;
 		
 		TextureAsset* CaptureTexture_;
 
 		Sprite* TestSprite_;
+
+		std::thread* ReadThread;
+		bool ReadData = true;
 	};
 }

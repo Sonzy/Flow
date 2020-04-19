@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 #include <algorithm>
+#include <mutex>
 
 struct ProfileResult
 {
@@ -24,7 +25,7 @@ private:
 	InstrumentationSession* CurrentSession_;
 	std::ofstream OutputStream_;
 	int ProfileCount_;
-
+	std::mutex Lock_;
 public:
 	Instrumentor();
 
