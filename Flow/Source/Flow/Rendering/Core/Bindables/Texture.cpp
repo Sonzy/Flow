@@ -4,6 +4,8 @@
 #include "BindableCodex.h"
 #include "Flow\Assets\AssetSystem.h"
 
+#include <opencv2\core\directx.hpp>
+
 namespace Flow
 {
 	Texture::Texture(TextureAsset* Asset, UINT Slot)
@@ -68,6 +70,11 @@ namespace Flow
 		}
 
 		RenderCommand::DX11GetContext()->Unmap(pTexture.Get(), 0);
+	}
+
+	void Texture::Update(cv::Mat* Mat)
+	{
+		cv::directx::convertToD3D11Texture2D(*Mat, pTexture.Get());
 	}
 
 	std::shared_ptr<Bindable> Texture::Resolve(TextureAsset* Asset, UINT Slot)

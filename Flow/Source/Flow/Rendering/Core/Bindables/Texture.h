@@ -2,6 +2,11 @@
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow/Assets/Textures/TextureAsset.h"
 
+namespace cv
+{
+	class Mat;
+}
+
 namespace Flow
 {
 	class Texture : public Bindable
@@ -14,6 +19,7 @@ namespace Flow
 		//= Bindable Interface =
 
 		void Update(TextureAsset* Tex);
+		void Update(cv::Mat* Mat);
 
 		static std::shared_ptr<Bindable> Resolve(TextureAsset* Asset, UINT slot);
 		static std::string GenerateUID(TextureAsset* Asset, UINT slot);

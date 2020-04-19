@@ -8,6 +8,8 @@
 
 #include "Flow\Helper\Instrumentation.h"
 
+#include <opencv2\core\directx.hpp>
+
 Flow::OpenCVTesting::OpenCVTesting()
 	: CaptureTexture_(nullptr)
 {
@@ -47,8 +49,8 @@ void Flow::OpenCVTesting::Update()
 		//	}
 		//}
 
-		cv::imwrite("Assets/Textures/WebcamOutput.png", Frame_);
-		CaptureTexture_->UpdateFromFile("Sandbox/Assets/Textures/WebcamOutput.png");
+		//cv::imwrite("Assets/Textures/WebcamOutput.png", Frame_);
+		//CaptureTexture_->UpdateFromFile("Sandbox/Assets/Textures/WebcamOutput.png");
 	}
 }
 
@@ -57,9 +59,9 @@ void Flow::OpenCVTesting::RenderToIMGUI()
 	PROFILE_FUNCTION();
 
 	CHECK_RETURN(!CaptureTexture_, "Capture was nullptr");
-	//auto Tex = reinterpret_cast<Texture*>(Texture::Resolve(AssetSystem::GetAsset<TextureAsset>("TestSprite"), 0).get());
 	auto Tex2 = reinterpret_cast<Texture*>(Texture::Resolve(CaptureTexture_, 0).get());
-	Tex2->Update(CaptureTexture_);
+	//Tex2->Update(CaptureTexture_);
+	Tex2->Update(&Frame_);
 
 	if (ImGui::Begin("OpenCV"))
 	{
