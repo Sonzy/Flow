@@ -73,7 +73,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Debug;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTexd.lib;opencv_world430d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTexd.lib;opencv_highgui430d.lib;opencv_imgproc430d.lib;opencv_tracking430d.lib;opencv_videoio430d.lib;opencv_core430d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
@@ -98,7 +98,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Bin\Release;$(ProjectDir)Source;$(ProjectDir)ThirdParty\Assimp;%(AdditionalLibraryDirectories);$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTex.lib;opencv_world430d.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;opencv_highgui430.lib;opencv_imgproc430.lib;opencv_tracking430.lib;opencv_videoio430.lib;opencv_core430.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)Flow.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>

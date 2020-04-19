@@ -75,12 +75,6 @@ namespace Flow
 		return Image_.GetMetadata().height;
 	}
 
-	void TextureAsset::LoadFromCVMAT(const cv::Mat& MatToLoad)
-	{
-		CREATE_RESULT_HANDLE();
-		CATCH_ERROR_DX(DirectX::LoadFromWICMemory(MatToLoad.ptr(), 1u, DirectX::WIC_FLAGS_NONE, nullptr, Image_));
-	}
-
 	void TextureAsset::UpdateFromFile(const std::string& FilePath)
 	{
 		HRESULT ResultHandle;

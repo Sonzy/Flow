@@ -3,8 +3,6 @@
 #include <string>
 #include "DXTex\DirectXTex.h"
 
-#include "opencv2\highgui.hpp"
-
 namespace Flow
 {
 	class TexColor
@@ -41,8 +39,6 @@ namespace Flow
 
 		size_t GetWidthSizeT() const;
 		size_t GetHeightSizeT() const;
-
-		void LoadFromCVMAT(const cv::Mat& MatToLoad);
 
 		void UpdateFromFile(const std::string& FilePath);
 
