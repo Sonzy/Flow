@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Flow\Helper\Instrumentation.h"
 
 //TODO: Simplify wrapping, was lazy
 struct Rotator
@@ -77,6 +78,8 @@ struct Rotator
 
 	Vector RotateVector(Vector Other)
 	{
+		PROFILE_FUNCTION();
+
 		Rotator Radians = Rotator::AsRadians(*this);
 		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(Other.X, Other.Y, Other.Z, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
 		DirectX::XMFLOAT3 Rotated;
@@ -87,6 +90,8 @@ struct Rotator
 	//TODO: Need to figure out this logic
 	Rotator RotateRotator(Rotator Other, bool IsRadians = false)
 	{
+		PROFILE_FUNCTION();
+
 		if (*this == Rotator(0.0f))
 			return Other;
 
@@ -114,6 +119,8 @@ struct Rotator
 
 	static Rotator AsRadians(const Rotator& Rotation)
 	{
+		PROFILE_FUNCTION();
+
 		Rotator Rads;
 		Rads.Pitch = (Rotation.Pitch * 3.14159f) / 180.0f;
 		Rads.Roll = (Rotation.Roll * 3.14159f) / 180.0f;
@@ -123,6 +130,8 @@ struct Rotator
 
 	static Rotator AsDegrees(const Rotator& Rotation)
 	{
+		PROFILE_FUNCTION();
+
 		Rotator Rads;
 		Rads.Pitch = (Rotation.Pitch * 180.0f) / 3.14159f;
 		Rads.Roll = (Rotation.Roll * 180.0f) / 3.14159f;

@@ -24,6 +24,8 @@
 
 #include "Flow\Misc\OpenCVTesting.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 AGDLayer::AGDLayer()
 	: Layer("Advance Games Dev Example")
 {
@@ -68,11 +70,13 @@ AGDLayer::~AGDLayer()
 
 void AGDLayer::OnUpdate(float DeltaTime)
 {
+	PROFILE_FUNCTION();
+
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
 
-	CVTesting_->Update();
+	//CVTesting_->Update();
 	//Sprite_->Update();
 	//Flow::Renderer::Submit(Sprite_.get());
 	for (auto& Actor : WorldObjects_)
@@ -92,7 +96,7 @@ void AGDLayer::OnImGuiRender()
 	Flow::Application::GetWorld()->DrawWorldSettings();
 	//Sprite_->ControlWindow();
 
-	CVTesting_->RenderToIMGUI();
+	//CVTesting_->RenderToIMGUI();
 
 	if( ImGui::Begin("SpriteDrawing")) 
 	{

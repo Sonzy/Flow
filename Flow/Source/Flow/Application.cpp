@@ -21,6 +21,8 @@
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 namespace Flow
@@ -30,6 +32,10 @@ namespace Flow
 	Application::Application(const std::string& AppName)
 		: ApplicationName(AppName)
 	{
+		Instrumentor::Get().BeginSession("Application Startup", "Profile-Startup.json");
+
+		PROFILE_FUNCTION();
+
 		Instance = this;
 
 		MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
@@ -173,17 +179,27 @@ namespace Flow
 
 	void Application::Run()
 	{
-		GameWorld_->InitialiseWorld();
-		Inspector_->SetCurrentWorld(GameWorld_);
+		{
+			PROFILE_CURRENT_SCOPE("Run Initialisation");
 
-		//SelectionGizmo_->GenerateCollision();
-		//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
+			GameWorld_->InitialiseWorld();
+			Inspector_->SetCurrentWorld(GameWorld_);
 
-		GameWorld_->DispatchBeginPlay();
+			//SelectionGizmo_->GenerateCollision();
+			//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
 
-		Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+			GameWorld_->DispatchBeginPlay();
+
+			Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+		}
+
+
+		Instrumentor::Get().EndSession();
+		Instrumentor::Get().BeginSession("Game Running", "Profile-GameLoop.json");
 		while (Running_)
 		{
+			PROFILE_CURRENT_SCOPE("Application Loop");
+
 			float DeltaTime = Timer_.Mark();
 
 			MainWindow_->PreUpdate();
@@ -195,10 +211,15 @@ namespace Flow
 				GameWorld_->Tick(DeltaTime);
 			}
 
-			for (Layer* layer : LayerStack_)
 			{
-				layer->OnUpdate(DeltaTime);
+				PROFILE_CURRENT_SCOPE("Layer Updates");
+
+				for (Layer* layer : LayerStack_)
+				{
+					layer->OnUpdate(DeltaTime);
+				}
 			}
+
 
 			//= Debug Rendering =
 
@@ -207,25 +228,32 @@ namespace Flow
 
 			//= UI Rendering =
 
-			ImGuiLayer_->Begin();
-			UIConfigRender();
-			if (RenderUI)
 			{
-				for (Layer* layer : LayerStack_)
+				PROFILE_CURRENT_SCOPE("IMGUI Rendering");
+
+				ImGuiLayer_->Begin();
+				UIConfigRender();
+				if (RenderUI)
 				{
-					layer->OnImGuiRender();
+					for (Layer* layer : LayerStack_)
+					{
+						layer->OnImGuiRender();
+					}
+
+					Inspector_->Update();
+
+					RenderApplicationDebug(DeltaTime);
 				}
-
-				Inspector_->Update();
-
-				RenderApplicationDebug(DeltaTime);
+				ImGuiLayer_->End();
 			}
-			ImGuiLayer_->End();
+
 
 			//= Post Update =
 
 			MainWindow_->PostUpdate();
 		}
+
+		Instrumentor::Get().EndSession();
 	}
 
 	void Application::OnEvent(Event& e)

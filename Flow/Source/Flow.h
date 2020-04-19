@@ -8,6 +8,8 @@
 #include "Flow/Layers/Layer.h"
 #include "Flow/UserInterface/imgui/ImGuiLayer.h"
 
+#include "Flow/Helper/Instrumentation.h"
+
 //= Rendering ================
 
 #include "Flow/Rendering/RenderCommand.h"

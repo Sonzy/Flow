@@ -21,6 +21,8 @@ namespace Flow
 
 	void WorldComponent::Tick(float DeltaTime)
 	{
+		PROFILE_FUNCTION();
+
 		for (auto& Child : Children_)
 		{
 			Child->Tick(DeltaTime);
@@ -36,6 +38,8 @@ namespace Flow
 
 	Vector WorldComponent::GetWorldPosition() const
 	{
+		PROFILE_FUNCTION();
+
 		WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
 		//return Parent ? Parent->GetWorldPosition() + RelativeTransform_.Position_ : RelativeTransform_.Position_;
 
@@ -177,6 +181,8 @@ namespace Flow
 
 	void WorldComponent::Render()
 	{
+		PROFILE_FUNCTION();
+
 		for (auto Child : Children_)
 		{
 			if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))

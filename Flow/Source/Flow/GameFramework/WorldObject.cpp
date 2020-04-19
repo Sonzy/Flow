@@ -30,6 +30,8 @@ namespace Flow
 
 	void WorldObject::BeginPlay()
 	{
+		PROFILE_FUNCTION();
+
 		if (CollisionEnabled())
 		{
 			InitialisePhysics();
@@ -38,6 +40,8 @@ namespace Flow
 
 	void WorldObject::Tick(float DeltaTime)
 	{
+		PROFILE_FUNCTION();
+
 		GameObject::Tick(DeltaTime);
 		
 		if(RootComponent_)
@@ -101,6 +105,8 @@ namespace Flow
 
 	void WorldObject::DrawDetailsWindow(bool bDontUpdate)
 	{
+		PROFILE_FUNCTION();
+
 		ImGui::InputText("ObjectName", &ObjectName_);
 
 		ImGui::Separator(); //==========================================

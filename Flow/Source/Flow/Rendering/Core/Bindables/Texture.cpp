@@ -52,13 +52,7 @@ namespace Flow
 
 	void Texture::Update(TextureAsset* Tex)
 	{
-		//D3D11_MAPPED_SUBRESOURCE MappedRes;
-		//RenderCommand::DX11GetContext()->Map(pTexture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedRes);
-		//for (int i = 0; i < Tex->GetHeight(); i++)
-		//{
-		//	memcpy(MappedRes.pData, Tex->GetBufferPtr(), Tex->GetWidth());
-		//}
-		//RenderCommand::DX11GetContext()->Unmap(pTexture.Get(), 0);
+		PROFILE_FUNCTION();
 		
 		D3D11_MAPPED_SUBRESOURCE MappedRes;
 		RenderCommand::DX11GetContext()->Map(pTexture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedRes);

@@ -6,9 +6,13 @@
 #include "Flow\Rendering\Core\Bindables\Texture.h"
 #include "Flow\Assets\AssetSystem.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 Flow::OpenCVTesting::OpenCVTesting()
 	: CaptureTexture_(nullptr)
 {
+	PROFILE_FUNCTION();
+
 	Capture_.open(0);
 	CHECK_RETURN(!Capture_.isOpened(), "OpenCVTesting::OpenCVTesting: Failed to open video capture");
 
@@ -21,6 +25,8 @@ Flow::OpenCVTesting::OpenCVTesting()
 
 void Flow::OpenCVTesting::Update()
 {
+	PROFILE_FUNCTION();
+
 	CHECK_RETURN(!Capture_.isOpened(), "OpenCVTesting::OpenCVTesting: Cannot update from capture");
 
 	Capture_.read(Frame_);
@@ -44,6 +50,8 @@ void Flow::OpenCVTesting::Update()
 
 void Flow::OpenCVTesting::RenderToIMGUI()
 {
+	PROFILE_FUNCTION();
+
 	CHECK_RETURN(!CaptureTexture_, "Capture was nullptr");
 	//auto Tex = reinterpret_cast<Texture*>(Texture::Resolve(AssetSystem::GetAsset<TextureAsset>("TestSprite"), 0).get());
 	auto Tex2 = reinterpret_cast<Texture*>(Texture::Resolve(CaptureTexture_, 0).get());

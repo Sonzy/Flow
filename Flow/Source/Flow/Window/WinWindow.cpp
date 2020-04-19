@@ -82,16 +82,22 @@ namespace Flow
 
 	void WinWindow::PreUpdate()
 	{
+		PROFILE_FUNCTION();
+
 		RenderCommand::BeginFrame();
 	}
 
 	void WinWindow::OnUpdate()
 	{
+		PROFILE_FUNCTION();
+
 		ProcessWindowsMessages();
 	}
 
 	void WinWindow::PostUpdate()
 	{
+		PROFILE_FUNCTION();
+
 		RenderCommand::EndFrame();
 	}
 

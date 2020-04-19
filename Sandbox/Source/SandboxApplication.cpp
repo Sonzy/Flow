@@ -5,12 +5,16 @@
 
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 class Sandbox : public Flow::Application
 {
 public:
 	Sandbox(const std::string& AppName)
 		: Application(AppName)
 	{
+		PROFILE_FUNCTION();
+
 		/* Load assets for this app*/
 
 		Flow::AssetSystem::LoadAsset("CharacterPlane", "Sandbox/Assets/Models/Plane.obj");

@@ -44,6 +44,8 @@ namespace Flow
 
 	void StaticMeshComponent::Tick(float DeltaTime)
 	{
+		PROFILE_FUNCTION();
+
 		WorldComponent::Tick(DeltaTime);
 		
 		if (Body_ && SimulatePhysics_)
@@ -98,6 +100,8 @@ namespace Flow
 
 	void StaticMeshComponent::Render()
 	{
+		PROFILE_FUNCTION();
+
 		Flow::Renderer::Submit(this);
 
 		if (DrawOutline_)
@@ -108,6 +112,8 @@ namespace Flow
 
 	void StaticMeshComponent::RefreshBinds()
 	{
+		PROFILE_FUNCTION();
+
 		VertexLayout MeshLayout;
 		Binds_ = StaticMesh_->GenerateBinds(MeshLayout);
 		IndexBuffer_ = StaticMesh_->GetIndexBuffer();
@@ -165,6 +171,8 @@ namespace Flow
 
 	void StaticMeshComponent::DrawOutline()
 	{
+		PROFILE_FUNCTION();
+
 		CurrentlyOutlining = true;
 		for (auto& b : OutlineEffect)
 		{
@@ -176,6 +184,8 @@ namespace Flow
 
 	void StaticMeshComponent::DrawComponentDetailsWindow()
 	{
+		PROFILE_FUNCTION();
+
 		WorldComponent::DrawComponentDetailsWindow();
 
 		bool BindsDirty = false;
@@ -252,6 +262,8 @@ namespace Flow
 
 	void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
 	{
+		PROFILE_FUNCTION();
+
 		btMotionState* motionState = Body_->getMotionState();
 		btTransform Transform;
 		btQuaternion Rotation;

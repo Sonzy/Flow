@@ -38,6 +38,8 @@ namespace Flow
 
 	void Renderer::Submit(RenderableComponent* const Renderable)
 	{
+		PROFILE_FUNCTION();
+
 		CHECK_RETURN(!Renderable, "Renderer::Submit: Renderable was nullptr");
 
 		Renderable->BindAll();

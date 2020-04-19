@@ -14,6 +14,8 @@
 #include "ThirdParty\ImGui\imgui.h"
 #include "Flow\Assets\AssetSystem.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 namespace Flow
 {
 	World::World()
@@ -67,6 +69,8 @@ namespace Flow
 
 	void World::Tick(float DeltaTime)
 	{
+		PROFILE_FUNCTION();
+
 		if (DrawSkybox_)
 			Flow::Renderer::Submit(Skybox_);
 

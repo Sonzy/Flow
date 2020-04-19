@@ -8,6 +8,8 @@
 
 #include "Flow\Helper\BulletDebugDrawing.h"
 
+#include "Flow\Helper\Instrumentation.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -34,6 +36,8 @@ namespace Flow
 		template<typename T>
 		std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
 		{
+			PROFILE_FUNCTION();
+
 			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
 			WorldObjects_.push_back(NewObject);
 
