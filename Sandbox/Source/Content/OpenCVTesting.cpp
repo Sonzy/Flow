@@ -141,9 +141,6 @@ void OpenCVTesting::DrawOpenCVControls()
 		ImGui::TextColored(IMGUI_PURPLE, "Current Angle: %f", CalculateAngle());
 	}
 	ImGui::End();
-
-	bool a = true;
-	ImGui::ShowDemoWindow(&a);
 }
 
 void OpenCVTesting::InitialiseTrackers(ETrackingType TrackingType)
