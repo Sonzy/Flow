@@ -1,4 +1,5 @@
 #pragma once
+#include "Flow\Core.h"
 #include <iostream>
 #include <fstream>
 #include <chrono>

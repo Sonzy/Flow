@@ -80,7 +80,7 @@ namespace Flow
 
 		NewLine.BindAll();
 		
-		//RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
+		RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
 				
 		IndexBufferCount = IndexBuffer_->GetCount();
 		Count++;

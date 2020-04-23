@@ -51,6 +51,7 @@ namespace Flow
 		virtual btRigidBody* GetRigidBody() override;
 
 		void SetSimulatePhysics(bool Simulate);
+		void SetGravityEnabled(bool Gravity);
 
 
 		//TODO: Temp movement with rigidbodies
@@ -62,6 +63,7 @@ namespace Flow
 	protected:
 
 		bool SimulatePhysics_ = false;
+		bool UseGravity_ = true;
 		bool DrawOutline_ = false;
 
 		Mesh* StaticMesh_;

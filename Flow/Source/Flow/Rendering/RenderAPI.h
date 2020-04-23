@@ -24,6 +24,7 @@ namespace Flow
 		virtual void Clear() = 0;
 
 		virtual void DrawIndexed(int Count) = 0;
+		virtual void Draw(int Count) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;

@@ -63,6 +63,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>opencv_highgui430d.lib;opencv_imgproc430d.lib;opencv_tracking430d.lib;opencv_videoio430d.lib;opencv_core430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -81,6 +83,8 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opencv_highgui430.lib;opencv_imgproc430.lib;opencv_tracking430.lib;opencv_videoio430.lib;opencv_core430.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -94,6 +98,8 @@
   <ItemGroup>
     <ClCompile Include="Source\Content\Crate.cpp" />
     <ClCompile Include="Source\Content\Layers\AGDLayer.cpp" />
+    <ClCompile Include="Source\Content\OpenCVTesting.cpp" />
+    <ClCompile Include="Source\Content\OpenCV\OpenCVTracker.cpp" />
     <ClCompile Include="Source\Content\Wall.cpp" />
     <ClCompile Include="Source\Content\WorldObjects\MeshWorldObject.cpp" />
     <ClCompile Include="Source\Content\Layers\Example Layer.cpp" />
@@ -104,6 +110,8 @@
   <ItemGroup>
     <ClInclude Include="Source\Content\Crate.h" />
     <ClInclude Include="Source\Content\Layers\AGDLayer.h" />
+    <ClInclude Include="Source\Content\OpenCVTesting.h" />
+    <ClInclude Include="Source\Content\OpenCV\OpenCVTracker.h" />
     <ClInclude Include="Source\Content\Wall.h" />
     <ClInclude Include="Source\Content\WorldObjects\MeshWorldObject.h" />
     <ClInclude Include="Source\Content\Layers\Example Layer.h" />

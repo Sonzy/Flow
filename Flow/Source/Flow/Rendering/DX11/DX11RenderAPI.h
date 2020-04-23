@@ -24,6 +24,7 @@ namespace Flow
 		virtual void EndFrame() override;
 
 		virtual void DrawIndexed(int Count) override;
+		virtual void Draw(int Count) override;
 
 		virtual void Resize(int Width, int Height);
 

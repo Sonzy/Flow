@@ -28,6 +28,8 @@ namespace Flow
 		static void SetClearColour(float R, float G, float B, float A);
 
 		static void DrawIndexed(int Count);
+		static void Draw(int Count);
+
 		static void ClearWindow();
 
 		static void BeginFrame();

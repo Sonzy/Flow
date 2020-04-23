@@ -10,6 +10,8 @@
 
 #include "Flow\Helper\Instrumentation.h"
 
+#include "Flow\Rendering\Core\LineBatcher.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -58,6 +60,9 @@ namespace Flow
 
 		void DrawWorldSettings();
 
+		static LineBatcher& GetLineBatcher();
+		static void DrawAllLines();
+
 		//= Controllers ========
 
 		void RegisterController(std::shared_ptr<Controller> NewController);
@@ -89,6 +94,8 @@ namespace Flow
 
 		//= Other =======
 		Skybox* Skybox_;
+
+		static LineBatcher LineBatcher_;
 
 		//= Controllers =======
 

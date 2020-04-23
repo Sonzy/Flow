@@ -22,9 +22,11 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 
-#include "Flow\Misc\OpenCVTesting.h"
+#include "Content/OpenCVTesting.h"
 
 #include "Flow\Helper\Instrumentation.h"
+
+OpenCVTesting* AGDLayer::CVTesting_ = new OpenCVTesting();
 
 AGDLayer::AGDLayer()
 	: Layer("Advance Games Dev Example")
@@ -47,6 +49,7 @@ AGDLayer::AGDLayer()
 
 	Player_ = Flow::Application::GetWorld()->SpawnWorldObject<PlayerPlane>("Player Plane");
 	WorldObjects_.push_back(Player_);
+	//Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, 10.0f, -20.0f));
 
 
 	Base_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
@@ -61,7 +64,7 @@ AGDLayer::AGDLayer()
 	//Sprite_->SetScale(Vector(512.0f, 512.0f, 1.0f));
 	//Sprite_->SetPosition(Vector(0.0f, 0.0f, 0.0f));
 
-	CVTesting_ = std::make_shared<Flow::OpenCVTesting>();
+	CVTesting_->Initialise();
 }
 
 AGDLayer::~AGDLayer()
@@ -77,6 +80,8 @@ void AGDLayer::OnUpdate(float DeltaTime)
 
 
 	CVTesting_->Update();
+	Player_->GetRootComponent()->SetWorldRotation(
+		Rotator(0.0f, CVTesting_->CalculateAngle() + 180.0f, 0.0f));
 	//Sprite_->Update();
 	//Flow::Renderer::Submit(Sprite_.get());
 	for (auto& Actor : WorldObjects_)
@@ -94,17 +99,15 @@ void AGDLayer::OnUpdate(float DeltaTime)
 void AGDLayer::OnImGuiRender()
 {
 	Flow::Application::GetWorld()->DrawWorldSettings();
-	//Sprite_->ControlWindow();
 
-	//CVTesting_->RenderToIMGUI();
-
-	if( ImGui::Begin("SpriteDrawing")) 
-	{
-		ImGui::Checkbox("Draw Last", &DrawLast);
-	}
-	ImGui::End();
+	CVTesting_->DrawOpenCVControls();
 }
 
 void AGDLayer::OnAttach()
 {
+}
+
+OpenCVTesting* AGDLayer::GetCVTester()
+{
+	return CVTesting_;
 }

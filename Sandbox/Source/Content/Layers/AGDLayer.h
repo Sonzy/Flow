@@ -5,10 +5,11 @@ namespace Flow
 {
 	class WorldObject;
 	class Sprite;
-	class OpenCVTesting;
+
 }
 
 class MeshWorldObject;
+class OpenCVTesting;
 
 class AGDLayer : public Flow::Layer
 {
@@ -22,6 +23,8 @@ public:
 	virtual void OnImGuiRender() override;
 	virtual void OnAttach() override;
 
+	static OpenCVTesting* GetCVTester();
+
 private:
 
 	/*=== Level Objects =============*/
@@ -34,7 +37,8 @@ private:
 
 	std::shared_ptr<Flow::Sprite> Sprite_;
 
-	std::shared_ptr<Flow::OpenCVTesting> CVTesting_;
+	static OpenCVTesting* CVTesting_;
+
 
 	//TESTING
 

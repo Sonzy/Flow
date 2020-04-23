@@ -18,6 +18,8 @@
 
 namespace Flow
 {
+	LineBatcher World::LineBatcher_ = LineBatcher();
+
 	World::World()
 		: World("Unnamed World")
 	{	}
@@ -26,6 +28,7 @@ namespace Flow
 		: WorldName_(WorldName)
 	{
 		DebugDrawer_.Init();
+		LineBatcher_.Initialise();
 	}
 
 	World::~World()
@@ -126,6 +129,16 @@ namespace Flow
 			//ImGui::Image((void*)Tex->GetTextureUnsafe(), ImVec2(128, 128));
 		}
 		ImGui::End();
+	}
+
+	LineBatcher& World::GetLineBatcher()
+	{
+		return Application::GetWorld()->LineBatcher_;
+	}
+
+	void World::DrawAllLines()
+	{
+		LineBatcher_.Draw();
 	}
 
 	void World::RegisterController(std::shared_ptr<Controller> NewController)

@@ -242,6 +242,9 @@ namespace Flow
 
 		Body_ = new btRigidBody(bodyCI);
 		Body_->setUserPointer(this);
+
+		if(!UseGravity_)
+		  Body_->setGravity(btVector3(0.0f, 0.0, 0.0f));
 	}
 
 	void StaticMeshComponent::InitialisePhysics()
@@ -258,6 +261,11 @@ namespace Flow
 	void StaticMeshComponent::SetSimulatePhysics(bool Simulate)
 	{
 		SimulatePhysics_ = Simulate;
+	}
+
+	void StaticMeshComponent::SetGravityEnabled(bool Gravity)
+	{
+		UseGravity_ = false;
 	}
 
 	void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)

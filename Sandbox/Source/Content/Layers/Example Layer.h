@@ -30,6 +30,8 @@ private:
 
 	std::shared_ptr<MeshWorldObject> TestCube;
 
+	std::shared_ptr<Flow::WorldObject> Player_;
+
 	std::shared_ptr<Flow::WorldObject> Example;
 
 	std::shared_ptr<MeshWorldObject> WallObj;

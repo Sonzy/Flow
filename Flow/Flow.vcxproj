@@ -158,7 +158,6 @@
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
-    <ClInclude Include="Source\Flow\Misc\OpenCVTesting.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
@@ -183,6 +182,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Line.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\LineBatcher.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
@@ -325,7 +325,6 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
-    <ClCompile Include="Source\Flow\Misc\OpenCVTesting.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.cpp" />
@@ -344,6 +343,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Line.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\LineBatcher.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />
@@ -375,6 +375,18 @@
     <Library Include="ThirdParty\Assimp\assimp-vc140-mt.lib" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\LineColourP.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\LineColourV.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\LineShaderP.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>

@@ -33,13 +33,26 @@ namespace Flow
 	Application::Application(const std::string& AppName)
 		: ApplicationName(AppName)
 	{
+
+	}
+
+	Application::~Application()
+	{
+		FLOW_ENGINE_LOG("Shutting Down Engine");
+
+		RenderCommand::Shutdown();
+		AssetSystem::Shutdown();
+	}
+
+	void Application::InitialiseApplication()
+	{
 		Instrumentor::Get().BeginSession("Application Startup", "Profile-Startup.json");
 
 		PROFILE_FUNCTION();
 
 		Instance = this;
 
-		MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
+		MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
 		MainWindow_->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
 		ImGuiLayer_ = new ImGuiLayer();
@@ -49,7 +62,7 @@ namespace Flow
 		char Path[128];
 		GetModuleFileName(nullptr, Path, sizeof(Path));
 		std::string ExeDir = std::string(Path);
-		LocalPath_ = ExeDir.substr(0, ExeDir.find("bin")); 
+		LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
 
 		//TODO: Load assets somewhere
 		//= Models =
@@ -69,7 +82,7 @@ namespace Flow
 		//AssetSystem::LoadAsset("Wabble_Rifle", "Flow/Assets/Models/Wabble_Rifle.obj");
 		//AssetSystem::LoadAsset("Wabble_Shotgun", "Flow/Assets/Models/Wabble_Shotgun.obj");
 		//AssetSystem::LoadAsset("Wabble_Blunderbuss", "Flow/Assets/Models/Wabble_Blunderbuss.obj");
-		
+
 		//= Collision ======================
 
 		//AssetSystem::LoadAsset("Wabble_Table_Collision", "Flow/Assets/Collision/Collision_Wabble_Table.obj");
@@ -100,7 +113,7 @@ namespace Flow
 		//AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png"); 
 		//AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
 		//AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png"); 
-		AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png"); 
+		AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png");
 		//AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
 
 		//= Shaders =
@@ -113,7 +126,9 @@ namespace Flow
 		AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
 		AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
 		AssetSystem::LoadAsset("LineShaderP", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
-		AssetSystem::LoadAsset("LineShaderV", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");
+		AssetSystem::LoadAsset("LineShaderV", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");		AssetSystem::LoadAsset("LineShaderP", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
+		AssetSystem::LoadAsset("LineColourP", "Flow/Source/Flow/Rendering/Core/Shaders/LineColourP.cso");
+		AssetSystem::LoadAsset("LineColourV", "Flow/Source/Flow/Rendering/Core/Shaders/LineColourV.cso");
 
 		//= Materials =
 		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
@@ -124,29 +139,6 @@ namespace Flow
 		AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
 		static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector(0.52f, 0.8f, 1.0f));
 
-		//AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
-		//Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
-		//PropsMat->SetTexture("Wabble_Props");
-		//PropsMat->SetPixelShader("TexturedPhongPS");
-		//PropsMat->SetVertexShader("TexturedPhongVS");
-		//
-		//AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons");
-		//Mat_TexturedPhong* WeaponsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Weapons")->GetMaterial());
-		//WeaponsMat->SetTexture("Wabble_Weapons");
-		//WeaponsMat->SetPixelShader("TexturedPhongPS");
-		//WeaponsMat->SetVertexShader("TexturedPhongVS");
-		//
-		//AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
-		//Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
-		//WoodMat->SetTexture("Wabble_Wood");
-		//WoodMat->SetPixelShader("TexturedPhongPS");
-		//WoodMat->SetVertexShader("TexturedPhongVS");
-		//
-		//AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand");
-		//Mat_TexturedPhong* SandMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Sand")->GetMaterial());
-		//SandMat->SetTexture("Wabble_Sand");
-		//SandMat->SetPixelShader("TexturedPhongPS");
-		//SandMat->SetVertexShader("TexturedPhongVS");
 
 		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
 		Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
@@ -168,14 +160,6 @@ namespace Flow
 
 		EditorLayer_ = new EditorLayer();
 		PushLayer(EditorLayer_);
-	}
-
-	Application::~Application()
-	{
-		FLOW_ENGINE_LOG("Shutting Down Engine");
-
-		RenderCommand::Shutdown();
-		AssetSystem::Shutdown();
 	}
 
 	void Application::Run()
@@ -206,6 +190,15 @@ namespace Flow
 			MainWindow_->PreUpdate();
 			MainWindow_->OnUpdate();
 
+			//If the window has sent a shutdown message return immediately
+			if (!Running_)
+			{
+				//Finish the profiling first
+				Instrumentor::Get().EndSession();
+				return;
+			}
+				
+
 			if (!Paused_)
 			{
 				//TODO: Check where to move the world since I'm using layers
@@ -231,7 +224,7 @@ namespace Flow
 				{
 					RenderCommand::GetCamera().CacheViewProjection();
 					Line::Count = 0;
-					GameWorld_->GetPhysicsWorld()->debugDrawWorld();
+ 					GameWorld_->GetPhysicsWorld()->debugDrawWorld();
 				}
 			}
 
@@ -239,7 +232,8 @@ namespace Flow
 			{
 				PROFILE_CURRENT_SCOPE("Draw Debug World");
 
-				RenderCommand::DrawIndexed(Line::IndexBufferCount * Line::Count);
+				GameWorld_->DrawAllLines();
+				//RenderCommand::DrawIndexed(Line::IndexBufferCount * Line::Count);
 			}
 	
 

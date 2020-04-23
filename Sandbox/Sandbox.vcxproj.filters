@@ -39,6 +39,12 @@
     <ClCompile Include="Source\Content\WorldObjects\PlayerPlane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Content\OpenCVTesting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Content\OpenCV\OpenCVTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Content\Wall.h">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Content\WorldObjects\PlayerPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Content\OpenCVTesting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Content\OpenCV\OpenCVTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

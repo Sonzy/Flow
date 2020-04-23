@@ -25,7 +25,8 @@ void Instrumentor::EndSession()
 
 void Instrumentor::WriteProfile(const ProfileResult& Result)
 {
-	std::lock_guard<std::mutex> Lock(Lock_);
+	//Disabled thread safety for performance, just probs wont use in threads
+	//std::lock_guard<std::mutex> Lock(Lock_);
 
 	if (ProfileCount_++ > 0)
 		OutputStream_ << ",";
@@ -39,7 +40,7 @@ void Instrumentor::WriteProfile(const ProfileResult& Result)
 	OutputStream_ << "\"name\":\"" << Name << "\",";
 	OutputStream_ << "\"ph\":\"X\",";
 	OutputStream_ << "\"pid\":0,";
-	OutputStream_ << "\"tid\":" << Result.ThreadID << ",";
+	//OutputStream_ << "\"tid\":" << Result.ThreadID << ",";
 	OutputStream_ << "\"ts\":" << Result.Start_;
 	OutputStream_ << "}";
 
@@ -84,7 +85,7 @@ void BenchmarkTimer::Stop()
 	long long end = std::chrono::time_point_cast<std::chrono::microseconds>(EndPoint).time_since_epoch().count();
 
 	uint32_t ThreadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-	Instrumentor::Get().WriteProfile({ TimerName_, start, end });
+	Instrumentor::Get().WriteProfile({ TimerName_, start, end, ThreadID });
 
 	Stopped_ = true;
 }

@@ -23,6 +23,7 @@ namespace Flow
 	public:
 
 		Application(const std::string& AppName);
+		virtual void InitialiseApplication();
 		virtual ~Application();
 		
 		void Run();

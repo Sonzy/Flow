@@ -160,6 +160,11 @@ namespace Flow
 		Context->DrawIndexed(Count, 0, 0);
 	}
 
+	void DX11RenderAPI::Draw(int Count)
+	{
+		Context->Draw(Count, 0);
+	}
+
 	void DX11RenderAPI::Resize(int Width, int Height)
 	{
 		HRESULT ResultHandle;

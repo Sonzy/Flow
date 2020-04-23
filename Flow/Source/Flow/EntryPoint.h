@@ -12,6 +12,8 @@ int main(int argc, char** argv)
 	auto App = Flow::CreateApplication();
 	Flow::Log::InitialiseApplicationLogger(App->ApplicationName);
 
+	App->InitialiseApplication();
+
 
 	App->Run();
 	delete App;

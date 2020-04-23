@@ -26,6 +26,8 @@
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
+#include "Content\WorldObjects\PlayerPlane.h"
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
@@ -55,6 +57,10 @@ ExampleLayer::ExampleLayer()
 	Rifle_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
 	
 	Base = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
+
+	Player_ = Flow::Application::GetWorld()->SpawnWorldObject<PlayerPlane>("Player Plane");
+	Actors.push_back(Player_);
+	Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, 10.0f, -20.0f));
 
 
 	Actors.push_back(WallObj);
@@ -136,7 +142,7 @@ ExampleLayer::ExampleLayer()
 	Crate2_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, 0.3f));
 	Crate3_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 0.5f, 1.6f));
 	Crate4_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 1.5f, -0.4f));
-	Crate5_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 1.5f, 1.0f));
+	Crate5_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 10.5f, 1.0f));
 	
 	Chair1_->GetRootComponent()->SetWorldPosition(Vector(0.5f,  0.4f, 0.4f));
 	Chair2_->GetRootComponent()->SetWorldPosition(Vector(2.0f, 0.4f, 1.0f));
@@ -299,4 +305,7 @@ void ExampleLayer::LoadAssets()
 	SandMat->SetTexture("Wabble_Sand");
 	SandMat->SetPixelShader("TexturedPhongPS");
 	SandMat->SetVertexShader("TexturedPhongVS");
+
+	Flow::MeshAsset* PlaneMesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("CharacterPlane");
+	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_CharacterPlane");
 }
