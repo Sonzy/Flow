@@ -279,7 +279,7 @@ namespace Flow
 
 		//if(PhysicsMode_ != PhysicsMode::Dynamic)
 		//	Rigidbody_->setActivationState(DISABLE_DEACTIVATION);
-
+		Rigidbody_->setActivationState(DISABLE_DEACTIVATION);
 			//Rigidbody_->setCollisionFlags(Rigidbody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 
 		if (UsingCustomGravity())

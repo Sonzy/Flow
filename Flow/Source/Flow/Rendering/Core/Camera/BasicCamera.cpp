@@ -130,4 +130,9 @@ namespace Flow
 	{
 		return Position_;
 	}
+
+	void BasicCamera::SetPosition(Vector Pos)
+	{
+		Position_ = Pos;
+	}
 }

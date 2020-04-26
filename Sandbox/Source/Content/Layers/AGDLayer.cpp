@@ -96,7 +96,6 @@ AGDLayer::AGDLayer()
 	//WorldObjects_.push_back(Wall_);
 
 	Camera_ = new Flow::BasicCamera();
-	Camera_->Translate({0.0f, 0.0f, -20.0f});
 
 	Flow::TextureAsset* Texture = Flow::AssetSystem::GetAsset<Flow::TextureAsset>("TestSprite");
 	//Sprite_ = std::make_shared<Flow::Sprite>(Texture);
@@ -127,7 +126,7 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	Camera_->Update(DeltaTime);
+	//Camera_->Update(DeltaTime);
 	Light_->BindLight(Flow::RenderCommand::GetCamera().GetView());
 
 	if (UseOpenCV)
@@ -143,6 +142,9 @@ void AGDLayer::OnUpdate(float DeltaTime)
 
 		if(CVTesting_->Started)
 			Player_->OpenCVUpdate(CVTesting_->CalculateAngle(), CVTesting_->GetHeightDeviation());		
+
+		Camera_->SetPosition(Player_->GetRootComponent()->GetRelativePosition() + Vector(0.0f, 10.0f, -20.0f));
+		Camera_->CacheCameraMatrices();
 	}
 
 	{
@@ -202,7 +204,7 @@ void AGDLayer::OnAttach()
 
 void AGDLayer::PostBeginPlay()
 {
-	//Flow::Application::GetWorld()->GetLocalController()->SetCamera(Camera_);
+	Flow::Application::GetWorld()->GetLocalController()->SetCamera(Camera_);
 }
 
 OpenCVTesting* AGDLayer::GetCVTester()

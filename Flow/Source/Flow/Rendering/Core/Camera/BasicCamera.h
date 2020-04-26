@@ -22,6 +22,7 @@ namespace Flow
 		void RenderIMGUIWindow();
 
 		Vector GetCameraPosition() const override;
+		void SetPosition(Vector Pos);
 
 	private:
 

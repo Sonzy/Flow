@@ -32,16 +32,16 @@ PlayerPlane::PlayerPlane(const std::string& Name)
 	: Flow::ControlledObject(Name)
 {
 	PlaneMesh_ = CreateComponent<Flow::StaticMeshComponent>("Mesh Component");
-	PlayerCamera_ = CreateComponent<Flow::CameraComponent>("Camera Component");
+	//PlayerCamera_ = CreateComponent<Flow::CameraComponent>("Camera Component");
 
 	RootComponent_ = PlaneMesh_.get();
-	RootComponent_->AddChild(PlayerCamera_.get());
+	//RootComponent_->AddChild(PlayerCamera_.get());
 
 	auto Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("CharacterPlane");
 	auto Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_CharacterPlane")->GetMaterial();
 	PlaneMesh_->SetMeshAndMaterial(Mesh, Material);
 
-	PlayerCamera_->SetRelativePosition(Vector(0.0f, 8.0f, -20.0f));
+	//PlayerCamera_->SetRelativePosition(Vector(0.0f, 8.0f, -20.0f));
 
 	//Init Collision
 	//SetPhysicsMode(Flow::PhysicsMode::Dynamic);
@@ -65,7 +65,7 @@ void PlayerPlane::BeginPlay()
 	//Flow::Application::GetWorld()->GetLocalController()->ControlObject(this);
 	//GetController()->SetCamera(PlayerCamera_.get());
 
-	Flow::Application::GetWorld()->GetLocalController()->SetCamera(PlayerCamera_.get());
+	//Flow::Application::GetWorld()->GetLocalController()->SetCamera(PlayerCamera_.get());
 
 }
 
@@ -73,62 +73,62 @@ void PlayerPlane::Tick(float DeltaTime)
 {
 	WorldObject::Tick(DeltaTime);
 
-	if (!WASDMode)
-	{
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_E))
-			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, -1.0f, 0.0f));
-	
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_Q))
-			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, 1.0f, 0.0f));
-	
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
-			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(-1.0f, 0.0f, 0.0f)));
-	
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
-			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(1.0f, 0.0f, 0.0f)));
-	
-		if (Alive)
-		{
-			//Move forward relative to the current rotation
-			Vector Rotated = RootComponent_->GetWorldRotation().RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_));
-			RootComponent_->AddRelativePosition(Rotated);
-		}
-	}
-	else
-	{
-		IntVector2D Pos = Flow::Input::GetMousePosition();
-		Rotator Rot = RootComponent_->GetWorldRotation();
-	
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_W))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_)));
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_A))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(-PlaneSpeed_, 0.0f, 0.0f)));
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_S))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, 0.0f, -PlaneSpeed_)));
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_D))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(PlaneSpeed_, 0.0f, 0.0f)));
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, -PlaneSpeed_, 0.0f)));
-		if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
-			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, PlaneSpeed_, 0.0f)));
-	
-	
-		if (Flow::Input::IsMousePressed(FLOW_MOUSE_RIGHT))
-		{
-			if (LastMousePosition_ != Pos)
-			{
-				Vector Direction = (LastMousePosition_ - Pos);
-				Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
-				Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
-				RootComponent_->AddRelativeRotation(Rotator(-Direction.Y, 0.0f, -Direction.X));
-			}
-		}
-		LastMousePosition_ = Pos;
-	}
+	//if (!WASDMode)
+	//{
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_E))
+	//		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, -1.0f, 0.0f));
+	//
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_Q))
+	//		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, 1.0f, 0.0f));
+	//
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
+	//		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(-1.0f, 0.0f, 0.0f)));
+	//
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
+	//		RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(1.0f, 0.0f, 0.0f)));
+	//
+	//	if (Alive)
+	//	{
+	//		//Move forward relative to the current rotation
+	//		Vector Rotated = RootComponent_->GetWorldRotation().RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_));
+	//		RootComponent_->AddRelativePosition(Rotated);
+	//	}
+	//}
+	//else
+	//{
+	//	IntVector2D Pos = Flow::Input::GetMousePosition();
+	//	Rotator Rot = RootComponent_->GetWorldRotation();
+	//
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_W))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_)));
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_A))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(-PlaneSpeed_, 0.0f, 0.0f)));
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_S))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, 0.0f, -PlaneSpeed_)));
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_D))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(PlaneSpeed_, 0.0f, 0.0f)));
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, -PlaneSpeed_, 0.0f)));
+	//	if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
+	//		RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, PlaneSpeed_, 0.0f)));
+	//
+	//
+	//	if (Flow::Input::IsMousePressed(FLOW_MOUSE_RIGHT))
+	//	{
+	//		if (LastMousePosition_ != Pos)
+	//		{
+	//			Vector Direction = (LastMousePosition_ - Pos);
+	//			Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
+	//			Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
+	//			RootComponent_->AddRelativeRotation(Rotator(-Direction.Y, 0.0f, -Direction.X));
+	//		}
+	//	}
+	//	LastMousePosition_ = Pos;
+	//}
 
 	RootComponent_->UpdatePhysicsBody();
 
-	PlayerCamera_->MarkCacheDirty();
+	//PlayerCamera_->MarkCacheDirty();
 }
 
 void PlayerPlane::DrawDetailsWindow(bool bDontUpdate)
