@@ -25,9 +25,13 @@ namespace Flow
 
 		virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
+		virtual void BeginPlay();
+
 	protected:
 
 		WorldObject* ParentObject_;
 		WorldComponent* AttachedComponent_;
+
+		bool BegunPlay_ = false;
 	};
 }

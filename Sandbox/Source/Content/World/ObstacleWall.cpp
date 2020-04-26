@@ -16,32 +16,6 @@ ObstacleWall::ObstacleWall()
 ObstacleWall::ObstacleWall(const std::string& Name)
 	: WorldObject(Name)
 {
-	auto BoxMesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
-	auto WallMaterial = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_LitGrey")->GetMaterial();
-
-	Cube_Bottom_ = CreateComponent<Flow::StaticMeshComponent>("Bottom");
-	Cube_Top_ = CreateComponent<Flow::StaticMeshComponent>("Top");
-	EmptyRoot_ = CreateComponent<Flow::WorldComponent>("Root");
-
-	Cube_Bottom_->SetMeshAndMaterial(BoxMesh, WallMaterial);
-	Cube_Top_->SetMeshAndMaterial(BoxMesh, WallMaterial);
-
-	RootComponent_ = EmptyRoot_.get();
-	RootComponent_->AddChild(Cube_Bottom_.get());
-	RootComponent_->AddChild(Cube_Top_.get());
-
-	SetPhysicsMode(Flow::PhysicsMode::Kinematic);
-
-	Cube_Bottom_->DisableGravity();
-	Cube_Top_->DisableGravity();
-
-	RootComponent_->SetRelativePosition(Vector(0.0f, 50.0f, 0.0f));
-	Cube_Bottom_->SetRelativePosition(Vector(0.0f, 0.0f, 0.0f));
-	Cube_Top_->SetRelativePosition(Vector(0.0f, 40.0f, 0.0f));
-
-	Cube_Bottom_->SetRelativeScale(Vector(500.0f, 20.0f, 20.0f));
-	Cube_Top_->SetRelativeScale(Vector(500.0f, 20.0f, 20.0f));
-
 	//CreateWall(WallLayout(100, 100, 100, 4));
 
 	WallLayoutContainer Layout1 = WallLayoutContainer(40.0f, 50.0f);
@@ -63,7 +37,7 @@ ObstacleWall::ObstacleWall(const std::string& Name)
 	Layout3.AddCube(WallLayout2(Vector(20.0f, 0.0f, 0.0f), Vector(30.0f, 20.0f, 20.0f)));
 	Layout3.AddCube(WallLayout2(Vector(120.0f, 0.0f, 0.0f), Vector(50.0f, 20.0f, 20.0f)));
 
-	WallLayoutContainer Layout4 = WallLayoutContainer(30.0f);
+	WallLayoutContainer Layout4 = WallLayoutContainer(100.0f);
 	Layout4.AddCube(WallLayout2(Vector(-170.0f, 0.0f, 0.0f), Vector(100.0f, 20.0f, 20.0f)));
 	Layout4.AddCube(WallLayout2(Vector(-50.0f, 0.0f, 0.0f), Vector(100.0f, 20.0f, 20.0f)));
 	Layout4.AddCube(WallLayout2(Vector(20.0f, 0.0f, 0.0f), Vector(30.0f, 20.0f, 20.0f)));
@@ -81,8 +55,8 @@ ObstacleWall::ObstacleWall(const std::string& Name)
 
 void ObstacleWall::Initialise(Vector StartPosition)
 {
-	RootComponent_->SetRelativePosition(StartPosition);
 	CreateWall();
+	RootComponent_->SetRelativePosition(StartPosition);
 }
 
 
@@ -103,6 +77,7 @@ void ObstacleWall::CreateWall(WallLayout NewLayout)
 		NewCube->SetRelativeScale(Vector(NewLayout.CubeWidth_ / 2, 20.0f, 20.0f));
 		NewCube->SetRelativePosition(Vector(-InitialOffset + (i * Gap), 20.0f, 0.0f));
 		NewCube->DisableGravity();
+		NewCube->UseCompoundCollision_ = true;
 		RootComponent_->AddChild(NewCube.get());
 		Boxes_.push_back(NewCube);
 	}
@@ -111,7 +86,14 @@ void ObstacleWall::CreateWall(WallLayout NewLayout)
 void ObstacleWall::CreateWall(WallLayoutContainer NewLayout)
 {
 	auto BoxMesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
-	auto WallMaterial = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_LitGrey")->GetMaterial();
+	//auto WallMaterial = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_LitGrey")->GetMaterial();
+	auto WallMaterial = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood")->GetMaterial();
+
+	if (!EmptyRoot_)
+	{
+		EmptyRoot_ = CreateComponent<Flow::WorldComponent>("Root");
+		RootComponent_ = EmptyRoot_.get();
+	}
 
 	for (int i = 0; i < NewLayout.Cubes_.size(); i++)
 	{
@@ -122,19 +104,50 @@ void ObstacleWall::CreateWall(WallLayoutContainer NewLayout)
 
 		RootComponent_->AddChild(NewCube.get());
 		NewCube->DisableGravity();
+		NewCube->UseCompoundCollision_ = true;
+		NewCube->BoxCollision = true;
 
 		if(!NewCube->GetMesh())
 			NewCube->SetMeshAndMaterial(BoxMesh, WallMaterial);
 
-		NewCube->SetRelativeScale(NewLayout.Cubes_[i].Scale_);
+		NewCube->SetRelativeScale(Vector(NewLayout.Cubes_[i].Scale_.X, NewLayout.Height_, NewLayout.Cubes_[i].Scale_.Z));
 		NewCube->SetRelativePosition(Vector(NewLayout.Cubes_[i].Position_.X, 0.0f, 0.0f));
 
 		Boxes_.push_back(NewCube);
 	}
 
 	float Diff = NewLayout.Height_ / 2;
-	Cube_Top_->SetRelativePosition(Vector(0.0f, Diff, 0.0f));
-	Cube_Bottom_->SetRelativePosition(Vector(0.0f, -Diff, 0.0f));
+
+	RootComponent_->SetRelativePosition(Vector(0.0f, 50.0f, 0.0f));
+	SetPhysicsMode(Flow::PhysicsMode::Kinematic);
+
+	if (!Cube_Bottom_)
+	{
+		Cube_Bottom_ = CreateComponent<Flow::StaticMeshComponent>("Bottom");
+		Cube_Bottom_->SetMeshAndMaterial(BoxMesh, WallMaterial);
+		Cube_Bottom_->DisableGravity();
+		RootComponent_->AddChild(Cube_Bottom_.get());
+	}
+
+	if (!Cube_Top_)
+	{
+		Cube_Top_ = CreateComponent<Flow::StaticMeshComponent>("Top");
+		Cube_Top_->SetMeshAndMaterial(BoxMesh, WallMaterial);
+		Cube_Top_->DisableGravity();
+		RootComponent_->AddChild(Cube_Top_.get());
+	}
+		
+
+	Cube_Bottom_->SetRelativePosition(Vector(0.0f, Diff, 0.0f));
+	Cube_Top_->SetRelativePosition(Vector(0.0f, -Diff, 0.0f));
+
+	Cube_Bottom_->SetRelativeScale(Vector(500.0f, 20.0f, 20.0f));
+	Cube_Top_->SetRelativeScale(Vector(500.0f, 20.0f, 20.0f));
+
+	Cube_Top_->UseCompoundCollision_ = true;
+	Cube_Bottom_->UseCompoundCollision_ = true;
+	Cube_Top_->BoxCollision = true;
+	Cube_Bottom_->BoxCollision = true;
 }
 
 void ObstacleWall::CreateWall()

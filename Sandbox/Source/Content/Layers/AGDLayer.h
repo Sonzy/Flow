@@ -6,6 +6,7 @@ namespace Flow
 	class WorldObject;
 	class Sprite;
 	class BasicCamera;
+	class PointLight;
 }
 
 class MeshWorldObject;
@@ -39,6 +40,8 @@ private:
 	std::shared_ptr<Flow::WorldObject> Map_;
 	std::shared_ptr<Flow::WorldObject> TestCube_;
 	std::shared_ptr<Flow::WorldObject> Wall_;
+
+	std::shared_ptr<Flow::PointLight> Light_;
 
 	WorldGenerator* Generator_;
 

@@ -51,6 +51,10 @@ PlayerPlane::PlayerPlane(const std::string& Name)
 
 	//RootComponent_->OnObjectCollide.Bind(std::bind(&PlayerPlane::OnObjectHitPlane, *this, std::placeholders::_1, std::placeholders::_2));
 
+	PlaneMesh_->UseCompoundCollision_ = true;
+	PlaneMesh_->PlaneCollision = true;
+	WASDMode = true;
+
 	Alive = true;
 }
 
@@ -69,22 +73,20 @@ void PlayerPlane::Tick(float DeltaTime)
 {
 	WorldObject::Tick(DeltaTime);
 
-	FLOW_ENGINE_LOG("Gravity {0}", GetRigidBody()->getGravity().y());
-
 	if (!WASDMode)
 	{
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_E))
 			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, -1.0f, 0.0f));
-
+	
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_Q))
 			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation() + Rotator(0.0f, 1.0f, 0.0f));
-
+	
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
 			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(-1.0f, 0.0f, 0.0f)));
-
+	
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_SHIFT))
 			RootComponent_->SetRelativeRotation(RootComponent_->GetRelativeRotation().RotateRotator(Rotator(1.0f, 0.0f, 0.0f)));
-
+	
 		if (Alive)
 		{
 			//Move forward relative to the current rotation
@@ -96,7 +98,7 @@ void PlayerPlane::Tick(float DeltaTime)
 	{
 		IntVector2D Pos = Flow::Input::GetMousePosition();
 		Rotator Rot = RootComponent_->GetWorldRotation();
-
+	
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_W))
 			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, 0.0f, PlaneSpeed_)));
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_A))
@@ -109,8 +111,8 @@ void PlayerPlane::Tick(float DeltaTime)
 			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, -PlaneSpeed_, 0.0f)));
 		if (Flow::Input::IsKeyPressed(FLOW_KEY_SPACE))
 			RootComponent_->AddRelativePosition(Rot.RotateVector(Vector(0.0f, PlaneSpeed_, 0.0f)));
-
-
+	
+	
 		if (Flow::Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 		{
 			if (LastMousePosition_ != Pos)

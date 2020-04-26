@@ -34,6 +34,8 @@
 #include "Flow\Rendering\Core\Camera\BasicCamera.h"
 #include "Flow\GameFramework\Controllers\PlayerController.h"
 
+#include "Flow\Rendering\Core\Lights\PointLight.h"
+
 OpenCVTesting* AGDLayer::CVTesting_ = new OpenCVTesting();
 
 AGDLayer::AGDLayer()
@@ -53,6 +55,8 @@ AGDLayer::AGDLayer()
 	PlaneMat->SetPixelShader("TexturedPS");
 	PlaneMat->SetVertexShader("TexturedVS");
 
+	Light_ = std::make_shared<Flow::PointLight>(500.0f);
+
 
 	//PlaneTest_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Plane Character Test");
 	//WorldObjects_.push_back(PlaneTest_);
@@ -63,7 +67,7 @@ AGDLayer::AGDLayer()
 	Player_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
 	WorldObjects_.push_back(Player_);
 	//Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, 10.0f, -20.0f));
-	Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, 10.0f, -500.0));
+	Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, -100.0f, -500.0));
 	//static_cast<PlayerPlane*>(Player_.get())->ToggleWASDMode();
 
 
@@ -77,17 +81,19 @@ AGDLayer::AGDLayer()
 	//static_cast<Flow::StaticMeshComponent*>(Map_->GetRootComponent())->SetMeshAndMaterial(Map, LitGrey->GetMaterial());
 	//WorldObjects_.push_back(Map_);
 
-	//TestCube_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("CubeTest");
-	//TestCube_->SetPhysicsMode(Flow::PhysicsMode::Static);
-	//static_cast<Flow::StaticMeshComponent*>(TestCube_->GetRootComponent())->SetMeshAndMaterial(Tube, LitGrey->GetMaterial());
-	//TestCube_->GetRootComponent()->SetWorldScale(Vector(1.0f, 1.0f, 1.0f));
-	//TestCube_->GetRootComponent()->SetWorldPosition(Vector(10.0f, 50.0f, 10.0f));
-	////WorldObjects_.push_back(TestCube_);
+	TestCube_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("CubeTest");
+	TestCube_->SetPhysicsMode(Flow::PhysicsMode::Static);
+	static_cast<Flow::StaticMeshComponent*>(TestCube_->GetRootComponent())->SetMeshAndMaterial(PlaneMesh, PlaneMat);
+	static_cast<Flow::StaticMeshComponent*>(TestCube_->GetRootComponent())->UseCompoundCollision_ = true;
+	static_cast<Flow::StaticMeshComponent*>(TestCube_->GetRootComponent())->PlaneCollision = true;
+	TestCube_->GetRootComponent()->SetWorldScale(Vector(1.0f, 1.0f, 1.0f));
+	TestCube_->GetRootComponent()->SetWorldPosition(Vector(0.0f, 50.0f, -400.0f));
+	WorldObjects_.push_back(TestCube_);
 
-	Wall_ = Flow::Application::GetWorld()->SpawnWorldObject<ObstacleWall>("Walltesting");
-	Wall_->GetRootComponent()->SetWorldScale(Vector(1.0f, 1.0f, 1.0f));
-	Wall_->GetRootComponent()->SetWorldPosition(Vector(10.0f, 50.0f, 10.0f));
-	WorldObjects_.push_back(Wall_);
+	//Wall_ = Flow::Application::GetWorld()->SpawnWorldObject<ObstacleWall>("Walltesting");
+	//Wall_->GetRootComponent()->SetWorldScale(Vector(1.0f, 1.0f, 1.0f));
+	//Wall_->GetRootComponent()->SetWorldPosition(Vector(10.0f, 50.0f, 10.0f));
+	//WorldObjects_.push_back(Wall_);
 
 	Camera_ = new Flow::BasicCamera();
 	Camera_->Translate({0.0f, 0.0f, -20.0f});
@@ -117,16 +123,21 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	Flow::Renderer::BeginScene();
 
 	Camera_->Update(DeltaTime);
+	Light_->BindLight(Flow::RenderCommand::GetCamera().GetView());
 
 	if (UseOpenCV)
 		CVTesting_->Update();
 
 	if(UseCVControls)
-	Player_->GetRootComponent()->SetWorldRotation(
-		Rotator(0.0f, CVTesting_->CalculateAngle() + 180.0f, 0.0f));
+		Player_->GetRootComponent()->SetWorldRotation(
+			Rotator(0.0f, CVTesting_->CalculateAngle() + 180.0f, 0.0f));
 
-	if (Generator_->Update(DeltaTime))
-		Generator_->CreateWall(Flow::Application::GetWorld());
+	{
+		PROFILE_CURRENT_SCOPE("World Generator Update");
+		if (Generator_->Update(DeltaTime))
+			Generator_->CreateWall(Flow::Application::GetWorld());
+	}
+
 
 	{
 		PROFILE_CURRENT_SCOPE("Draw World");

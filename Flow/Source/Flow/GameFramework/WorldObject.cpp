@@ -39,6 +39,10 @@ namespace Flow
 			FLOW_ENGINE_ERROR("WorldObject::BeginPlay: Object {0} has no root component", ObjectName_);
 
 		InitialisePhysics();
+
+		RootComponent_->BeginPlay();
+
+		BegunPlay_ = true;
 	}
 
 	void WorldObject::Tick(float DeltaTime)
@@ -117,10 +121,11 @@ namespace Flow
 			return;
 		}
 
-		//PhysicsMode_ == PhysicsMode::Static ? World::GetWorld()->AddCollisionObject(RootComponent_->GetRigidBody()) : World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody());
+		if (!RootComponent_->GetRigidBody()->getCollisionShape())
+			return;
+
 		World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody());
 
-		//TODO: Temp testing of sub components with collision
 		RootComponent_->InitialiseSubComponentPhysics(Flow::PhysicsMode::Static);
 	}
 

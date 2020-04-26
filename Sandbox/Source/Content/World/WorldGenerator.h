@@ -37,4 +37,9 @@ protected:
 	float WallSpeed_;
 	float EndZ_;
 	float WallInterval_;
+
+	std::shared_ptr<MeshWorldObject> Base;
+	std::shared_ptr<MeshWorldObject> LeftWall;
+	std::shared_ptr<MeshWorldObject> RightWall;
+	std::shared_ptr<MeshWorldObject> Top;
 };

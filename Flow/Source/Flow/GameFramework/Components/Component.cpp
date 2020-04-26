@@ -49,6 +49,10 @@ namespace Flow
 		ImGui::Separator();
 		ImGui::Dummy(ImVec2(0.0f, 10.0f));		
 	}
+	void Component::BeginPlay()
+	{
+		BegunPlay_ = true;
+	}
 }
 
 

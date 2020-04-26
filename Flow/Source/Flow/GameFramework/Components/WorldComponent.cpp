@@ -33,6 +33,16 @@ namespace Flow
 		delete MotionState_;
 	}
 
+	void WorldComponent::BeginPlay()
+	{
+		Component::BeginPlay();
+
+		for (auto& Child : Children_)
+		{
+			Child->BeginPlay();
+		}
+	}
+
 	void WorldComponent::Tick(float DeltaTime)
 	{
 		PROFILE_FUNCTION();
@@ -203,35 +213,39 @@ namespace Flow
 		RelativeTransform_ = NewTransform;
 	}
 
-	void WorldComponent::InitialisePhysics(PhysicsMode Mode)
+	bool WorldComponent::InitialisePhysics(PhysicsMode Mode)
 	{
-		CHECK_RETURN(Mode == PhysicsMode::Disabled, "WorldComponent::InitialisePhysics: Tried to init physics with physics disabled.");
+		CHECK_RETURN_FALSE(Mode == PhysicsMode::Disabled, "WorldComponent::InitialisePhysics: Tried to init physics with physics disabled.");
 		PhysicsMode_ = Mode;
 		
-		CreateCollision();
-		CreateRigidBody();
+		bool Failed = false;
+		Failed |= !CreateCollision();
+		Failed |= !CreateRigidBody();
+		
+		return !Failed;
 	}
 
 	void WorldComponent::InitialiseSubComponentPhysics(PhysicsMode Mode)
 	{
 		for(auto& Child : Children_)
 		{
-			Child->InitialisePhysics(Mode);
+			if (!Child->InitialisePhysics(Mode))
+				continue;
 
-			if(Child->GetRigidBody())
+			if(Child->GetRigidBody() && Child->GetRigidBody()->getCollisionShape())
 				World::GetWorld()->AddPhysicsObject(Child->GetRigidBody());
 		}
 	}
 
 	bool WorldComponent::CreateCollision()
 	{
-		FLOW_ENGINE_ERROR("WorldComponent::CreateCollision: No mesh to create a collision, make sure you use a component with collision to use physics.");
+		FLOW_ENGINE_ERROR("WorldComponent::CreateCollision: Object {0} - No mesh to create a collision, make sure you use a component with collision to use physics.", GetName());
 		return false;
 	}
 
 	bool WorldComponent::CreateRigidBody()
 	{
-		CHECK_RETURN_FALSE(!Collision_, "WorldComponent::CreateRigidBody: Tried to create rigidbody without a collision");
+		CHECK_RETURN_FALSE(!Collision_, "WorldComponent::CreateRigidBody: Object {0} - Tried to create rigidbody without a collision", GetName());
 		//Convert transform into BT Quaternion
 		btQuaternion Rotation;
 		Rotator Rot = Rotator::AsRadians(GetWorldRotation());
@@ -298,15 +312,20 @@ namespace Flow
 	void WorldComponent::UpdatePhysicsBody(bool ForceUpdate)
 	{
 		//TODO:
-		CHECK_RETURN(PhysicsMode_ == PhysicsMode::Disabled, "WorldComponent::UpdatePhysicsBody: Tried to move physics body when physics is disabled");
+		//CHECK_RETURN(PhysicsMode_ == PhysicsMode::Disabled, "WorldComponent::UpdatePhysicsBody: Tried to move physics body when physics is disabled");
+
+		if (PhysicsMode_ == PhysicsMode::Disabled)
+		{
+			return;
+		}
 
 		if((ForceUpdate || PhysicsMode_ == PhysicsMode::Dynamic) && GetRigidBody())
 			MovePhysicsBody(GetWorldTransform());
 
 		for (auto& Child : Children_)
 		{
-			if(Child->GetRigidBody())
-			Child->UpdatePhysicsBody(ForceUpdate);
+			if (Child->GetRigidBody() && Child->GetRigidBody()->getCollisionShape())
+				Child->UpdatePhysicsBody(ForceUpdate);
 		}
 	}
 

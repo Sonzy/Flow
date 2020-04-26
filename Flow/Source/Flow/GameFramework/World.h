@@ -53,6 +53,20 @@ namespace Flow
 		}
 
 		template<typename T>
+		std::shared_ptr<T> SpawnWorldObjectDeferred(const std::string& Name, bool TickObject = true)
+		{
+			PROFILE_FUNCTION();
+
+			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
+			WorldObjects_.push_back(NewObject);
+
+			if (TickObject)
+				TickObjects_.push_back(NewObject);
+
+			return NewObject;
+		}
+
+		template<typename T>
 		std::shared_ptr<T> SpawnWorldObjectDefault(bool TickObject = true)
 		{
 			PROFILE_FUNCTION();

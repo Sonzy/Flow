@@ -16,6 +16,8 @@ namespace Flow
 
 		Mesh_.InitialiseStaticMesh("Sphere", Material);
 		Mesh_.SetScale(10.0f);
+
+		DrawMesh_ = false;
 	}
 
 	void PointLight::Reset()

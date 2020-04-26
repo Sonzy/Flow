@@ -43,6 +43,8 @@ namespace Flow
 
 		void SetVisibility(bool Visible);
 
+		bool BegunPlay_ = false;
+
 	protected:
 
 		/* Creates a new component, assigns it's parent as this object and returns it */

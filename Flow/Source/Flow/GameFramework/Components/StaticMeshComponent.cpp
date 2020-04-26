@@ -181,6 +181,47 @@ namespace Flow
 	{
 		delete Collision_;
 
+		if (UseCompoundCollision_)
+		{
+			//TEMP - BUilding collisions for game
+			if (BoxCollision)
+			{
+				btCompoundShape* Shape = new btCompoundShape();
+				btTransform ShapeTransform = btTransform(btQuaternion(0.0f, 0.0f, 0.0f));
+
+				btCollisionShape* Cube = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+				Shape->addChildShape(ShapeTransform, Cube);
+				Collision_ = Shape;
+				Collision_->setMargin(0.04f);
+				return true;
+			}
+
+			if (PlaneCollision)
+			{
+				btCompoundShape* Shape = new btCompoundShape();
+
+				btCollisionShape* Body = new btCapsuleShape(1.0f, 10.0f);
+				btTransform BodyTransform = btTransform(btQuaternion(0.0f, Math::DegreesToRadians(90.0f), 0.0f));
+
+				btCollisionShape* Wings =new btCapsuleShape(0.5f, 15.0f);
+				btTransform WingsTransform = btTransform(btQuaternion(Math::DegreesToRadians(90.0f), Math::DegreesToRadians(90.0f), 0.0f));
+				btCollisionShape* Wings2 = new btCapsuleShape(0.5f, 15.0f);
+				btTransform WingsTransform2 = btTransform(btQuaternion(Math::DegreesToRadians(90.0f), Math::DegreesToRadians(90.0f), 0.0f), btVector3(0.0f, 0.0f, -1.0f));
+
+				btCollisionShape* Rear = new btCapsuleShape(1.0f, 3.0f);
+				btTransform RearTransform = btTransform(btQuaternion(0.0f, Math::DegreesToRadians(-30.0f), 0.0f), btVector3(0.0f, 1.5f, -7.0f));
+
+				Shape->addChildShape(BodyTransform, Body);
+				Shape->addChildShape(WingsTransform, Wings);
+				Shape->addChildShape(WingsTransform2, Wings2);
+				Shape->addChildShape(RearTransform, Rear);
+				Collision_ = Shape;
+				Collision_->setMargin(0.04f);
+				return true;
+			}
+
+		}
+
 		btConvexHullShape* Shape = new btConvexHullShape();
 		auto Vertices = StaticMesh_->GetCollisionVertices();
 		for (auto Vert : Vertices)

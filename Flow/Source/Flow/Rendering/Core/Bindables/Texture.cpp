@@ -52,7 +52,7 @@ namespace Flow
 	}
 
 	void Texture::Bind()
-	{
+ 	{
 		RenderCommand::DX11GetContext()->PSSetShaderResources(Slot_, 1u, TextureView_.GetAddressOf());
 	}
 

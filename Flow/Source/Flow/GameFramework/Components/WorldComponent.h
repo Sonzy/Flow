@@ -48,6 +48,7 @@ namespace Flow
 		WorldComponent(const std::string& Name);
 		virtual ~WorldComponent();
 
+		virtual void BeginPlay() override;
 		virtual void Tick(float DeltaTime) override;
 
 		void AddChild(WorldComponent* Child);
@@ -74,7 +75,7 @@ namespace Flow
 		void SetWorldTransform(Transform NewTransform);
 		void SetRelativeTransform(Transform NewTransform);
 
-		virtual void InitialisePhysics(PhysicsMode Mode);
+		virtual bool InitialisePhysics(PhysicsMode Mode);
 		virtual void InitialiseSubComponentPhysics(PhysicsMode Mode);
 		virtual bool CreateCollision();
 		virtual bool CreateRigidBody();

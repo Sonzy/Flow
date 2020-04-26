@@ -47,6 +47,11 @@ namespace Flow
 		void BindBatchables();
 		void BindNonBatchables();
 
+
+		bool UseCompoundCollision_ = false;
+		//TEMP COLLISION STUFF
+		bool PlaneCollision = false;
+		bool BoxCollision = false;
 	protected:
 
 		bool DrawOutline_ = false;
@@ -57,5 +62,9 @@ namespace Flow
 		std::vector<std::shared_ptr<Bindable>> OutlineEffect;
 		bool CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values
 		float OutlineThickness_ = 0.05f;
+
+
+
+
 	};
 }

@@ -54,7 +54,7 @@ private:
 	bool Stopped_;
 };
 
-#define PROFILING_ENABLED 1
+#define PROFILING_ENABLED 0
 #if PROFILING_ENABLED
 #define PROFILE_CURRENT_SCOPE(Name) BenchmarkTimer NewBenchmark##__LINE__(Name)
 #define PROFILE_FUNCTION() PROFILE_CURRENT_SCOPE(__FUNCTION__)

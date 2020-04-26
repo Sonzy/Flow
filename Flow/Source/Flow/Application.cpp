@@ -112,7 +112,7 @@ namespace Flow
 		//AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
 		//AssetSystem::LoadAsset("Wabble_Props", "Flow/Assets/Textures/Wabble_Props.png"); 
 		//AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png"); 
-		//AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
+		AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
 		//AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png"); 
 		AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png");
 		//AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
@@ -146,8 +146,6 @@ namespace Flow
 		SkyMat->SetTexture("SkyCube_Test");
 		SkyMat->SetPixelShader("TexturedPS");
 		SkyMat->SetVertexShader("TexturedVS");
-
-
 
 		//Create the game world
 		GameWorld_ = new World("Game World");
