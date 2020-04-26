@@ -19,6 +19,11 @@ namespace Flow
 			&InputLayout_));
 	}
 
+	InputLayout::~InputLayout()
+	{
+		InputLayout_.Reset();
+	}
+
 	void InputLayout::Bind()
 	{
 		RenderCommand::DX11GetContext()->IASetInputLayout(InputLayout_.Get());

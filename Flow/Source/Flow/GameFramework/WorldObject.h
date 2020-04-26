@@ -1,7 +1,7 @@
 #pragma once
 #include "Flow\Logging\Log.h"
 #include "Gameobject.h"
-#include "Components\Component.h"
+#include "Components\WorldComponent.h"
 #include <memory>
 #include <type_traits>
 
@@ -31,13 +31,15 @@ namespace Flow
 
 		void Render();
 
-		bool IsSimulatingPhysics();
-		bool CollisionEnabled();
+		PhysicsMode GetPhysicsMode() const;
+		void SetPhysicsMode(PhysicsMode NewMode);
 
 		virtual void InitialisePhysics();
 		btRigidBody* GetRigidBody();
 
 		virtual void DrawDetailsWindow(bool bDontUpdate) override;
+
+		virtual void OnComponentCollision(WorldComponent* Component, WorldComponent* Other);
 
 		void SetVisibility(bool Visible);
 
@@ -61,10 +63,9 @@ namespace Flow
 
 		//= Physics ===================
 
-		bool SimulatePhysics_ = false;
-		bool HasCollision_ = false;
+		PhysicsMode PhysicsMode_;
 		int Tag_;
-		bool Visible_ = true;
+		bool Visible_;
 
 
 		//= Controller

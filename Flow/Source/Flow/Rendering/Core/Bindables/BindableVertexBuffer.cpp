@@ -24,6 +24,11 @@ namespace Flow
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &Buffer_));
 	}
 
+	BindableVertexBuffer::~BindableVertexBuffer()
+	{
+		Buffer_.Reset();
+	}
+
 	void BindableVertexBuffer::Bind()
 	{
 		const UINT offset = 0u;

@@ -66,7 +66,7 @@ namespace Flow
 		struct LineTransform
 		{
 			//DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetCamera().GetViewMatrix() * RenderCommand::GetCamera().GetProjectionMatrix());
-			DirectX::XMMATRIX ViewProjectionMatrix = RenderCommand::GetCamera().GetTransposedCachedViewProjectionMatrix();
+			DirectX::XMMATRIX ViewProjectionMatrix = RenderCommand::GetCamera().GetTransposedCachedViewProjection();
 		} Trans;
 		
 		std::shared_ptr<VertexConstantBuffer<LineTransform>> VCB = std::make_shared<VertexConstantBuffer<LineTransform>>(0);

@@ -9,6 +9,7 @@ namespace Flow
 	{
 	public:
 		InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode);
+		~InputLayout();
 		void Bind() override;
 
 		//= Bindable Interface =

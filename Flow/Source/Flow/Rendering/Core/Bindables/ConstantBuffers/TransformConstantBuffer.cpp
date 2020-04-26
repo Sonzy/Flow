@@ -34,14 +34,14 @@ namespace Flow
 			FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
 		//Generate the transformation from the parent.
-		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetViewMatrix();
+		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetCachedView();
 		const Transforms transform =
 		{
-			//DirectX::XMMatrixTranspose(modelView),
-			modelView,
+			DirectX::XMMatrixTranspose(modelView),
+			//modelView,
 			DirectX::XMMatrixTranspose(
 				modelView *
-				RenderCommand::GetCamera().GetProjectionMatrix())
+				RenderCommand::GetCamera().GetProjection())
 		};
 
 		//Update and bind the constant buffers

@@ -38,15 +38,15 @@ namespace Flow
 
 	void Material::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
 	{
-		Parent->AddBind(Texture::Resolve(Texture_, 0));
-		Parent->AddBind(Sampler::Resolve());
+		Parent->AddBatchedBind(Texture::Resolve(Texture_, 0));
+		Parent->AddBatchedBind(Sampler::Resolve());
 
 		auto VShader = VertexShader::Resolve(VertexShader_->GetPath());
 		auto VShaderByteCode = static_cast<VertexShader&>(*VShader).GetByteCode();
-		Parent->AddBind(std::move(VShader));
-		Parent->AddBind(PixelShader::Resolve(PixelShader_->GetPath()));
+		Parent->AddBatchedBind(std::move(VShader));
+		Parent->AddBatchedBind(PixelShader::Resolve(PixelShader_->GetPath()));
 
-		Parent->AddBind(InputLayout::Resolve(VertexLayout, VShaderByteCode));
+		Parent->AddBatchedBind(InputLayout::Resolve(VertexLayout, VShaderByteCode));
 	}
 
 	void Material::SetTexture(const std::string& TextureName)

@@ -1,9 +1,10 @@
 #pragma once
 #include <chrono>
+#include "Flow\Core.h"
 
 namespace Flow
 {
-	class Timer
+	class FLOW_API Timer
 	{
 	public:
 

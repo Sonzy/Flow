@@ -9,6 +9,8 @@ namespace Flow
 	public:
 
 		Texture(TextureAsset* Asset, UINT slot);
+		~Texture();
+
 		void Bind() override;
 
 		//= Bindable Interface =

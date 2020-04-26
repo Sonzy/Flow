@@ -59,9 +59,9 @@ namespace Flow
 	{
 		return std::string("FlatColour") +
 			std::to_string(Colour_.Colour.x) +
-			std::to_string(Colour_.Colour.x) +
-			std::to_string(Colour_.Colour.x) +
-			std::to_string(Colour_.Colour.x);
+			std::to_string(Colour_.Colour.y) +
+			std::to_string(Colour_.Colour.z) +
+			std::to_string(Colour_.Colour.w);
 	}
 }
 

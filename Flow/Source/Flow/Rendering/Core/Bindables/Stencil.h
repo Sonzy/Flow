@@ -22,6 +22,7 @@ namespace Flow
 	{
 	public:
 		Stencil(StencilMode mode, DepthMode Depth = DepthMode::On);
+		~Stencil();
 
 		virtual void Bind() override;
 	private:

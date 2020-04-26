@@ -49,6 +49,11 @@ namespace Flow
 			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &ConstantBuffer_));
 		}
 
+		~ConstantBuffer()
+		{
+			ConstantBuffer_.Reset();
+		}
+
 		void Update(const C& consts)
 		{
 			HRESULT ResultHandle;

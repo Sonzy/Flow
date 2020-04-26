@@ -1,45 +1,65 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Flow/Helper/Maths.h"
+#include "Flow\Helper\Maths.h"
 
 namespace Flow
 {
-	class FLOW_API Camera
+	/* Interface for camera, anything inheriting from this can be used as a camera. 
+	Use Update instead of tick, if the camera is moved outside of update, re-cache */
+	class CameraBase
 	{
 	public:
-		Camera();
 
-		DirectX::XMMATRIX GetMatrix() const;
+		virtual void SetProjection(DirectX::XMMATRIX Projection);
 
-		void Reset();
-		void Translate(DirectX::XMFLOAT3 Translation);
-		void SetRotation(Rotator Rotation);
-		void Rotate(Rotator Offset);
-
-		void Tick(float DeltaTime);
-
-		void RenderIMGUIWindow();
-
-		void SetFOV(float NewFOV);
-		float GetFOV() const;
-
-		void SetProjection(DirectX::XMMATRIX Projection);
+		[[nodiscard]] virtual DirectX::XMMATRIX GetView() const = 0;
 		DirectX::XMMATRIX GetProjection() const;
 
-		DirectX::XMFLOAT3 GetPosition() const;
 
-	private:
+		virtual void Update(float DeltaTime) = 0;
+		virtual void CacheCameraMatrices();
 
-		Vector Position_;
-		Rotator Rotation_; //Pitch Roll Yaw
+		DirectX::XMMATRIX GetCachedViewProjection();
+		DirectX::XMMATRIX GetTransposedCachedViewProjection();
+		DirectX::XMMATRIX GetCachedView();
+		
+		virtual Vector GetCameraPosition() const = 0;
 
-		IntVector2D LastMousePosition_;
+		virtual void SetFOV(float NewFOV) { FieldOfView_ = NewFOV; }
+		virtual float GetFOV() const { return FieldOfView_; };
 
+		void MarkCacheDirty() { CacheDirty_ = false; }
+
+	protected:
+
+		DirectX::XMMATRIX CachedViewProj_;
+		DirectX::XMMATRIX CachedView_;
+		DirectX::XMMATRIX CachedTransposedViewProj_;
 		DirectX::XMMATRIX Projection_;
 
-		float m_FOV = Math::PI / 2;
+		bool CacheDirty_ = false;
+		Vector LastKnownCameraPos_;
 
-		float CameraSpeed_ = 0.2f;
-		float RotationSpeed_ = 0.005f;
+		float FieldOfView_ = 90;
 	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

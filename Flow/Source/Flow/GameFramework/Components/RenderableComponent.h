@@ -17,16 +17,18 @@ namespace Flow
 	
 
 		void AddBind(std::shared_ptr<Bindable> bind);
+		void AddBatchedBind(std::shared_ptr<Bindable> bind);
+
 		void BindAll();
+		void BindBatchedBinds();
+		void BindNonBatched();
 
 		const IndexBuffer& GetIndexBuffer() const;
 
 		virtual DirectX::XMMATRIX GetTransformXM();
 
+		virtual void DrawDetailsWindow(bool DontUpdate) override;
 	protected:
-
-
-
 
 		virtual void RefreshBinds();
 
@@ -42,6 +44,7 @@ namespace Flow
 		}
 
 		std::vector<std::shared_ptr<Bindable>> Binds_;
+		std::vector<std::shared_ptr<Bindable>> BatchedBinds_; //binds that only need 1 instance
 		const IndexBuffer* IndexBuffer_;
 	};
 }

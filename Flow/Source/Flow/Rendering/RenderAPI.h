@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow/Rendering/Core/Camera/Camera.h"
+#include "Flow\Helper\Maths.h"
 
 namespace Flow
 {
@@ -30,6 +31,8 @@ namespace Flow
 		virtual void EndFrame() = 0;
 
 		virtual void Resize(int Width, int Height) = 0;
+
+		virtual void SetFarZ(float NewFar) = 0;
 
 		virtual Vector GetScreenToWorldDirection(int X, int Y) = 0;
 

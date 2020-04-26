@@ -1,5 +1,6 @@
 #include "Flowpch.h"
 #include "Component.h"
+#include "ThirdParty\ImGui\imgui.h"
 
 namespace Flow
 {
@@ -42,8 +43,11 @@ namespace Flow
 
 	}
 
-	void Component::DrawComponentDetailsWindow()
+	void Component::DrawDetailsWindow(bool bDontUpdate)
 	{
+		ImGui::TextColored(IMGUI_YELLOW, "Component Properties");
+		ImGui::Separator();
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));		
 	}
 }
 

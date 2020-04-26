@@ -18,14 +18,12 @@
 namespace Flow
 {
 	StaticMeshComponent::StaticMeshComponent()
-		: RenderableComponent("Unnamed StaticMesh Component"), StaticMesh_(nullptr), Material_(nullptr),
-		Body_(nullptr), Collision_(nullptr)
+		: StaticMeshComponent("StaticMeshComponent")
 	{
 	}
 
 	StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
-		: RenderableComponent(Name), StaticMesh_(nullptr), Material_(nullptr),
-		Body_(nullptr), Collision_(nullptr)
+		: RenderableComponent(Name), StaticMesh_(nullptr), Material_(nullptr)
 	{
 		if (Mesh && Material)
 			SetMeshAndMaterial(Mesh, Material, MeshIndex);
@@ -34,39 +32,11 @@ namespace Flow
 	StaticMeshComponent::~StaticMeshComponent()
 	{
 		delete StaticMesh_;
-		delete Collision_;
 	}
 
 	void StaticMeshComponent::InitialiseComponent(MeshAsset* Mesh, Material* Material)
 	{
 		SetMeshAndMaterial(Mesh, Material);
-	}
-
-	void StaticMeshComponent::Tick(float DeltaTime)
-	{
-		PROFILE_FUNCTION();
-
-		WorldComponent::Tick(DeltaTime);
-		
-		if (Body_ && SimulatePhysics_)
-		{
-			btVector3 Vec = Body_->getWorldTransform().getOrigin();
-
-			//Need euler YZX 
-			btScalar m[16];
-			Body_->getWorldTransform().getOpenGLMatrix(m);
-			float fAngZ = atan2f(m[1], m[5]);
-			float fAngY = atan2f(m[8], m[10]);
-			float fAngX = -asinf(m[9]);
-
-			SetWorldPosition(Vector(Vec.x(), Vec.y(), Vec.z()));
-			SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
-		}
-
-		if (!SimulatePhysics_ && Body_)
-		{
-			MovePhysicsBody(GetWorldTransform());
-		}
 	}
 
 	void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex)
@@ -122,12 +92,12 @@ namespace Flow
 		AddBind(Transform);
 		Material_->BindMaterial(this, MeshLayout);
 
-		AddBind(Rasterizer::Resolve(false));
+		AddBatchedBind(Rasterizer::Resolve(false));
 
 		//TODO: Temp stencil testing
 		if (DrawOutline_)
 		{
-			AddBind(std::make_shared<Stencil>(StencilMode::Write, DepthMode::On));
+			AddBatchedBind(std::make_shared<Stencil>(StencilMode::Write, DepthMode::On));
 			VertexBuffer Dummy = VertexBuffer(MeshLayout);
 			std::vector<unsigned short> Dummy2;
 
@@ -150,7 +120,7 @@ namespace Flow
 			OutlineEffect.push_back(std::make_shared<Stencil>(StencilMode::Mask, DepthMode::Off));
 		}
 		else
-			AddBind(std::make_shared<Stencil>(StencilMode::Off));
+			AddBatchedBind(std::make_shared<Stencil>(StencilMode::Off));
 	}
 
 	DirectX::XMMATRIX StaticMeshComponent::GetTransformXM()
@@ -158,7 +128,7 @@ namespace Flow
 		Transform WorldTransform = GetWorldTransform();
 		Rotator RadianRotation = Rotator::AsRadians(WorldTransform.Rotation_);
 
-		Vector Scale = WorldTransform.Scale_;
+		Vector Scale = GetWorldScale();
 		if (CurrentlyOutlining)
 			Scale += OutlineThickness_;
 
@@ -167,6 +137,17 @@ namespace Flow
 			DirectX::XMMatrixTranslation(WorldTransform.Position_.X, WorldTransform.Position_.Y, WorldTransform.Position_.Z);
 
 		return Trans;
+	}
+
+	void StaticMeshComponent::EnableOutlineDrawing(bool Enabled)
+	{
+		if (!StaticMesh_)
+		{
+			FLOW_ENGINE_ERROR("Tried to draw outline on component without mesh");
+			return;
+		}
+		DrawOutline_ = Enabled;
+		RefreshBinds();
 	}
 
 	void StaticMeshComponent::DrawOutline()
@@ -182,11 +163,11 @@ namespace Flow
 		CurrentlyOutlining = false;
 	}
 
-	void StaticMeshComponent::DrawComponentDetailsWindow()
+	void StaticMeshComponent::DrawDetailsWindow(bool bDontUpdate)
 	{
 		PROFILE_FUNCTION();
 
-		WorldComponent::DrawComponentDetailsWindow();
+		RenderableComponent::DrawDetailsWindow(bDontUpdate);
 
 		bool BindsDirty = false;
 		BindsDirty |= ImGui::Checkbox("Outline", &DrawOutline_);
@@ -196,7 +177,7 @@ namespace Flow
 			RefreshBinds();
 	}
 
-	void StaticMeshComponent::GenerateCollision()
+	bool StaticMeshComponent::CreateCollision()
 	{
 		delete Collision_;
 
@@ -209,88 +190,21 @@ namespace Flow
 		}
 
 		Collision_ = Shape;
-		Collision_->setMargin(0.01f);
+		Collision_->setMargin(0.04f);
 
 		Transform trans = GetWorldTransform();
 		Collision_->setLocalScaling(btVector3(trans.Scale_.X, trans.Scale_.Y, trans.Scale_.Z));
+
+		return true;
 	}
 
-	void StaticMeshComponent::CreateRigidBody()
+	void StaticMeshComponent::BindBatchables()
 	{
-		//Convert transform into BT Quaternion
-		btQuaternion Rotation;
-		Rotator Rot = Rotator::AsRadians(GetWorldRotation());
-		Vector Pos = GetWorldPosition();
-		Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
-
-		//Setup the motion state
-		btVector3 Position = btVector3(Pos.X, Pos.Y, Pos.Z);
-		btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(Rotation, Position));
-
-		//Initialise the mass and intertia values
-		btScalar bodyMass = SimulatePhysics_ ?  20.0f : 0.0f;
-		btVector3 bodyInertia;
-		Collision_->calculateLocalInertia(bodyMass, bodyInertia);
-
-		//Create the construction info for the body
-		btRigidBody::btRigidBodyConstructionInfo bodyCI =
-			btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, Collision_, bodyInertia);
-		bodyCI.m_restitution = 0.4f;
-		bodyCI.m_friction = 0.5f;
-		bodyCI.m_rollingFriction = 0.2f;
-		bodyCI.m_spinningFriction = 0.3f;
-
-		Body_ = new btRigidBody(bodyCI);
-		Body_->setUserPointer(this);
-
-		if(!UseGravity_)
-		  Body_->setGravity(btVector3(0.0f, 0.0, 0.0f));
+		BindBatchedBinds();
 	}
 
-	void StaticMeshComponent::InitialisePhysics()
+	void StaticMeshComponent::BindNonBatchables()
 	{
-		GenerateCollision();
-		CreateRigidBody();
-	}
-
-	btRigidBody* StaticMeshComponent::GetRigidBody()
-	{
-		return Body_;
-	}
-
-	void StaticMeshComponent::SetSimulatePhysics(bool Simulate)
-	{
-		SimulatePhysics_ = Simulate;
-	}
-
-	void StaticMeshComponent::SetGravityEnabled(bool Gravity)
-	{
-		UseGravity_ = false;
-	}
-
-	void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
-	{
-		PROFILE_FUNCTION();
-
-		btMotionState* motionState = Body_->getMotionState();
-		btTransform Transform;
-		btQuaternion Rotation;
-		Rotator RadiansRotation = Rotator::AsRadians(NewTransform.Rotation_);
-		Rotation.setEuler(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
-
-		//Set new transform
-		Transform.setOrigin(btVector3(NewTransform.Position_.X, NewTransform.Position_.Y, NewTransform.Position_.Z));
-		Transform.setRotation(Rotation);
-
-		//Set Scale
-		Collision_->setLocalScaling(btVector3(NewTransform.Scale_.X, NewTransform.Scale_.Y, NewTransform.Scale_.Z));
-
-		//Update Transform
-		Body_->setWorldTransform(Transform);
-		motionState->setWorldTransform(Transform);
-		World::GetPhysicsWorld()->updateSingleAabb(Body_);
-
-		//Re-enable physics body
-		Body_->activate();
+		BindNonBatchables();
 	}
 }

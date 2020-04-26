@@ -9,6 +9,7 @@ namespace Flow
 	{
 	public:
 		BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer);
+		~BindableVertexBuffer();
 
 		void Bind() override;
 

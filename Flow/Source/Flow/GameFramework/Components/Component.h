@@ -23,7 +23,7 @@ namespace Flow
 
 		virtual void Tick(float DeltaTime) override;
 
-		virtual void DrawComponentDetailsWindow();
+		virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
 	protected:
 

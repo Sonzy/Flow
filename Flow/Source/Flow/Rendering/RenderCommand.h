@@ -22,7 +22,7 @@ namespace Flow
 
 		//= General ===================
 
-		static CameraComponent& GetCamera();
+		static CameraBase& GetCamera();
 
 		static void Resize(int Width, int Height);
 		static void SetClearColour(float R, float G, float B, float A);
@@ -39,6 +39,10 @@ namespace Flow
 
 		static void DisableDepth();
 		static void EnableDepth();
+
+		static void SetFarZ(float Z);
+
+		static float* GetWriteableZ();
 
 		static IntVector2D GetWindowSize();
 

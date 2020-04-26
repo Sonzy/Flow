@@ -9,16 +9,19 @@
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 
+#include "Flow\Editor\Inspector.h"
+
 namespace Flow
 {
 	WorldObject::WorldObject()
-		: RootComponent_(nullptr)
+		: WorldObject("WorldObject")
 	{
 
 	}
 
 	WorldObject::WorldObject(const std::string& Name)
-		: GameObject(Name), RootComponent_(nullptr)
+		: GameObject(Name), RootComponent_(nullptr), PhysicsMode_(PhysicsMode::Disabled),
+		Tag_(-1), Visible_(true), CurrentController_(nullptr)
 	{
 	}
 
@@ -32,10 +35,10 @@ namespace Flow
 	{
 		PROFILE_FUNCTION();
 
-		if (CollisionEnabled())
-		{
-			InitialisePhysics();
-		}
+		if (!RootComponent_)
+			FLOW_ENGINE_ERROR("WorldObject::BeginPlay: Object {0} has no root component", ObjectName_);
+
+		InitialisePhysics();
 	}
 
 	void WorldObject::Tick(float DeltaTime)
@@ -78,24 +81,47 @@ namespace Flow
 
 	void WorldObject::Render()
 	{
-		if(RootComponent_ && Visible_)
+		if(RootComponent_ && Visible_ && RootComponent_->IsVisible())
 			RootComponent_->Render();
 	}
 
-	bool WorldObject::IsSimulatingPhysics()
+	PhysicsMode WorldObject::GetPhysicsMode() const
 	{
-		return SimulatePhysics_;
+		return PhysicsMode_;
 	}
 
-	bool WorldObject::CollisionEnabled()
+	void WorldObject::SetPhysicsMode(PhysicsMode NewMode)
 	{
-		return HasCollision_;
+		PhysicsMode_ = NewMode;
+		//TODO: Update all components
 	}
+
 
 	void WorldObject::InitialisePhysics()
 	{
-		RootComponent_->InitialisePhysics();
-		SimulatePhysics_ ? World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody()) : World::GetWorld()->AddCollisionObject(RootComponent_->GetRigidBody());
+		if (PhysicsMode_ == PhysicsMode::Disabled)
+			return;
+
+		RootComponent_->InitialisePhysics(PhysicsMode_);
+
+		//Allow static objects to have no collision on the root
+		if (!RootComponent_->GetRigidBody())
+		{
+			if (PhysicsMode_ == PhysicsMode::Dynamic)
+			{
+				FLOW_ENGINE_ERROR("WorldObject::InitialisePhysics: Root Component had no rigidbody");
+				return;
+			}
+
+			RootComponent_->InitialiseSubComponentPhysics(Flow::PhysicsMode::Static);
+			return;
+		}
+
+		//PhysicsMode_ == PhysicsMode::Static ? World::GetWorld()->AddCollisionObject(RootComponent_->GetRigidBody()) : World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody());
+		World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody());
+
+		//TODO: Temp testing of sub components with collision
+		RootComponent_->InitialiseSubComponentPhysics(Flow::PhysicsMode::Static);
 	}
 
 	btRigidBody* WorldObject::GetRigidBody()
@@ -107,41 +133,17 @@ namespace Flow
 	{
 		PROFILE_FUNCTION();
 
-		ImGui::InputText("ObjectName", &ObjectName_);
+		ImGui::TextColored(IMGUI_YELLOW, "Object Properties");
 
-		ImGui::Separator(); //==========================================
+		ImGui::Separator();
 
-		//Display Component node tree
-		if (ImGui::TreeNode(RootComponent_->GetName().c_str()))
-		{
-			for (auto Child : RootComponent_->GetChildren())
-			{
-				ImGui::Text(Child->GetName().c_str());
-			}
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-			ImGui::TreePop();
-		}
+		ImGui::Checkbox("Is Visible", &Visible_);	
+	}
 
-		ImGui::Separator(); //==========================================
-
-		
-
-		//Display World Object Transform
-		bool bUpdate = false;
-		bUpdate |= ImGui::InputFloat3("Position", (float*)RootComponent_->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		bUpdate |= ImGui::InputFloat3("Rotation", (float*)RootComponent_->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		bUpdate |= ImGui::InputFloat3("Scale", (float*)RootComponent_->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		//bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
-
-		//Update Object Transform
-		if (bUpdate && !bDontUpdate)
-		{
-			//TEMP CAST
-			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(RootComponent_))
-				Comp->MovePhysicsBody(RootComponent_->GetRelativeTransform());
-		}
-
-		ImGui::Checkbox("Is Visible", &Visible_);		
+	void WorldObject::OnComponentCollision(WorldComponent* Component, WorldComponent* Other)
+	{
 	}
 
 	void WorldObject::SetVisibility(bool Visible)

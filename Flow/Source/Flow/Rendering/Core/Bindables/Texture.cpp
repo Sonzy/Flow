@@ -45,6 +45,12 @@ namespace Flow
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &TextureView_));
 	}
 
+	Texture::~Texture()
+	{
+		TextureView_.Reset();
+		pTexture.Reset();
+	}
+
 	void Texture::Bind()
 	{
 		RenderCommand::DX11GetContext()->PSSetShaderResources(Slot_, 1u, TextureView_.GetAddressOf());

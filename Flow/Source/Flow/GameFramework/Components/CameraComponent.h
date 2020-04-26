@@ -2,39 +2,33 @@
 #include "Flow\GameFramework\Components\WorldComponent.h"
 #include <DirectXMath.h>
 #include "Flow\Helper\Maths.h"
+#include "Flow\Rendering\Core\Camera\Camera.h"
 
 namespace Flow
 {
-	class FLOW_API CameraComponent : public WorldComponent
+	/* Component wrapper around the camera interface. */
+	class FLOW_API CameraComponent : public WorldComponent, public CameraBase
 	{
 	public:
 		CameraComponent();
 		CameraComponent(const std::string& Name);
 
+		// Dont use in camera
 		virtual void Tick(float DeltaTime);
 
-		void SetFOV(float FOV);
-		void SetProjection(DirectX::XMMATRIX Projection);
+		virtual void Update(float DeltaTime) override;
+		
+		// === ICamera interface ===
 
-		DirectX::XMMATRIX GetViewMatrix() const;
-		DirectX::XMMATRIX GetProjectionMatrix() const;
+		[[nodiscard]] virtual DirectX::XMMATRIX GetView() const override;
 
-		void CacheViewProjection();
-		DirectX::XMMATRIX GetCachedViewProjectionMatrix() const;
-		DirectX::XMMATRIX GetTransposedCachedViewProjectionMatrix() const;
-
-		float GetFOV() const;
+		virtual Vector GetCameraPosition() const override;
 
 	private:
 
 		IntVector2D LastMousePosition_;
-		DirectX::XMMATRIX Projection_;
-		float FOV_;
 
 		float MovementSpeed_;
 		float RotationSpeed_;
-
-		DirectX::XMMATRIX CachedViewProj;
-		DirectX::XMMATRIX CachedTransposedViewProj;
 	};
 }

@@ -24,6 +24,11 @@ namespace Flow
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &IndexBuffer_));
 	}
 
+	IndexBuffer::~IndexBuffer()
+	{
+		IndexBuffer_.Reset();
+	}
+
 	void IndexBuffer::Bind()
 	{
 		RenderCommand::DX11GetContext()->IASetIndexBuffer(IndexBuffer_.Get(), DXGI_FORMAT_R16_UINT, 0);

@@ -31,7 +31,10 @@ namespace Flow
 		virtual void EnableDepth();
 		virtual void DisableDepth();
 
-		virtual Vector GetScreenToWorldDirection(int X, int Y);
+		virtual void SetFarZ(float NewFar);
+		float* GetWriteableZ();
+
+		virtual Vector GetScreenToWorldDirection(int X, int Y) override;
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();

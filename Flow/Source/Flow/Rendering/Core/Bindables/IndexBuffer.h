@@ -4,10 +4,11 @@
 
 namespace Flow
 {
-	class IndexBuffer : public Bindable
+	class FLOW_API IndexBuffer : public Bindable
 	{
 	public:
 		IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices);
+		~IndexBuffer();
 
 		virtual void Bind() override;
 

@@ -39,6 +39,11 @@ namespace Flow
 		RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description, &Stencil_);
 	}
 
+	Stencil::~Stencil()
+	{
+		Stencil_.Reset();
+	}
+
 	void Stencil::Bind()
 	{
 		RenderCommand::DX11GetContext()->OMSetDepthStencilState(Stencil_.Get(), 0xFF);

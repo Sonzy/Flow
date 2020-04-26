@@ -26,7 +26,7 @@ void Instrumentor::EndSession()
 void Instrumentor::WriteProfile(const ProfileResult& Result)
 {
 	//Disabled thread safety for performance, just probs wont use in threads
-	//std::lock_guard<std::mutex> Lock(Lock_);
+	std::lock_guard<std::mutex> Lock(Lock_);
 
 	if (ProfileCount_++ > 0)
 		OutputStream_ << ",";
@@ -40,7 +40,7 @@ void Instrumentor::WriteProfile(const ProfileResult& Result)
 	OutputStream_ << "\"name\":\"" << Name << "\",";
 	OutputStream_ << "\"ph\":\"X\",";
 	OutputStream_ << "\"pid\":0,";
-	//OutputStream_ << "\"tid\":" << Result.ThreadID << ",";
+	OutputStream_ << "\"tid\":" << Result.ThreadID << ",";
 	OutputStream_ << "\"ts\":" << Result.Start_;
 	OutputStream_ << "}";
 

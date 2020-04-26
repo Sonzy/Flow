@@ -25,8 +25,6 @@ Wall::Wall(const std::string& NewName)
 	WallMesh = CreateComponent<Flow::StaticMeshComponent>("Test Mesh");
 	WallMesh->InitialiseComponent(Mesh, Material);
 	RootComponent_ = WallMesh.get();
-
-	HasCollision_ = true;
 }
 
 void Wall::Tick(float DeltaTime)

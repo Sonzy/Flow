@@ -16,6 +16,8 @@
 
 #include "Flow\Helper\Instrumentation.h"
 
+#include <map>
+
 namespace Flow
 {
 	LineBatcher World::LineBatcher_ = LineBatcher();
@@ -52,6 +54,8 @@ namespace Flow
 		{
 			WorldObj->BeginPlay();
 		}
+
+		WorldBegunPlay_ = true;
 	}
 
 	void World::InitialisePhysics()
@@ -77,8 +81,25 @@ namespace Flow
 		if (DrawSkybox_)
 			Flow::Renderer::Submit(Skybox_);
 
+		//= Physics Update
 		PhysicsWorld_->stepSimulation(DeltaTime, 0);
-		for (auto& WorldObj : WorldObjects_)
+
+		std::map<int, std::vector<int>> newCollisions;
+		int NumManifolds = PhysicsWorld_->getDispatcher()->getNumManifolds();
+		for (int i = 0; i < NumManifolds; i++)
+		{
+			btPersistentManifold* contactManifold = PhysicsWorld_->getDispatcher()->getManifoldByIndexInternal(i);
+			const btCollisionObject* obA = contactManifold->getBody0();
+			const btCollisionObject* obB = contactManifold->getBody1();
+			
+			WorldComponent* Object1 = static_cast<WorldComponent*>(obA->getUserPointer());
+			WorldComponent* Object2 = static_cast<WorldComponent*>(obB->getUserPointer());
+
+			Object1->GetParentWorldObject()->OnComponentCollision(Object1, Object2);
+			Object2->GetParentWorldObject()->OnComponentCollision(Object2, Object1);
+		}
+
+		for (auto& WorldObj : TickObjects_)
 		{
 			WorldObj->Tick(DeltaTime);
 		}

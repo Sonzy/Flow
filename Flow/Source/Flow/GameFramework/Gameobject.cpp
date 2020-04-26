@@ -27,3 +27,8 @@ const std::string& Flow::GameObject::GetName()
 {
 	return ObjectName_;
 }
+
+std::string& Flow::GameObject::GetNameNonConst()
+{
+	return ObjectName_;
+}

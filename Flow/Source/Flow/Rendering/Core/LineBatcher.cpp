@@ -87,7 +87,7 @@ namespace Flow
 
 		BVertexBuffer_ = new BindableVertexBuffer("LineBatcher", *VertexBuffer_);
 
-		CameraMatrix.ViewProjectionMatrix_ = RenderCommand::GetCamera().GetTransposedCachedViewProjectionMatrix();
+		CameraMatrix.ViewProjectionMatrix_ = RenderCommand::GetCamera().GetTransposedCachedViewProjection();
 		VConstantBuffer_->Update(CameraMatrix);
 
 		VConstantBuffer_->Bind();

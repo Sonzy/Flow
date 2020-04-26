@@ -17,9 +17,7 @@ namespace Flow
 		StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr, int MeshIndex = 0);
 		virtual ~StaticMeshComponent();
 		
-
 		void InitialiseComponent(MeshAsset* Mesh , Material* Material );
-		virtual void Tick(float DeltaTime) override;
 
 		void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
 		void SetStaticMesh(const std::string& MeshName);
@@ -36,41 +34,25 @@ namespace Flow
 		//Temp - TODO: Actually use component movement for rendering
 		Mesh* GetMesh() { return StaticMesh_; }
 
-		void EnableOutlineDrawing(bool Enabled) { DrawOutline_ = Enabled; RefreshBinds(); }
+		void EnableOutlineDrawing(bool Enabled);
 		void DrawOutline();
 
-		virtual void DrawComponentDetailsWindow() override;
+		virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
 		//= Physics ==========
 
 		/* Generates new collision from the mesh */
-		void GenerateCollision();
-		void CreateRigidBody();
+		virtual bool CreateCollision() override;
 
-		virtual void InitialisePhysics() override;
-		virtual btRigidBody* GetRigidBody() override;
-
-		void SetSimulatePhysics(bool Simulate);
-		void SetGravityEnabled(bool Gravity);
-
-
-		//TODO: Temp movement with rigidbodies
-		void MovePhysicsBody(Transform NewTransform);
-
-
-
+		void BindBatchables();
+		void BindNonBatchables();
 
 	protected:
 
-		bool SimulatePhysics_ = false;
-		bool UseGravity_ = true;
 		bool DrawOutline_ = false;
 
 		Mesh* StaticMesh_;
 		Material* Material_;
-
-		btCollisionShape* Collision_;
-		btRigidBody* Body_;
 
 		std::vector<std::shared_ptr<Bindable>> OutlineEffect;
 		bool CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values

@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include "spdlog/fmt/ostr.h"
 
+#include "ThirdParty\Bullet\LinearMath\btVector3.h"
+
 struct Vector
 {
 	float X;
@@ -25,6 +27,10 @@ struct Vector
 
 	Vector(IntVector2D Input)
 		: X((float)Input.X), Y((float)Input.Y), Z(0)
+	{	}
+
+	Vector(btVector3 Input)
+		: X(Input.x()), Y(Input.y()), Z(Input.z())
 	{	}
 
 	DirectX::XMFLOAT3 ToDXFloat3() const
@@ -61,6 +67,11 @@ struct Vector
 	Vector operator*(const float& Other)
 	{
 		return Vector(X * Other, Y * Other, Z * Other);
+	}
+
+	Vector operator*(const Vector& Other)
+	{
+		return Vector(X * Other.X, Y * Other.Y, Z * Other.Z);
 	}
 
 	template<typename OStream>

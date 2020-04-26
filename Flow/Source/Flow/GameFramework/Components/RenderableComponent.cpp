@@ -20,6 +20,27 @@ namespace Flow
 		{
 			b->Bind();
 		}
+
+		for (auto& b : BatchedBinds_)
+		{
+			b->Bind();
+		}
+	}
+
+	void RenderableComponent::BindBatchedBinds()
+	{
+		for (auto& b : BatchedBinds_)
+		{
+			b->Bind();
+		}
+	}
+
+	void RenderableComponent::BindNonBatched()
+	{
+		for (auto& b : Binds_)
+		{
+			b->Bind();
+		}
 	}
 
 	const IndexBuffer& RenderableComponent::GetIndexBuffer() const
@@ -36,6 +57,11 @@ namespace Flow
 			DirectX::XMMatrixTranslation(WorldTransform.Position_.X, WorldTransform.Position_.Y, WorldTransform.Position_.Z);
 	}
 
+	void RenderableComponent::DrawDetailsWindow(bool DontUpdate)
+	{
+		WorldComponent::DrawDetailsWindow(DontUpdate);
+	}
+
 	void RenderableComponent::AddBind(std::shared_ptr<Bindable> bind)
 	{
 		//If index buffer, only allow single bind.
@@ -47,6 +73,19 @@ namespace Flow
 
 		Binds_.push_back(std::move(bind));
 	}
+
+	void RenderableComponent::AddBatchedBind(std::shared_ptr<Bindable> bind)
+	{
+		//If index buffer, only allow single bind.
+		if (typeid(*bind) == typeid(IndexBuffer))
+		{
+			assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
+			IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
+		}
+
+		BatchedBinds_.push_back(std::move(bind));
+	}
+
 	void RenderableComponent::RefreshBinds()
 	{
 	}

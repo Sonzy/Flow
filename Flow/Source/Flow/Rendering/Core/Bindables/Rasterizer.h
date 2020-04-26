@@ -7,6 +7,7 @@ namespace Flow
 	{
 	public:
 		Rasterizer(bool DoubleSided);
+		~Rasterizer();
 		void Bind() override;
 
 		static std::shared_ptr<Rasterizer> Resolve(bool DoubleSided);

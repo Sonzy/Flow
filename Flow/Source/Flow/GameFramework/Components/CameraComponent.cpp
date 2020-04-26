@@ -10,18 +10,19 @@ namespace Flow
 	}
 
 	CameraComponent::CameraComponent(const std::string& Name)
-		: WorldComponent(Name), LastMousePosition_(0), Projection_(DirectX::XMMATRIX()), FOV_(Math::DegreesToRadians(90.0f)),
-		MovementSpeed_(0.2f), RotationSpeed_(0.005f)
+		: WorldComponent(Name), LastMousePosition_(0), MovementSpeed_(0.2f), RotationSpeed_(0.005f)
 	{
+		Projection_ = DirectX::XMMATRIX();
+		FieldOfView_ = Math::DegreesToRadians(90.0f);
 	}
 
 	void CameraComponent::Tick(float DeltaTime)
 	{
-		return;
+	}
 
+	void CameraComponent::Update(float DeltaTime)
+	{
 		IntVector2D Pos = Input::GetMousePosition();
-
-		Vector Translation(0.0f);
 
 		//Camera rotation
 		if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
@@ -37,22 +38,13 @@ namespace Flow
 			}
 		}
 
-		AddRelativePosition(Translation);
-
 		LastMousePosition_ = Pos;
+
+		CacheCameraMatrices();
 	}
 
-	void CameraComponent::SetFOV(float FOV)
-	{
-		FOV_ = FOV;
-	}
 
-	void CameraComponent::SetProjection(DirectX::XMMATRIX Projection)
-	{
-		Projection_ = Projection;
-	}
-
-	DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
+	DirectX::XMMATRIX CameraComponent::GetView() const
 	{
 		const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 		Rotator WorldRotation = Rotator::AsRadians(GetWorldRotation());
@@ -80,32 +72,14 @@ namespace Flow
 		DirectX::XMVECTOR Position = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll);
 
-		return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVector3Rotate(Position, Rotation));
+		DirectX::XMVECTOR Rotated = DirectX::XMVector3Rotate(Position, Rotation);
+		//DirectX::XMFLOAT4 RotatedRead;
+		//DirectX::XMStoreFloat4(&RotatedRead, Rotated);
+		return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, Rotated);
 	}
 
-	DirectX::XMMATRIX CameraComponent::GetProjectionMatrix() const
+	Vector CameraComponent::GetCameraPosition() const
 	{
-		return Projection_;
-	}
-
-	void CameraComponent::CacheViewProjection()
-	{
-		CachedViewProj = GetViewMatrix() * GetProjectionMatrix();
-		CachedTransposedViewProj = DirectX::XMMatrixTranspose(GetViewMatrix() * GetProjectionMatrix());
-	}
-
-	DirectX::XMMATRIX CameraComponent::GetCachedViewProjectionMatrix() const
-	{
-		return CachedViewProj;
-	}
-
-	DirectX::XMMATRIX CameraComponent::GetTransposedCachedViewProjectionMatrix() const
-	{
-		return CachedTransposedViewProj;
-	}
-
-	float CameraComponent::GetFOV() const
-	{
-		return FOV_;
+		return GetWorldPosition();
 	}
 }

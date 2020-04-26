@@ -63,8 +63,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opencv_highgui430d.lib;opencv_imgproc430d.lib;opencv_tracking430d.lib;opencv_videoio430d.lib;opencv_core430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_highgui430d.lib;opencv_imgproc430d.lib;opencv_tracking430d.lib;opencv_videoio430d.lib;opencv_core430d.lib;Bullet3Collision_Debug.lib;BulletCollision_Debug.lib;Bullet3Dynamics_Debug.lib;BulletDynamics_Debug.lib;Bullet3Common_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,8 +83,8 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opencv_highgui430.lib;opencv_imgproc430.lib;opencv_tracking430.lib;opencv_videoio430.lib;opencv_core430.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_highgui430.lib;opencv_imgproc430.lib;opencv_tracking430.lib;opencv_videoio430.lib;opencv_core430.lib;Bullet3Collision.lib;BulletCollision.lib;Bullet3Dynamics.lib;BulletDynamics.lib;Bullet3Common.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)ThirdParty\OpenCV;$(SolutionDir)Flow\ThirdParty\Bullet\Lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -101,6 +101,8 @@
     <ClCompile Include="Source\Content\OpenCVTesting.cpp" />
     <ClCompile Include="Source\Content\OpenCV\OpenCVTracker.cpp" />
     <ClCompile Include="Source\Content\Wall.cpp" />
+    <ClCompile Include="Source\Content\World\ObstacleWall.cpp" />
+    <ClCompile Include="Source\Content\World\WorldGenerator.cpp" />
     <ClCompile Include="Source\Content\WorldObjects\MeshWorldObject.cpp" />
     <ClCompile Include="Source\Content\Layers\Example Layer.cpp" />
     <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp" />
@@ -113,6 +115,8 @@
     <ClInclude Include="Source\Content\OpenCVTesting.h" />
     <ClInclude Include="Source\Content\OpenCV\OpenCVTracker.h" />
     <ClInclude Include="Source\Content\Wall.h" />
+    <ClInclude Include="Source\Content\World\ObstacleWall.h" />
+    <ClInclude Include="Source\Content\World\WorldGenerator.h" />
     <ClInclude Include="Source\Content\WorldObjects\MeshWorldObject.h" />
     <ClInclude Include="Source\Content\Layers\Example Layer.h" />
     <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h" />

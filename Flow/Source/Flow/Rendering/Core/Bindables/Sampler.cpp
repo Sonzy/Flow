@@ -18,6 +18,11 @@ namespace Flow
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &Sampler_));
 	}
 
+	Sampler::~Sampler()
+	{
+		Sampler_.Reset();
+	}
+
 	void Sampler::Bind()
 	{
 		RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, Sampler_.GetAddressOf());

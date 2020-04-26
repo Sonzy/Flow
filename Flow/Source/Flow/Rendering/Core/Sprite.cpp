@@ -83,7 +83,7 @@ namespace Flow
 	void Sprite::Update()
 	{
 		const auto modelView = UseProjection ?
-			GetTransformXM() * RenderCommand::DX11GetOrthographicMatrix() * RenderCommand::GetCamera().GetProjectionMatrix() :
+			GetTransformXM() * RenderCommand::DX11GetOrthographicMatrix() * RenderCommand::GetCamera().GetProjection() :
 			GetTransformXM() * RenderCommand::DX11GetOrthographicMatrix();
 
 		ConstBuffer.ViewpMatrix = TransposeMatrix ? DirectX::XMMatrixTranspose(modelView) : modelView;

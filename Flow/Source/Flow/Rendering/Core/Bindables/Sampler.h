@@ -7,6 +7,7 @@ namespace Flow
 	{
 	public:
 		Sampler();
+		~Sampler();
 		void Bind() override;
 
 

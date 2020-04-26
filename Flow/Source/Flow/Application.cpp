@@ -54,6 +54,7 @@ namespace Flow
 
 		MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
 		MainWindow_->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+		//std::function<void(Event&)> = ( std::bind(&Application::OnEvent, this, std::placeholders::_1);
 
 		ImGuiLayer_ = new ImGuiLayer();
 		PushOverlay(ImGuiLayer_);
@@ -67,7 +68,7 @@ namespace Flow
 		//TODO: Load assets somewhere
 		//= Models =
 		//AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
-		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
+		AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box1m.obj");
 		////AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
 		//AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
 		////AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
@@ -176,6 +177,11 @@ namespace Flow
 			GameWorld_->DispatchBeginPlay();
 
 			Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+
+			for (Layer* layer : LayerStack_)
+			{
+				layer->PostBeginPlay();
+			}
 		}
 
 
@@ -203,6 +209,8 @@ namespace Flow
 			{
 				//TODO: Check where to move the world since I'm using layers
 				GameWorld_->Tick(DeltaTime);
+
+				RenderCommand::GetCamera().Update(DeltaTime);
 			}
 
 			{
@@ -222,7 +230,6 @@ namespace Flow
 
 				if (DrawCollision_)
 				{
-					RenderCommand::GetCamera().CacheViewProjection();
 					Line::Count = 0;
  					GameWorld_->GetPhysicsWorld()->debugDrawWorld();
 				}
@@ -261,6 +268,7 @@ namespace Flow
 
 			//= Post Update =
 
+			RenderCommand::GetCamera().MarkCacheDirty();
 			MainWindow_->PostUpdate();
 		}
 

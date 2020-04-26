@@ -17,7 +17,8 @@ public:
 
 	[[nodiscard]] Flow::StaticMeshComponent* GetMeshComponent() const;
 
-	void InitPhysics(bool Simulate);
+	void BindBatched();
+	void BindNonBatched();
 
 protected:
 

@@ -15,6 +15,11 @@ namespace Flow
 		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &Rasterizer_));
 	}
 
+	Rasterizer::~Rasterizer()
+	{
+		Rasterizer_.Reset();
+	}
+
 	void Rasterizer::Bind()
 	{
 		RenderCommand::DX11GetContext()->RSSetState(Rasterizer_.Get());

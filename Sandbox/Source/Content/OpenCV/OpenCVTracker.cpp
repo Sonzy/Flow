@@ -7,6 +7,7 @@
 #define CV_GREEN cv::Scalar(0, 255, 0)
 #define CV_RED cv::Scalar(0, 0, 255)
 #define CV_GREY cv::Scalar(50, 50, 50)
+
 OpenCVTracker::OpenCVTracker()
 {
 }
@@ -100,7 +101,8 @@ void OpenCVTracker::SetTrackingSize(IntVector2D TrackingSize)
 
 bool OpenCVTracker::UpdateTracking(cv::Mat* const Frame)
 {
-	//PROFILE_FUNCTION(); //Havent fixed thread safety wihtout performance issues yet
+	//PROFILE_FUNCTION(); //Pain to read through since new threads are created each frame
+							//instead of a thread pool
 	if (!TrackerRunning_)
 	{
 		TrackingTarget_ = false;

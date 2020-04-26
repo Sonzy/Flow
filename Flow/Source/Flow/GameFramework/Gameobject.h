@@ -18,6 +18,7 @@ namespace Flow
 		virtual void DrawDetailsWindow(bool bDontUpdate);
 
 		const std::string& GetName();
+		std::string& GetNameNonConst();
 
 	protected:
 

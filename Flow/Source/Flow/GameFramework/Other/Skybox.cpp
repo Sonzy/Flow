@@ -76,8 +76,8 @@ namespace Flow
 
 	DirectX::XMMATRIX Skybox::GetTransformXM() const
 	{
-		DirectX::XMFLOAT3 CamPos = RenderCommand::GetCamera().GetWorldPosition().ToDXFloat3();
-		return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
+		DirectX::XMFLOAT3 CamPos = RenderCommand::GetCamera().GetCameraPosition().ToDXFloat3();
+		return DirectX::XMMatrixScaling(100000.0f, 100000.0f, 100000.0f) *
 			DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 	}
 }

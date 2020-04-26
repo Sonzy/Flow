@@ -7201,6 +7201,14 @@ float ImGui::GetWindowHeight()
     return window->Size.y;
 }
 
+IMGUI_API ImVec2 ImGui::GetItemPosition()
+{
+    ImGuiContext& g = *GImGui;
+    ImGuiWindow* window = g.CurrentWindow;
+
+    return window->DC.LastItemRect.Min;
+}
+
 ImVec2 ImGui::GetWindowPos()
 {
     ImGuiContext& g = *GImGui;

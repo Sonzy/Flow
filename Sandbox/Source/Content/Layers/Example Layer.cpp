@@ -182,15 +182,15 @@ ExampleLayer::ExampleLayer()
 	Base->GetRootComponent()->SetWorldScale(Vector(4.0f, 0.1f, 2.0f));
 	WallObj->GetRootComponent()->SetRelativeScale(Vector(20.0f, 1.0f, 10.0f));
 
-	Chair1_->InitPhysics(false);
-	Chair2_->InitPhysics(false);
-	Chair3_->InitPhysics(false);
-	Chair4_->InitPhysics(false);
+	Chair1_->SetPhysicsMode(Flow::PhysicsMode::Static);
+	Chair2_->SetPhysicsMode(Flow::PhysicsMode::Static);
+	Chair3_->SetPhysicsMode(Flow::PhysicsMode::Static);
+	Chair4_->SetPhysicsMode(Flow::PhysicsMode::Static);
 
-	Revolver_->InitPhysics(true);
-	Shotgun_->InitPhysics(true);
-	Blunderbuss_->InitPhysics(true);
-	Rifle_->InitPhysics(true);
+	Revolver_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
+	Shotgun_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
+	Blunderbuss_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
+	Rifle_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
 }
 
 ExampleLayer::~ExampleLayer()
@@ -203,7 +203,7 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	Light->BindLight(Flow::RenderCommand::GetCamera().GetViewMatrix());
+	Light->BindLight(Flow::RenderCommand::GetCamera().GetView());
 	//Flow::Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
 
 	//Flow::RenderCommand::GetCamera().Tick(DeltaTime);

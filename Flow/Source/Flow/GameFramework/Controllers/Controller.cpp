@@ -12,6 +12,8 @@ namespace Flow
 	Controller::Controller(const std::string& Name)
 		: WorldObject(Name), ControlledObject_(nullptr), Camera_(nullptr)
 	{
+		EmptyRoot = CreateComponent<WorldComponent>("Empty Component");
+		RootComponent_ = EmptyRoot.get();
 	}
 
 	void Controller::ControlObject(ControlledObject* Obj)
@@ -31,13 +33,13 @@ namespace Flow
 		ControlledObject_->RemoveControl();
 	}
 
-	void Controller::SetCamera(CameraComponent* NewCamera)
+	void Controller::SetCamera(CameraBase* NewCamera)
 	{
 		CHECK_RETURN(!NewCamera, "Controller::SetCamera: Tried to remove control when no object is being controlled");
 		Camera_ = NewCamera;
 	}
 
-	CameraComponent* Controller::GetCamera() const
+	CameraBase* Controller::GetCamera() const
 	{
 		return Camera_;
 	}

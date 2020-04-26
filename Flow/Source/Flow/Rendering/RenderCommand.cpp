@@ -32,7 +32,7 @@ namespace Flow
 		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetOrthographicMatrix();
 	}
 
-	CameraComponent& RenderCommand::GetCamera()
+	CameraBase& RenderCommand::GetCamera()
 	{
 		return *Application::GetWorld()->GetLocalController()->GetCamera();
 	}
@@ -83,6 +83,16 @@ namespace Flow
 	void RenderCommand::EnableDepth()
 	{
 		dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->EnableDepth();
+	}
+
+	void RenderCommand::SetFarZ(float Z)
+	{
+		s_RendererAPI->SetFarZ(Z);
+	}
+
+	float* RenderCommand::GetWriteableZ()
+	{
+		return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetWriteableZ();
 	}
 
 	IntVector2D RenderCommand::GetWindowSize()

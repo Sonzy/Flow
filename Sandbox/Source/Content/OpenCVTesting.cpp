@@ -10,11 +10,6 @@
 
 #include "Content\Layers\AGDLayer.h"
 
-#define IMGUI_GREEN ImVec4(0.0f, 1.0f, 0.0f, 1.0f)
-#define IMGUI_RED ImVec4(1.0f, 0.0f, 0.0f, 1.0f)
-#define IMGUI_YELLOW ImVec4(1.0f, 1.0f, 0.0f, 1.0f)
-#define IMGUI_PURPLE ImVec4(0.55f, 0.0f, 0.55f, 1.0f)
-
 OpenCVTesting::OpenCVTesting()
 	: ReadThread_(nullptr)
 {

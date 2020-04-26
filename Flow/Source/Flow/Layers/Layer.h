@@ -15,6 +15,7 @@ namespace Flow
 
 		virtual void OnAttach();
 		virtual void OnDetach();
+		virtual void PostBeginPlay();
 		virtual void OnUpdate(float DeltaTime);
 		virtual void OnEvent(Event& e);
 

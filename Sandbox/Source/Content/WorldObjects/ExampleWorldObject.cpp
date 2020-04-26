@@ -12,8 +12,6 @@
 ExampleWorldObject::ExampleWorldObject()
 	: ExampleWorldObject("Example World Object")
 {
-	SimulatePhysics_ = true;
-	HasCollision_ = true;
 }
 
 ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
@@ -33,8 +31,6 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 	TestMesh2->InitialiseComponent(Mesh, Material);
 	TestMesh2->SetRelativePosition(Vector(100.0f, 10.0f, 10.0f));
 	//TestMesh2->SetWorldRotation(Rotator(90.0f, 0.0f, 0.0f));
-
-	TestMesh->SetSimulatePhysics(true);
 }
 
 void ExampleWorldObject::Tick(float DeltaTime)

@@ -36,12 +36,35 @@ namespace Flow
 		void DispatchBeginPlay();
 
 		template<typename T>
-		std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
+		std::shared_ptr<T> SpawnWorldObject(const std::string& Name, bool TickObject = true)
 		{
 			PROFILE_FUNCTION();
 
 			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
 			WorldObjects_.push_back(NewObject);
+
+			if (TickObject)
+				TickObjects_.push_back(NewObject);
+
+			if (WorldBegunPlay_)
+				NewObject->BeginPlay();
+
+			return NewObject;
+		}
+
+		template<typename T>
+		std::shared_ptr<T> SpawnWorldObjectDefault(bool TickObject = true)
+		{
+			PROFILE_FUNCTION();
+
+			std::shared_ptr<T> NewObject = std::make_shared<T>();
+			WorldObjects_.push_back(NewObject);
+
+			if (TickObject)
+				TickObjects_.push_back(NewObject);
+
+			if (WorldBegunPlay_)
+				NewObject->BeginPlay();
 
 			return NewObject;
 		}
@@ -76,6 +99,7 @@ namespace Flow
 		friend class Inspector;
 
 		std::vector<std::shared_ptr<WorldObject>> WorldObjects_;
+		std::vector<std::shared_ptr<WorldObject>> TickObjects_;
 		std::string WorldName_;
 
 		//=== World Physics ===
@@ -105,5 +129,6 @@ namespace Flow
 		// Controls
 
 		bool DrawSkybox_ = true;
+		bool WorldBegunPlay_ = false;
 	};
 }

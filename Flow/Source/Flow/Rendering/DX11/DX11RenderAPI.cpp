@@ -9,7 +9,7 @@
 
 #include "Flow\GameFramework\World.h"
 #include "Flow\GameFramework\Controllers\PlayerController.h"
-#include "Flow\GameFramework\Components\CameraComponent.h"
+#include "Flow\Rendering\Core\Camera\Camera.h"
 
 
 
@@ -22,12 +22,19 @@ namespace Flow
 {
 	DX11RenderAPI::~DX11RenderAPI()
 	{
+		SwapChain.Reset();
+		Context.Reset();
+		RenderTarget.Reset();
+		DepthStencilView.Reset();
+		Device.Reset();
+		BasicDepthStencil_.Reset();
+		NoDepthStencil_.Reset();
 	}
 
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 	{
 		NearPlane_ = 0.5f;
-		FarPlane_ = 2000.0f;
+		FarPlane_ = 200000.0f;
 		ViewportSize_ = IntVector2D(ViewportWidth, ViewportHeight);
 
 		HRESULT ResultHandle;
@@ -143,7 +150,7 @@ namespace Flow
 		Clear();
 
 		//Init Camera Projection	
-		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+		CameraBase* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
 		MainCamera->SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera->GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
@@ -216,7 +223,7 @@ namespace Flow
 
 		Context->RSSetViewports(1u, &Viewport);
 
-		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+		CameraBase* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
 		MainCamera->SetProjection(DirectX::XMMatrixPerspectiveFovLH(MainCamera->GetFOV(), (float)ViewportSize_.X / (float)ViewportSize_.Y, NearPlane_, FarPlane_));
 	}
 
@@ -231,9 +238,19 @@ namespace Flow
 		RenderCommand::DX11GetContext()->OMSetDepthStencilState(NoDepthStencil_.Get(), 1);
 	}
 
+	void DX11RenderAPI::SetFarZ(float NewFar)
+	{
+		FarPlane_ = NewFar;
+	}
+
+	float* DX11RenderAPI::GetWriteableZ()
+	{
+		return &FarPlane_;
+	}
+
 	Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
 	{
-		CameraComponent* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
+		CameraBase* MainCamera = Application::GetWorld()->GetLocalController()->GetCamera();
 
 		IntVector2D WinSize = WinWindow::GetAdjustedWindowSize();
 		float Width = WinSize.X;
@@ -247,12 +264,12 @@ namespace Flow
 
 		//Adjust for the projection matrix
 		DirectX::XMFLOAT4X4 Projection;
-		DirectX::XMStoreFloat4x4(&Projection, MainCamera->GetProjectionMatrix());
+		DirectX::XMStoreFloat4x4(&Projection, MainCamera->GetProjection());
 		MouseX = MouseX / Projection._11;
 		MouseY = MouseY / Projection._22;		
 
 		// Get the inverse of the view matrix.
-		DirectX::XMMATRIX InverseMatrix = DirectX::XMMatrixInverse(nullptr, RenderCommand::GetCamera().GetViewMatrix());
+		DirectX::XMMATRIX InverseMatrix = DirectX::XMMatrixInverse(nullptr, RenderCommand::GetCamera().GetView());
 		DirectX::XMFLOAT4X4 Inverse;
 		DirectX::XMStoreFloat4x4(&Inverse, InverseMatrix);
 
