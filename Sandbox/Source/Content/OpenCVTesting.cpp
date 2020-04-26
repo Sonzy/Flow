@@ -10,6 +10,8 @@
 
 #include "Content\Layers\AGDLayer.h"
 
+#define CV_GREY cv::Scalar(50, 50, 50)
+
 OpenCVTesting::OpenCVTesting()
 	: ReadThread_(nullptr)
 {
@@ -20,10 +22,9 @@ OpenCVTesting::~OpenCVTesting()
 {
 }
 
-void OpenCVTesting::Initialise()
+void OpenCVTesting::Initialise(bool StartTrackers)
 {
 	PROFILE_FUNCTION();
-
 
 	//Open Capture
 	Capture_.open(0, cv::CAP_ANY);
@@ -50,10 +51,13 @@ void OpenCVTesting::Initialise()
 
 	//Initialise Tracking
 	InitialiseTrackers(TrackingMode_);
-	//StartTrackers();
-	StartTracker(ETracker::Hand_Left, IntVector2D(200, 300));
-	StartTracker(ETracker::Hand_Right, IntVector2D(300, 300));
-	StartTracker(ETracker::Head, IntVector2D(400, 300));
+
+	if (StartTrackers)
+	{
+		StartTracker(ETracker::Hand_Left, IntVector2D(200, 300));
+		StartTracker(ETracker::Hand_Right, IntVector2D(300, 300));
+		//StartTracker(ETracker::Head, IntVector2D(400, 300));
+	}
 }
 
 void OpenCVTesting::Update()
@@ -63,11 +67,23 @@ void OpenCVTesting::Update()
 	if (!Capture_.isOpened())
 		return;
 
+	//If we haven't started, draw the template markers
+	if (!Started)
+	{
+		cv::rectangle(Frame_, cv::Rect2d(950 - (128 / 2), 500 - (128 / 2), 128, 128), CV_GREY, 2, 1);
+		cv::rectangle(Frame_, cv::Rect2d(600 - (128 / 2), 500 - (128 / 2), 128, 128), CV_GREY, 2, 1);
+
+		RenderWindow();
+		return;
+	}
+
 	UpdateTracking();
 
 	DrawTracking(ETracker::Hand_Left);
 	DrawTracking(ETracker::Hand_Right);
-	DrawTracking(ETracker::Head);
+	//DrawTracking(ETracker::Head);
+
+
 
 	RenderWindow();
 }
@@ -215,15 +231,15 @@ bool OpenCVTesting::UpdateTracking()
 
 	OpenCVTracker* LeftTracker = GetTracker(ETracker::Hand_Left);
 	OpenCVTracker* RightTracker = GetTracker(ETracker::Hand_Right);
-	OpenCVTracker* HeadTracker = GetTracker(ETracker::Head);
+//	OpenCVTracker* HeadTracker = GetTracker(ETracker::Head);
 
 	std::thread Thread_Left  = std::thread([this, LeftTracker]() mutable {  LeftTracker->UpdateTracking(&Frame_);		});
 	std::thread Thread_Right = std::thread([this, RightTracker]() mutable {  RightTracker->UpdateTracking(&Frame_);	});
-	std::thread Thread_Head  = std::thread([this, HeadTracker]() mutable {  HeadTracker->UpdateTracking(&Frame_);		});
+//	std::thread Thread_Head  = std::thread([this, HeadTracker]() mutable {  HeadTracker->UpdateTracking(&Frame_);		});
 
 	Thread_Left.join();
 	Thread_Right.join();
-	Thread_Head.join();
+//	Thread_Head.join();
 
 	return true;
 }
@@ -254,6 +270,16 @@ void OpenCVTesting::InitialiseThreads()
 
 		FLOW_LOG("FrameReader: Thread Shutting Down");
 		});
+}
+
+void OpenCVTesting::SetFlatHeight(float Height)
+{
+	FlatHeight = Height;
+}
+
+float OpenCVTesting::GetHeightDeviation() const
+{
+	return 	GetTracker(ETracker::Hand_Left)->GetCentre().Y - FlatHeight;
 }
 
 const char* OpenCVTesting::GetTrackingAlgorithmAsString(ETrackingType Algorithm) const
@@ -307,8 +333,9 @@ float OpenCVTesting::CalculateAngle() const
 {
 	Vector2D LeftPos = GetTracker(ETracker::Hand_Left)->GetPosition();
 	Vector2D RightPos = GetTracker(ETracker::Hand_Right)->GetPosition();
+	//Vector2D AngleVector = LeftPos - RightPos;
 	Vector2D AngleVector = RightPos - LeftPos;
-	double angle = atan2(AngleVector.Y, AngleVector.X) * (180 / Math::PI_D);
+	double angle = atan2(AngleVector.Y, AngleVector.X);// *(180 / Math::PI_D);
 	return angle;
 }
 

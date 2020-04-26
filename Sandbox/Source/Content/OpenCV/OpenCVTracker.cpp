@@ -145,3 +145,11 @@ Vector2D OpenCVTracker::GetPosition() const
 		(float)BoundingBox_.y - ((float)TrackingSize_.Y / 2.0f)
 	);
 }
+
+Vector2D OpenCVTracker::GetCentre() const
+{
+	return Vector2D(
+		(float)BoundingBox_.x + ((float)TrackingSize_.X / 2.0f),
+		(float)BoundingBox_.y + ((float)TrackingSize_.Y / 2.0f)
+	);
+}

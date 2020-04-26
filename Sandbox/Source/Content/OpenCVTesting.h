@@ -40,7 +40,7 @@ class OpenCVTesting
 public:
 	OpenCVTesting();
 	~OpenCVTesting();
-	void Initialise();
+	void Initialise(bool StartTrackers = true);
 	void Update();
 
 	void DrawOpenCVControls();
@@ -60,6 +60,9 @@ public:
 
 	void InitialiseThreads();
 
+	void SetFlatHeight(float Height);
+	float GetHeightDeviation() const;
+
 	const char* GetTrackingAlgorithmAsString(ETrackingType Algorithm) const;
 
 	OpenCVTracker* GetTracker(ETracker Tracker) const;
@@ -67,6 +70,8 @@ public:
 	cv::Mat* GetFrame();
 
 	float CalculateAngle() const;
+
+	bool Started = false;
 private:
 
 	std::vector<Tracker*> Trackers_;
@@ -89,6 +94,9 @@ private:
 	int SelectedTrackerIndex_ = 0;
 
 	bool ShowTrackers = false;
+
+	float FlatHeight;
+
 };
 
 void OnMouseClicked(int Event, int X, int Y, int Flags, void* UserData);

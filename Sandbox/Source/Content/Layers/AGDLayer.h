@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow/Layers/Layer.h"
+#include "Flow\Helper\Timer.h"
 
 namespace Flow
 {
@@ -12,6 +13,7 @@ namespace Flow
 class MeshWorldObject;
 class OpenCVTesting;
 class WorldGenerator;
+class PlayerPlane;
 
 class AGDLayer : public Flow::Layer
 {
@@ -35,7 +37,7 @@ private:
 	std::vector<std::shared_ptr<Flow::WorldObject>> WorldObjects_;
 
 	//std::shared_ptr<MeshWorldObject> PlaneTest_;
-	std::shared_ptr<Flow::WorldObject> Player_;
+	std::shared_ptr<PlayerPlane> Player_;
 	std::shared_ptr<Flow::WorldObject> Base_;
 	std::shared_ptr<Flow::WorldObject> Map_;
 	std::shared_ptr<Flow::WorldObject> TestCube_;
@@ -53,8 +55,10 @@ private:
 
 	static OpenCVTesting* CVTesting_;
 
-	bool UseCVControls = false;
-	bool UseOpenCV = false;
+	bool UseOpenCV = true;
+	bool OpenCVStarted = false;
+
+	Flow::Timer TrackingTimer;
 
 	float CubeColour_[3] = { 0.2f, 0.2f, 0.2f };
 	bool UseRotatedLightVector = false;

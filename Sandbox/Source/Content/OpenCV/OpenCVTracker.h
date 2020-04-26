@@ -44,6 +44,7 @@ public:
 	float GetPositionX() const;
 	float GetPositionY() const;
 	Vector2D GetPosition() const;
+	Vector2D GetCentre() const;
 
 	float GetSamplingSizeX() const { return TrackingSize_.X; }
 	float GetSamplingSizeY() const { return TrackingSize_.Y; }

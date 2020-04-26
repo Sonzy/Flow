@@ -140,6 +140,33 @@ void PlayerPlane::DrawDetailsWindow(bool bDontUpdate)
 	ImGui::InputFloat("Plane Speed", &PlaneSpeed_);
 }
 
+void PlayerPlane::OpenCVUpdate(float Angle, float Height)
+{
+	if (Alive)
+	{
+		float RollRotation = 0.0f;
+		float PitchRotation = 0.0f;
+		float AbsHeight = abs(Height);
+		float UpdateAngle = (Angle + Math::PI);
+		float MoveDiff = 0.0f;
+		float HorMoveDiff = 0.0f;
+		float RollAcceptance = 10.0f;
+
+		RollRotation = UpdateAngle * (180.0f / Math::PI);
+		PitchRotation = Math::Lerp(0.0f, PitchMax, AbsHeight / HeightMax);
+
+		MoveDiff = Math::Lerp(0.0f, 1.0f, PitchRotation / PitchMax);
+		HorMoveDiff = Math::Lerp(0.0f, 1.0f, (abs(RollRotation) > RollAcceptance) ? RollRotation / RollMax : 0.0f);
+
+		RootComponent_->SetRelativeRotation(Rotator(Height >= 0 ? PitchRotation : -PitchRotation, RollRotation, 0.0f));
+		//RootComponent_->AddRelativePosition(Vector(RollRotation >= 0 ? -HorMoveDiff : HorMoveDiff, (Height >= 0) ? -MoveDiff : MoveDiff, 0.0f));
+		RootComponent_->AddRelativePosition(Vector(RollRotation >= 180 ? HorMoveDiff : -HorMoveDiff, (Height >= 0) ? -MoveDiff : MoveDiff, 0.0f));
+		RootComponent_->UpdatePhysicsBody();
+
+		FLOW_LOG("HorDiff: {0}, Roll: {1}", RollRotation >= 180 ? HorMoveDiff : -HorMoveDiff, RollRotation);
+	}
+}
+
 void PlayerPlane::OnComponentCollision(Flow::WorldComponent* Component, Flow::WorldComponent* Other)
 {
 	KillPlane();

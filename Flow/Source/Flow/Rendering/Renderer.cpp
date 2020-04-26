@@ -15,7 +15,7 @@ namespace Flow
 
 	void Renderer::EndScene()
 	{
-		FLOW_ENGINE_LOG("Rendered: {0} objects.", s_ObjectsRendered);
+		//FLOW_ENGINE_LOG("Rendered: {0} objects.", s_ObjectsRendered);
 	}
 
 	int Renderer::SubmitWithoutDraw(Renderable* Renderables)

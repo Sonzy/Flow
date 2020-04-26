@@ -107,8 +107,13 @@ AGDLayer::AGDLayer()
 	//Create the world
 	//GeneratedWorld = WorldGenerator::CreateWorld(IntVector2D(10), 500.0f, 4, 30.0f, Vector(300.0f, 4000.0f, 300.0f));
 
-	if(UseOpenCV)
-		CVTesting_->Initialise();
+	if (UseOpenCV)
+	{
+		CVTesting_->Initialise(false);
+		CVTesting_->SetFlatHeight(500.0f);
+	}
+
+	TrackingTimer.Mark();
 }
 
 AGDLayer::~AGDLayer()
@@ -126,11 +131,19 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	Light_->BindLight(Flow::RenderCommand::GetCamera().GetView());
 
 	if (UseOpenCV)
+	{
+		if (!CVTesting_->Started && TrackingTimer.Peek() > 5.0f)
+		{
+			CVTesting_->StartTracker(ETracker::Hand_Left, IntVector2D(950, 500));
+			CVTesting_->StartTracker(ETracker::Hand_Right, IntVector2D(600, 500));
+			CVTesting_->Started = true;
+		}
+
 		CVTesting_->Update();
 
-	if(UseCVControls)
-		Player_->GetRootComponent()->SetWorldRotation(
-			Rotator(0.0f, CVTesting_->CalculateAngle() + 180.0f, 0.0f));
+		if(CVTesting_->Started)
+			Player_->OpenCVUpdate(CVTesting_->CalculateAngle(), CVTesting_->GetHeightDeviation());		
+	}
 
 	{
 		PROFILE_CURRENT_SCOPE("World Generator Update");

@@ -18,6 +18,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
+	void OpenCVUpdate(float Angle, float Height);
+
 	//void OnObjectHitPlane(Flow::WorldComponent* Comp1, Flow::WorldComponent* Comp2);
 	virtual void OnComponentCollision(Flow::WorldComponent* Component, Flow::WorldComponent* Other) override;
 
@@ -32,6 +34,10 @@ public:
 
 
 	bool WASDMode = false;
+
+	float PitchMax = 30.0f;
+	float HeightMax = 100.0f;
+	float RollMax = 30.0f;
 
 	IntVector2D LastMousePosition_;
 

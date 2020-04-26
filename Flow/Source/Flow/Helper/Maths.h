@@ -25,6 +25,16 @@ public:
 		return Degrees * (Math::PI / 180.0f);
 	}
 
+	static float Lerp(float Min, float Max, float Alpha)
+	{
+		if (Alpha > 1)
+			Alpha = 1;
+		if (Alpha < 0)
+			Alpha = 0;
+
+		return Min + ((Max - Min) * Alpha);
+	}
+
 public:
 	static constexpr float PI = 3.14159265f;
 	static constexpr double PI_D = 3.1415926535897932;

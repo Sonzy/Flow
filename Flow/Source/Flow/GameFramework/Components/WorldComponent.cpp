@@ -264,7 +264,7 @@ namespace Flow
 		//Create the construction info for the body
 		btRigidBody::btRigidBodyConstructionInfo bodyCI =
 			btRigidBody::btRigidBodyConstructionInfo(bodyMass, MotionState_, Collision_, bodyInertia);
-		bodyCI.m_restitution = 0.4f;
+		bodyCI.m_restitution = 0.0f;
 		bodyCI.m_friction = 0.5f;
 		bodyCI.m_rollingFriction = 0.2f;
 		bodyCI.m_spinningFriction = 0.3f;
@@ -272,8 +272,15 @@ namespace Flow
 		Rigidbody_ = new btRigidBody(bodyCI);
 		Rigidbody_->setUserPointer(this);
 		
-		if(PhysicsMode_ == PhysicsMode::Kinematic)
+		if (PhysicsMode_ == PhysicsMode::Kinematic)
+		{
 			Rigidbody_->setCollisionFlags(Rigidbody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		}
+
+		//if(PhysicsMode_ != PhysicsMode::Dynamic)
+		//	Rigidbody_->setActivationState(DISABLE_DEACTIVATION);
+
+			//Rigidbody_->setCollisionFlags(Rigidbody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 
 		if (UsingCustomGravity())
 		{
