@@ -331,6 +331,9 @@ cv::Mat* OpenCVTesting::GetFrame()
 
 float OpenCVTesting::CalculateAngle() const
 {
+	if (!GetTracker(ETracker::Hand_Left) || !GetTracker(ETracker::Hand_Right))
+		return 0.0f;
+
 	Vector2D LeftPos = GetTracker(ETracker::Hand_Left)->GetPosition();
 	Vector2D RightPos = GetTracker(ETracker::Hand_Right)->GetPosition();
 	//Vector2D AngleVector = LeftPos - RightPos;
