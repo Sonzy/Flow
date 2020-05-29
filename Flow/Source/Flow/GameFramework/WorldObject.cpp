@@ -96,39 +96,6 @@ btRigidBody* WorldObject::GetRigidBody()
 
 void WorldObject::DrawDetailsWindow(bool bDontUpdate)
 {
-	ImGui::InputText("ObjectName", &_ObjectName);
-
-	ImGui::Separator(); //==========================================
-
-	//Display Component node tree
-	if (ImGui::TreeNode(_RootComponent->GetName().c_str()))
-	{
-		for (auto Child : _RootComponent->GetChildren())
-		{
-			ImGui::Text(Child->GetName().c_str());
-		}
-
-		ImGui::TreePop();
-	}
-
-	ImGui::Separator(); //==========================================
-
-
-
-	//Display World Object Transform
-	bool bUpdate = false;
-	bUpdate |= ImGui::InputFloat3("Position", (float*)_RootComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	bUpdate |= ImGui::InputFloat3("Rotation", (float*)_RootComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	bUpdate |= ImGui::InputFloat3("Scale", (float*)_RootComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-
-	//Update Object Transform
-	if (bUpdate && !bDontUpdate)
-	{
-		//TODO: Move physics body
-		//if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(_RootComponent))
-		//	Comp->MovePhysicsBody(_RootComponent->GetRelativeTransform());
-	}
-
 	ImGui::Checkbox("Is Visible", &_Visible);
 }
 

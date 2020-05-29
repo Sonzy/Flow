@@ -206,7 +206,6 @@ void Application::Run()
 		{
 			layer->OnImGuiRender(_DrawEditor);
 		}
-
 		ImGuiLayer_->End();
 
 		//= Post Update =

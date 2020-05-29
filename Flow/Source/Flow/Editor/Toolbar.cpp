@@ -12,7 +12,6 @@ Toolbar::Toolbar(EditorLayer* EditorPointer)
 ImVec2 Toolbar::Draw()
 {
 	ImVec2 MenuSize;
-
 	if (ImGui::BeginMainMenuBar())
 	{
 		MenuSize = ImGui::GetWindowSize();
