@@ -1,5 +1,4 @@
 #include "Flowpch.h"
-#include <Psapi.h> //memory debug
 #include "Application.h"
 #include "Logging/Log.h"
 #include "Events/ApplicationEvent.h"
@@ -104,6 +103,8 @@ Application::Application(const std::string& AppName)
 	AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
 	AssetSystem::LoadAsset("LineShaderP", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
 	AssetSystem::LoadAsset("LineShaderV", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");
+	AssetSystem::LoadAsset("LineColourP", "Flow/Source/Flow/Rendering/Core/Shaders/LineColour_PS.cso");
+	AssetSystem::LoadAsset("LineColourV", "Flow/Source/Flow/Rendering/Core/Shaders/LineColour_VS.cso");
 
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
@@ -145,18 +146,10 @@ Application::Application(const std::string& AppName)
 	SkyMat->SetVertexShader("TexturedVS");
 
 
-
 	//Create the game world
 	GameWorld_ = new World("Game World");
-
-	//SelectionGizmo_ = new SelectionGizmo();
-	//SelectionGizmo_->GenerateCollision();
-	//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
-
-	Inspector_ = new Inspector(SelectionGizmo_);
-
-
 	EditorLayer_ = new EditorLayer();
+
 	PushLayer(EditorLayer_);
 }
 
@@ -171,8 +164,6 @@ Application::~Application()
 void Application::Run()
 {
 	GameWorld_->InitialiseWorld();
-	Inspector_->SetCurrentWorld(GameWorld_);
-
 	//SelectionGizmo_->GenerateCollision();
 	//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
 
@@ -183,7 +174,7 @@ void Application::Run()
 	GameWorld_->DispatchBeginPlay();
 
 	Timer_.Mark(); // Reset timer to avoid a long initial deltatime
-	while (Running_)
+	while (_Running)
 	{
 		float DeltaTime = Timer_.Mark();
 
@@ -206,6 +197,8 @@ void Application::Run()
 		if (DrawCollision_)
 			GameWorld_->GetPhysicsWorld()->debugDrawWorld();
 
+		GameWorld_->GetLineBatcher().DrawLines();
+
 		//= UI Rendering =
 
 		ImGuiLayer_->Begin();
@@ -213,10 +206,6 @@ void Application::Run()
 		{
 			layer->OnImGuiRender();
 		}
-
-		Inspector_->Update();
-
-		RenderApplicationDebug(DeltaTime);
 
 		ImGuiLayer_->End();
 
@@ -254,7 +243,7 @@ void Application::PushOverlay(Layer* layer)
 
 bool Application::OnWindowClosed(WindowClosedEvent& e)
 {
-	Running_ = false;
+	_Running = false;
 	FLOW_ENGINE_LOG("Window Closed");
 	return true;
 }
@@ -275,6 +264,11 @@ World* Application::GetWorld()
 	return Instance->GameWorld_;
 }
 
+void Application::Shutdown()
+{
+	Application::GetApplication()._Running = false;
+}
+
 std::string Application::GetLocalFilePath()
 {
 	return LocalPath_;
@@ -285,40 +279,9 @@ std::wstring Application::GetLocalFilePathWide()
 	return std::wstring(LocalPath_.begin(), LocalPath_.end());
 }
 
-Inspector* Application::GetInspector()
-{
-	return Inspector_;
-}
-
 Window& Application::GetWindow()
 {
 	return *MainWindow_;
 }
 
-void Application::RenderApplicationDebug(float DeltaTime)
-{
-	TimeSinceFrameRateCheck += DeltaTime;
-	FrameCounter++;
 
-	if (FrameCounter == 5)
-	{
-		FrameTimer = TimeSinceFrameRateCheck / 5;
-		TimeSinceFrameRateCheck = 0;
-		FrameCounter = 0;
-	}
-
-	if (ImGui::Begin("Application Statistics"))
-	{
-		ImGui::Checkbox("Pause Game", &Paused_);
-		ImGui::Checkbox("Draw Collision", &DrawCollision_);
-
-		ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
-		ImGui::Text("FrameTime: %.1f ms", DeltaTime * 1000);
-
-		PROCESS_MEMORY_COUNTERS MemoryData;
-		GetProcessMemoryInfo(GetCurrentProcess(), &MemoryData, sizeof(MemoryData));
-
-		ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
-	}
-	ImGui::End();
-}

@@ -23,9 +23,4 @@ public:
 	virtual int getDebugMode() const;
 
 	int _DebugMode;
-
-	static Line* Get();
-
-private:
-	static Line* _Line;
 };

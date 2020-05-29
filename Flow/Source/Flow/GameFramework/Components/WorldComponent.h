@@ -43,20 +43,22 @@ public:
 
 	virtual void Render();
 
-	//TODO: Probs not safe lool
 	Vector* GetWriteablePosition();
 	Rotator* GetWriteableRotation();
 	Vector* GetWriteableScale();
 
-	std::vector<Component*> GetChildren() const;
+	void DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree = false);
+	virtual void DrawDetailsWindow(bool bDontUpdate) override;
+
+	std::vector<WorldComponent*> GetChildren() const;
 
 	void SetVisibility(bool Visible);
 	bool IsVisible() const;
 
 protected:
 
-	std::vector<Component*> _Children;
-	Component* _ParentComponent;
+	std::vector<WorldComponent*> _Children;
+	WorldComponent* _ParentComponent;
 
 	Transform _RelativeTransform;
 

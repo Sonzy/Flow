@@ -32,4 +32,6 @@ private:
 	bool OnWindowResized(WindowResizedEvent& e);
 
 	void ConfigureStyle();
+
+	const float MenuBarSize = 20.0f;
 };

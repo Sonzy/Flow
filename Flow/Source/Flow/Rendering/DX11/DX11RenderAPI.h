@@ -21,6 +21,7 @@ public:
 	virtual void EndFrame() override;
 
 	virtual void DrawIndexed(int Count) override;
+	virtual void Draw(unsigned int  Count) override;
 
 	virtual void Resize(int Width, int Height);
 

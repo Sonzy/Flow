@@ -12,6 +12,9 @@
 #include "Flow/Window/WinWindow.h"
 #include "Flow/Rendering/DX11/DX11RenderAPI.h"
 
+#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/Toolbar.h"
+
 ImGuiLayer::ImGuiLayer()
 	: Layer("ImGui Layer")
 {
@@ -78,8 +81,6 @@ void ImGuiLayer::Begin()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
-	ImGui::DockSpaceOverViewport(0, ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
 void ImGuiLayer::End()

@@ -27,3 +27,8 @@ const std::string& GameObject::GetName()
 {
 	return _ObjectName;
 }
+
+std::string& GameObject::GetWritableName()
+{
+	return _ObjectName;
+}

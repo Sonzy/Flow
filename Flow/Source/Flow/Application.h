@@ -33,23 +33,21 @@ public:
 
 	static Application& GetApplication();
 	static World* GetWorld();
+	static void Shutdown();
 
 	/* Returns path to Flow solution directory */
 	std::string GetLocalFilePath();
 	std::wstring GetLocalFilePathWide();
 
-	Inspector* GetInspector();
-
 	Window& GetWindow();
+
+	EditorLayer* GetEditor() { return EditorLayer_; };
 public:
 	std::string ApplicationName;
 
-private:
-
-	void RenderApplicationDebug(float DeltaTime);
 
 private:
-
+	friend class EditorLayer;
 	//= Application =============
 
 	static Application* Instance;
@@ -58,7 +56,7 @@ private:
 	ImGuiLayer* ImGuiLayer_;
 	EditorLayer* EditorLayer_;
 
-	bool Running_ = true;
+	bool _Running = true;
 	bool Paused_ = false;
 	bool DrawCollision_ = false;
 
@@ -66,16 +64,9 @@ private:
 
 	World* GameWorld_;
 
-	//= Editor ==================
-
-	Inspector* Inspector_;
-	SelectionGizmo* SelectionGizmo_;
-
 	//= Debug ===================
 
-	float TimeSinceFrameRateCheck = 0.0f;
-	int FrameCounter = 0;
-	float FrameTimer = 0.0f;
+
 
 	//= Helper ===============
 

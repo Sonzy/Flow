@@ -7,6 +7,7 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Flow\Helper\BulletDebugDrawing.h"
+#include "Flow/Rendering/Core/DebugDrawing/LineBatcher.h"
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -56,6 +57,11 @@ public:
 	void DeRegisterController(std::shared_ptr<Controller> OldController);
 	Controller* GetLocalController() const;
 
+
+	//= Getters etc
+	LineBatcher& GetLineBatcher() const { return s_LineBatcher; };
+	static LineBatcher& GetLineBatcher_S();
+
 protected:
 	void InitialisePhysics();
 
@@ -77,7 +83,12 @@ private:
 	btSequentialImpulseConstraintSolver* _Solver;
 	btDiscreteDynamicsWorld* _PhysicsWorld;
 
+
+	//= Debug ===
+
 	BulletDebugDraw _DebugDrawer;
+
+	static LineBatcher s_LineBatcher;
 
 	//= Other =======
 	Skybox* _Skybox;

@@ -138,6 +138,11 @@ void DX11RenderAPI::DrawIndexed(int Count)
 	_Context->DrawIndexed(Count, 0, 0);
 }
 
+void DX11RenderAPI::Draw(unsigned int Count)
+{
+	_Context->Draw(Count, 0);
+}
+
 void DX11RenderAPI::Resize(int Width, int Height)
 {
 	HRESULT ResultHandle;

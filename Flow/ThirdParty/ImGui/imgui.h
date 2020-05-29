@@ -2491,3 +2491,11 @@ struct ImGuiViewport
 #ifdef IMGUI_INCLUDE_IMGUI_USER_H
 #include "imgui_user.h"
 #endif
+
+namespace ImGui
+{
+    IMGUI_API void DockBuilderSetNodePos(ImGuiID node_id, ImVec2 pos);
+    IMGUI_API void DockBuilderSetNodeSize(ImGuiID node_id, ImVec2 size);
+}
+
+

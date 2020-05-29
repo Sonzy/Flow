@@ -1,6 +1,7 @@
 #include "Flowpch.h"
 #include "Inspector.h"
 #include "ThirdParty\ImGui\imgui.h"
+#include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 #include "Flow\GameFramework\WorldObject.h"
 
@@ -15,11 +16,14 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Flow\GameFramework\Components\WorldComponent.h"
-#include "Flow\GameFramework\Components\StaticMeshComponent.h"
+#include "Flow\GameFramework\Components\StaticMeshComponent.h" //TODO: Remove dependency
 
 #include "Flow\Editor\SelectionGizmo.h"
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
+#include "Flow/GameFramework/Components/WorldComponent.h"
+
+#include "Flow/Layers/EditorLayer.h"
 
 
 Inspector::Inspector(SelectionGizmo* Selector)
@@ -33,14 +37,40 @@ void Inspector::RenderInspector()
 	{
 		if (_FocusedItem)
 		{
-			_FocusedItem->DrawDetailsWindow(_FocusedItemChanged);
+			ImGui::InputText("ObjectName", &_FocusedItem->GetWritableName());
+			ImGui::TextColored(IMGUI_ORANGE, (std::string("Selected Component: ") + (_FocusedComponent ? _FocusedComponent->GetName() : std::string("None"))).c_str());
+
+			ImGui::Separator();
+
+			if (!_HideTree)
+				_FocusedItem->GetRootComponent()->DrawInspectionTree(_FocusedComponent);
+
+			if (ImGui::Button(_HideTree ? "Show Tree" : "Collapse Tree"))
+			{
+				_HideTree = !_HideTree;
+			}
 
 			ImGui::Separator(); //==========================================
 
-			//TODO:
-			ImGui::Text((std::string("Selected Component: ") + _FocusedItem->GetRootComponent()->GetName()).c_str());
 
-			_FocusedItem->GetRootComponent()->DrawComponentDetailsWindow();
+			if (_FocusedComponent)
+			{
+				ImGui::TextColored(IMGUI_YELLOW, "Component Transform");
+				ImGui::Separator();
+				ImGui::Dummy(ImVec2(0.0f, 10.0f));
+				DrawSelectedComponentTransform();
+			}
+
+			ImGui::Separator();
+
+			_FocusedItem->DrawDetailsWindow(_FocusedItemChanged);
+
+			ImGui::Separator();
+
+			if (_FocusedComponent)
+			{
+				_FocusedComponent->DrawDetailsWindow(false);
+			}
 		}
 
 	}
@@ -59,10 +89,18 @@ void Inspector::RenderHeirarchy()
 		{
 			if (ImGui::Button(Object->GetName().c_str()))
 			{
+				if (_FocusedItem)
+				{
+					if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+						Comp->EnableOutlineDrawing(false);
+				}
+
 				//TODO: Select object on click
 				_FocusedItem = Object.get();
+				_FocusedItemChanged = true;
+				_FocusedComponent = _FocusedItem->GetRootComponent();
 
-				if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+				if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
 					Comp->EnableOutlineDrawing(true);
 			}
 		}
@@ -92,28 +130,36 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
 
 	//If we hit something, if it was a world component, assign this to the focused item.
-	WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
+	WorldComponent* HitComp = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer()) : nullptr;
+	WorldObject* HitObject = Ray.hasHit() ? HitComp->GetParentWorldObject() : nullptr;
+
+	_FocusedItemChanged = HitObject && _FocusedItem != HitObject;
+	_FocusedComponentChanged = HitComp && _FocusedComponent != HitComp;
 
 	if (_FocusedItem && HitObject != _FocusedItem)
 	{
-		if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+		if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(HitComp))
 			Comp->EnableOutlineDrawing(false);
 	}
 
 	_FocusedItem = HitObject;
 
+	if (_FocusedComponentChanged)
+		_FocusedComponent = HitComp;
+
 	//TODO: If we hit, run selection gizmo logic.
 	if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
 	{
 		//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
-		if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+		if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedComponent))
 			Comp->EnableOutlineDrawing(true);
 	}
 
 	if (!_FocusedItem)
 	{
-		//_Selector->SetVisibility(false);
-		//_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		_FocusedComponent = nullptr;
+		//Selector_->SetVisibility(false);
+		//Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
 	}
 	//If we have not hit anything, reset the selector
 	else
@@ -125,8 +171,18 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 		//m_Selector->SetVisibility(true);
 	}
 
-	_FocusedItemChanged = true;
+
 	return true;
+}
+
+void Inspector::UpdateSelectedComponent(WorldComponent* NewComp)
+{
+	EditorLayer::GetEditor()->GetInspector()->_FocusedComponent = NewComp;
+}
+
+WorldComponent* Inspector::GetSelectedComponent()
+{
+	return EditorLayer::GetEditor()->GetInspector()->_FocusedComponent;
 }
 
 void Inspector::Update()
@@ -135,6 +191,18 @@ void Inspector::Update()
 	RenderHeirarchy();
 
 	_FocusedItemChanged = false;
+}
+
+void Inspector::DrawSelectedComponentTransform()
+{
+	bool bUpdate = false;
+	bUpdate |= ImGui::InputFloat3("Position", (float*)_FocusedComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+	bUpdate |= ImGui::InputFloat3("Rotation", (float*)_FocusedComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+	bUpdate |= ImGui::InputFloat3("Scale", (float*)_FocusedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+
+	//TODO:
+	//if (bUpdate)
+	//	_FocusedComponent->UpdatePhysicsBody(true);
 }
 
 SelectionGizmo* Inspector::GetSelector() const

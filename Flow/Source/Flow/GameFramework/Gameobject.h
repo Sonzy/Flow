@@ -16,6 +16,7 @@ public:
 	virtual void DrawDetailsWindow(bool bDontUpdate);
 
 	const std::string& GetName();
+	std::string& GetWritableName();
 
 protected:
 

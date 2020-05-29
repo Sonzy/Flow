@@ -51,6 +51,11 @@ void RenderCommand::DrawIndexed(int Count)
 	s_RendererAPI->DrawIndexed(Count);
 }
 
+void RenderCommand::Draw(unsigned int Count)
+{
+	s_RendererAPI->Draw(Count);
+}
+
 void RenderCommand::ClearWindow()
 {
 	s_RendererAPI->Clear();

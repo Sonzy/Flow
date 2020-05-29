@@ -11,6 +11,8 @@
 #include "Flow\GameFramework\Controllers\Controller.h"
 #include "Flow\GameFramework\Controllers\PlayerController.h"
 
+LineBatcher World::s_LineBatcher = LineBatcher();
+
 World::World()
 	: World("Unnamed World")
 {	}
@@ -19,6 +21,7 @@ World::World(const std::string& WorldName)
 	: _WorldName(WorldName)
 {
 	_DebugDrawer.Init();
+	s_LineBatcher.Initialise();
 }
 
 World::~World()
@@ -42,6 +45,11 @@ void World::DispatchBeginPlay()
 	{
 		WorldObj->BeginPlay();
 	}
+}
+
+LineBatcher& World::GetLineBatcher_S()
+{
+	return Application::GetWorld()->s_LineBatcher;
 }
 
 void World::InitialisePhysics()

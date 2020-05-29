@@ -1,6 +1,8 @@
 #include "Flowpch.h"
 #include "WorldComponent.h"
 #include "Flow\GameFramework\WorldObject.h"
+#include "ThirdParty\ImGui\imgui.h"
+#include "Flow\Editor\Inspector.h"
 
 WorldComponent::WorldComponent()
 	: Component("Unnamed WorldComponent"), _ParentComponent(nullptr)
@@ -194,7 +196,42 @@ Vector* WorldComponent::GetWriteableScale()
 {
 	return &_RelativeTransform._Scale;
 }
-std::vector<Component*> WorldComponent::GetChildren() const
+void WorldComponent::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
+{
+	const ImVec2 ButtonSize = ImVec2(100, 12);
+	const float RightOffset = 20;
+
+	if (DontOpenTree)
+		ImGui::SetNextItemOpen(false);
+
+	bool NodeOpen = ImGui::TreeNode(GetName().c_str());
+
+	if (ImGui::IsItemClicked())
+		Inspector::UpdateSelectedComponent(this);
+
+	if (!DontOpenTree && CurrentInspectedComponent == this)
+	{
+		ImGui::SameLine();
+		ImGui::TextColored(IMGUI_GREEN, "Selected");
+	}
+
+	if (NodeOpen)
+	{
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImU32 col = ImColor(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+
+		for (auto& Child : _Children)
+		{
+			Child->DrawInspectionTree(CurrentInspectedComponent, DontOpenTree);
+		}
+		ImGui::TreePop();
+	}
+
+}
+void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
+{
+}
+std::vector<WorldComponent*> WorldComponent::GetChildren() const
 {
 	return _Children;
 }
