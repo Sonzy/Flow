@@ -30,6 +30,10 @@ PlayerPlane::PlayerPlane(const std::string& Name)
 
 	auto Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("CharacterPlane");
 	auto Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_CharacterPlane")->GetMaterial();
+
+	assert(Mesh && "PlayerPlane: Mesh was nullptr on initialisation");
+	assert(Material && "PlayerPlane: Material was nullptr on initialisation");
+
 	PlaneMesh_->SetMeshAndMaterial(Mesh, Material);
 
 	PlayerCamera_->SetRelativePosition(Vector(0.0f, 8.0f, -20.0f));

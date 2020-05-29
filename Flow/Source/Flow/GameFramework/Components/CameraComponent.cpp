@@ -2,108 +2,75 @@
 #include "CameraComponent.h"
 #include "Flow\Input\Input.h"
 
-namespace Flow
+CameraComponent::CameraComponent()
+	: CameraComponent("Camera Component")
 {
-	CameraComponent::CameraComponent()
-		: CameraComponent("Camera Component")
+}
+
+CameraComponent::CameraComponent(const std::string& Name)
+	: WorldComponent(Name), _LastMousePosition(0), _MovementSpeed(0.2f), _RotationSpeed(0.005f)
+{
+	_Projection = DirectX::XMMATRIX();
+	_FieldOfView = Math::DegreesToRadians(90.0f);
+}
+
+void CameraComponent::Update(float DeltaTime)
+{
+	IntVector2D Pos = Flow::Input::GetMousePosition();
+
+	//Camera rotation
+	if (Flow::Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 	{
-	}
-
-	CameraComponent::CameraComponent(const std::string& Name)
-		: WorldComponent(Name), LastMousePosition_(0), Projection_(DirectX::XMMATRIX()), FOV_(Math::DegreesToRadians(90.0f)),
-		MovementSpeed_(0.2f), RotationSpeed_(0.005f)
-	{
-	}
-
-	void CameraComponent::Tick(float DeltaTime)
-	{
-		return;
-
-		IntVector2D Pos = Input::GetMousePosition();
-
-		Vector Translation(0.0f);
-
-		//if (Input::IsKeyPressed(FLOW_KEY_W))
-		//	Translation.Z = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_A))
-		//	Translation.X = -1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_S))
-		//	Translation.Z = -1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_D))
-		//	Translation.X = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-		//	Translation.Y = 1.0f;
-		//if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
-		//	Translation.Y = -1.0f;
-		FLOW_ENGINE_LOG("Rot: {0}", GetWorldRotation());
-
-		//Camera rotation
-		if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
+		if (_LastMousePosition != Pos)
 		{
-			if (LastMousePosition_ != Pos)
-			{
-				Vector Direction = (LastMousePosition_ - Pos);
-				Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
-				Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
-				Rotator Test = GetWorldRotation();
-				Rotator Change = Test.RotateRotator(Rotator(-Direction.Y, 0.0f, -Direction.X), false);
-				SetWorldRotation(Change);
-			}
+			Vector Direction = (_LastMousePosition - Pos);
+			Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
+			Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
+			Rotator Test = GetWorldRotation();
+			Rotator Change = Test.RotateRotator(Rotator(-Direction.Y, 0.0f, -Direction.X), false);
+			SetWorldRotation(Change);
 		}
-
-		AddRelativePosition(Translation);
-
-		LastMousePosition_ = Pos;
 	}
 
-	void CameraComponent::SetFOV(float FOV)
-	{
-		FOV_ = FOV;
-	}
+	_LastMousePosition = Pos;
 
-	void CameraComponent::SetProjection(DirectX::XMMATRIX Projection)
-	{
-		Projection_ = Projection;
-	}
+	CacheMatrices();
+}
 
-	DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
-	{
-		const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-		Rotator WorldRotation = Rotator::AsRadians(GetWorldRotation());
-		Vector WorldPosition = GetWorldPosition();
 
-		//Get Camera Look Vector
-		const auto lookVector = DirectX::XMVector3Transform(Forward,
-			DirectX::XMMatrixRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll)
-		);
+DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
+{
+	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	Rotator WorldRotation = Rotator::AsRadians(GetWorldRotation());
+	Vector WorldPosition = GetWorldPosition();
 
-		//Get the location the camera is looking
-		DirectX::XMFLOAT3 fLookVector;
-		DirectX::XMFLOAT3 camTarget;
+	//Get Camera Look Vector
+	const auto lookVector = DirectX::XMVector3Transform(Forward,
+		DirectX::XMMatrixRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll)
+	);
 
-		DirectX::XMStoreFloat3(&fLookVector, lookVector);
-		camTarget.x = WorldPosition.X + fLookVector.x;
-		camTarget.y = WorldPosition.Y + fLookVector.y;
-		camTarget.z = WorldPosition.Z + fLookVector.z;
+	//Get the location the camera is looking
+	DirectX::XMFLOAT3 fLookVector;
+	DirectX::XMFLOAT3 camTarget;
 
-		//Return transformed Matrix with camera looking at a target
-		DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
-		DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition.ToDXFloat3());
+	DirectX::XMStoreFloat3(&fLookVector, lookVector);
+	camTarget.x = WorldPosition.X + fLookVector.x;
+	camTarget.y = WorldPosition.Y + fLookVector.y;
+	camTarget.z = WorldPosition.Z + fLookVector.z;
 
-		//Rotate the up vector
-		DirectX::XMVECTOR Position = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll);
+	//Return transformed Matrix with camera looking at a target
+	DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
+	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition.ToDXFloat3());
 
-		return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVector3Rotate(Position, Rotation));
-	}
+	//Rotate the up vector
+	DirectX::XMVECTOR Position = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll);
 
-	DirectX::XMMATRIX CameraComponent::GetProjectionMatrix() const
-	{
-		return Projection_;
-	}
+	DirectX::XMVECTOR Rotated = DirectX::XMVector3Rotate(Position, Rotation);
+	return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, Rotated);
+}
 
-	float CameraComponent::GetFOV() const
-	{
-		return FOV_;
-	}
+Vector CameraComponent::GetCameraPosition() const
+{
+	return GetWorldPosition();
 }

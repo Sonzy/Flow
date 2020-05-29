@@ -22,6 +22,8 @@
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
+#include "Flow/GameFramework/Actors/CameraActor.h"
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
@@ -50,6 +52,8 @@ ExampleLayer::ExampleLayer()
 	Rifle_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
 	
 	Base = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
+
+	_CameraActor = Flow::Application::GetWorld()->SpawnWorldObject<CameraActor>("Camera Actor");
 
 
 	Actors.push_back(WallObj);

@@ -2,44 +2,43 @@
 #include <DirectXMath.h>
 #include "Flow/Helper/Maths.h"
 
-namespace Flow
+/* Interface for camera, anything inheriting from this can be used as a camera.
+Use Update instead of tick, if the camera is moved outside of update, re-cache */
+class FLOW_API CameraBase
 {
-	class FLOW_API Camera
-	{
-	public:
-		Camera();
+public:
+	virtual void SetProjectionMatrix(DirectX::XMMATRIX NewProjection);
 
-		DirectX::XMMATRIX GetMatrix() const;
+	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const = 0;
 
-		void Reset();
-		void Translate(DirectX::XMFLOAT3 Translation);
-		void SetRotation(Rotator Rotation);
-		void Rotate(Rotator Offset);
 
-		void Tick(float DeltaTime);
+	//TODO: Not sure whether to keep this here
+	virtual void Update(float DeltaTime);
 
-		void RenderIMGUIWindow();
+	virtual void CacheMatrices();
 
-		void SetFOV(float NewFOV);
-		float GetFOV() const;
+	DirectX::XMMATRIX GetCachedViewProjection();
+	DirectX::XMMATRIX GetTransposedCachedViewProjection();
+	DirectX::XMMATRIX GetCachedView();
 
-		void SetProjection(DirectX::XMMATRIX Projection);
-		DirectX::XMMATRIX GetProjection() const;
+	DirectX::XMMATRIX GetProjectionMatrix() const;
 
-		DirectX::XMFLOAT3 GetPosition() const;
+	virtual Vector GetCameraPosition() const = 0;
 
-	private:
+	virtual void SetFOV(float NewFOV) { _FieldOfView = NewFOV; }
+	virtual float GetFOV() const { return _FieldOfView; };
 
-		Vector Position_;
-		Rotator Rotation_; //Pitch Roll Yaw
+	void MarkCacheDirty() { _CacheDirty = true; }
 
-		IntVector2D LastMousePosition_;
+protected:
 
-		DirectX::XMMATRIX Projection_;
+	DirectX::XMMATRIX _CachedViewProj;
+	DirectX::XMMATRIX _CachedView;
+	DirectX::XMMATRIX _CachedTransposedViewProj;
+	DirectX::XMMATRIX _Projection;
 
-		float m_FOV = Math::PI / 2;
+	bool _CacheDirty = false;
+	Vector _LastKnownCameraPos;
 
-		float CameraSpeed_ = 0.2f;
-		float RotationSpeed_ = 0.005f;
-	};
-}
+	float _FieldOfView = 90;
+};

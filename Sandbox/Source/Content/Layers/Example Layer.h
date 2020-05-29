@@ -10,6 +10,7 @@ namespace Flow
 	class WorldObject;
 }
 class MeshWorldObject;
+class CameraActor;
 
 class ExampleLayer : public Flow::Layer
 {
@@ -52,4 +53,6 @@ private:
 	std::shared_ptr<MeshWorldObject> Shotgun_;
 	std::shared_ptr<MeshWorldObject> Blunderbuss_;
 	std::shared_ptr<MeshWorldObject> Rifle_;
+
+	std::shared_ptr<CameraActor> _CameraActor;
 };

@@ -9,6 +9,9 @@
 !Flow/Assets/Collision/*.obj
 !Flow/Assets/Models/*.obj
 
+# Compiled Shaders
+*.cso
+
 # Precompiled Headers
 *.gch
 *.pch

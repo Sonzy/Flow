@@ -1,6 +1,5 @@
 #include <Flow.h>
-//#include "Content\Layers\Example Layer.h"
-#include "Content\Layers\AGDLayer.h"
+#include "Content\Layers\Example Layer.h"
 #include "Flow\Assets\AssetSystem.h"
 
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
@@ -23,14 +22,8 @@ public:
 		WoodMat->SetPixelShader("TexturedPhongPS");
 		WoodMat->SetVertexShader("TexturedPhongVS");
 
-		//ExampleLayer* Example = new ExampleLayer();
-		//PushLayer(Example);
-
-		AGDLayer* Layer = new AGDLayer();
-		PushLayer(Layer);
-
-
-
+		ExampleLayer* Example = new ExampleLayer();
+		PushLayer(Example);
 	}
 
 	~Sandbox()
