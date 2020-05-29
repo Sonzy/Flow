@@ -17,10 +17,4 @@ public:
 	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const override;
 	virtual Vector GetCameraPosition() const override;
 
-private:
-
-	IntVector2D _LastMousePosition;
-
-	float _MovementSpeed;
-	float _RotationSpeed;
 };

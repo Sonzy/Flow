@@ -8,7 +8,7 @@ CameraComponent::CameraComponent()
 }
 
 CameraComponent::CameraComponent(const std::string& Name)
-	: WorldComponent(Name), _LastMousePosition(0), _MovementSpeed(0.2f), _RotationSpeed(0.005f)
+	: WorldComponent(Name)
 {
 	_Projection = DirectX::XMMATRIX();
 	_FieldOfView = Math::DegreesToRadians(90.0f);
@@ -16,25 +16,7 @@ CameraComponent::CameraComponent(const std::string& Name)
 
 void CameraComponent::Update(float DeltaTime)
 {
-	IntVector2D Pos = Input::GetMousePosition();
 
-	//Camera rotation
-	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
-	{
-		if (_LastMousePosition != Pos)
-		{
-			Vector Direction = (_LastMousePosition - Pos);
-			Direction.X = Direction.X * 0.25f; //Horizontal Sensitivity
-			Direction.Y = Direction.Y * 0.15f;  //Vertical Sensitivity
-			Rotator Test = GetWorldRotation();
-			Rotator Change = Test.RotateRotator(Rotator(-Direction.Y, 0.0f, -Direction.X), false);
-			SetWorldRotation(Change);
-		}
-	}
-
-	_LastMousePosition = Pos;
-
-	CacheMatrices();
 }
 
 

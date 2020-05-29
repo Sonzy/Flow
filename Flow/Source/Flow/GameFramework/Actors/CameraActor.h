@@ -17,7 +17,9 @@ public:
 protected:
 
 	std::shared_ptr<CameraComponent> _CameraComponent;
-
-
 	IntVector2D _LastMousePosition;
+
+	float CameraMovementSpeed;
+	float CameraHorizontalRotationSpeed;
+	float CameraVerticalRotationSpeed;
 };
