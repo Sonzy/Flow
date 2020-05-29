@@ -31,7 +31,7 @@ void Layer::OnEvent(Event& e)
 {
 }
 
-void Layer::OnImGuiRender()
+void Layer::OnImGuiRender(bool DrawEditor)
 {
 }
 

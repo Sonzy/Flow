@@ -17,7 +17,7 @@ public:
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
-	virtual void OnImGuiRender() override;
+	virtual void OnImGuiRender(bool DrawEditor) override;
 	void OnEvent(Event& e) override;
 
 	virtual void OnUpdate(float DeltaTime) override;
@@ -29,9 +29,10 @@ public:
 	void SetDemoWindowVisible(bool Enabled);
 	void ToggleImGuiDemoWindow();
 
-
 protected:
 
+	/* Create my own dockspace that takes into account the offset of the main menu bar.
+	An almost-copy of the logic for creating a default dockstate.*/
 	void InitialiseDockspace(ImVec2 Offset);
 	void RenderApplicationDebug(float DeltaTime);
 
@@ -51,4 +52,6 @@ protected:
 	float FrameDeltaTime = 0.0f;
 	float LastFrameTime = 0.0f;
 	const float UpdateInterval = 1.0f;
+
+
 };

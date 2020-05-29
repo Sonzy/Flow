@@ -17,7 +17,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void OnUpdate(float DeltaTime) override;
-	virtual void OnImGuiRender() override;
+	virtual void OnImGuiRender(bool DrawEditor) override;
 	virtual void OnAttach() override;
 
 private:

@@ -35,17 +35,22 @@ void EditorLayer::OnDetach()
 {
 }
 
-void EditorLayer::OnImGuiRender()
+void EditorLayer::OnImGuiRender(bool DrawEditor)
 {
+	//NEED TO DRAW TOOLBAR FIRST - Otherwise the toolbar gets overlapped by the dockspace.
 	ImVec2 Offset = _Toolbar->Draw();
+
 	InitialiseDockspace(Offset);
 
-	_Inspector->Update();
+	if (DrawEditor)
+	{
+		_Inspector->Update();
 
-	RenderApplicationDebug(FrameDeltaTime);
+		RenderApplicationDebug(FrameDeltaTime);
 
-	if (_DrawDemoWindow)
-		ImGui::ShowDemoWindow(&_DrawDemoWindow);
+		if (_DrawDemoWindow)
+			ImGui::ShowDemoWindow(&_DrawDemoWindow);
+	}
 }
 
 void EditorLayer::OnEvent(Event& e)

@@ -204,7 +204,7 @@ void Application::Run()
 		ImGuiLayer_->Begin();
 		for (Layer* layer : LayerStack_)
 		{
-			layer->OnImGuiRender();
+			layer->OnImGuiRender(_DrawEditor);
 		}
 
 		ImGuiLayer_->End();

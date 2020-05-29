@@ -215,12 +215,13 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 	Renderer::EndScene();
 }
 
-void ExampleLayer::OnImGuiRender()
+void ExampleLayer::OnImGuiRender(bool DrawEditor)
 {
-	//RenderCommand::GetCamera().RenderIMGUIWindow();
-
-	AssetSystem::RenderDebugWindow(true);
-	Light->RenderControlWindow();
+	if (DrawEditor)
+	{
+		AssetSystem::RenderDebugWindow(true);
+		Light->RenderControlWindow();
+	}
 }
 
 void ExampleLayer::OnAttach()

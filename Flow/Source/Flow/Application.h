@@ -42,6 +42,7 @@ public:
 	Window& GetWindow();
 
 	EditorLayer* GetEditor() { return EditorLayer_; };
+	bool _DrawEditor = true;
 public:
 	std::string ApplicationName;
 
@@ -59,6 +60,7 @@ private:
 	bool _Running = true;
 	bool Paused_ = false;
 	bool DrawCollision_ = false;
+
 
 	//= Game ====================
 

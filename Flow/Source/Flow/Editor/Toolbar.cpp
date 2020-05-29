@@ -30,6 +30,12 @@ ImVec2 Toolbar::Draw()
 			if (ImGui::MenuItem("Toggle ImGui Demo Window"))
 				_Editor->ToggleImGuiDemoWindow();
 
+			if (ImGui::MenuItem("Toggle Editor"))
+			{
+				Application& App = Application::GetApplication();
+				App._DrawEditor = !App._DrawEditor;
+			}	
+
 			ImGui::EndMenu();
 		}
 

@@ -17,7 +17,7 @@ public:
 	virtual void OnUpdate(float DeltaTime);
 	virtual void OnEvent(Event& e);
 
-	virtual void OnImGuiRender();
+	virtual void OnImGuiRender(bool DrawEditor);
 
 
 
