@@ -19,6 +19,8 @@
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
+#include "Flow\Helper\Profiling.h"
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 Application* Application::Instance = nullptr;
@@ -26,9 +28,17 @@ Application* Application::Instance = nullptr;
 Application::Application(const std::string& AppName)
 	: ApplicationName(AppName)
 {
+	
+}
+
+void Application::InitialiseApplication()
+{
+	Instrumentor::Get().BeginSession("Application Startup", "Saved/Profiling-Startup.json");
+	PROFILE_FUNCTION();
+
 	Instance = this;
 
-	MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(AppName, 1280u, 720u)));
+	MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
 	MainWindow_->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
 	ImGuiLayer_ = new ImGuiLayer();
@@ -163,55 +173,86 @@ Application::~Application()
 
 void Application::Run()
 {
-	GameWorld_->InitialiseWorld();
-	//SelectionGizmo_->GenerateCollision();
-	//SelectionGizmo_->AddCollidersToWorld(GameWorld_);
-
-	for (Layer* layer : LayerStack_)
 	{
-		layer->BeginPlay();
-	}
-	GameWorld_->DispatchBeginPlay();
+		PROFILE_CURRENT_SCOPE("Run Initialisation");
 
-	Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+		GameWorld_->InitialiseWorld();
+
+		for (Layer* layer : LayerStack_)
+		{
+			layer->BeginPlay();
+		}
+		GameWorld_->DispatchBeginPlay();
+
+		Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+	}
+
+	Instrumentor::Get().EndSession();
+	Instrumentor::Get().BeginSession("Game Running", "Saved\\Profiling-GameLoop.json");
+
 	while (_Running)
 	{
+		PROFILE_CURRENT_SCOPE("Game Loop");
+
 		float DeltaTime = Timer_.Mark();
 
 		MainWindow_->PreUpdate();
 		MainWindow_->OnUpdate();
 
+		//If the window has sent a shutdown message return immediately
+		if (!_Running)
+		{
+			//Finish the profiling first
+			Instrumentor::Get().EndSession();
+			return;
+		}
+
 		if (!Paused_)
 		{
+			PROFILE_CURRENT_SCOPE("Game - Tick");
+
 			//TODO: Check where to move the world since I'm using layers
 			GameWorld_->Tick(DeltaTime);
 		}
 
-		for (Layer* layer : LayerStack_)
 		{
-			layer->OnUpdate(DeltaTime);
+			PROFILE_CURRENT_SCOPE("Game - Layer Updates");
+
+			for (Layer* layer : LayerStack_)
+			{
+				layer->OnUpdate(DeltaTime);
+			}
 		}
+
 
 		//= Debug Rendering =
+		{
+			PROFILE_CURRENT_SCOPE("Game - Draw Debug Physics");
 
-		if (DrawCollision_)
-			GameWorld_->GetPhysicsWorld()->debugDrawWorld();
+			if (DrawCollision_)
+				GameWorld_->GetPhysicsWorld()->debugDrawWorld();
 
-		GameWorld_->GetLineBatcher().DrawLines();
+			GameWorld_->GetLineBatcher().DrawLines();
+		}
+
 
 		//= UI Rendering =
-
-		ImGuiLayer_->Begin();
-		for (Layer* layer : LayerStack_)
 		{
-			layer->OnImGuiRender(_DrawEditor);
+			PROFILE_CURRENT_SCOPE("Game - ImGui Rendering");
+			ImGuiLayer_->Begin();
+			for (Layer* layer : LayerStack_)
+			{
+				layer->OnImGuiRender(_DrawEditor);
+			}
+			ImGuiLayer_->End();
 		}
-		ImGuiLayer_->End();
 
 		//= Post Update =
 
 		MainWindow_->PostUpdate();
 	}
+
+	Instrumentor::Get().EndSession();
 }
 
 void Application::OnEvent(Event& e)

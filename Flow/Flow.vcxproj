@@ -151,6 +151,7 @@
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Transform.h" />
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector.h" />
     <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector2D.h" />
+    <ClInclude Include="Source\Flow\Helper\Profiling.h" />
     <ClInclude Include="Source\Flow\Helper\Timer.h" />
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
@@ -319,6 +320,7 @@
     <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\WorldObject.cpp" />
     <ClCompile Include="Source\Flow\Helper\BulletDebugDrawing.cpp" />
+    <ClCompile Include="Source\Flow\Helper\Profiling.cpp" />
     <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
     <ClCompile Include="Source\Flow\Layers\EditorLayer.cpp" />

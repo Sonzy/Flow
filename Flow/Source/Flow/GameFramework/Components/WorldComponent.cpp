@@ -21,6 +21,8 @@ WorldComponent::~WorldComponent()
 
 void WorldComponent::Tick(float DeltaTime)
 {
+	PROFILE_FUNCTION();
+
 	for (auto& Child : _Children)
 	{
 		Child->Tick(DeltaTime);

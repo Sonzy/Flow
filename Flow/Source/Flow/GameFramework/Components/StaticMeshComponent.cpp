@@ -42,6 +42,8 @@ void StaticMeshComponent::InitialiseComponent(MeshAsset* Mesh, Material* Materia
 
 void StaticMeshComponent::Tick(float DeltaTime)
 {
+	PROFILE_FUNCTION();
+
 	WorldComponent::Tick(DeltaTime);
 
 	if (_Body && _SimulatePhysics)

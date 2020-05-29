@@ -19,6 +19,7 @@ class FLOW_API Application
 public:
 
 	Application(const std::string& AppName);
+	virtual void InitialiseApplication();
 	virtual ~Application();
 
 	void Run();

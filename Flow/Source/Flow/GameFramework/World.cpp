@@ -70,7 +70,12 @@ void World::InitialisePhysics()
 
 void World::Tick(float DeltaTime)
 {
-	_PhysicsWorld->stepSimulation(DeltaTime, 0);
+	{
+		PROFILE_CURRENT_SCOPE("Update Physics World");
+
+		_PhysicsWorld->stepSimulation(DeltaTime, 0);
+	}
+
 	for (auto& WorldObj : _WorldObjects)
 	{
 		WorldObj->Tick(DeltaTime);
