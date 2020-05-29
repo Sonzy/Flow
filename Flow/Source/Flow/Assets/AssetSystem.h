@@ -9,62 +9,59 @@
 #include "Flow\Assets\Textures\TextureAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
-namespace Flow
+/* Asset management class used for managing all assets in the engine */
+class FLOW_API AssetSystem
 {
-	/* Asset management class used for managing all assets in the engine */
-	class FLOW_API AssetSystem
+public:
+
+	AssetSystem();
+	AssetSystem(const AssetSystem&) = delete;
+	static void Shutdown();
+
+	~AssetSystem();
+
+	void InitialiseAssetSystem();
+
+	/* Loads an asset from the specified path, and stores it in the system so it can be accessed by the name. */
+	static bool LoadAsset(const std::string& AssetName, const std::string& FilePath);
+
+	/* Temp: Used to create a new material at runtime, templated on the material class */
+	template <typename T>
+	static bool CreateMaterial(const std::string& AssetName)
 	{
-	public:
+		MaterialAsset* NewAsset = new MaterialAsset();
+		NewAsset->CreateMaterial<T>();
 
-		AssetSystem();
-		AssetSystem(const AssetSystem&) = delete;
-		static void Shutdown();
+		NewAsset->SetAssetName(AssetName);
+		std::size_t HashedName = std::hash<std::string>{}(AssetName);
+		AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
 
-		~AssetSystem();
+		AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
 
-		void InitialiseAssetSystem();
-
-		/* Loads an asset from the specified path, and stores it in the system so it can be accessed by the name. */
-		static bool LoadAsset(const std::string& AssetName, const std::string& FilePath);
-
-		/* Temp: Used to create a new material at runtime, templated on the material class */
-		template <typename T>
-		static bool CreateMaterial(const std::string& AssetName)
-		{
-			MaterialAsset* NewAsset = new MaterialAsset();
-			NewAsset->CreateMaterial<T>();
-
-			NewAsset->SetAssetName(AssetName);
-			std::size_t HashedName = std::hash<std::string>{}(AssetName);
-			AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
-
-			AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
-
-			return (bool)NewAsset;
-		}
+		return (bool)NewAsset;
+	}
 
 
-		//TODO: Setup asset retrieval
-		static AssetBase* GetAsset(const std::string& AssetPath);
+	//TODO: Setup asset retrieval
+	static AssetBase* GetAsset(const std::string& AssetPath);
 
-		static EAssetType GetAssetTypeFromFileExtension(const std::string& AssetPath);
-		static AssetBase* CreateAsset(EAssetType Type);
-		
-		/* Renders an IMGUI window showing current asset system memory usage. */
-		static void RenderDebugWindow(bool Render);
+	static EAssetType GetAssetTypeFromFileExtension(const std::string& AssetPath);
+	static AssetBase* CreateAsset(EAssetType Type);
 
-		template <typename T>
-		static T* GetAsset(const std::string& AssetPath)
-		{
-			return dynamic_cast<T*>(GetAsset(AssetPath));
-		}
+	/* Renders an IMGUI window showing current asset system memory usage. */
+	static void RenderDebugWindow(bool Render);
 
-	public:
-		static AssetSystem* AssetSystem_s;
+	template <typename T>
+	static T* GetAsset(const std::string& AssetPath)
+	{
+		return dynamic_cast<T*>(GetAsset(AssetPath));
+	}
 
-		// Map of all loaded asset pointers as well as HashedFilePath to all loaded assets
-		std::unordered_map<size_t, AssetBase*> LoadedAssets_;
+public:
+	static AssetSystem* AssetSystem_s;
 
-		size_t LoadedAssetSize_ = 0;
-	};
-}
+	// Map of all loaded asset pointers as well as HashedFilePath to all loaded assets
+	std::unordered_map<size_t, AssetBase*> LoadedAssets_;
+
+	size_t LoadedAssetSize_ = 0;
+};

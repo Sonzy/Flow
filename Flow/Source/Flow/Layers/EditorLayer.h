@@ -2,29 +2,26 @@
 #include "Flow/Layers/Layer.h"
 #include "Flow/Events/MouseEvent.h"
 
-namespace Flow
+class Inspector;
+class SelectionGizmo;
+
+class EditorLayer : public Layer
 {
-	class Inspector;
-	class SelectionGizmo;
+public:
+	EditorLayer();
 
-	class EditorLayer : public Layer
-	{
-	public:
-		EditorLayer();
+	/* Layer interface */
 
-		/* Layer interface */
+	virtual void OnAttach() override;
+	virtual void OnDetach() override;
+	virtual void OnImGuiRender() override;
+	void OnEvent(Event& e) override;
 
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
-		virtual void OnImGuiRender() override;
-		void OnEvent(Event& e) override;
+	virtual void OnUpdate(float DeltaTime) override;
 
-		virtual void OnUpdate(float DeltaTime) override;
+protected:
 
-	protected:
+	bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
-
-		Inspector* m_Inspector;
-	};
-}
+	Inspector* _Inspector;
+};

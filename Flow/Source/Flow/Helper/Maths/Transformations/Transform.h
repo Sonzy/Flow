@@ -6,15 +6,15 @@ class Transform
 {
 public:
 	Transform()
-		: Position_(Vector()), Rotation_(Rotator()), Scale_(Vector(1.0f))
+		: _Position(Vector()), _Rotation(Rotator()), _Scale(Vector(1.0f))
 	{}
 
 	Transform(Vector Loc, Rotator Rot, Vector Scale)
-		: Position_(Loc), Rotation_(Rot), Scale_(Scale)
+		: _Position(Loc), _Rotation(Rot), _Scale(Scale)
 	{}
 
-	Vector Position_;
-	Rotator Rotation_;
-	Vector Scale_;
+	Vector _Position;
+	Rotator _Rotation;
+	Vector _Scale;
 
 };

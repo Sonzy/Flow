@@ -6,33 +6,30 @@
 #include "Flow/Events/MouseEvent.h"
 #include "Flow/Events/ApplicationEvent.h"
 
-namespace Flow
+class FLOW_API ImGuiLayer : public Layer
 {
-	class FLOW_API ImGuiLayer : public Layer
-	{
-	public:
-		ImGuiLayer();
-		~ImGuiLayer();
+public:
+	ImGuiLayer();
+	~ImGuiLayer();
 
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
-		virtual void OnImGuiRender() override;
-		void OnEvent(Event& e) override;
+	virtual void OnAttach() override;
+	virtual void OnDetach() override;
+	virtual void OnImGuiRender() override;
+	void OnEvent(Event& e) override;
 
-		void Begin();
-		void End();
+	void Begin();
+	void End();
 
-	private:
+private:
 
-		bool OnMouseButtonPressed(MouseButtonEvent& e);
-		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
-		bool OnMouseMoved(MouseMovedEvent& e);
-		bool OnMouseScrolled(MouseScrolledEvent& e);
-		bool OnKeyPressed(KeyPressedEvent& e);
-		bool OnKeyTyped(KeyTypedEvent& e);
-		bool OnKeyReleased(KeyReleasedEvent& e);
-		bool OnWindowResized(WindowResizedEvent& e);
+	bool OnMouseButtonPressed(MouseButtonEvent& e);
+	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+	bool OnMouseMoved(MouseMovedEvent& e);
+	bool OnMouseScrolled(MouseScrolledEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
+	bool OnKeyTyped(KeyTypedEvent& e);
+	bool OnKeyReleased(KeyReleasedEvent& e);
+	bool OnWindowResized(WindowResizedEvent& e);
 
-		void ConfigureStyle();
-	};
-}
+	void ConfigureStyle();
+};

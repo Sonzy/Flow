@@ -3,143 +3,136 @@
 #include "Components\WorldComponent.h"
 #include "ThirdParty\ImGui\imgui.h"
 
-//TODO: Remove
-#include "Components\StaticMeshComponent.h"
-
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 
-namespace Flow
+WorldObject::WorldObject()
+	: _RootComponent(nullptr)
 {
-	WorldObject::WorldObject()
-		: RootComponent_(nullptr)
-	{
 
+}
+
+WorldObject::WorldObject(const std::string& Name)
+	: GameObject(Name), _RootComponent(nullptr)
+{
+}
+
+WorldObject::~WorldObject()
+{
+	_RootComponent = nullptr;
+	FLOW_ENGINE_LOG("WorldObject::~WorldObject");
+}
+
+void WorldObject::BeginPlay()
+{
+	if (CollisionEnabled())
+	{
+		InitialisePhysics();
 	}
+}
 
-	WorldObject::WorldObject(const std::string& Name)
-		: GameObject(Name), RootComponent_(nullptr)
-	{
-	}
+void WorldObject::Tick(float DeltaTime)
+{
+	GameObject::Tick(DeltaTime);
 
-	WorldObject::~WorldObject()
-	{
-		RootComponent_ = nullptr;
-		FLOW_ENGINE_LOG("WorldObject::~WorldObject");
-	}
+	if (_RootComponent)
+		_RootComponent->Tick(DeltaTime);
+}
+WorldComponent* WorldObject::GetRootComponent()
+{
+	return _RootComponent;
+}
 
-	void WorldObject::BeginPlay()
+Vector WorldObject::GetLocation()
+{
+	if (!_RootComponent)
+		return Vector();
+
+	return _RootComponent->GetRelativePosition();
+}
+
+Vector WorldObject::GetScale()
+{
+	if (!_RootComponent)
+		return Vector();
+
+	return _RootComponent->GetRelativeScale();
+}
+
+Rotator WorldObject::GetRotation()
+{
+	if (!_RootComponent)
+		return Rotator();
+
+	return _RootComponent->GetRelativeRotation();
+}
+
+void WorldObject::Render()
+{
+	if (_RootComponent && _Visible)
+		_RootComponent->Render();
+}
+
+bool WorldObject::IsSimulatingPhysics()
+{
+	return _SimulatePhysics;
+}
+
+bool WorldObject::CollisionEnabled()
+{
+	return _HasCollision;
+}
+
+void WorldObject::InitialisePhysics()
+{
+	_RootComponent->InitialisePhysics();
+	_SimulatePhysics ? World::GetWorld()->AddPhysicsObject(_RootComponent->GetRigidBody()) : World::GetWorld()->AddCollisionObject(_RootComponent->GetRigidBody());
+}
+
+btRigidBody* WorldObject::GetRigidBody()
+{
+	return _RootComponent->GetRigidBody();
+}
+
+void WorldObject::DrawDetailsWindow(bool bDontUpdate)
+{
+	ImGui::InputText("ObjectName", &_ObjectName);
+
+	ImGui::Separator(); //==========================================
+
+	//Display Component node tree
+	if (ImGui::TreeNode(_RootComponent->GetName().c_str()))
 	{
-		if (CollisionEnabled())
+		for (auto Child : _RootComponent->GetChildren())
 		{
-			InitialisePhysics();
-		}
-	}
-
-	void WorldObject::Tick(float DeltaTime)
-	{
-		GameObject::Tick(DeltaTime);
-		
-		if(RootComponent_)
-			RootComponent_->Tick(DeltaTime);
-	}
-	WorldComponent* WorldObject::GetRootComponent()
-	{
-		return RootComponent_;
-	}
-
-	Vector WorldObject::GetLocation()
-	{
-		if(!RootComponent_)
-			return Vector();
-		
-		return RootComponent_->GetRelativePosition();
-	}
-
-	Vector WorldObject::GetScale()
-	{
-		if (!RootComponent_)
-			return Vector();
-
-		return RootComponent_->GetRelativeScale();
-	}
-
-	Rotator WorldObject::GetRotation()
-	{
-		if (!RootComponent_)
-			return Rotator();
-
-		return RootComponent_->GetRelativeRotation();
-	}
-
-	void WorldObject::Render()
-	{
-		if(RootComponent_ && Visible_)
-			RootComponent_->Render();
-	}
-
-	bool WorldObject::IsSimulatingPhysics()
-	{
-		return SimulatePhysics_;
-	}
-
-	bool WorldObject::CollisionEnabled()
-	{
-		return HasCollision_;
-	}
-
-	void WorldObject::InitialisePhysics()
-	{
-		RootComponent_->InitialisePhysics();
-		SimulatePhysics_ ? World::GetWorld()->AddPhysicsObject(RootComponent_->GetRigidBody()) : World::GetWorld()->AddCollisionObject(RootComponent_->GetRigidBody());
-	}
-
-	btRigidBody* WorldObject::GetRigidBody()
-	{
-		return RootComponent_->GetRigidBody();
-	}
-
-	void WorldObject::DrawDetailsWindow(bool bDontUpdate)
-	{
-		ImGui::InputText("ObjectName", &ObjectName_);
-
-		ImGui::Separator(); //==========================================
-
-		//Display Component node tree
-		if (ImGui::TreeNode(RootComponent_->GetName().c_str()))
-		{
-			for (auto Child : RootComponent_->GetChildren())
-			{
-				ImGui::Text(Child->GetName().c_str());
-			}
-
-			ImGui::TreePop();
+			ImGui::Text(Child->GetName().c_str());
 		}
 
-		ImGui::Separator(); //==========================================
-
-		
-
-		//Display World Object Transform
-		bool bUpdate = false;
-		bUpdate |= ImGui::InputFloat3("Position", (float*)RootComponent_->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		bUpdate |= ImGui::InputFloat3("Rotation", (float*)RootComponent_->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		bUpdate |= ImGui::InputFloat3("Scale", (float*)RootComponent_->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-		//bUpdate |= ImGui::InputFloat3("Position", (float*)m_RootComponent->GetWriteablePosition(), 1);
-
-		//Update Object Transform
-		if (bUpdate && !bDontUpdate)
-		{
-			//TEMP CAST
-			if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(RootComponent_))
-				Comp->MovePhysicsBody(RootComponent_->GetRelativeTransform());
-		}
-
-		ImGui::Checkbox("Is Visible", &Visible_);		
+		ImGui::TreePop();
 	}
 
-	void WorldObject::SetVisibility(bool Visible)
+	ImGui::Separator(); //==========================================
+
+
+
+	//Display World Object Transform
+	bool bUpdate = false;
+	bUpdate |= ImGui::InputFloat3("Position", (float*)_RootComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+	bUpdate |= ImGui::InputFloat3("Rotation", (float*)_RootComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+	bUpdate |= ImGui::InputFloat3("Scale", (float*)_RootComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+
+	//Update Object Transform
+	if (bUpdate && !bDontUpdate)
 	{
-		Visible_ = Visible;
+		//TODO: Move physics body
+		//if (StaticMeshComponent* Comp = reinterpret_cast<StaticMeshComponent*>(_RootComponent))
+		//	Comp->MovePhysicsBody(_RootComponent->GetRelativeTransform());
 	}
+
+	ImGui::Checkbox("Is Visible", &_Visible);
+}
+
+void WorldObject::SetVisibility(bool Visible)
+{
+	_Visible = Visible;
 }

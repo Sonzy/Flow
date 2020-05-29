@@ -3,45 +3,42 @@
 #include "Flow\GameFramework\Components\WorldComponent.h"
 #include <memory>
 
-namespace Flow
+class Bindable;
+class IndexBuffer;
+
+/* Base class for any components with rendering capabilities */
+class FLOW_API RenderableComponent : public WorldComponent
 {
-	class Bindable;
-	class IndexBuffer;
+public:
+	RenderableComponent();
+	RenderableComponent(const std::string& Name);
 
-	/* Base class for any components with rendering capabilities */
-	class FLOW_API RenderableComponent : public WorldComponent
+
+	void AddBind(std::shared_ptr<Bindable> bind);
+	void BindAll();
+
+	const IndexBuffer& GetIndexBuffer() const;
+
+	virtual DirectX::XMMATRIX GetTransformXM();
+
+protected:
+
+
+
+
+	virtual void RefreshBinds();
+
+	template<class T>
+	T* GetBindable() noexcept
 	{
-	public:
-		RenderableComponent();
-		RenderableComponent(const std::string& Name);
-	
-
-		void AddBind(std::shared_ptr<Bindable> bind);
-		void BindAll();
-
-		const IndexBuffer& GetIndexBuffer() const;
-
-		virtual DirectX::XMMATRIX GetTransformXM();
-
-	protected:
-
-
-
-
-		virtual void RefreshBinds();
-
-		template<class T>
-		T* GetBindable() noexcept
+		for (auto& pb : _Binds)
 		{
-			for (auto& pb : Binds_)
-			{
-				if (auto pt = dynamic_cast<T*>(pb.get()))
-					return pt;
-			}
-			return nullptr;
+			if (auto pt = dynamic_cast<T*>(pb.get()))
+				return pt;
 		}
+		return nullptr;
+	}
 
-		std::vector<std::shared_ptr<Bindable>> Binds_;
-		const IndexBuffer* IndexBuffer_;
-	};
-}
+	std::vector<std::shared_ptr<Bindable>> _Binds;
+	const IndexBuffer* _IndexBuffer;
+};

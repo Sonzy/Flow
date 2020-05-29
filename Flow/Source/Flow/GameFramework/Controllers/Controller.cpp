@@ -2,53 +2,50 @@
 #include "Controller.h"
 #include "Flow\GameFramework\ControlledObject.h"
 
-namespace Flow
+Controller::Controller()
+	: Controller("Controller")
 {
-	Controller::Controller()
-		: Controller("Controller")
+}
+
+Controller::Controller(const std::string& Name)
+	: WorldObject(Name), _ControlledObject(nullptr), _Camera(nullptr)
+{
+}
+
+void Controller::ControlObject(ControlledObject* Obj)
+{
+	if (_ControlledObject)
 	{
+		RemoveControl(_ControlledObject);
 	}
 
-	Controller::Controller(const std::string& Name)
-		: WorldObject(Name), ControlledObject_(nullptr), Camera_(nullptr)
-	{
-	}
+	Obj->Control(this);
+}
 
-	void Controller::ControlObject(ControlledObject* Obj)
-	{
-		if (ControlledObject_)
-		{
-			RemoveControl(ControlledObject_);
-		}
+void Controller::RemoveControl(ControlledObject* Obj)
+{
+	CHECK_RETURN(!_ControlledObject, "Controller::RemoveControl: Tried to remove control when no object is being controlled");
 
-		Obj->Control(this);
-	}
+	_ControlledObject->RemoveControl();
+}
 
-	void Controller::RemoveControl(ControlledObject* Obj)
-	{
-		CHECK_RETURN(!ControlledObject_, "Controller::RemoveControl: Tried to remove control when no object is being controlled");
+void Controller::SetCamera(std::shared_ptr<CameraBase> NewCamera)
+{
+	CHECK_RETURN(!NewCamera, "Controller::SetCamera: Tried to remove control when no object is being controlled");
+	_Camera = NewCamera;
+}
 
-		ControlledObject_->RemoveControl();
-	}
+std::shared_ptr<CameraBase> Controller::GetCamera() const
+{
+	return _Camera;
+}
 
-	void Controller::SetCamera(CameraComponent* NewCamera)
-	{
-		CHECK_RETURN(!NewCamera, "Controller::SetCamera: Tried to remove control when no object is being controlled");
-		Camera_ = NewCamera;
-	}
+bool Controller::IsLocalController() const
+{
+	return _LocalController;
+}
 
-	CameraComponent* Controller::GetCamera() const
-	{
-		return Camera_;
-	}
-
-	bool Controller::IsLocalController() const
-	{
-		return LocalController_;
-	}
-
-	unsigned int Controller::GetControllerIndex() const
-	{
-		return ControllerIndex_;
-	}
+unsigned int Controller::GetControllerIndex() const
+{
+	return _ControllerIndex;
 }

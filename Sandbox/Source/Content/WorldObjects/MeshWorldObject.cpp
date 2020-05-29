@@ -8,20 +8,20 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
 MeshWorldObject::MeshWorldObject()
-	: Flow::WorldObject("Mesh Object")
+	: WorldObject("Mesh Object")
 {
 }
 
 //TODO: Get rid of this lul
 MeshWorldObject::MeshWorldObject(const std::string& NewName)
-	: Flow::WorldObject(NewName)
+	: WorldObject(NewName)
 {
-	SimulatePhysics_ = true;
-	HasCollision_ = true;
+	_SimulatePhysics = true;
+	_HasCollision = true;
 
 	//Initialise Components
-	MeshComponent = CreateComponent<Flow::StaticMeshComponent>("Mesh Component");
-	RootComponent_ = MeshComponent.get();
+	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
+	_RootComponent = MeshComponent.get();
 
 	//Initialise Mesh Component
 	// Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>(MeshName);
@@ -32,24 +32,24 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName)
 }
 
 MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& MeshName, const std::string& MaterialName)
-	: Flow::WorldObject(NewName), MeshName(MeshName), MaterialName(MaterialName)
+	: WorldObject(NewName), MeshName(MeshName), MaterialName(MaterialName)
 {
-	SimulatePhysics_ = true;
-	HasCollision_ = true;
+	_SimulatePhysics = true;
+	_HasCollision = true;
 
 	//Initialise Components
-	MeshComponent = CreateComponent<Flow::StaticMeshComponent>("Mesh Component");
-	RootComponent_ = MeshComponent.get();
+	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
+	_RootComponent = MeshComponent.get();
 
 	//Initialise Mesh Component
-	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>(MeshName);
-	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>(MaterialName)->GetMaterial();
+	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>(MeshName);
+	Material* Material = AssetSystem::GetAsset<MaterialAsset>(MaterialName)->GetMaterial();
 	MeshComponent->InitialiseComponent(Mesh, Material);
-	MeshComponent->SetSimulatePhysics(SimulatePhysics_);
+	MeshComponent->SetSimulatePhysics(_SimulatePhysics);
 	//MeshComponent->InitialisePhysics();
 }
 
-Flow::StaticMeshComponent* MeshWorldObject::GetMeshComponent() const
+StaticMeshComponent* MeshWorldObject::GetMeshComponent() const
 {
 	return MeshComponent.get();
 }

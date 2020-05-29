@@ -130,6 +130,7 @@
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
@@ -178,7 +179,6 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexBufferLayout.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Buffers\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
-    <ClInclude Include="Source\Flow\Rendering\Core\Camera\CameraLayer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Line.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
@@ -302,6 +302,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
@@ -336,7 +337,6 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Texture.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Topology.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Camera\CameraLayer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Line.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />

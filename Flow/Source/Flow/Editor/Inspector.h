@@ -1,38 +1,34 @@
 #pragma once
 #include "Flow/Events/MouseEvent.h"
 
-namespace Flow
+class WorldObject;
+class World;
+class SelectionGizmo;
+
+/*	Inspector within the editor. Provides details of the current selected object as well as modifiable properties of the object.
+	Also displays the world heirarchy in the editor. */
+class Inspector
 {
-	class WorldObject;
-	class World;
-	class SelectionGizmo;
+public:
+	Inspector(SelectionGizmo* Selector);
 
-	/*	Inspector within the editor. Provides details of the current selected object as well as modifiable properties of the object. 
-		Also displays the world heirarchy in the editor. */
-	class Inspector
-	{
-	public:
-		Inspector(SelectionGizmo* Selector);
+	void RenderInspector();
+	void RenderHeirarchy();
 
-		void RenderInspector();
-		void RenderHeirarchy();
+	void SetCurrentWorld(World* WorldReference);
 
-		void SetCurrentWorld(World* WorldReference);
+	bool OnMouseClicked(MouseButtonPressedEvent& e);
 
-		bool OnMouseClicked(MouseButtonPressedEvent& e);
+	void Update();
 
-		void Update();
+	[[nodiscard]] SelectionGizmo* GetSelector() const;
+private:
 
-		[[nodiscard]] SelectionGizmo* GetSelector() const;
-	private:
+	World* _CurrentWorld;
+	WorldObject* _FocusedItem;
+	SelectionGizmo* _Selector;
 
-		World* CurrentWorld_;
-		WorldObject* FocusedItem_;
-		SelectionGizmo* Selector_;
-
-		// Whether the focused item has changed this frame, so dont apply modifiers
-		// to the new selected object from the previous one
-		bool FocusedItemChanged;
-	};
-
-}
+	// Whether the focused item has changed this frame, so dont apply modifiers
+	// to the new selected object from the previous one
+	bool _FocusedItemChanged;
+};

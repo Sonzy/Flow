@@ -12,23 +12,23 @@
 ExampleWorldObject::ExampleWorldObject()
 	: ExampleWorldObject("Example World Object")
 {
-	SimulatePhysics_ = true;
-	HasCollision_ = true;
+	_SimulatePhysics = true;
+	_HasCollision = true;
 }
 
 ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 	: WorldObject(NewName)
 {
-	TestMesh = CreateComponent<Flow::StaticMeshComponent>("Test Mesh");
-	TestMesh2 = CreateComponent<Flow::StaticMeshComponent>("Test Mesh 2");
-	RootComponent_ = TestMesh.get();
+	TestMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
+	TestMesh2 = CreateComponent<StaticMeshComponent>("Test Mesh 2");
+	_RootComponent = TestMesh.get();
 
-	RootComponent_->AddChild(TestMesh2.get());
+	_RootComponent->AddChild(TestMesh2.get());
 
-	//Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Hat_Sherif");
-	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("SelectionGizmo");
-	Flow::MeshAsset* Mesh2 = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Hat_FancyMan");
-	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_HatFancyMan")->GetMaterial();
+	//MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Hat_Sherif");
+	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");
+	MeshAsset* Mesh2 = AssetSystem::GetAsset<MeshAsset>("Hat_FancyMan");
+	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_HatFancyMan")->GetMaterial();
 	TestMesh->InitialiseComponent(Mesh2, Material);
 	TestMesh2->InitialiseComponent(Mesh, Material);
 	TestMesh2->SetRelativePosition(Vector(100.0f, 10.0f, 10.0f));

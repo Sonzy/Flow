@@ -2,13 +2,10 @@
 #include "Flow\GameFramework\WorldObject.h"
 #include "Flow\Helper\Maths.h"
 
-namespace Flow
-{
-	class StaticMeshComponent;
-}
+class StaticMeshComponent;
 
 /* Simple wall class with physics */
-class Wall : public Flow::WorldObject
+class Wall : public WorldObject
 {
 public:
 	Wall();
@@ -23,5 +20,5 @@ public:
 
 protected:
 
-	std::shared_ptr<Flow::StaticMeshComponent> WallMesh;
+	std::shared_ptr<StaticMeshComponent> WallMesh;
 };

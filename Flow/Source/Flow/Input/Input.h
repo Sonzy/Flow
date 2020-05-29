@@ -4,64 +4,61 @@
 #include "KeyCodes.h"
 #include "Flow\Helper\Maths.h"
 
-namespace Flow
+class FLOW_API Input
 {
-	class FLOW_API Input
+public:
+
+	static bool IsKeyPressed(int Keycode)
 	{
-	public:
+		return s_Instance->IsKeyPressed_Implementation(Keycode);
+	}
 
-		static bool IsKeyPressed(int Keycode)
-		{
-			return s_Instance->IsKeyPressed_Implementation(Keycode);
-		}
+	static bool IsMousePressed(int MouseButton)
+	{
+		return s_Instance->_InputStates[MouseButton];
+	}
 
-		static bool IsMousePressed(int MouseButton)
-		{
-			return s_Instance->InputStates[MouseButton];
-		}
+	static void OnKeyPressed(int KeyCode)
+	{
+		s_Instance->_InputStates[KeyCode] = true;
+	}
 
-		static void OnKeyPressed(int KeyCode)
-		{
-			s_Instance->InputStates[KeyCode] = true;
-		}
+	static void OnKeyReleased(int KeyCode)
+	{
+		s_Instance->_InputStates[KeyCode] = false;
+	}
 
-		static void OnKeyReleased(int KeyCode)
-		{
-			s_Instance->InputStates[KeyCode] = false;
-		}
+	static void OnMouseMoved(int X, int Y)
+	{
+		s_Instance->_MouseX = X;
+		s_Instance->_MouseY = Y;
+	}
 
-		static void OnMouseMoved(int X, int Y)
-		{
-			s_Instance->MouseX = X;
-			s_Instance->MouseY = Y;
-		}
+	static int GetMouseX()
+	{
+		return s_Instance->_MouseX;
+	}
 
-		static int GetMouseX()
-		{
-			return s_Instance->MouseX;
-		}
+	static int GetMouseY()
+	{
+		return s_Instance->_MouseY;
+	}
 
-		static int GetMouseY()
-		{
-			return s_Instance->MouseY;
-		}
-
-		static IntVector2D GetMousePosition()
-		{
-			return IntVector2D(s_Instance->MouseX, s_Instance->MouseY);
-		}
+	static IntVector2D GetMousePosition()
+	{
+		return IntVector2D(s_Instance->_MouseX, s_Instance->_MouseY);
+	}
 
 
-	protected:
-		virtual bool IsKeyPressed_Implementation(int Keycode) = 0;
+protected:
+	virtual bool IsKeyPressed_Implementation(int Keycode) = 0;
 
-		std::bitset<256> InputStates;
+	std::bitset<256> _InputStates;
 
-		int MouseX;
-		int MouseY;
-	private:
+	int _MouseX;
+	int _MouseY;
+private:
 
 
-		static Input* s_Instance;
-	};
-}
+	static Input* s_Instance;
+};

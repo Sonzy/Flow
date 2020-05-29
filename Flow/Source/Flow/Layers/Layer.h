@@ -3,29 +3,27 @@
 #include "Flow/Core.h"
 #include "Flow/Events/Event.h"
 
-namespace Flow
+class Controller;
+
+class FLOW_API Layer
 {
-	class Controller;
+public:
+	Layer(const std::string& Name);
+	virtual ~Layer();
 
-	class FLOW_API Layer
-	{
-	public:
-		Layer(const std::string& Name);
-		virtual ~Layer();
+	virtual void BeginPlay();
+	virtual void OnAttach();
+	virtual void OnDetach();
+	virtual void OnUpdate(float DeltaTime);
+	virtual void OnEvent(Event& e);
 
-		virtual void OnAttach();
-		virtual void OnDetach();
-		virtual void OnUpdate(float DeltaTime);
-		virtual void OnEvent(Event& e);
-
-		virtual void OnImGuiRender();
+	virtual void OnImGuiRender();
 
 
 
-		const std::string& GetName() const;
-	protected:
-		std::string Name;
+	const std::string& GetName() const;
+protected:
+	std::string _Name;
 
 
-	};
-}
+};

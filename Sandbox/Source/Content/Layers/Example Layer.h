@@ -5,31 +5,29 @@
 #include <vector>
 #include <memory>
 
-namespace Flow
-{
-	class WorldObject;
-}
+class WorldObject;
 class MeshWorldObject;
 class CameraActor;
 
-class ExampleLayer : public Flow::Layer
+class ExampleLayer : public Layer
 {
 public:
 	ExampleLayer();
 	~ExampleLayer();
 
+	virtual void BeginPlay() override;
 	virtual void OnUpdate(float DeltaTime) override;
 	virtual void OnImGuiRender() override;
 	virtual void OnAttach() override;
 
 private:
 
-	std::vector<std::shared_ptr<Flow::WorldObject>> Actors;
-	std::shared_ptr<Flow::PointLight> Light;
+	std::vector<std::shared_ptr<WorldObject>> Actors;
+	std::shared_ptr<PointLight> Light;
 
 	std::shared_ptr<MeshWorldObject> TestCube;
 
-	std::shared_ptr<Flow::WorldObject> Example;
+	std::shared_ptr<WorldObject> Example;
 
 	std::shared_ptr<MeshWorldObject> WallObj;
 	std::shared_ptr<MeshWorldObject> Base;

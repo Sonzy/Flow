@@ -5,29 +5,26 @@
 
 #include "Flow/Rendering/Core/Renderable.h"
 
-namespace Flow
+class RenderableComponent;
+
+class TransformConstantBuffer : public Bindable
 {
-	class RenderableComponent;
+public:
 
-	class TransformConstantBuffer : public Bindable
+	TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
+	TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot = 0);
+	void Bind() override;
+
+private:
+	struct Transforms
 	{
-	public:
-
-		TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
-		TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot = 0);
-		void Bind() override;
-
-	private:
-		struct Transforms
-		{
-			DirectX::XMMATRIX modelView;
-			DirectX::XMMATRIX modelViewProj;
-		};
-
-	private:
-		std::string Tag_;
-		static std::unique_ptr<VertexConstantBuffer<Transforms>> VertexConstBuffer_;
-		Renderable* ParentObject_;
-		RenderableComponent* ParentComponent_;
+		DirectX::XMMATRIX modelView;
+		DirectX::XMMATRIX modelViewProj;
 	};
-}
+
+private:
+	std::string _Tag;
+	static std::unique_ptr<VertexConstantBuffer<Transforms>> _VertexConstBuffer;
+	Renderable* _ParentObject;
+	RenderableComponent* _ParentComponent;
+};

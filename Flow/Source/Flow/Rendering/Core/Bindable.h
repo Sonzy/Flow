@@ -5,24 +5,21 @@
 #include "Flow/ErrorHandling/ErrorMacros.h"
 #include "Flow/Rendering/RenderCommand.h"
 
-namespace Flow
+class FLOW_API Bindable
 {
-	class FLOW_API Bindable
-	{
-	public:
-		virtual void Bind() = 0;
+public:
+	virtual void Bind() = 0;
 
-		//static std::shared_ptr<Bindable> Resolve();
-		/* Generates the Unique ID for this bindable without an instance of the bindable */
-		//static std::string GenerateUID();
-		/* Returns the Unique ID of an existing bindable instance*/
-		virtual std::string GetUID() const {
-			assert(false && "Must be overriden if used");
-			return "";
-		};
-
-	public:
-		bool Bound_ = false;
-		bool CheckBound_ = false;
+	//static std::shared_ptr<Bindable> Resolve();
+	/* Generates the Unique ID for this bindable without an instance of the bindable */
+	//static std::string GenerateUID();
+	/* Returns the Unique ID of an existing bindable instance*/
+	virtual std::string GetUID() const {
+		assert(false && "Must be overriden if used");
+		return "";
 	};
-}
+
+public:
+	bool _Bound = false;
+	bool _CheckBound = false;
+};

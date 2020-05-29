@@ -9,45 +9,42 @@
 #include "Flow/Rendering/DX11/DX11RenderAPI.h"
 #endif
 
-namespace Flow
+struct WindowProperties
 {
-	struct WindowProperties
+	std::string Title;
+	unsigned int Width;
+	unsigned int Height;
+
+	WindowProperties(const std::string& WindowTitle = "Flow Engine",
+		unsigned int Width = 1280, unsigned int Height = 720)
+		: Title(WindowTitle), Width(Width), Height(Height)
 	{
-		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
 
-		WindowProperties(const std::string& WindowTitle = "Flow Engine",
-			unsigned int Width = 1280, unsigned int Height = 720)
-			: Title(WindowTitle), Width(Width), Height(Height)
-		{
+	}
+};
 
-		}
-	};
+class FLOW_API Window
+{
+public:
+	using EventCallbackFunction = std::function<void(Event&)>;
 
-	class FLOW_API Window
-	{
-	public:
-		using EventCallbackFunction = std::function<void(Event&)>;
+	virtual ~Window() {};
 
-		virtual ~Window() {};
+	static Window* Create(const WindowProperties& Properties);
 
-		static Window* Create(const WindowProperties& Properties);
+	virtual void PreUpdate() = 0;
+	virtual void OnUpdate() = 0;
+	virtual void PostUpdate() = 0;
 
-		virtual void PreUpdate() = 0;
-		virtual void OnUpdate() = 0;
-		virtual void PostUpdate() = 0;
-		
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+	virtual unsigned int GetWidth() const = 0;
+	virtual unsigned int GetHeight() const = 0;
 
-		virtual void SetEventCallback(const EventCallbackFunction& Callback) = 0;
-		virtual void EnableVSync(bool bEnabled) = 0;
-		virtual bool IsVSyncEnabled() const = 0;
+	virtual void SetEventCallback(const EventCallbackFunction& Callback) = 0;
+	virtual void EnableVSync(bool bEnabled) = 0;
+	virtual bool IsVSyncEnabled() const = 0;
 
-		virtual void Resize(int Width, int Height) = 0;
+	virtual void Resize(int Width, int Height) = 0;
 
-	protected:
-		WindowProperties Props;
-	};
-}
+protected:
+	WindowProperties Props;
+};

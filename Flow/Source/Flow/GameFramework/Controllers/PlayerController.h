@@ -1,22 +1,19 @@
 #pragma once
 #include "Controller.h"
 
-namespace Flow
+class CameraBase;
+class WorldObject;
+
+class PlayerController : public Controller
 {
-	class CameraComponent;
-	class WorldObject;
+public:
+	PlayerController();
+	PlayerController(const std::string& Name);
 
-	class PlayerController : public Controller
-	{
-	public:
-		PlayerController();
-		PlayerController(const std::string& Name);
+	void SetCamera(std::shared_ptr<CameraBase> NewCamera);
 
-		void SetCamera(std::shared_ptr<CameraComponent> NewCamera);
+protected:
 
-	protected:
-
-		std::shared_ptr<CameraComponent> Camera;
-		std::shared_ptr<WorldObject> Pawn;
-	};
-}
+	std::shared_ptr<CameraBase> _Camera;
+	std::shared_ptr<WorldObject> _Pawn;
+};

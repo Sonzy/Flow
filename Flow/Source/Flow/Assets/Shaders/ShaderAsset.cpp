@@ -2,23 +2,19 @@
 #include "ShaderAsset.h"
 #include "Flow\Application.h"
 
-namespace Flow
+ShaderAsset::ShaderAsset()
 {
-	ShaderAsset::ShaderAsset()
-	{
-	}
+}
 
-	bool ShaderAsset::LoadAsset(const std::string& AssetPath)
-	{
-		ShaderPath_ = Application::GetApplication().GetLocalFilePath() + AssetPath;
-		AssetSize_ = sizeof(ShaderPath_);
+bool ShaderAsset::LoadAsset(const std::string& AssetPath)
+{
+	_ShaderPath = Application::GetApplication().GetLocalFilePath() + AssetPath;
+	_AssetSize = sizeof(_ShaderPath);
 
-		return true;
-	}
+	return true;
+}
 
-	const std::string& ShaderAsset::GetPath() const
-	{
-		return ShaderPath_;
-	}
-
+const std::string& ShaderAsset::GetPath() const
+{
+	return _ShaderPath;
 }

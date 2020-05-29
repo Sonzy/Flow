@@ -1,24 +1,21 @@
 #pragma once
 #include "Flow\Rendering\Core\Renderable.h"
 
-namespace Flow
+class Material;
+class MeshAsset;
+
+class Skybox : public Renderable
 {
-	class Material;
-	class MeshAsset;
+public:
+	Skybox();
 
-	class Skybox : public Renderable
-	{
-	public:
-		Skybox();
+	virtual DirectX::XMMATRIX GetTransformXM() const override;
 
-		virtual DirectX::XMMATRIX GetTransformXM() const override;
+private:
 
-	private:
+	MeshAsset* _Mesh;
+	Material* _Material;
 
-		MeshAsset* Mesh_;
-		Material* Material_;
-
-		std::string MeshPath_ = "Box";
-		std::string MaterialPath_ = "Mat_SkyCube";
-	};
-}
+	std::string _MeshPath = "Box";
+	std::string _MaterialPath = "Mat_SkyCube";
+};

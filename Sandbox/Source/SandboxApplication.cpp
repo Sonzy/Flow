@@ -4,7 +4,7 @@
 
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 
-class Sandbox : public Flow::Application
+class Sandbox : public Application
 {
 public:
 	Sandbox(const std::string& AppName)
@@ -12,12 +12,12 @@ public:
 	{
 		/* Load assets for this app*/
 
-		Flow::AssetSystem::LoadAsset("CharacterPlane", "Sandbox/Assets/Models/Plane.obj");
-		Flow::AssetSystem::LoadAsset("CharacterPlaneTexture", "Sandbox/Assets/Textures/PlaneUVAttempt1.png");
-		Flow::AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
+		AssetSystem::LoadAsset("CharacterPlane", "Sandbox/Assets/Models/Plane.obj");
+		AssetSystem::LoadAsset("CharacterPlaneTexture", "Sandbox/Assets/Textures/PlaneUVAttempt1.png");
+		AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png"); 
 
-		Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_Wood");
-		Flow::Mat_TexturedPhong* WoodMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood")->GetMaterial());
+		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
+		Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
 		WoodMat->SetTexture("Wabble_Wood");
 		WoodMat->SetPixelShader("TexturedPhongPS");
 		WoodMat->SetVertexShader("TexturedPhongVS");
@@ -34,7 +34,7 @@ public:
 };
 
 
-Flow::Application* Flow::CreateApplication()
+Application* CreateApplication()
 {
 	Sandbox* App = new Sandbox("Sandbox");
 	return App;

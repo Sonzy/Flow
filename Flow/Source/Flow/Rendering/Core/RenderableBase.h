@@ -13,11 +13,8 @@
 #include "Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 #include "Bindables/ConstantBuffers/TransformConstantBuffer.h"
 
-namespace Flow
+/* Base class for anything renderable, includes all the includes for the DX11 pipeline */
+class FLOW_API RenderableBase : public Renderable
 {
-	/* Base class for anything renderable, includes all the includes for the DX11 pipeline */
-	class FLOW_API RenderableBase : public Renderable
-	{
 
-	};
-}
+};

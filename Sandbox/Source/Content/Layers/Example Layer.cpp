@@ -24,37 +24,38 @@
 
 #include "Flow/GameFramework/Actors/CameraActor.h"
 
+#include "Flow/GameFramework/Controllers/Controller.h"
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example")
 {
 	//= Create Objects in level ===========
 
-	WallObj = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Floor");
-	TestCube = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("TestCube");
+	WallObj = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Floor");
+	TestCube = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("TestCube");
 
-	Crate1_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
-	Crate2_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
-	Crate3_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate3");
-	Crate4_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate4");
-	Crate5_ = Flow::Application::GetWorld()->SpawnWorldObject<Crate>("Crate5");
+	Crate1_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
+	Crate2_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
+	Crate3_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate3");
+	Crate4_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate4");
+	Crate5_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate5");
 	
-	Chair1_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair1");
-	Chair2_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair2");
-	Chair3_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair3");
-	Chair4_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair4");
+	Chair1_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair1");
+	Chair2_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair2");
+	Chair3_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair3");
+	Chair4_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair4");
 	
-	Table1_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table1");
-	Table2_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table2");
+	Table1_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table1");
+	Table2_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table2");
 
-	Revolver_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Revolver");
-	Blunderbuss_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Blunderbuss");
-	Shotgun_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Shotgun");
-	Rifle_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
+	Revolver_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Revolver");
+	Blunderbuss_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Blunderbuss");
+	Shotgun_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Shotgun");
+	Rifle_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
 	
-	Base = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
+	Base = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
 
-	_CameraActor = Flow::Application::GetWorld()->SpawnWorldObject<CameraActor>("Camera Actor");
-
+	_CameraActor = Application::GetWorld()->SpawnWorldObject<CameraActor>("Camera Actor");
 
 	Actors.push_back(WallObj);
 	//Actors.push_back(Example);
@@ -84,23 +85,23 @@ ExampleLayer::ExampleLayer()
 
 	//= Setup World Object properties ==========
 
-	Flow::MeshAsset* Chair = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Chair");
-	Flow::MeshAsset* Table = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Table");
-	Flow::MeshAsset* Crate = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Crate");
-	Flow::MeshAsset* Box = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
+	MeshAsset* Chair = AssetSystem::GetAsset<MeshAsset>("Wabble_Chair");
+	MeshAsset* Table = AssetSystem::GetAsset<MeshAsset>("Wabble_Table");
+	MeshAsset* Crate = AssetSystem::GetAsset<MeshAsset>("Wabble_Crate");
+	MeshAsset* Box = AssetSystem::GetAsset<MeshAsset>("Box");
 
-	Flow::MeshAsset* Shotgun = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun");
-	Flow::MeshAsset* ShotgunSmooth = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun_Smooth");
-	Flow::MeshAsset* ShotgunTest = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Shotgun_Test");
-	Flow::MeshAsset* Blunderbuss = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Blunderbuss");
-	Flow::MeshAsset* Rifle = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Rifle");
-	Flow::MeshAsset* Revolver = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Wabble_Revolver");
+	MeshAsset* Shotgun = AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun");
+	MeshAsset* ShotgunSmooth = AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun_Smooth");
+	MeshAsset* ShotgunTest = AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun_Test");
+	MeshAsset* Blunderbuss = AssetSystem::GetAsset<MeshAsset>("Wabble_Blunderbuss");
+	MeshAsset* Rifle = AssetSystem::GetAsset<MeshAsset>("Wabble_Rifle");
+	MeshAsset* Revolver = AssetSystem::GetAsset<MeshAsset>("Wabble_Revolver");
 
-	Flow::MaterialAsset* Props = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Props");
-	Flow::MaterialAsset* Weapons = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wabble_Weapons");
-	Flow::MaterialAsset* Wood = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood");
-	Flow::MaterialAsset* Sand = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Sand");
-	Flow::MaterialAsset* SkyCube = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_SkyCube");
+	MaterialAsset* Props = AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props");
+	MaterialAsset* Weapons = AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Weapons");
+	MaterialAsset* Wood = AssetSystem::GetAsset<MaterialAsset>("Mat_Wood");
+	MaterialAsset* Sand = AssetSystem::GetAsset<MaterialAsset>("Mat_Sand");
+	MaterialAsset* SkyCube = AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube");
 
 	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand->GetMaterial());
 	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood->GetMaterial());
@@ -123,7 +124,7 @@ ExampleLayer::ExampleLayer()
 
 	//= Place everything in the level
 
-	Light = std::make_shared<Flow::PointLight>(500.0f);
+	Light = std::make_shared<PointLight>(500.0f);
 	
 	//= Location
 
@@ -191,29 +192,34 @@ ExampleLayer::~ExampleLayer()
 	Actors.clear();
 }
 
+void ExampleLayer::BeginPlay()
+{
+	Application::GetWorld()->GetLocalController()->ControlObject(_CameraActor.get());
+}
+
 void ExampleLayer::OnUpdate(float DeltaTime)
 {
 	int Count = 0;
-	Flow::Renderer::BeginScene();
+	Renderer::BeginScene();
 
-	Light->BindLight(Flow::RenderCommand::GetCamera().GetViewMatrix());
-	//Flow::Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
+	Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
+	//Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
 
-	//Flow::RenderCommand::GetCamera().Tick(DeltaTime);
+	//RenderCommand::GetCamera().Tick(DeltaTime);
 
 	for (auto& Actor : Actors)
 	{
 		Actor->Render();
 	}
 
-	Flow::Renderer::EndScene();
+	Renderer::EndScene();
 }
 
 void ExampleLayer::OnImGuiRender()
 {
-	//Flow::RenderCommand::GetCamera().RenderIMGUIWindow();
+	//RenderCommand::GetCamera().RenderIMGUIWindow();
 
-	Flow::AssetSystem::RenderDebugWindow(true);
+	AssetSystem::RenderDebugWindow(true);
 	Light->RenderControlWindow();
 }
 

@@ -2,69 +2,66 @@
 #include "Flow/Rendering/Core/Bindable.h"
 #include "Flow\Rendering\Core\Bindables\BindableCodex.h"
 
-namespace Flow
+template<typename C>
+class ConstantBuffer : public Bindable
 {
-	template<typename C>
-	class ConstantBuffer : public Bindable
+public:
+
+	ConstantBuffer(const C& consts, UINT slot)
+		: ConstantBuffer(consts, slot, "")
 	{
-	public:
-		
-		ConstantBuffer(const C& consts, UINT slot)
-			: ConstantBuffer(consts, slot, "")
-		{
-			
-		}
 
-		ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
-			: Slot_(slot), Tag_(Tag)
-		{
-			HRESULT ResultHandle;
+	}
 
-			D3D11_BUFFER_DESC cbd = {};
-			cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			cbd.Usage = D3D11_USAGE_DYNAMIC;
-			cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			cbd.MiscFlags = 0u;
-			cbd.ByteWidth = sizeof(consts);
-			cbd.StructureByteStride = 0u;
+	ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
+		: _Slot(slot), _Tag(Tag)
+	{
+		HRESULT ResultHandle;
 
-			D3D11_SUBRESOURCE_DATA csd = {};
-			csd.pSysMem = &consts;
-			CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &ConstantBuffer_));
-		}
+		D3D11_BUFFER_DESC cbd = {};
+		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbd.MiscFlags = 0u;
+		cbd.ByteWidth = sizeof(consts);
+		cbd.StructureByteStride = 0u;
 
-		ConstantBuffer(UINT slot)
-			: Slot_(slot)
-		{
-			HRESULT ResultHandle;
+		D3D11_SUBRESOURCE_DATA csd = {};
+		csd.pSysMem = &consts;
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &_ConstantBuffer));
+	}
 
-			D3D11_BUFFER_DESC cbd = {};
-			cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			cbd.Usage = D3D11_USAGE_DYNAMIC;
-			cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			cbd.MiscFlags = 0u;
-			cbd.ByteWidth = sizeof(C);
-			cbd.StructureByteStride = 0u;
+	ConstantBuffer(UINT slot)
+		: _Slot(slot)
+	{
+		HRESULT ResultHandle;
 
-			CATCH_ERROR_DX( RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &ConstantBuffer_));
-		}
+		D3D11_BUFFER_DESC cbd = {};
+		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbd.MiscFlags = 0u;
+		cbd.ByteWidth = sizeof(C);
+		cbd.StructureByteStride = 0u;
 
-		void Update(const C& consts)
-		{
-			HRESULT ResultHandle;
-			D3D11_MAPPED_SUBRESOURCE MSR;
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &_ConstantBuffer));
+	}
 
-			CATCH_ERROR_DX( RenderCommand::DX11GetContext()->Map(
-				ConstantBuffer_.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+	void Update(const C& consts)
+	{
+		HRESULT ResultHandle;
+		D3D11_MAPPED_SUBRESOURCE MSR;
 
-			memcpy(MSR.pData, &consts, sizeof(consts));
+		CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+			_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
-			RenderCommand::DX11GetContext()->Unmap(ConstantBuffer_.Get(), 0u);
-		}
+		memcpy(MSR.pData, &consts, sizeof(consts));
 
-	protected:
-		Microsoft::WRL::ComPtr<ID3D11Buffer> ConstantBuffer_;
-		UINT Slot_;
-		std::string Tag_;
-	};
-}
+		RenderCommand::DX11GetContext()->Unmap(_ConstantBuffer.Get(), 0u);
+	}
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Buffer> _ConstantBuffer;
+	UINT _Slot;
+	std::string _Tag;
+};

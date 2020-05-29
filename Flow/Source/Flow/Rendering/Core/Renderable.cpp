@@ -1,56 +1,53 @@
 #include "Flowpch.h"
 #include "Renderable.h"
 
-namespace Flow
+void Renderable::AddBind(std::shared_ptr<Bindable> bind)
 {
-	void Renderable::AddBind(std::shared_ptr<Bindable> bind)
+	//If index buffer, only allow single bind.
+	if (typeid(*bind) == typeid(IndexBuffer))
 	{
-		//If index buffer, only allow single bind.
-		if (typeid(*bind) == typeid(IndexBuffer))
-		{
-			assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
-			IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
-		}
-
-		Binds_.push_back(std::move(bind));
+		assert("Renderable::AddBind: Cannot bind multiple index buffers." && _IndexBuffer == nullptr);
+		_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
 	}
 
-	Renderable::Renderable()
-		: Position_(0.0f), Rotation_(0.0f), Scale_(1.0f)
-	{
-	}
+	_Binds.push_back(std::move(bind));
+}
 
-	Renderable::~Renderable()
-	{
-		Binds_.clear();
-	}
+Renderable::Renderable()
+	: _Position(0.0f), _Rotation(0.0f), _Scale(1.0f)
+{
+}
 
-	const IndexBuffer& Renderable::GetIndexBuffer()
-	{
-		return *IndexBuffer_;
-	}
+Renderable::~Renderable()
+{
+	_Binds.clear();
+}
 
-	void Renderable::SetPosition(Vector Location)
-	{
-		Position_ = Location;
-	}
+const IndexBuffer& Renderable::GetIndexBuffer()
+{
+	return *_IndexBuffer;
+}
 
-	void Renderable::SetRotation(Rotator Rotation)
-	{
-		Rotation_ = Rotation;
-	}
+void Renderable::SetPosition(Vector Location)
+{
+	_Position = Location;
+}
 
-	void Renderable::SetScale(Vector Scale)
-	{
-		Scale_ = Scale;
-	}
+void Renderable::SetRotation(Rotator Rotation)
+{
+	_Rotation = Rotation;
+}
 
-	void Renderable::BindAll()
+void Renderable::SetScale(Vector Scale)
+{
+	_Scale = Scale;
+}
+
+void Renderable::BindAll()
+{
+	for (auto& b : _Binds)
 	{
-		for (auto& b : Binds_)
-		{
-			b->Bind();
-		}
+		b->Bind();
 	}
 }
 

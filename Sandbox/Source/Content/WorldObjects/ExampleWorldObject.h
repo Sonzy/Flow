@@ -2,7 +2,7 @@
 #include "Flow\GameFramework\WorldObject.h"
 #include "Flow\GameFramework\Components\StaticMeshComponent.h"
 
-class ExampleWorldObject : public Flow::WorldObject
+class ExampleWorldObject : public WorldObject
 {
 public:
 	ExampleWorldObject();
@@ -15,6 +15,6 @@ public:
 
 protected:
 
-	std::shared_ptr<Flow::StaticMeshComponent> TestMesh;
-	std::shared_ptr<Flow::StaticMeshComponent> TestMesh2;
+	std::shared_ptr<StaticMeshComponent> TestMesh;
+	std::shared_ptr<StaticMeshComponent> TestMesh2;
 };

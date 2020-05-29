@@ -5,46 +5,43 @@
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
-namespace Flow
+std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::_VertexConstBuffer;
+
+TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
+	: _ParentObject(Parent), _ParentComponent(nullptr)
 {
-	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::VertexConstBuffer_;
+	if (!_VertexConstBuffer)
+		_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+}
 
-	TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
-		: ParentObject_(Parent), ParentComponent_(nullptr)
+TransformConstantBuffer::TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot)
+	: _ParentObject(nullptr), _ParentComponent(Parent)
+{
+	if (!_VertexConstBuffer)
+		_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+}
+
+void TransformConstantBuffer::Bind()
+{
+	DirectX::XMMATRIX ParentMatrix;
+	if (_ParentObject)
+		ParentMatrix = _ParentObject->GetTransformXM();
+	else if (_ParentComponent)
+		ParentMatrix = _ParentComponent->GetTransformXM();
+	else
+		FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
+
+	//Generate the transformation from the parent.
+	const auto modelView = ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix();
+	const Transforms transform =
 	{
-		if (!VertexConstBuffer_)
-			VertexConstBuffer_ = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
-	}
+		DirectX::XMMatrixTranspose(modelView),
+		DirectX::XMMatrixTranspose(
+			modelView *
+			RenderCommand::GetMainCamera()->GetProjectionMatrix())
+	};
 
-	TransformConstantBuffer::TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot)
-		: ParentObject_(nullptr), ParentComponent_(Parent)
-	{
-		if (!VertexConstBuffer_)
-			VertexConstBuffer_ = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
-	}
-
-	void TransformConstantBuffer::Bind()
-	{
-		DirectX::XMMATRIX ParentMatrix;
-		if (ParentObject_)
-			ParentMatrix = ParentObject_->GetTransformXM();
-		else if (ParentComponent_)
-			ParentMatrix = ParentComponent_->GetTransformXM();
-		else
-			FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
-
-		//Generate the transformation from the parent.
-		const auto modelView = ParentMatrix * RenderCommand::GetCamera().GetViewMatrix();
-		const Transforms transform =
-		{
-			DirectX::XMMatrixTranspose(modelView),
-			DirectX::XMMatrixTranspose(
-				modelView *
-				RenderCommand::GetCamera().GetProjectionMatrix())
-		};
-
-		//Update and bind the constant buffers
-		VertexConstBuffer_->Update(transform);
-		VertexConstBuffer_->Bind();
-	}
+	//Update and bind the constant buffers
+	_VertexConstBuffer->Update(transform);
+	_VertexConstBuffer->Bind();
 }

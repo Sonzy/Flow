@@ -1,47 +1,44 @@
 #include "Flowpch.h"
 #include "LayerStack.h"
 
-namespace Flow
+LayerStack::LayerStack()
 {
-	LayerStack::LayerStack()
+}
+
+LayerStack::~LayerStack()
+{
+	for (Layer* layer : _Layers)
+		delete layer;
+}
+
+void LayerStack::PushLayer(Layer* layer)
+{
+	_Layers.emplace(_Layers.begin() + _LayerInsertIndex, layer);
+	_LayerInsertIndex++;
+}
+
+void LayerStack::PushOverlay(Layer* overlay)
+{
+	_Layers.emplace_back(overlay);
+}
+
+void LayerStack::PopLayer(Layer* layer)
+{
+	auto iterator = std::find(_Layers.begin(), _Layers.end(), layer);
+
+	if (iterator != _Layers.end())
 	{
+		_Layers.erase(iterator);
+		_LayerInsertIndex--;
 	}
+}
 
-	LayerStack::~LayerStack()
+void LayerStack::PopOverlay(Layer* overlay)
+{
+	auto iterator = std::find(_Layers.begin(), _Layers.end(), overlay);
+
+	if (iterator != _Layers.end())
 	{
-		for (Layer* layer : Layers_)
-			delete layer;
-	}
-
-	void LayerStack::PushLayer(Layer* layer)
-	{
-		Layers_.emplace(Layers_.begin() + LayerInsertIndex_, layer);
-		LayerInsertIndex_++;
-	}
-
-	void LayerStack::PushOverlay(Layer* overlay)
-	{
-		Layers_.emplace_back(overlay);
-	}
-
-	void LayerStack::PopLayer(Layer* layer)
-	{
-		auto iterator = std::find(Layers_.begin(), Layers_.end(), layer);
-
-		if (iterator != Layers_.end())
-		{
-			Layers_.erase(iterator);
-			LayerInsertIndex_--;
-		}
-	}
-
-	void LayerStack::PopOverlay(Layer* overlay)
-	{
-		auto iterator = std::find(Layers_.begin(), Layers_.end(), overlay);
-
-		if (iterator != Layers_.end())
-		{
-			Layers_.erase(iterator);
-		}
+		_Layers.erase(iterator);
 	}
 }

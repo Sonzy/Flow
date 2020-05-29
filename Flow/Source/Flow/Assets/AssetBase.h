@@ -1,34 +1,31 @@
 #pragma once
 
-namespace Flow
+enum class EAssetType
 {
-	enum class EAssetType
-	{
-		None,
-		Mesh,
-		Texture,
-		Shader
-	};
+	None,
+	Mesh,
+	Texture,
+	Shader
+};
 
-	/* Base class for assets. Manages naming and asset types */
-	class FLOW_API AssetBase
-	{
-	public:
+/* Base class for assets. Manages naming and asset types */
+class FLOW_API AssetBase
+{
+public:
 
-		virtual bool LoadAsset(const std::string& LocalPath);
+	virtual bool LoadAsset(const std::string& LocalPath);
 
-		size_t GetAssetSize() const { return AssetSize_; }
+	size_t GetAssetSize() const { return _AssetSize; }
 
-		/* Returns a string with the asset size */
-		std::string GetFormattedSize() const;
+	/* Returns a string with the asset size */
+	std::string GetFormattedSize() const;
 
-		void SetAssetName(const std::string& Name) { AssetName_ = Name; }
-		const std::string& GetAssetName() { return AssetName_; }
+	void SetAssetName(const std::string& Name) { _AssetName = Name; }
+	const std::string& GetAssetName() { return _AssetName; }
 
-		EAssetType GetAssetType() { return AssetType_; }
-	protected:
-		std::string AssetName_;
-		size_t AssetSize_ = 0;
-		EAssetType AssetType_ = EAssetType::None;
-	};
-}
+	EAssetType GetAssetType() { return _AssetType; }
+protected:
+	std::string _AssetName;
+	size_t _AssetSize = 0;
+	EAssetType _AssetType = EAssetType::None;
+};

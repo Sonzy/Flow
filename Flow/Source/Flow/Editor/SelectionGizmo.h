@@ -7,56 +7,53 @@
 class btCollisionShape;
 class btGhostObject;
 
-namespace Flow
+class Mesh;
+class Material;
+class StaticMeshComponent;
+class World;
+
+/* Gizmo used for moving objects within the world within the editor */
+class SelectionGizmo
 {
-	class Mesh;
-	class Material;
-	class StaticMeshComponent;
-	class World;
+public:
+	SelectionGizmo();
+	~SelectionGizmo();
 
-	/* Gizmo used for moving objects within the world within the editor */
-	class SelectionGizmo
-	{
-	public:
-		SelectionGizmo();
-		~SelectionGizmo();
+	/* Generates the collision for all parts of the gizmo*/
+	void GenerateCollision();
 
-		/* Generates the collision for all parts of the gizmo*/
-		void GenerateCollision();
+	void UpdatePosition(Vector Position);
+	void UpdateRotation(Rotator Rotation);
+	void SetScale(Vector Scale);
 
-		void UpdatePosition(Vector Position);
-		void UpdateRotation(Rotator Rotation);
-		void SetScale(Vector Scale);
+	void Render();
 
-		void Render();
+	[[nodiscard]] Vector GetPosition()  const;
 
-		[[nodiscard]] Vector GetPosition()  const;
+	void SetVisibility(bool Visible);
 
-		void SetVisibility(bool Visible);
+	/* Adds the collision data to the physics world. */
+	void AddCollidersToWorld(World* World);
 
-		/* Adds the collision data to the physics world. */
-		void AddCollidersToWorld(World* World);
+private:
+	void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
 
-	private:
-		void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
+private:
 
-	private:
+	StaticMeshComponent* _ArrowX;
+	StaticMeshComponent* _ArrowY;
+	StaticMeshComponent* _ArrowZ;
 
-		StaticMeshComponent* ArrowX_;
-		StaticMeshComponent* ArrowY_;
-		StaticMeshComponent* ArrowZ_;
+	Material* _ArrowMaterial;
 
-		Material* ArrowMaterial_;
+	bool _Visible = false;
 
-		bool Visible_ = false;
+	//= Collision ================
 
-		//= Collision ================
-
-		btCollisionShape* XCollision_;
-		btCollisionShape* YCollision_;
-		btCollisionShape* ZCollision_;
-		btGhostObject* XGhost_;
-		btGhostObject* YGhost_;
-		btGhostObject* ZGhost_;
-	};
-}
+	btCollisionShape* _XCollision;
+	btCollisionShape* _YCollision;
+	btCollisionShape* _ZCollision;
+	btGhostObject* _XGhost;
+	btGhostObject* _YGhost;
+	btGhostObject* _ZGhost;
+};

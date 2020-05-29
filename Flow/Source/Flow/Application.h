@@ -9,90 +9,83 @@
 
 #include "UserInterface/imgui/ImGuiLayer.h"
 
-namespace Flow
+class World;
+class Inspector;
+class EditorLayer;
+class SelectionGizmo;
+
+class FLOW_API Application
 {
-	class World;
-	class Inspector;
-	class EditorLayer;
-	class SelectionGizmo;
+public:
 
-	class FLOW_API Application
-	{
-	
+	Application(const std::string& AppName);
+	virtual ~Application();
 
-	public:
+	void Run();
 
-		Application(const std::string& AppName);
-		virtual ~Application();
-		
-		void Run();
+	void OnEvent(Event& e);
 
-		void OnEvent(Event& e);
+	void PushLayer(Layer* layer);
+	void PushOverlay(Layer* layer);
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
+	bool OnWindowClosed(WindowClosedEvent& e);
+	bool OnWindowResized(WindowResizedEvent& e);
 
-		bool OnWindowClosed(WindowClosedEvent& e);
-		bool OnWindowResized(WindowResizedEvent& e);
+	static Application& GetApplication();
+	static World* GetWorld();
 
-		static Application& GetApplication();
-		static World* GetWorld();
+	/* Returns path to Flow solution directory */
+	std::string GetLocalFilePath();
+	std::wstring GetLocalFilePathWide();
 
-		/* Returns path to Flow solution directory */
-		std::string GetLocalFilePath();
-		std::wstring GetLocalFilePathWide();
+	Inspector* GetInspector();
 
-		Inspector* GetInspector();
+	Window& GetWindow();
+public:
+	std::string ApplicationName;
 
-		Window& GetWindow();
-	public:
-		std::string ApplicationName;
+private:
 
-	private:
+	void RenderApplicationDebug(float DeltaTime);
 
-		void RenderApplicationDebug(float DeltaTime);
+private:
 
-	private:
+	//= Application =============
 
-		//= Application =============
+	static Application* Instance;
+	std::unique_ptr<Window> MainWindow_;
 
-		static Application* Instance;
-		std::unique_ptr<Window> MainWindow_;
+	ImGuiLayer* ImGuiLayer_;
+	EditorLayer* EditorLayer_;
 
-		ImGuiLayer* ImGuiLayer_;
-		EditorLayer* EditorLayer_;
+	bool Running_ = true;
+	bool Paused_ = false;
+	bool DrawCollision_ = false;
 
-		bool Running_ = true;
-		bool Paused_ = false;
-		bool DrawCollision_ = false;
+	//= Game ====================
 
-		//= Game ====================
+	World* GameWorld_;
 
-		World* GameWorld_;
+	//= Editor ==================
 
-		//= Editor ==================
+	Inspector* Inspector_;
+	SelectionGizmo* SelectionGizmo_;
 
-		Inspector* Inspector_;
-		SelectionGizmo* SelectionGizmo_;
+	//= Debug ===================
 
-		//= Debug ===================
+	float TimeSinceFrameRateCheck = 0.0f;
+	int FrameCounter = 0;
+	float FrameTimer = 0.0f;
 
-		float TimeSinceFrameRateCheck = 0.0f;
-		int FrameCounter = 0;
-		float FrameTimer = 0.0f;
+	//= Helper ===============
 
-		//= Helper ===============
+	LayerStack LayerStack_;
+	Timer Timer_;
 
-		LayerStack LayerStack_;
-		Timer Timer_;
+	//= Paths =================
 
-		//= Paths =================
+	std::string LocalPath_;
+};
 
-		std::string LocalPath_;
-	};
-
-	//Is defined externally
-	Application* CreateApplication();
-}
-
-
+//Is defined externally
+Application* CreateApplication();

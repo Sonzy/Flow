@@ -2,32 +2,29 @@
 #include "Flow\GameFramework\Gameobject.h"
 #include <vector>
 
-namespace Flow
+class WorldObject;
+class WorldComponent;
+
+/* Base class for all components, contains attachment properties to a world object */
+class FLOW_API Component : public GameObject
 {
-	class WorldObject;
-	class WorldComponent;
+public:
+	Component();
+	Component(const std::string& Name);
+	virtual ~Component();
 
-	/* Base class for all components, contains attachment properties to a world object */
-	class FLOW_API Component : public GameObject
-	{
-	public:
-		Component();
-		Component(const std::string& Name);
-		virtual ~Component();
+	WorldComponent* GetParentComponent() const;
+	WorldObject* GetParentWorldObject() const;
 
-		WorldComponent* GetParentComponent() const;
-		WorldObject* GetParentWorldObject() const;
+	void SetParent(WorldObject* Parent);
+	void SetParentComponent(WorldComponent* Parent);
 
-		void SetParent(WorldObject* Parent);
-		void SetParentComponent(WorldComponent* Parent);
+	virtual void Tick(float DeltaTime) override;
 
-		virtual void Tick(float DeltaTime) override;
+	virtual void DrawComponentDetailsWindow();
 
-		virtual void DrawComponentDetailsWindow();
+protected:
 
-	protected:
-
-		WorldObject* ParentObject_;
-		WorldComponent* AttachedComponent_;
-	};
-}
+	WorldObject* _ParentObject;
+	WorldComponent* _AttachedComponent;
+};

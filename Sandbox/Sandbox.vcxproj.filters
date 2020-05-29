@@ -30,13 +30,7 @@
     <ClCompile Include="Source\Content\Layers\Example Layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Content\Layers\AGDLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Content\WorldObjects\PlayerPlane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,13 +47,7 @@
     <ClInclude Include="Source\Content\Layers\Example Layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Content\Layers\AGDLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Content\WorldObjects\PlayerPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

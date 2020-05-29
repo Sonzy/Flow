@@ -3,29 +3,26 @@
 #include <memory>
 #include "Flow\Rendering\Core\Materials\Material.h"
 
-namespace Flow
+class FLOW_API MaterialAsset : public AssetBase
 {
-	class FLOW_API MaterialAsset : public AssetBase
+public:
+
+	MaterialAsset();
+	~MaterialAsset();
+
+	template<typename T>
+	T* CreateMaterial()
 	{
-	public:
+		T* NewMaterial = new T();
+		_Material = NewMaterial;
+		return NewMaterial;
+	}
 
-		MaterialAsset();
-		~MaterialAsset();
+	Material* GetMaterial();
 
-		template<typename T>
-		T* CreateMaterial()
-		{
-			T* NewMaterial = new T();
-			m_Material = NewMaterial;
-			return NewMaterial;
-		}
+protected:
 
-		Material* GetMaterial();
+	void GenerateAssetSize();
 
-	protected:
-
-		void GenerateAssetSize();
-
-		Material* m_Material;
-	};
-}
+	Material* _Material;
+};

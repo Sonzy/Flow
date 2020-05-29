@@ -1,28 +1,25 @@
 #include "Flowpch.h"
 #include "MaterialAsset.h"
 
-namespace Flow
+MaterialAsset::MaterialAsset()
+	: _Material(nullptr)
 {
-	MaterialAsset::MaterialAsset()
-		: m_Material(nullptr)
-	{
 
-	}
+}
 
-	MaterialAsset::~MaterialAsset()
-	{
-		delete m_Material;
-	}
+MaterialAsset::~MaterialAsset()
+{
+	delete _Material;
+}
 
-	Material* MaterialAsset::GetMaterial()
-	{
-		return m_Material;
-	}
+Material* MaterialAsset::GetMaterial()
+{
+	return _Material;
+}
 
-	void MaterialAsset::GenerateAssetSize()
-	{
-		AssetSize_ = sizeof(*m_Material);
-	}
+void MaterialAsset::GenerateAssetSize()
+{
+	_AssetSize = sizeof(*_Material);
 }
 
 

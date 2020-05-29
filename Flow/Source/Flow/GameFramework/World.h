@@ -14,78 +14,75 @@ class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 
-namespace Flow
+class WorldObject;
+class Skybox;
+class Controller;
+
+class FLOW_API World
 {
-	class WorldObject;
-	class Skybox;
-	class Controller;
+public:
+	World();
+	World(const std::string& WorldName);
+	~World();
 
-	class FLOW_API World
+	void InitialiseWorld();
+
+	void DispatchBeginPlay();
+
+	template<typename T>
+	std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
 	{
-	public:
-		World();
-		World(const std::string& WorldName);
-		~World();
+		std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
+		_WorldObjects.push_back(NewObject);
 
-		void InitialiseWorld();
+		return NewObject;
+	}
 
-		void DispatchBeginPlay();
+	void Tick(float DeltaTime);
 
-		template<typename T>
-		std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
-		{
-			std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
-			WorldObjects_.push_back(NewObject);
+	const std::string& GetName();
 
-			return NewObject;
-		}
+	static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
 
-		void Tick(float DeltaTime);
+	static btDiscreteDynamicsWorld* GetPhysicsWorld();
+	static World* GetWorld();
 
-		const std::string& GetName();
+	void AddPhysicsObject(btRigidBody* Obj);
+	void AddCollisionObject(btCollisionObject* Obj);
 
-		static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
+	//= Controllers ========
 
-		static btDiscreteDynamicsWorld* GetPhysicsWorld();
-		static World* GetWorld();
+	void RegisterController(std::shared_ptr<Controller> NewController);
+	void DeRegisterController(std::shared_ptr<Controller> OldController);
+	Controller* GetLocalController() const;
 
-		void AddPhysicsObject(btRigidBody* Obj);
-		void AddCollisionObject(btCollisionObject* Obj);
+protected:
+	void InitialisePhysics();
 
-		//= Controllers ========
+private:
+	friend class Inspector;
 
-		void RegisterController(std::shared_ptr<Controller> NewController);
-		void DeRegisterController(std::shared_ptr<Controller> OldController);
-		Controller* GetLocalController() const;
+	std::vector<std::shared_ptr<WorldObject>> _WorldObjects;
+	std::string _WorldName;
 
-	protected:
-		void InitialisePhysics();
+	//=== World Physics ===
 
-	private:
-		friend class Inspector;
+	/* Default memory setup */
+	btDefaultCollisionConfiguration* _CollisionConfig;
+	/* Default single threaded collision dispatcher */
+	btCollisionDispatcher* _Dispatcher;
+	/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
+	btBroadphaseInterface* _OverlappingPairCache;
+	/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
+	btSequentialImpulseConstraintSolver* _Solver;
+	btDiscreteDynamicsWorld* _PhysicsWorld;
 
-		std::vector<std::shared_ptr<WorldObject>> WorldObjects_;
-		std::string WorldName_;
+	BulletDebugDraw _DebugDrawer;
 
-		//=== World Physics ===
+	//= Other =======
+	Skybox* _Skybox;
 
-		/* Default memory setup */
-		btDefaultCollisionConfiguration* CollisionConfig_;
-		/* Default single threaded collision dispatcher */
-		btCollisionDispatcher* Dispatcher_;
-		/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
-		btBroadphaseInterface* OverlappingPairCache_;
-		/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
-		btSequentialImpulseConstraintSolver* Solver_;
-		btDiscreteDynamicsWorld* PhysicsWorld_;
+	//= Controllers =======
 
-		BulletDebugDraw DebugDrawer_;
-
-		//= Other =======
-		Skybox* Skybox_;
-
-		//= Controllers =======
-
-		std::vector<std::shared_ptr<Controller>> RegisteredControllers_;
-	};
-}
+	std::vector<std::shared_ptr<Controller>> _RegisteredControllers;
+};

@@ -4,17 +4,14 @@
 #include <unordered_map>
 #include <memory>
 
-namespace Flow
+namespace DynamicCB
 {
-	namespace DCB
+	class LayoutCodex
 	{
-		class LayoutCodex
-		{
-		public:
-			static DCB::CookedLayout Resolve(DCB::RawLayout&& Layout);
-		private:
-			static LayoutCodex& Get();
-			std::unordered_map<std::string, std::shared_ptr<DCB::LayoutElement>> Map_;
-		};
-	}
+	public:
+		static CookedLayout Resolve(DynamicCB::RawLayout&& Layout);
+	private:
+		static LayoutCodex& Get();
+		std::unordered_map<std::string, std::shared_ptr<DynamicCB::LayoutElement>> Map_;
+	};
 }

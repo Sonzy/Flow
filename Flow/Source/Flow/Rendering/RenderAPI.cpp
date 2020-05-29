@@ -1,7 +1,9 @@
 #include "Flowpch.h"
 #include "RenderAPI.h"
 
-namespace Flow
+RenderAPI::API RenderAPI::s_API = RenderAPI::API::DirectX11;
+
+void RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 {
-	RenderAPI::API RenderAPI::s_API = RenderAPI::API::DirectX11;
+	FLOW_ENGINE_ERROR("InitialiseDX11API: Not using DX11 API.");
 }

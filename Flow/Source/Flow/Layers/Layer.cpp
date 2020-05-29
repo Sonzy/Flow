@@ -2,36 +2,40 @@
 #include "Layer.h"
 #include "Flow\Helper\HelperMacros.h"
 
-Flow::Layer::Layer(const std::string& Name)
-	:Name(Name)
+Layer::Layer(const std::string& Name)
+	:_Name(Name)
 {
 }
 
-Flow::Layer::~Layer()
+Layer::~Layer()
 {
 }
 
-void Flow::Layer::OnAttach()
+void Layer::BeginPlay()
 {
 }
 
-void Flow::Layer::OnDetach()
+void Layer::OnAttach()
 {
 }
 
-void Flow::Layer::OnUpdate(float DeltaTime)
+void Layer::OnDetach()
 {
 }
 
-void Flow::Layer::OnEvent(Event& e)
+void Layer::OnUpdate(float DeltaTime)
 {
 }
 
-void Flow::Layer::OnImGuiRender()
+void Layer::OnEvent(Event& e)
 {
 }
 
-const std::string& Flow::Layer::GetName() const
+void Layer::OnImGuiRender()
 {
-	return Name;
+}
+
+const std::string& Layer::GetName() const
+{
+	return _Name;
 }

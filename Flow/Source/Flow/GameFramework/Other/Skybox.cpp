@@ -19,65 +19,61 @@
 #include "Flow\Rendering\Core\Camera\Camera.h"
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
-
-namespace Flow
+Skybox::Skybox()
 {
-	Skybox::Skybox()
+	AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+	// Define Vertex Layout
+	VertexLayout Layout;
+	Layout.Append(ElementType::Position3D);
+	Layout.Append(ElementType::Normal);
+	Layout.Append(ElementType::Texture2D);
+
+	// Define Vertex Buffer information
+	VertexBuffer VBuffer(Layout);
+
+	_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(_MeshPath));
+	CHECK_RETURN(!_Mesh, "Skybox::Skybox: Failed to load mesh");
+	_Material = AssetSystem::GetAsset<MaterialAsset>(_MaterialPath)->GetMaterial();
+	CHECK_RETURN(!_Material, "Skybox::Skybox: Failed to load material");
+
+	Mesh* m_Mesh = _Mesh->GetMesh(0);
+	for (auto& Vertex : m_Mesh->GetVertices())
 	{
-		AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-		// Define Vertex Layout
-		VertexLayout Layout;
-		Layout.Append(ElementType::Position3D);
-		Layout.Append(ElementType::Normal);
-		Layout.Append(ElementType::Texture2D);
-
-		// Define Vertex Buffer information
-		VertexBuffer VBuffer(Layout);
-
-		Mesh_ = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(MeshPath_));
-		CHECK_RETURN(!Mesh_, "Skybox::Skybox: Failed to load mesh");
-		Material_ = AssetSystem::GetAsset<MaterialAsset>(MaterialPath_)->GetMaterial();
-		CHECK_RETURN(!Material_, "Skybox::Skybox: Failed to load material");
-
-		Mesh* m_Mesh = Mesh_->GetMesh(0);
-		for (auto& Vertex : m_Mesh->GetVertices())
-		{
-			VBuffer.EmplaceBack( //TODO: Dont actually need to know whats in here, just need to know the stride and offsets
-				DirectX::XMFLOAT3{ Vertex.Position_.X ,  Vertex.Position_.Y,  Vertex.Position_.Z },
-				DirectX::XMFLOAT3{ Vertex.Normal_.X ,  Vertex.Normal_.Y,  Vertex.Normal_.Z },
-				DirectX::XMFLOAT2{ Vertex.TexCoord_.X,  Vertex.TexCoord_.Y }
-			);
-		}
-
-		std::vector<unsigned short> indices;
-		indices.reserve(m_Mesh->GetNumFaces() * 3); //Using triangles, change for quads
-		for (auto& Face : m_Mesh->GetFaces())
-		{
-			assert(Face.NumIndices_ == 3);
-			indices.push_back(Face.Indices_[0]);
-			indices.push_back(Face.Indices_[1]);
-			indices.push_back(Face.Indices_[2]);
-		}
-
-		//Add Vertex Buffer Bind
-		AddBind(BindableVertexBuffer::Resolve(MeshPath_, VBuffer));
-
-		Material_->BindMaterial(this, Layout);
-
-		//Bind Index Buffer
-		AddBind(IndexBuffer::Resolve(MeshPath_, indices));
-
-		//Bind Transform
-		AddBind(std::make_shared<TransformConstantBuffer>(this));
-
-		AddBind(Rasterizer::Resolve(true));
+		VBuffer.EmplaceBack( //TODO: Dont actually need to know whats in here, just need to know the stride and offsets
+			DirectX::XMFLOAT3{ Vertex._Position.X ,  Vertex._Position.Y,  Vertex._Position.Z },
+			DirectX::XMFLOAT3{ Vertex._Normal.X ,  Vertex._Normal.Y,  Vertex._Normal.Z },
+			DirectX::XMFLOAT2{ Vertex._TexCoord.X,  Vertex._TexCoord.Y }
+		);
 	}
 
-	DirectX::XMMATRIX Skybox::GetTransformXM() const
+	std::vector<unsigned short> indices;
+	indices.reserve(m_Mesh->GetNumFaces() * 3); //Using triangles, change for quads
+	for (auto& Face : m_Mesh->GetFaces())
 	{
-		DirectX::XMFLOAT3 CamPos = RenderCommand::GetCamera().GetWorldPosition().ToDXFloat3();
-		return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
-			DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+		assert(Face._NumIndices == 3);
+		indices.push_back(Face._Indices[0]);
+		indices.push_back(Face._Indices[1]);
+		indices.push_back(Face._Indices[2]);
 	}
+
+	//Add Vertex Buffer Bind
+	AddBind(BindableVertexBuffer::Resolve(_MeshPath, VBuffer));
+
+	_Material->BindMaterial(this, Layout);
+
+	//Bind Index Buffer
+	AddBind(IndexBuffer::Resolve(_MeshPath, indices));
+
+	//Bind Transform
+	AddBind(std::make_shared<TransformConstantBuffer>(this));
+
+	AddBind(Rasterizer::Resolve(true));
+}
+
+DirectX::XMMATRIX Skybox::GetTransformXM() const
+{
+	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
+	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
+		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }

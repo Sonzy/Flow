@@ -1,21 +1,18 @@
 #pragma once
 #include <chrono>
 
-namespace Flow
+class Timer
 {
-	class Timer
-	{
-	public:
+public:
 
-		Timer();
+	Timer();
 
-		// Returns time since last called
-		float Mark();
+	// Returns time since last called
+	float Mark();
 
-		// Returns time since last called without resetting timer
-		float Peek();
+	// Returns time since last called without resetting timer
+	float Peek();
 
-	private:
-		std::chrono::steady_clock::time_point Last_;
-	};
-}
+private:
+	std::chrono::steady_clock::time_point _Last;
+};

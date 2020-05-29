@@ -3,35 +3,32 @@
 #include "Flow/Rendering/Core/Vertex/VertexBuffer.h"
 #include <wrl.h>
 
-namespace Flow
+class BindableVertexBuffer : public Bindable
 {
-	class BindableVertexBuffer : public Bindable
+public:
+	BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer);
+
+	void Bind() override;
+
+
+	//= Bindable Interface =
+
+	static std::shared_ptr<Bindable> Resolve(const std::string& Tag, const VertexBuffer& Buffer);
+
+	/* Calls GenerateUID_Internal without passing the VBuffer */
+	template<typename ...Ignore>
+	static std::string GenerateUID(const std::string& Tag, Ignore&&... Ign)
 	{
-	public:
-		BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer);
+		return GenerateUID_Internal(Tag);
+	}
 
-		void Bind() override;
+	std::string GetUID() const override;
 
+protected:
 
-		//= Bindable Interface =
+	static std::string GenerateUID_Internal(const std::string& Tag);
 
-		static std::shared_ptr<Bindable> Resolve(const std::string& Tag, const VertexBuffer& Buffer);
-
-		/* Calls GenerateUID_Internal without passing the VBuffer */
-		template<typename ...Ignore>
-		static std::string GenerateUID(const std::string& Tag, Ignore&&... Ign)
-		{
-			return GenerateUID_Internal(Tag);
-		}
-
-		std::string GetUID() const override;
-
-	protected:
-
-		static std::string GenerateUID_Internal(const std::string& Tag);
-
-		std::string Tag_; //Used to find the bindable in the codex
-		UINT Stride_;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> Buffer_;
-	};
-}
+	std::string _Tag; //Used to find the bindable in the codex
+	UINT _Stride;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> _Buffer;
+};

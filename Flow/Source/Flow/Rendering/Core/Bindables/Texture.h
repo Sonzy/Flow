@@ -2,25 +2,22 @@
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow/Assets/Textures/TextureAsset.h"
 
-namespace Flow
+class Texture : public Bindable
 {
-	class Texture : public Bindable
-	{
-	public:
+public:
 
-		Texture(TextureAsset* Asset, UINT slot);
-		void Bind() override;
+	Texture(TextureAsset* Asset, UINT slot);
+	void Bind() override;
 
-		//= Bindable Interface =
+	//= Bindable Interface =
 
-		static std::shared_ptr<Bindable> Resolve(TextureAsset* Asset, UINT slot);
-		static std::string GenerateUID(TextureAsset* Asset, UINT slot);
-		std::string GetUID() const override;
+	static std::shared_ptr<Bindable> Resolve(TextureAsset* Asset, UINT slot);
+	static std::string GenerateUID(TextureAsset* Asset, UINT slot);
+	std::string GetUID() const override;
 
-	protected:
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> TextureView_;
-		UINT Slot_;
+protected:
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _TextureView;
+	UINT _Slot;
 
-		std::string AssetName_;//Used to generate the UID
-	};
-}
+	std::string _AssetName;//Used to generate the UID
+};

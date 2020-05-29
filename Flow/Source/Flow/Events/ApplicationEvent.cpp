@@ -1,49 +1,45 @@
 #include "Flowpch.h"
 #include "ApplicationEvent.h"
 
-namespace Flow
+//= Window Events =========================
+
+WindowResizedEvent::WindowResizedEvent(unsigned int width, unsigned int height)
+	: _Width(width), _Height(height)
 {
-	//= Window Events =========================
+}
 
-	WindowResizedEvent::WindowResizedEvent(unsigned int width, unsigned int height)
-		: Width_(width), Height_(height)
-	{
-	}
+int WindowResizedEvent::GetWidth() const
+{
+	return _Width;
+}
 
-	int WindowResizedEvent::GetWidth() const
-	{
-		return Width_;
-	}
+int WindowResizedEvent::GetHeight() const
+{
+	return _Height;
+}
 
-	int WindowResizedEvent::GetHeight() const
-	{
-		return Height_;
-	}
+std::string WindowResizedEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowResizedEvent: " << _Width << ", " << _Height;
+	return ss.str();
+}
 
-	std::string WindowResizedEvent::ToString() const
-	{
-		std::stringstream ss;
-		ss << "WindowResizedEvent: " << Width_ << ", " << Height_;
-		return ss.str();
-	}
-
-	//= Application Events =========================
+//= Application Events =========================
 
 
-	ApplicationTickEvent::ApplicationTickEvent()
-	{
-	}
+ApplicationTickEvent::ApplicationTickEvent()
+{
+}
 
-	ApplicationUpdateEvent::ApplicationUpdateEvent()
-	{
-	}
+ApplicationUpdateEvent::ApplicationUpdateEvent()
+{
+}
 
-	ApplicationRenderEvent::ApplicationRenderEvent()
-	{
-	}
+ApplicationRenderEvent::ApplicationRenderEvent()
+{
+}
 
-	WindowClosedEvent::WindowClosedEvent()
-	{
-	}
-
+WindowClosedEvent::WindowClosedEvent()
+{
 }

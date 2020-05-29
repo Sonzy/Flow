@@ -1,7 +1,7 @@
 #include "Flowpch.h"
 #include "LayoutCodex.h"
 
-Flow::DCB::CookedLayout Flow::DCB::LayoutCodex::Resolve(DCB::RawLayout&& Layout)
+DynamicCB::CookedLayout DynamicCB::LayoutCodex::Resolve(DynamicCB::RawLayout&& Layout)
 {
 	auto Signature = Layout.GetSignature();
 	auto& Map = Get().Map_;
@@ -20,8 +20,8 @@ Flow::DCB::CookedLayout Flow::DCB::LayoutCodex::Resolve(DCB::RawLayout&& Layout)
 	return { result.first->second };
 }
 
-Flow::DCB::LayoutCodex& Flow::DCB::LayoutCodex::Get()
+DynamicCB::LayoutCodex& DynamicCB::LayoutCodex::Get()
 {
-	static Flow::DCB::LayoutCodex Codex;
+	static DynamicCB::LayoutCodex Codex;
 	return Codex;
 }

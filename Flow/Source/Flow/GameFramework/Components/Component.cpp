@@ -1,50 +1,47 @@
 #include "Flowpch.h"
 #include "Component.h"
 
-namespace Flow
+Component::Component()
+	: Component("Unnamed Component")
 {
-	Component::Component()
-		: Component("Unnamed Component")
-	{
-	}
+}
 
-	Component::Component(const std::string& Name)
-		: GameObject(Name), ParentObject_(nullptr), AttachedComponent_(nullptr)
-	{
-	}
+Component::Component(const std::string& Name)
+	: GameObject(Name), _ParentObject(nullptr), _AttachedComponent(nullptr)
+{
+}
 
-	Component::~Component()
-	{
-	}
+Component::~Component()
+{
+}
 
-	WorldComponent* Component::GetParentComponent() const
-	{
-		return AttachedComponent_;
-	}
+WorldComponent* Component::GetParentComponent() const
+{
+	return _AttachedComponent;
+}
 
-	WorldObject* Component::GetParentWorldObject() const
-	{
-		return ParentObject_;
-	}
+WorldObject* Component::GetParentWorldObject() const
+{
+	return _ParentObject;
+}
 
-	void Component::SetParent(WorldObject* Parent)
-	{
-		ParentObject_ = Parent;
-	}
+void Component::SetParent(WorldObject* Parent)
+{
+	_ParentObject = Parent;
+}
 
-	void Component::SetParentComponent(WorldComponent* Parent)
-	{
-		AttachedComponent_ = Parent;
-	}
+void Component::SetParentComponent(WorldComponent* Parent)
+{
+	_AttachedComponent = Parent;
+}
 
-	void Component::Tick(float DeltaTime)
-	{
+void Component::Tick(float DeltaTime)
+{
 
-	}
+}
 
-	void Component::DrawComponentDetailsWindow()
-	{
-	}
+void Component::DrawComponentDetailsWindow()
+{
 }
 
 

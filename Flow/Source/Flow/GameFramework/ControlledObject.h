@@ -1,23 +1,22 @@
 #pragma once
 #include "Flow\GameFramework\WorldObject.h"
 
-namespace Flow
+class Controller;
+
+class FLOW_API ControlledObject : public WorldObject
 {
-	class Controller;
+public:
+	ControlledObject();
+	ControlledObject(const std::string& Name);
 
-	class FLOW_API ControlledObject : public WorldObject
-	{
-	public:
-		ControlledObject();
-		ControlledObject(const std::string& Name);
+	void Control(Controller* NewController);
+	void RemoveControl();
 
-		void Control(Controller* NewController);
-		void RemoveControl();
+	virtual void OnControlled(Controller* OwningController);
 
-		Controller* GetController() const;
+	Controller* GetController() const;
 
-	private:
+private:
 
-		Controller* Controller_;
-	};
-}
+	Controller* _Controller;
+};

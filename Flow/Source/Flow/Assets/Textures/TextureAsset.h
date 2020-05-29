@@ -3,45 +3,42 @@
 #include <string>
 #include "DXTex\DirectXTex.h"
 
-namespace Flow
+class TexColor
 {
-	class TexColor
-	{
-	public:
-		unsigned int Data_;
+public:
+	unsigned int _Data;
 
-		constexpr TexColor()
-			: Data_()
-		{}
+	constexpr TexColor()
+		: _Data()
+	{}
 
-		constexpr TexColor(unsigned int DWord)
-			: Data_(DWord)
-		{}
-	};
+	constexpr TexColor(unsigned int DWord)
+		: _Data(DWord)
+	{}
+};
 
-	class FLOW_API TextureAsset : public AssetBase
-	{
+class FLOW_API TextureAsset : public AssetBase
+{
 
-	public:
-		TextureAsset() {};
-		~TextureAsset();
+public:
+	TextureAsset() {};
+	~TextureAsset();
 
-		virtual bool LoadAsset(const std::string& FilePath) override;
+	virtual bool LoadAsset(const std::string& FilePath) override;
 
-		unsigned int GetWidth() const { return (unsigned int)Image_.GetMetadata().width; }
-		unsigned int GetHeight() const { return (unsigned int)Image_.GetMetadata().height; }
+	unsigned int GetWidth() const { return (unsigned int)_Image.GetMetadata().width; }
+	unsigned int GetHeight() const { return (unsigned int)_Image.GetMetadata().height; }
 
-		unsigned int GetPitch() const { return (unsigned int)Image_.GetImage(0, 0, 0)->rowPitch; }
+	unsigned int GetPitch() const { return (unsigned int)_Image.GetImage(0, 0, 0)->rowPitch; }
 
-		uint8_t* GetBufferPtr() const { return Image_.GetPixels(); }
+	uint8_t* GetBufferPtr() const { return _Image.GetPixels(); }
 
-		const std::string& GetAssetPath() const { return m_AssetPath; }		
+	const std::string& GetAssetPath() const { return _AssetPath; }
 
-	protected:
+protected:
 
-		DirectX::ScratchImage Image_;
+	DirectX::ScratchImage _Image;
 
-		static constexpr DXGI_FORMAT Format_ = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
-		std::string m_AssetPath;
-	};
-}
+	static constexpr DXGI_FORMAT _Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+	std::string _AssetPath;
+};

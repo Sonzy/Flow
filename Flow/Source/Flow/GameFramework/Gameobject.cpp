@@ -1,29 +1,29 @@
 #include "Flowpch.h"
 #include "Gameobject.h"
 
-Flow::GameObject::GameObject()
-	: ObjectName_("Unnamed Object")
+GameObject::GameObject()
+	: _ObjectName("Unnamed Object")
 {
 }
 
-Flow::GameObject::GameObject(const std::string& Name)
-	: ObjectName_(Name)
+GameObject::GameObject(const std::string& Name)
+	: _ObjectName(Name)
 {
 }
 
-Flow::GameObject::~GameObject()
+GameObject::~GameObject()
 {
 }
 
-void Flow::GameObject::Tick(float DeltaTime)
+void GameObject::Tick(float DeltaTime)
 {
 }
 
-void Flow::GameObject::DrawDetailsWindow(bool bDontUpdate)
+void GameObject::DrawDetailsWindow(bool bDontUpdate)
 {
 }
 
-const std::string& Flow::GameObject::GetName()
+const std::string& GameObject::GetName()
 {
-	return ObjectName_;
+	return _ObjectName;
 }

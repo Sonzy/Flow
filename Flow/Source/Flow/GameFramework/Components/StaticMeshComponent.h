@@ -4,74 +4,71 @@
 class btCollisionShape;
 class btRigidBody;
 
-namespace Flow
+class MeshAsset;
+class Material;
+class Mesh;
+
+class FLOW_API StaticMeshComponent : public RenderableComponent
 {
-	class MeshAsset;
-	class Material;
-	class Mesh;
-
-	class FLOW_API StaticMeshComponent : public RenderableComponent
-	{
-	public:
-		StaticMeshComponent();
-		StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr, int MeshIndex = 0);
-		virtual ~StaticMeshComponent();
-		
-
-		void InitialiseComponent(MeshAsset* Mesh , Material* Material );
-		virtual void Tick(float DeltaTime) override;
-
-		void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
-		void SetStaticMesh(const std::string& MeshName);
-		void SetMaterial(Material* NewMaterial);
-
-		virtual void Render() override;
-
-		/* Renderable Component Interface */
-
-		virtual void RefreshBinds() override;
-		virtual DirectX::XMMATRIX GetTransformXM() override;
+public:
+	StaticMeshComponent();
+	StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr, int MeshIndex = 0);
+	virtual ~StaticMeshComponent();
 
 
-		//Temp - TODO: Actually use component movement for rendering
-		Mesh* GetMesh() { return StaticMesh_; }
+	void InitialiseComponent(MeshAsset* Mesh, Material* Material);
+	virtual void Tick(float DeltaTime) override;
 
-		void EnableOutlineDrawing(bool Enabled) { DrawOutline_ = Enabled; RefreshBinds(); }
-		void DrawOutline();
+	void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
+	void SetStaticMesh(const std::string& MeshName);
+	void SetMaterial(Material* NewMaterial);
 
-		virtual void DrawComponentDetailsWindow() override;
+	virtual void Render() override;
 
-		//= Physics ==========
+	/* Renderable Component Interface */
 
-		/* Generates new collision from the mesh */
-		void GenerateCollision();
-		void CreateRigidBody();
-
-		virtual void InitialisePhysics() override;
-		virtual btRigidBody* GetRigidBody() override;
-
-		void SetSimulatePhysics(bool Simulate);
+	virtual void RefreshBinds() override;
+	virtual DirectX::XMMATRIX GetTransformXM() override;
 
 
-		//TODO: Temp movement with rigidbodies
-		void MovePhysicsBody(Transform NewTransform);
+	//Temp - TODO: Actually use component movement for rendering
+	Mesh* GetMesh() { return _StaticMesh; }
+
+	void EnableOutlineDrawing(bool Enabled) { _DrawOutline = Enabled; RefreshBinds(); }
+	void DrawOutline();
+
+	virtual void DrawComponentDetailsWindow() override;
+
+	//= Physics ==========
+
+	/* Generates new collision from the mesh */
+	void GenerateCollision();
+	void CreateRigidBody();
+
+	virtual void InitialisePhysics() override;
+	virtual btRigidBody* GetRigidBody() override;
+
+	void SetSimulatePhysics(bool Simulate);
+
+
+	//TODO: Temp movement with rigidbodies
+	void MovePhysicsBody(Transform NewTransform);
 
 
 
 
-	protected:
+protected:
 
-		bool SimulatePhysics_ = false;
-		bool DrawOutline_ = false;
+	bool _SimulatePhysics = false;
+	bool _DrawOutline = false;
 
-		Mesh* StaticMesh_;
-		Material* Material_;
+	Mesh* _StaticMesh;
+	Material* _Material;
 
-		btCollisionShape* Collision_;
-		btRigidBody* Body_;
+	btCollisionShape* _Collision;
+	btRigidBody* _Body;
 
-		std::vector<std::shared_ptr<Bindable>> OutlineEffect;
-		bool CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values
-		float OutlineThickness_ = 0.05f;
-	};
-}
+	std::vector<std::shared_ptr<Bindable>> OutlineEffect;
+	bool _CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values
+	float _OutlineThickness = 0.05f;
+};

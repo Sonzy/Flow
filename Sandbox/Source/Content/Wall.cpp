@@ -19,14 +19,14 @@ Wall::Wall()
 Wall::Wall(const std::string& NewName)
 	: WorldObject(NewName)
 {
-	Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
-	Flow::Material* Material = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_Wood")->GetMaterial();
+	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Box");
+	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial();
 
-	WallMesh = CreateComponent<Flow::StaticMeshComponent>("Test Mesh");
+	WallMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
 	WallMesh->InitialiseComponent(Mesh, Material);
-	RootComponent_ = WallMesh.get();
+	_RootComponent = WallMesh.get();
 
-	HasCollision_ = true;
+	_HasCollision = true;
 }
 
 void Wall::Tick(float DeltaTime)

@@ -16,10 +16,10 @@ CameraComponent::CameraComponent(const std::string& Name)
 
 void CameraComponent::Update(float DeltaTime)
 {
-	IntVector2D Pos = Flow::Input::GetMousePosition();
+	IntVector2D Pos = Input::GetMousePosition();
 
 	//Camera rotation
-	if (Flow::Input::IsMousePressed(FLOW_MOUSE_RIGHT))
+	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 	{
 		if (_LastMousePosition != Pos)
 		{

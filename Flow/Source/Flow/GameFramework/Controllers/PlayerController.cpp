@@ -1,21 +1,18 @@
 #include "Flowpch.h"
 #include "PlayerController.h"
 
-namespace Flow
+PlayerController::PlayerController()
+	: PlayerController("PlayerController")
 {
-	PlayerController::PlayerController()
-		: PlayerController("PlayerController")
-	{
-	}
+}
 
-	PlayerController::PlayerController(const std::string& Name)
-		: Controller(Name), Camera(nullptr)
-	{
-	}
+PlayerController::PlayerController(const std::string& Name)
+	: Controller(Name), _Camera(nullptr)
+{
+}
 
-	void PlayerController::SetCamera(std::shared_ptr<CameraComponent> NewCamera)
-	{
-		CHECK_RETURN(!NewCamera, "PlayerController::SetCamera: Camera was nullptr");
-		Camera = NewCamera;
-	}
+void PlayerController::SetCamera(std::shared_ptr<CameraBase> NewCamera)
+{
+	CHECK_RETURN(!NewCamera, "PlayerController::SetCamera: Camera was nullptr");
+	_Camera = NewCamera;
 }

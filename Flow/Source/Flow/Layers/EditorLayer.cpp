@@ -6,43 +6,39 @@
 
 #include "Flow\Editor\SelectionGizmo.h"
 
-namespace Flow
+EditorLayer::EditorLayer()
+	: Layer("Editor Layer")
 {
-	EditorLayer::EditorLayer()
-		: Layer("Editor Layer")
-	{
-	}
-
-	void EditorLayer::OnAttach()
-	{
-		m_Inspector = Application::GetApplication().GetInspector();
-	}
-
-	void EditorLayer::OnDetach()
-	{
-	}
-
-	void EditorLayer::OnImGuiRender()
-	{
-	}
-
-	void EditorLayer::OnEvent(Event& e)
-	{
-		EventDispatcher Dispatcher(e);
-		Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonPressed));
-	}
-
-	void EditorLayer::OnUpdate(float DeltaTime)
-	{
-		//m_Inspector->GetSelector()->Render();
-	}
-
-	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-	{
-		if (m_Inspector)
-			return m_Inspector->OnMouseClicked(e);
-
-		return false;
-	}
 }
 
+void EditorLayer::OnAttach()
+{
+	_Inspector = Application::GetApplication().GetInspector();
+}
+
+void EditorLayer::OnDetach()
+{
+}
+
+void EditorLayer::OnImGuiRender()
+{
+}
+
+void EditorLayer::OnEvent(Event& e)
+{
+	EventDispatcher Dispatcher(e);
+	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonPressed));
+}
+
+void EditorLayer::OnUpdate(float DeltaTime)
+{
+	//m_Inspector->GetSelector()->Render();
+}
+
+bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+{
+	if (_Inspector)
+		return _Inspector->OnMouseClicked(e);
+
+	return false;
+}

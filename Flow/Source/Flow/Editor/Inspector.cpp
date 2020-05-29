@@ -22,125 +22,122 @@
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
 
-namespace Flow
+Inspector::Inspector(SelectionGizmo* Selector)
+	: _CurrentWorld(nullptr), _FocusedItem(nullptr), _Selector(Selector)
 {
-	Inspector::Inspector(SelectionGizmo* Selector)
-		: CurrentWorld_(nullptr), FocusedItem_(nullptr), Selector_(Selector)
-	{
-	}
+}
 
-	void Inspector::RenderInspector()
+void Inspector::RenderInspector()
+{
+	if (ImGui::Begin("Inspector"))
 	{
-		if (ImGui::Begin("Inspector"))
+		if (_FocusedItem)
 		{
-			if (FocusedItem_)
-			{
-				FocusedItem_->DrawDetailsWindow(FocusedItemChanged);
+			_FocusedItem->DrawDetailsWindow(_FocusedItemChanged);
 
-				ImGui::Separator(); //==========================================
+			ImGui::Separator(); //==========================================
 
-				//TODO:
-				ImGui::Text((std::string("Selected Component: ") + FocusedItem_->GetRootComponent()->GetName()).c_str());
+			//TODO:
+			ImGui::Text((std::string("Selected Component: ") + _FocusedItem->GetRootComponent()->GetName()).c_str());
 
-				FocusedItem_->GetRootComponent()->DrawComponentDetailsWindow();
-			}
-
+			_FocusedItem->GetRootComponent()->DrawComponentDetailsWindow();
 		}
-		ImGui::End();
+
 	}
+	ImGui::End();
+}
 
-	void Inspector::RenderHeirarchy()
+void Inspector::RenderHeirarchy()
+{
+	if (ImGui::Begin("Heirarchy"))
 	{
-		if (ImGui::Begin("Heirarchy"))
+		ImGui::Text(std::string("Level: " + _CurrentWorld->GetName()).c_str());
+
+		ImGui::Separator();
+
+		for (auto Object : _CurrentWorld->_WorldObjects)
 		{
-			ImGui::Text(std::string("Level: " + CurrentWorld_->GetName()).c_str());
-
-			ImGui::Separator();
-
-			for (auto Object : CurrentWorld_->WorldObjects_)
+			if (ImGui::Button(Object->GetName().c_str()))
 			{
-				if (ImGui::Button(Object->GetName().c_str()))
-				{
-					//TODO: Select object on click
-					FocusedItem_ = Object.get();
+				//TODO: Select object on click
+				_FocusedItem = Object.get();
 
-					if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
-						Comp->EnableOutlineDrawing(true);
-				}
+				if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+					Comp->EnableOutlineDrawing(true);
 			}
 		}
-		ImGui::End();
 	}
+	ImGui::End();
+}
 
-	void Inspector::SetCurrentWorld(World* WorldReference)
+void Inspector::SetCurrentWorld(World* WorldReference)
+{
+	_CurrentWorld = WorldReference;
+}
+
+bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
+{
+	//Ensure mouse left.
+	if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
+		return false;
+
+	//Calculate the ray bounds
+	DirectX::XMFLOAT3 Pos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
+	IntVector2D MousePosition = Input::GetMousePosition();
+	Vector Start = Vector(Pos.x, Pos.y, Pos.z);
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
+	Vector End = Start + (Direction * 1000.0f);
+
+	//Raytrace into the world
+	btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
+
+	//If we hit something, if it was a world component, assign this to the focused item.
+	WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
+
+	if (_FocusedItem && HitObject != _FocusedItem)
 	{
-		CurrentWorld_ = WorldReference;
+		if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+			Comp->EnableOutlineDrawing(false);
 	}
 
-	bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
+	_FocusedItem = HitObject;
+
+	//TODO: If we hit, run selection gizmo logic.
+	if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
 	{
-		//Ensure mouse left.
-		if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
-			return false;
-
-		//Calculate the ray bounds
-		DirectX::XMFLOAT3 Pos = RenderCommand::GetCamera().GetWorldPosition().ToDXFloat3();
-		IntVector2D MousePosition = Input::GetMousePosition();
-		Vector Start = Vector(Pos.x, Pos.y, Pos.z);
-		Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
-		Vector End = Start + (Direction * 1000.0f);
-
-		//Raytrace into the world
-		btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
-
-		//If we hit something, if it was a world component, assign this to the focused item.
-		WorldObject* HitObject = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer())->GetParentWorldObject() : nullptr;
-
-		if (FocusedItem_ && HitObject != FocusedItem_)
-		{
-			if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
-				Comp->EnableOutlineDrawing(false);
-		}
-
-		FocusedItem_ = HitObject;
-
-		//TODO: If we hit, run selection gizmo logic.
-		if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
-		{
-			//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
-			if(StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(FocusedItem_->GetRootComponent()))
-				Comp->EnableOutlineDrawing(true);
-		}
-
-		if (!FocusedItem_)
-		{
-			//Selector_->SetVisibility(false);
-			//Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
-		}
-		//If we have not hit anything, reset the selector
-		else
-		{
-			//m_Selector->UpdatePosition(HitObject->GetLocation());
-			//m_Selector->SetScale(HitObject->GetScale().X);
-
-			//TODO: Re-enable when setting this back up
-			//m_Selector->SetVisibility(true);
-		}
-
-		FocusedItemChanged = true;
-		return true;
+		//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
+		if (StaticMeshComponent* Comp = static_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
+			Comp->EnableOutlineDrawing(true);
 	}
 
-	void Inspector::Update()
+	if (!_FocusedItem)
 	{
-		RenderInspector();
-		RenderHeirarchy();
-
-		FocusedItemChanged = false;
+		//_Selector->SetVisibility(false);
+		//_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
 	}
-
-	SelectionGizmo* Inspector::GetSelector() const
+	//If we have not hit anything, reset the selector
+	else
 	{
-		return Selector_;
+		//m_Selector->UpdatePosition(HitObject->GetLocation());
+		//m_Selector->SetScale(HitObject->GetScale().X);
+
+		//TODO: Re-enable when setting this back up
+		//m_Selector->SetVisibility(true);
 	}
+
+	_FocusedItemChanged = true;
+	return true;
+}
+
+void Inspector::Update()
+{
+	RenderInspector();
+	RenderHeirarchy();
+
+	_FocusedItemChanged = false;
+}
+
+SelectionGizmo* Inspector::GetSelector() const
+{
+	return _Selector;
 }

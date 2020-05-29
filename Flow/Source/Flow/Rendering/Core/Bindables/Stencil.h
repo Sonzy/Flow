@@ -2,23 +2,20 @@
 #include "Flow\Rendering\Core\Bindable.h"
 #include <wrl.h>
 
-namespace Flow
+enum class StencilMode
 {
-	enum class StencilMode
-	{
-		Off,
-		Write,
-		Mask
-	};
+	Off,
+	Write,
+	Mask
+};
 
 
-	class Stencil : public Bindable
-	{
-	public:
-		Stencil(StencilMode mode);
+class Stencil : public Bindable
+{
+public:
+	Stencil(StencilMode mode);
 
-		virtual void Bind() override;
-	private:
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> Stencil_;
-	};
-}
+	virtual void Bind() override;
+private:
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _Stencil;
+};

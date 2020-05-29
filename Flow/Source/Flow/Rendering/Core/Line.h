@@ -5,30 +5,27 @@
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
 
-namespace Flow
+class Material;
+
+class FLOW_API Line : public RenderableBase
 {
-	class Material;
+public:
+	Line();
 
-	class FLOW_API Line : public RenderableBase
-	{
-	public:
-		Line();
+	static void Initialise();
+	static void DrawLine(Vector From, Vector To, Vector Colour);
 
-		static void Initialise();
-		static void DrawLine(Vector From, Vector To, Vector Colour);
+	virtual DirectX::XMMATRIX GetTransformXM() const override;
 
-		virtual DirectX::XMMATRIX GetTransformXM() const override;
+	static int Count;
+protected:
 
-		static int Count;
-	protected:
+	void AddBind(std::shared_ptr<Bindable> bind);
+	void BindAll();
 
-		void AddBind(std::shared_ptr<Bindable> bind);
-		void BindAll();
-
-		static VertexLayout VertexLayout_;
-		static std::vector<std::shared_ptr<Bindable>> Binds_;
-		static IndexBuffer* IndexBuffer_;
+	static VertexLayout VertexLayout_;
+	static std::vector<std::shared_ptr<Bindable>> Binds_;
+	static IndexBuffer* IndexBuffer_;
 
 
-	};
-}
+};

@@ -4,7 +4,7 @@
 #include "Flow\Rendering\Core\Camera\Camera.h"
 
 /* Component wrapper around the camera interface. */
-class FLOW_API CameraComponent : public Flow::WorldComponent, public CameraBase
+class FLOW_API CameraComponent : public WorldComponent, public CameraBase
 {
 public:
 	CameraComponent();

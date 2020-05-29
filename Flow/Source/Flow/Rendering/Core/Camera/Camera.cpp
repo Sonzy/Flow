@@ -20,16 +20,7 @@ void CameraBase::CacheMatrices()
 	_CacheDirty = false;
 }
 
-void CameraBase::SetProjectionMatrix(DirectX::XMMATRIX NewProjection)
-{
-	_Projection = NewProjection;
-}
-
 void CameraBase::Update(float DeltaTime)
-{
-}
-
-void CameraBase::CacheMatrices()
 {
 }
 

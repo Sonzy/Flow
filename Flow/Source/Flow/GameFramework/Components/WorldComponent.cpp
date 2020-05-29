@@ -2,212 +2,209 @@
 #include "WorldComponent.h"
 #include "Flow\GameFramework\WorldObject.h"
 
-namespace Flow
+WorldComponent::WorldComponent()
+	: Component("Unnamed WorldComponent"), _ParentComponent(nullptr)
 {
-	WorldComponent::WorldComponent()
-		: Component("Unnamed WorldComponent"), ParentComponent_(nullptr)
+}
+
+WorldComponent::WorldComponent(const std::string& Name)
+	: Component(Name), _ParentComponent(nullptr)
+{
+}
+
+WorldComponent::~WorldComponent()
+{
+	_Children.clear();
+}
+
+void WorldComponent::Tick(float DeltaTime)
+{
+	for (auto& Child : _Children)
 	{
+		Child->Tick(DeltaTime);
+	}
+}
+
+void WorldComponent::AddChild(WorldComponent* Child)
+{
+	CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
+	_Children.push_back(Child);
+	Child->SetParentComponent(this);
+}
+
+Vector WorldComponent::GetWorldPosition() const
+{
+	WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
+	//return Parent ? Parent->GetWorldPosition() + _RelativeTransform._Position : _RelativeTransform._Position;
+
+	if (Parent)
+	{
+		Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
+
+		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&_RelativeTransform._Position.ToDXFloat3());
+		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
+		DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
+		DirectX::XMFLOAT3 RotatedPos;
+		DirectX::XMStoreFloat3(&RotatedPos, NewPosition);
+
+		return Parent->GetWorldPosition() + Vector(RotatedPos.x, RotatedPos.y, RotatedPos.z);
+	}
+	else
+		return _RelativeTransform._Position;
+}
+
+Vector WorldComponent::GetRelativePosition() const
+{
+	return _RelativeTransform._Position;
+}
+
+void WorldComponent::SetWorldPosition(Vector NewPosition)
+{
+	Vector CurrentParentWorld;
+
+	while (WorldComponent* Parent = GetParentComponent())
+	{
+		CurrentParentWorld += Parent->_RelativeTransform._Position;
 	}
 
-	WorldComponent::WorldComponent(const std::string& Name)
-		: Component(Name), ParentComponent_(nullptr)
+	_RelativeTransform._Position = NewPosition - CurrentParentWorld;
+}
+
+void WorldComponent::SetRelativePosition(Vector NewPosition)
+{
+	_RelativeTransform._Position = NewPosition;
+}
+
+void WorldComponent::AddRelativePosition(Vector Position)
+{
+	_RelativeTransform._Position += Position;
+}
+
+Rotator WorldComponent::GetWorldRotation() const
+{
+	WorldComponent* Parent = GetParentComponent();
+	return Parent ? Parent->GetWorldRotation() + _RelativeTransform._Rotation : _RelativeTransform._Rotation;
+}
+
+Rotator WorldComponent::GetRelativeRotation() const
+{
+	return _RelativeTransform._Rotation;
+}
+
+void WorldComponent::SetWorldRotation(Rotator NewRotation)
+{
+	Rotator CurrentParentWorld;
+
+	if (WorldComponent* Parent = GetParentComponent())
+		CurrentParentWorld = Parent->GetWorldRotation();
+
+	_RelativeTransform._Rotation = NewRotation - CurrentParentWorld;
+
+	//TODO: UpdatePhysics Movement
+}
+
+void WorldComponent::SetRelativeRotation(Rotator NewRotation)
+{
+	_RelativeTransform._Rotation = NewRotation;
+	//TODO: UpdatePhysics Movement
+}
+
+void WorldComponent::AddRelativeRotation(Rotator Rotation)
+{
+	_RelativeTransform._Rotation += Rotation;
+}
+
+Vector WorldComponent::GetWorldScale() const
+{
+	WorldComponent* Parent = GetParentComponent();
+	return Parent ? Parent->GetWorldScale() + _RelativeTransform._Scale : _RelativeTransform._Scale;
+}
+
+Vector WorldComponent::GetRelativeScale() const
+{
+	return _RelativeTransform._Scale;
+}
+
+void WorldComponent::SetWorldScale(Vector NewScale)
+{
+	Vector CurrentParentWorld;
+
+	while (WorldComponent* Parent = GetParentComponent())
 	{
+		CurrentParentWorld += Parent->_RelativeTransform._Scale;
 	}
 
-	WorldComponent::~WorldComponent()
+	_RelativeTransform._Scale = NewScale - CurrentParentWorld;
+}
+
+void WorldComponent::SetRelativeScale(Vector NewScale)
+{
+	_RelativeTransform._Scale = NewScale;
+}
+
+Transform WorldComponent::GetWorldTransform() const
+{
+	return Transform(GetWorldPosition(), GetWorldRotation(), GetWorldScale());
+}
+
+Transform WorldComponent::GetRelativeTransform() const
+{
+	return _RelativeTransform;
+}
+
+void WorldComponent::SetWorldTransform(Transform NewTransform)
+{
+	SetWorldPosition(NewTransform._Position);
+	SetWorldRotation(NewTransform._Rotation);
+	SetWorldScale(NewTransform._Scale);
+}
+
+void WorldComponent::SetRelativeTransform(Transform NewTransform)
+{
+	_RelativeTransform = NewTransform;
+}
+
+void WorldComponent::InitialisePhysics()
+{
+}
+
+btRigidBody* WorldComponent::GetRigidBody()
+{
+	return nullptr;
+}
+
+void WorldComponent::Render()
+{
+	for (auto Child : _Children)
 	{
-		Children_.clear();
+		if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))
+			WorldChild->Render();
 	}
+}
 
-	void WorldComponent::Tick(float DeltaTime)
-	{
-		for (auto& Child : Children_)
-		{
-			Child->Tick(DeltaTime);
-		}
-	}
-
-	void WorldComponent::AddChild(WorldComponent* Child)
-	{
-		CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
-		Children_.push_back(Child);
-		Child->SetParentComponent(this);
-	}
-
-	Vector WorldComponent::GetWorldPosition() const
-	{
-		WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
-		//return Parent ? Parent->GetWorldPosition() + RelativeTransform_.Position_ : RelativeTransform_.Position_;
-
-		if (Parent)
-		{
-			Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
-
-			DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&RelativeTransform_.Position_.ToDXFloat3());
-			DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
-			DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
-			DirectX::XMFLOAT3 RotatedPos;
-			DirectX::XMStoreFloat3(&RotatedPos, NewPosition);
-
-			return Parent->GetWorldPosition() + Vector(RotatedPos.x, RotatedPos.y, RotatedPos.z);
-		}
-		else
-			return RelativeTransform_.Position_;
-	}
-
-	Vector WorldComponent::GetRelativePosition() const
-	{
-		return RelativeTransform_.Position_;
-	}
-
-	void WorldComponent::SetWorldPosition(Vector NewPosition)
-	{
-		Vector CurrentParentWorld;
-		
-		while (WorldComponent* Parent = GetParentComponent())
-		{
-			CurrentParentWorld += Parent->RelativeTransform_.Position_;
-		}
-
-		RelativeTransform_.Position_ = NewPosition - CurrentParentWorld;
-	}
-
-	void WorldComponent::SetRelativePosition(Vector NewPosition)
-	{
-		RelativeTransform_.Position_ = NewPosition;
-	}
-
-	void WorldComponent::AddRelativePosition(Vector Position)
-	{
-		RelativeTransform_.Position_ += Position;
-	}
-
-	Rotator WorldComponent::GetWorldRotation() const
-	{
-		WorldComponent* Parent = GetParentComponent();
-		return Parent ? Parent->GetWorldRotation() + RelativeTransform_.Rotation_ : RelativeTransform_.Rotation_;
-	}
-
-	Rotator WorldComponent::GetRelativeRotation() const
-	{
-		return RelativeTransform_.Rotation_;
-	}
-
-	void WorldComponent::SetWorldRotation(Rotator NewRotation)
-	{
-		Rotator CurrentParentWorld;
-
-		if (WorldComponent* Parent = GetParentComponent())
-			CurrentParentWorld = Parent->GetWorldRotation();
-
-		RelativeTransform_.Rotation_ = NewRotation - CurrentParentWorld;
-
-		//TODO: UpdatePhysics Movement
-	}
-
-	void WorldComponent::SetRelativeRotation(Rotator NewRotation)
-	{
-		RelativeTransform_.Rotation_ = NewRotation;
-		//TODO: UpdatePhysics Movement
-	}
-
-	void WorldComponent::AddRelativeRotation(Rotator Rotation)
-	{
-		RelativeTransform_.Rotation_ += Rotation;
-	}
-
-	Vector WorldComponent::GetWorldScale() const
-	{
-		WorldComponent* Parent = GetParentComponent();
-		return Parent ? Parent->GetWorldScale() + RelativeTransform_.Scale_ : RelativeTransform_.Scale_;
-	}
-
-	Vector WorldComponent::GetRelativeScale() const
-	{
-		return RelativeTransform_.Scale_;
-	}
-
-	void WorldComponent::SetWorldScale(Vector NewScale)
-	{
-		Vector CurrentParentWorld;
-
-		while (WorldComponent* Parent = GetParentComponent())
-		{
-			CurrentParentWorld += Parent->RelativeTransform_.Scale_;
-		}
-
-		RelativeTransform_.Scale_ = NewScale - CurrentParentWorld;
-	}
-
-	void WorldComponent::SetRelativeScale(Vector NewScale)
-	{
-		RelativeTransform_.Scale_ = NewScale;
-	}
-
-	Transform WorldComponent::GetWorldTransform() const
-	{
-		return Transform(GetWorldPosition(), GetWorldRotation(), GetWorldScale());
-	}
-
-	Transform WorldComponent::GetRelativeTransform() const
-	{
-		return RelativeTransform_;
-	}
-
-	void WorldComponent::SetWorldTransform(Transform NewTransform)
-	{
-		SetWorldPosition(NewTransform.Position_);
-		SetWorldRotation(NewTransform.Rotation_);
-		SetWorldScale(NewTransform.Scale_);
-	}
-
-	void WorldComponent::SetRelativeTransform(Transform NewTransform)
-	{
-		RelativeTransform_ = NewTransform;
-	}
-
-	void WorldComponent::InitialisePhysics()
-	{
-	}
-
-	btRigidBody* WorldComponent::GetRigidBody()
-	{
-		return nullptr;
-	}
-
-	void WorldComponent::Render()
-	{
-		for (auto Child : Children_)
-		{
-			if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))
-				WorldChild->Render();
-		}
-	}
-
-	Vector* WorldComponent::GetWriteablePosition()
-	{
-		return &RelativeTransform_.Position_;
-	}
-	Rotator* WorldComponent::GetWriteableRotation()
-	{
-		return &RelativeTransform_.Rotation_;
-	}
-	Vector* WorldComponent::GetWriteableScale()
-	{
-		return &RelativeTransform_.Scale_;
-	}
-	std::vector<Component*> WorldComponent::GetChildren() const
-	{
-		return Children_;
-	}
-	void WorldComponent::SetVisibility(bool Visible)
-	{
-		Visible_ = Visible;
-	}
-	bool WorldComponent::IsVisible() const
-	{
-		return Visible_;
-	}
+Vector* WorldComponent::GetWriteablePosition()
+{
+	return &_RelativeTransform._Position;
+}
+Rotator* WorldComponent::GetWriteableRotation()
+{
+	return &_RelativeTransform._Rotation;
+}
+Vector* WorldComponent::GetWriteableScale()
+{
+	return &_RelativeTransform._Scale;
+}
+std::vector<Component*> WorldComponent::GetChildren() const
+{
+	return _Children;
+}
+void WorldComponent::SetVisibility(bool Visible)
+{
+	_Visible = Visible;
+}
+bool WorldComponent::IsVisible() const
+{
+	return _Visible;
 }
 
 
