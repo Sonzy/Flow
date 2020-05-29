@@ -63,7 +63,18 @@ namespace Flow
 		char Path[128];
 		GetModuleFileName(nullptr, Path, sizeof(Path));
 		std::string ExeDir = std::string(Path);
+		std::string SandboxExe = std::string("Sandbox.exe");
+
+
+#define FLOW_EXTERNAL_BUILD
+#ifdef FLOW_EXTERNAL_BUILD
+		LocalPath_ = ExeDir.substr(0, ExeDir.find("Sandbox.exe"));
+#else
 		LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
+#endif // FLOW_EXTERNAL_BUILD
+
+		FLOW_ENGINE_LOG("RootPath is: {0}", LocalPath_);
+		FLOW_ENGINE_LOG("INITIALISING");
 
 		//TODO: Load assets somewhere
 		//= Models =

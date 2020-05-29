@@ -36,11 +36,14 @@
 
 #include "Flow\Rendering\Core\Lights\PointLight.h"
 
+#include "Flow\GameFramework\World.h"
+
 OpenCVTesting* AGDLayer::CVTesting_ = new OpenCVTesting();
 
 AGDLayer::AGDLayer()
 	: Layer("Advance Games Dev Example"), Generator_(new WorldGenerator())
 {
+	//Aquire all assets
 	Flow::MeshAsset* PlaneMesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("CharacterPlane");
 	Flow::MeshAsset* Box = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Box");
 	Flow::MeshAsset* Tube = Flow::AssetSystem::GetAsset<Flow::MeshAsset>("Tube");
@@ -49,27 +52,21 @@ AGDLayer::AGDLayer()
 	Flow::MaterialAsset* Brown = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_FlatColour_Brown");
 	Flow::MaterialAsset* LitGrey = Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_LitGrey");
 	
+	//Create required materials
 	Flow::AssetSystem::CreateMaterial<Flow::Mat_TexturedPhong>("Mat_CharacterPlane");
 	Flow::Mat_TexturedPhong* PlaneMat = static_cast<Flow::Mat_TexturedPhong*>(Flow::AssetSystem::GetAsset<Flow::MaterialAsset>("Mat_CharacterPlane")->GetMaterial());
 	PlaneMat->SetTexture("CharacterPlaneTexture");
 	PlaneMat->SetPixelShader("TexturedPS");
 	PlaneMat->SetVertexShader("TexturedVS");
 
+	//Initialise World
 	Light_ = std::make_shared<Flow::PointLight>(500.0f);
-
-
-	//PlaneTest_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Plane Character Test");
-	//WorldObjects_.push_back(PlaneTest_);
-	//PlaneTest_->GetMeshComponent()->SetMeshAndMaterial(PlaneMesh, PlaneMat);
-	//PlaneTest_->GetMeshComponent()->SetWorldPosition(Vector(0.0f, 20.0f, 0.0f));
 
 	Player_ = Flow::Application::GetWorld()->SpawnWorldObject<PlayerPlane>("Player Plane");
 	Player_->SetPhysicsMode(Flow::PhysicsMode::Dynamic);
 	WorldObjects_.push_back(Player_);
-	//Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, 10.0f, -20.0f));
-	Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, -100.0f, -500.0));
-	//static_cast<PlayerPlane*>(Player_.get())->ToggleWASDMode();
 
+	Player_->GetRootComponent()->SetRelativePosition(Vector(0.0f, -100.0f, -500.0));
 
 	Base_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
 	Base_->SetPhysicsMode(Flow::PhysicsMode::Static);
@@ -77,9 +74,6 @@ AGDLayer::AGDLayer()
 	Base_->GetRootComponent()->SetWorldScale(Vector(400.0f, 0.1f, 200.0f));
 	WorldObjects_.push_back(Base_);
 
-	//Map_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Map");
-	//static_cast<Flow::StaticMeshComponent*>(Map_->GetRootComponent())->SetMeshAndMaterial(Map, LitGrey->GetMaterial());
-	//WorldObjects_.push_back(Map_);
 
 	TestCube_ = Flow::Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("CubeTest");
 	TestCube_->SetPhysicsMode(Flow::PhysicsMode::Static);
@@ -90,22 +84,9 @@ AGDLayer::AGDLayer()
 	TestCube_->GetRootComponent()->SetWorldPosition(Vector(0.0f, 50.0f, -400.0f));
 	WorldObjects_.push_back(TestCube_);
 
-	//Wall_ = Flow::Application::GetWorld()->SpawnWorldObject<ObstacleWall>("Walltesting");
-	//Wall_->GetRootComponent()->SetWorldScale(Vector(1.0f, 1.0f, 1.0f));
-	//Wall_->GetRootComponent()->SetWorldPosition(Vector(10.0f, 50.0f, 10.0f));
-	//WorldObjects_.push_back(Wall_);
-
 	Camera_ = new Flow::BasicCamera();
 
-	Flow::TextureAsset* Texture = Flow::AssetSystem::GetAsset<Flow::TextureAsset>("TestSprite");
-	//Sprite_ = std::make_shared<Flow::Sprite>(Texture);
-	//
-	//Sprite_->SetScale(Vector(512.0f, 512.0f, 1.0f));
-	//Sprite_->SetPosition(Vector(0.0f, 0.0f, 0.0f));
-
-	//Create the world
-	//GeneratedWorld = WorldGenerator::CreateWorld(IntVector2D(10), 500.0f, 4, 30.0f, Vector(300.0f, 4000.0f, 300.0f));
-
+	//Initialise OpenCV data
 	if (UseOpenCV)
 	{
 		CVTesting_->Initialise(false);
@@ -126,34 +107,38 @@ void AGDLayer::OnUpdate(float DeltaTime)
 	int Count = 0;
 	Flow::Renderer::BeginScene();
 
-	//Camera_->Update(DeltaTime);
 	Light_->BindLight(Flow::RenderCommand::GetCamera().GetView());
+	bool Paused = Flow::Application::GetApplication().IsGamePaused();
 
 	if (UseOpenCV)
 	{
-		if (!CVTesting_->Started && TrackingTimer.Peek() > 5.0f)
+		//Initialise the trackers after delay
+		if (!Paused && !CVTesting_->Started && TrackingTimer.Peek() > 5.0f)
 		{
 			CVTesting_->StartTracker(ETracker::Hand_Left, IntVector2D(950, 500));
 			CVTesting_->StartTracker(ETracker::Hand_Right, IntVector2D(600, 500));
 			CVTesting_->Started = true;
 		}
 
+		//Update the openCV interface and the player
 		CVTesting_->Update();
-
-		if(CVTesting_->Started)
+		if(CVTesting_->Started && !Paused)
 			Player_->OpenCVUpdate(CVTesting_->CalculateAngle(), CVTesting_->GetHeightDeviation());		
 
+		//Update the camera
 		Camera_->SetPosition(Player_->GetRootComponent()->GetRelativePosition() + Vector(0.0f, 10.0f, -20.0f));
 		Camera_->CacheCameraMatrices();
 	}
 
+	//Update world Generator
+	if (!Paused)
 	{
 		PROFILE_CURRENT_SCOPE("World Generator Update");
 		if (Generator_->Update(DeltaTime))
 			Generator_->CreateWall(Flow::Application::GetWorld());
 	}
 
-
+	//Draw the world
 	{
 		PROFILE_CURRENT_SCOPE("Draw World");
 
@@ -190,12 +175,12 @@ void AGDLayer::OnImGuiRender()
 	//}
 	//ImGui::End();
 
-	if(ImGui::Begin("Light Settings"))
-	{
-		if (ImGui::Checkbox("Use Rotated vector", &UseRotatedLightVector))
-			static_cast<Flow::Mat_LitColour*>(LitColour->GetMaterial())->SetRotated(UseRotatedLightVector);
-	}
-	ImGui::End();
+	//if(ImGui::Begin("Light Settings"))
+	//{
+	//	if (ImGui::Checkbox("Use Rotated vector", &UseRotatedLightVector))
+	//		static_cast<Flow::Mat_LitColour*>(LitColour->GetMaterial())->SetRotated(UseRotatedLightVector);
+	//}
+	//ImGui::End();
 }
 
 void AGDLayer::OnAttach()

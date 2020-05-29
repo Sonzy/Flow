@@ -74,8 +74,8 @@ namespace Flow
 
 		Flow::Renderer::Submit(this);
 
-		if (DrawOutline_)
-			DrawOutline();
+		//if (DrawOutline_)
+		//	DrawOutline();
 
 		WorldComponent::Render();
 	}

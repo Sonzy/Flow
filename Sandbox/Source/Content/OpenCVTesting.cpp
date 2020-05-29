@@ -160,15 +160,15 @@ void OpenCVTesting::InitialiseTrackers(ETrackingType TrackingType)
 
 	Tracker* Tracker_LeftHand_ = new Tracker(ETracker::Hand_Left, "Left Hand Tracker");
 	Tracker* Tracker_RightHand_ = new Tracker(ETracker::Hand_Right, "Right Hand Tracker");
-	Tracker* Tracker_Head_ = new Tracker(ETracker::Head, "Head Tracker");
+	//Tracker* Tracker_Head_ = new Tracker(ETracker::Head, "Head Tracker");
 
 	Tracker_LeftHand_->Tracker_->InitialiseTracker(TrackingType, TrackingSize);
 	Tracker_RightHand_->Tracker_->InitialiseTracker(TrackingType, TrackingSize);
-	Tracker_Head_->Tracker_->InitialiseTracker(TrackingType, TrackingSize);
+	//Tracker_Head_->Tracker_->InitialiseTracker(TrackingType, TrackingSize);
 
 	Trackers_.push_back(Tracker_LeftHand_);
 	Trackers_.push_back(Tracker_RightHand_);
-	Trackers_.push_back(Tracker_Head_);
+	//Trackers_.push_back(Tracker_Head_);
 }
 
 void OpenCVTesting::StartTrackers()

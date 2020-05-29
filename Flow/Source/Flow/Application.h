@@ -46,6 +46,8 @@ namespace Flow
 		Inspector* GetInspector();
 
 		Window& GetWindow();
+
+		bool IsGamePaused() const { return Paused_; }
 	public:
 		std::string ApplicationName;
 

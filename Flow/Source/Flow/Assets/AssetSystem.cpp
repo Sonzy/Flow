@@ -7,6 +7,8 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 
+#include "Flow\Application.h"
+
 namespace Flow
 {
 	AssetSystem* AssetSystem::AssetSystem_s = new AssetSystem();
@@ -43,7 +45,7 @@ namespace Flow
 		//Try to load asset, log if we fail
 		if (!NewAsset->LoadAsset(AssetPath))
 		{
-			FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, AssetPath);
+			FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path: {1}", AssetName, Application::GetApplication().GetLocalFilePath() + AssetPath);
 			delete NewAsset;
 			return false;
 		}
@@ -71,9 +73,9 @@ namespace Flow
 			FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName);
 			return nullptr;
 		}
-
 		return AssetSystem_s->LoadedAssets_[HashedName];
 	}
+
 
 	//TODO: Come up wiht a better version of this
 	EAssetType AssetSystem::GetAssetTypeFromFileExtension(const std::string& AssetPath)

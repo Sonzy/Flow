@@ -15,7 +15,6 @@ Flow::OpenCVTesting::OpenCVTesting()
 
 	//Open Capture
 	Capture_.open(0, cv::CAP_MSMF);
-	//Capture_.open("RecordingTest.mp4", cv::CAP_ANY);
 
 	//Verify Capture
 	CHECK_RETURN(!Capture_.isOpened(), "OpenCVTesting::OpenCVTesting: Failed to open video capture");

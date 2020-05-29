@@ -33,8 +33,10 @@ namespace Flow
 
 	void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 	{
+		FLOW_LOG("D3D11 Initialising...", ViewportWidth, ViewportHeight);
+
 		NearPlane_ = 0.5f;
-		FarPlane_ = 200000.0f;
+		FarPlane_ = 800.0f;
 		ViewportSize_ = IntVector2D(ViewportWidth, ViewportHeight);
 
 		HRESULT ResultHandle;
@@ -57,7 +59,7 @@ namespace Flow
 		SwapchainDesc.Flags = 0;
 
 		UINT SwapCreateFlags = 0;
-		SwapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG; //TODO: Disable in non debug mode
+		//SwapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG; //TODO: Disable in non debug mode
 
 		CATCH_ERROR_DX(
 			D3D11CreateDeviceAndSwapChain(
@@ -117,7 +119,7 @@ namespace Flow
 		Context->RSSetViewports(1u, &Viewport);
 
 
-
+		FLOW_LOG("D3D11 Initialised. Width: {0} Height: {1}, NearPlane: {2}, FarPlane: {3}", ViewportWidth, ViewportHeight, NearPlane_, FarPlane_);
 
 
 		//=========================================
@@ -141,7 +143,9 @@ namespace Flow
 
 	void DX11RenderAPI::Clear()
 	{
-		Context->ClearRenderTargetView(RenderTarget.Get(), BackgroundColour);
+		float BackgroundColour2[4] = { 0.5f, 1.0f, 0.2f, 0.2f };
+		Context->ClearRenderTargetView(RenderTarget.Get(), BackgroundColour2);
+		//Context->ClearRenderTargetView(RenderTarget.Get(), BackgroundColour);
 		Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 	}
 

@@ -19,6 +19,8 @@ namespace Flow
 
 	WinWindow::WinWindow(const WindowProperties& Properties)
 	{
+		FLOW_LOG("Window Initialising...");
+
 		Initialise(Properties);
 
 		//TODO: Clean this up, we pass in the adjusted window rect value
@@ -27,6 +29,8 @@ namespace Flow
 		IntVector2D Adj =  IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
 
 		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.X, Adj.Y);
+
+		FLOW_LOG("Window Initialised");
 	}
 
 	WinWindow::~WinWindow()

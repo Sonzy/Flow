@@ -14,9 +14,11 @@ OpenCVTracker::OpenCVTracker()
 
 void OpenCVTracker::InitialiseTracker(ETrackingType TrackingType, IntVector2D TrackingSize)
 {
+	//Release previous tracker
 	if (Tracker_)
 		Tracker_.release();
 
+	//Create a tracker of the specified type
 	switch (TrackingType)
 	{
 	case ETrackingType::KCF:
@@ -47,6 +49,7 @@ void OpenCVTracker::InitialiseTracker(ETrackingType TrackingType, IntVector2D Tr
 		return;
 	}
 
+	//Assign the tracking data
 	TrackingSize_ = TrackingSize;
 	TrackingMode_ = TrackingType;
 }
@@ -55,12 +58,14 @@ void OpenCVTracker::StartTracking(cv::Mat* Frame, IntVector2D ScreenPosition)
 {
 	CHECK_RETURN(!Tracker_, "OpenCVTracker::StartTracking: Tracker was null, initialisation may have failed.");
 
+	//Stop the tracker if were already running
 	if (TrackerRunning_)
 	{
 		FLOW_LOG("OpenCVTesting::StartTracking: Tracking in progress, cancelling...");
 		StopTracking();
 	}
 
+	//Spawn a new tracker
 	InitialiseTracker(TrackingMode_, TrackingSize_);
 
 	//Create the bounding box centred on the screen position

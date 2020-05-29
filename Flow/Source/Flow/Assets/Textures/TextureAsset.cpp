@@ -19,6 +19,9 @@ namespace Flow
 		std::wstring WidePath = std::wstring(Path.begin(), Path.end());
 		CATCH_ERROR_DX(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, Image_));
 
+		if (!Image_.GetImage(0,0,0))
+			return false;
+
 		//Convert to our image format
 		if (Image_.GetImage(0, 0, 0)->format != Format_)
 		{

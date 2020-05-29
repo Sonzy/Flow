@@ -53,7 +53,7 @@ namespace Flow
 		IntVector2D ViewportSize_;
 		IntVector2D AdjustedViewportSize_;
 
-		float NearPlane_;
-		float FarPlane_;
+		float NearPlane_ = 0.5f;
+		float FarPlane_ = 800.0f;
 	};
 }
