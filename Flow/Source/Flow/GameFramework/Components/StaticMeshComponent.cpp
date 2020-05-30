@@ -5,7 +5,6 @@
 #include "Flow\Rendering\Renderer.h"
 #include "Flow\Rendering\Core\Vertex\VertexLayout.h"
 #include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Flow\Rendering\Core\Bindables\Stencil.h"
 #include "Flow\Rendering\Core\Bindables\Rasterizer.h"
 
 #include "ThirdParty\ImGui\imgui.h"
@@ -23,7 +22,7 @@ StaticMeshComponent::StaticMeshComponent()
 
 StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
 	: RenderableComponent(Name), _StaticMesh(nullptr), _Material(nullptr),
-	_Body(nullptr), _Collision(nullptr)
+	_Body(nullptr), _Collision(nullptr), _StencilMode(StencilMode::Off)
 {
 	if (Mesh && Material)
 		SetMeshAndMaterial(Mesh, Material, MeshIndex);
@@ -272,4 +271,9 @@ void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
 
 	//Re-enable physics body
 	_Body->activate();
+}
+
+void StaticMeshComponent::SetStencilMode(StencilMode NewMode)
+{
+	_StencilMode = NewMode;
 }

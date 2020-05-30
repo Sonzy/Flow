@@ -12,7 +12,6 @@
 class World;
 class Inspector;
 class EditorLayer;
-class SelectionGizmo;
 
 class FLOW_API Application
 {

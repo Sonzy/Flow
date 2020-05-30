@@ -12,7 +12,6 @@
 
 #include "Flow\Editor\Inspector.h"
 #include "Flow\Layers\EditorLayer.h"
-#include "Flow\Editor\SelectionGizmo.h"
 
 //TODO: Load somewhere else
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
@@ -60,7 +59,7 @@ void Application::InitialiseApplication()
 	////AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
 	//AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
 	//AssetSystem::LoadAsset("Sphere", "Flow/Assets/Models/Sphere.obj");
-	//AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
+	AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
 	AssetSystem::LoadAsset("Wabble_Crate", "Flow/Assets/Models/Wabble_Crate.obj");
 	AssetSystem::LoadAsset("Wabble_Chair", "Flow/Assets/Models/Wabble_Chair.obj");
 	AssetSystem::LoadAsset("Wabble_Table", "Flow/Assets/Models/Wabble_Table.obj");

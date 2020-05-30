@@ -12,15 +12,33 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
+#include "Flow/Input/Input.h"
+
+#include "Flow/Helper/Maths.h"
+
 SelectionGizmo::SelectionGizmo()
+	: WorldObject("SelectionGizmo")
 {
 	MeshAsset* Meshes = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");
 	Material* Mat = AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial();
 
 	//Create and assign mesh components.
-	_ArrowX = new StaticMeshComponent("_ArrowX", Meshes, Mat, 0);
-	_ArrowY = new StaticMeshComponent("_ArrowY", Meshes, Mat, 1);
-	_ArrowZ = new StaticMeshComponent("_ArrowZ", Meshes, Mat, 2);
+	_ArrowX = new StaticMeshComponent("_ArrowX", Meshes, Mat);
+	_ArrowY = new StaticMeshComponent("_ArrowY", Meshes, Mat);
+	_ArrowZ = new StaticMeshComponent("_ArrowZ", Meshes, Mat);
+
+	_ArrowX->SetParentComponent(nullptr);
+	_RootComponent = _ArrowX;
+	_RootComponent->AddChild(_ArrowY);
+	_RootComponent->AddChild(_ArrowZ);
+
+	_ArrowX->SetParent(this);
+	_ArrowY->SetParent(this);
+	_ArrowZ->SetParent(this);
+
+	_ArrowX->SetWorldRotation(Rotator(0.0f, 90.0f, 0.0f));
+	_ArrowY->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
+	_ArrowZ->SetWorldRotation(Rotator(90.0f, 0.0f, 0.0f));
 
 	//Init the transform
 	const int Scale = 1.0f;
@@ -32,6 +50,10 @@ SelectionGizmo::SelectionGizmo()
 	_ArrowX->RefreshBinds();
 	_ArrowY->RefreshBinds();
 	_ArrowZ->RefreshBinds();
+
+	_ArrowX->SetStencilMode(StencilMode::Write);
+	_ArrowY->SetStencilMode(StencilMode::Write);
+	_ArrowZ->SetStencilMode(StencilMode::Write);
 }
 
 SelectionGizmo::~SelectionGizmo()
@@ -62,6 +84,64 @@ void SelectionGizmo::GenerateCollision()
 	GenerateCollisionData(_ArrowZ, _ZCollision, _ZGhost);
 }
 
+void SelectionGizmo::InitialisePhysics()
+{
+	//TODO: Remove
+	//_ArrowX->InitialisePhysics();
+	//_ArrowY->InitialisePhysics();
+	//_ArrowZ->InitialisePhysics();
+}
+
+void SelectionGizmo::UpdateSelection()
+{
+	if (_SelectedAxis == SelectedAxis::None)
+		return;
+
+	IntVector2D MousePosition = Input::GetMousePosition();
+
+	if (MousePosition.Distance(_MouseLastUpdate) < _MouseDistanceThreshold)
+		return;
+
+	Vector AxisDirection;
+	switch (_SelectedAxis)
+	{
+	case SelectedAxis::X:
+		AxisDirection = Vector(1.0f, 0.0f, 0.0f);
+		break;
+	case SelectedAxis::Y:
+		AxisDirection = Vector(1.0f, 1.0f, 0.0f);
+		break;
+	case SelectedAxis::Z:
+		AxisDirection = Vector(1.0f, 0.0f, 1.0f);
+		break;
+	}
+
+
+	//Fire a ray from the current mouse position.
+	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
+
+	// Get line coordinates for the axis we are moving
+	
+
+	//Get the closest point on the axis line to the ray
+	float AxisClosestScale;
+	float RayClosestScale;
+	Math::GetClosestDistanceBetweenLines(Ray(_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Ray(Start, Direction), AxisClosestScale, RayClosestScale);
+
+
+	Vector NewPosition = _SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale);
+	_SelectedComponent->SetWorldPosition(NewPosition);
+	UpdatePosition(NewPosition);
+
+	//FLOW_ENGINE_LOG();
+	FLOW_ENGINE_LOG("MouseDistance: {0}", MousePosition.Distance(_MouseLastUpdate));
+
+	_MouseLastUpdate = MousePosition;
+
+
+}
+
 void SelectionGizmo::UpdatePosition(Vector Position)
 {
 	_ArrowX->SetWorldPosition(Position);
@@ -70,8 +150,11 @@ void SelectionGizmo::UpdatePosition(Vector Position)
 
 	btTransform Transform;
 	Transform.setOrigin(btVector3(Position.X, Position.Y, Position.Z));
+	Transform.setRotation(btQuaternion(0.0f, 0.0f, Math::PI / 2));
 	_XGhost->setWorldTransform(Transform);
+	Transform.setRotation(btQuaternion(0.0f, 0.0f, 0.0f));
 	_YGhost->setWorldTransform(Transform);
+	Transform.setRotation(btQuaternion(0.0f, Math::PI / 2, 0.0f));
 	_ZGhost->setWorldTransform(Transform);
 
 	World::GetPhysicsWorld()->updateSingleAabb(_XGhost);
@@ -113,9 +196,22 @@ void SelectionGizmo::SetVisibility(bool Visible)
 
 void SelectionGizmo::AddCollidersToWorld(World* World)
 {
-	//World->AddCollisionObject(_XGhost);
-	//World->AddCollisionObject(_YGhost);
-	//World->AddCollisionObject(_ZGhost);
+	World->AddCollisionObject(_XGhost);
+	World->AddCollisionObject(_YGhost);
+	World->AddCollisionObject(_ZGhost);
+}
+
+void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object)
+{
+	_SelectedAxis = SelectedAxis;
+	_SelectedComponent = Object;
+	_SelectedComponentStartPosition = Object->GetWorldPosition();
+	_MouseLastUpdate = Input::GetMousePosition();
+}
+
+void SelectionGizmo::OnDeselected()
+{
+	_SelectedAxis = SelectedAxis::None;
 }
 
 void SelectionGizmo::GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost)
@@ -130,11 +226,14 @@ void SelectionGizmo::GenerateCollisionData(StaticMeshComponent* Component, btCol
 	}
 	Collider = Shape;
 
+	Collider->setLocalScaling(btVector3(1, 1, 1));
+
+
 	//Create the ghost object
 	btTransform Transform;
 	Vector Location = Component->GetWorldPosition();
 	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
 	Ghost->setCollisionShape(Collider);
 	Ghost->setWorldTransform(Transform);
-	Ghost->setUserPointer(this);
+	Ghost->setUserPointer(Component);
 }

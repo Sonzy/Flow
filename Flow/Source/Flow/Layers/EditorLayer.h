@@ -15,6 +15,7 @@ public:
 
 	/* Layer interface */
 
+	virtual void BeginPlay() override;
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 	virtual void OnImGuiRender(bool DrawEditor) override;
@@ -37,6 +38,7 @@ protected:
 	void RenderApplicationDebug(float DeltaTime);
 
 	bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
 	Inspector* _Inspector;
 	Toolbar* _Toolbar;

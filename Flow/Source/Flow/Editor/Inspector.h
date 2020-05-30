@@ -13,6 +13,8 @@ class Inspector
 public:
 	Inspector(SelectionGizmo* Selector);
 
+	void BeginPlay();
+
 	void RenderInspector();
 	void RenderHeirarchy();
 
@@ -20,6 +22,8 @@ public:
 
 	void SetCurrentWorld(World* WorldReference);
 	bool OnMouseClicked(MouseButtonPressedEvent& e);
+
+	bool OnMouseReleased(MouseButtonReleasedEvent& e);
 
 	static void UpdateSelectedComponent(WorldComponent* NewComp);
 	void DrawSelectedComponentTransform();

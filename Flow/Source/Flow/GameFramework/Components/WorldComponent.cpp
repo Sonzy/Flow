@@ -65,10 +65,11 @@ Vector WorldComponent::GetRelativePosition() const
 void WorldComponent::SetWorldPosition(Vector NewPosition)
 {
 	Vector CurrentParentWorld;
-
-	while (WorldComponent* Parent = GetParentComponent())
+	WorldComponent* Parent = GetParentComponent();
+	while (Parent)
 	{
 		CurrentParentWorld += Parent->_RelativeTransform._Position;
+		Parent = Parent->GetParentComponent();
 	}
 
 	_RelativeTransform._Position = NewPosition - CurrentParentWorld;
@@ -121,7 +122,7 @@ void WorldComponent::AddRelativeRotation(Rotator Rotation)
 Vector WorldComponent::GetWorldScale() const
 {
 	WorldComponent* Parent = GetParentComponent();
-	return Parent ? Parent->GetWorldScale() + _RelativeTransform._Scale : _RelativeTransform._Scale;
+	return Parent ? Parent->GetWorldScale() * _RelativeTransform._Scale : _RelativeTransform._Scale;
 }
 
 Vector WorldComponent::GetRelativeScale() const
@@ -132,10 +133,11 @@ Vector WorldComponent::GetRelativeScale() const
 void WorldComponent::SetWorldScale(Vector NewScale)
 {
 	Vector CurrentParentWorld;
-
-	while (WorldComponent* Parent = GetParentComponent())
+	WorldComponent* PointedComp = GetParentComponent();
+	while (PointedComp)
 	{
-		CurrentParentWorld += Parent->_RelativeTransform._Scale;
+		CurrentParentWorld *= PointedComp->_RelativeTransform._Scale;
+		PointedComp = PointedComp->GetParentComponent();
 	}
 
 	_RelativeTransform._Scale = NewScale - CurrentParentWorld;

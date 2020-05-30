@@ -17,11 +17,16 @@ EditorLayer::EditorLayer()
 {
 }
 
+void EditorLayer::BeginPlay()
+{
+	_SelectionGizmo->AddCollidersToWorld(World::GetWorld());
+	_SelectionGizmo->InitialisePhysics();
+}
+
 void EditorLayer::OnAttach()
 {
-	//_SelectionGizmo = new SelectionGizmo();
-	//_SelectionGizmo->GenerateCollision();
-	//_SelectionGizmo->AddCollidersToWorld(GameWorld_);
+	_SelectionGizmo = new SelectionGizmo();
+	_SelectionGizmo->GenerateCollision();
 
 	_Toolbar = new Toolbar(this);
 
@@ -57,11 +62,14 @@ void EditorLayer::OnEvent(Event& e)
 {
 	EventDispatcher Dispatcher(e);
 	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonPressed));
+	Dispatcher.Dispatch<MouseButtonReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonReleased));
 }
 
 void EditorLayer::OnUpdate(float DeltaTime)
 {
 	FrameDeltaTime = DeltaTime;
+
+	_SelectionGizmo->Render();
 }
 
 EditorLayer* EditorLayer::GetEditor()
@@ -93,6 +101,14 @@ bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
 	if (_Inspector)
 		return _Inspector->OnMouseClicked(e);
+
+	return false;
+}
+
+bool EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
+{
+	if (_Inspector)
+		return _Inspector->OnMouseReleased(e);
 
 	return false;
 }

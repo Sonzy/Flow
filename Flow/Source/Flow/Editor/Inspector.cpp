@@ -3,7 +3,9 @@
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
+
 #include "Flow\GameFramework\WorldObject.h"
+#include "Flow\Editor\SelectionGizmo.h"
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -18,7 +20,7 @@
 #include "Flow\GameFramework\Components\WorldComponent.h"
 #include "Flow\GameFramework\Components\StaticMeshComponent.h" //TODO: Remove dependency
 
-#include "Flow\Editor\SelectionGizmo.h"
+
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 #include "Flow/GameFramework/Components/WorldComponent.h"
@@ -29,6 +31,11 @@
 Inspector::Inspector(SelectionGizmo* Selector)
 	: _CurrentWorld(nullptr), _FocusedItem(nullptr), _Selector(Selector)
 {
+}
+
+void Inspector::BeginPlay()
+{
+	_Selector->InitialisePhysics();
 }
 
 void Inspector::RenderInspector()
@@ -133,14 +140,21 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	WorldComponent* HitComp = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer()) : nullptr;
 	WorldObject* HitObject = Ray.hasHit() ? HitComp->GetParentWorldObject() : nullptr;
 
+	if (_FocusedItem && HitObject != _FocusedItem)
+	{
+		if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(HitObject))
+		{
+			Gizmo->OnSelected(SelectedAxis::X, _FocusedComponent);
+			return true;
+		}
+		else if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(HitComp))
+			Comp->EnableOutlineDrawing(false);
+
+	}
+
 	_FocusedItemChanged = HitObject && _FocusedItem != HitObject;
 	_FocusedComponentChanged = HitComp && _FocusedComponent != HitComp;
 
-	if (_FocusedItem && HitObject != _FocusedItem)
-	{
-		if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(HitComp))
-			Comp->EnableOutlineDrawing(false);
-	}
 
 	_FocusedItem = HitObject;
 
@@ -158,21 +172,30 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	if (!_FocusedItem)
 	{
 		_FocusedComponent = nullptr;
-		//Selector_->SetVisibility(false);
-		//Selector_->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		_Selector->SetVisibility(false);
+		_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		_Selector->OnDeselected();
 	}
 	//If we have not hit anything, reset the selector
 	else
 	{
-		//m_Selector->UpdatePosition(HitObject->GetLocation());
-		//m_Selector->SetScale(HitObject->GetScale().X);
-
-		//TODO: Re-enable when setting this back up
-		//m_Selector->SetVisibility(true);
+		_Selector->UpdatePosition(HitObject->GetLocation());
+		_Selector->SetVisibility(true);
 	}
 
 
 	return true;
+}
+
+bool Inspector::OnMouseReleased(MouseButtonReleasedEvent& e)
+{
+	if (_Selector->GetSelectedAxis() != SelectedAxis::None)
+	{
+		_Selector->OnDeselected();
+		return true;
+	}
+
+	return false;
 }
 
 void Inspector::UpdateSelectedComponent(WorldComponent* NewComp)
@@ -187,6 +210,8 @@ WorldComponent* Inspector::GetSelectedComponent()
 
 void Inspector::Update()
 {
+	_Selector->UpdateSelection();
+
 	RenderInspector();
 	RenderHeirarchy();
 

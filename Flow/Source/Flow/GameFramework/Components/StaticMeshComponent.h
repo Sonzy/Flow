@@ -1,5 +1,6 @@
 #pragma once
 #include "Flow\GameFramework\Components\RenderableComponent.h"
+#include "Flow\Rendering\Core\Bindables\Stencil.h"
 
 class btCollisionShape;
 class btRigidBody;
@@ -54,7 +55,7 @@ public:
 	//TODO: Temp movement with rigidbodies
 	void MovePhysicsBody(Transform NewTransform);
 
-
+	void SetStencilMode(StencilMode NewMode);
 
 
 protected:
@@ -67,6 +68,8 @@ protected:
 
 	btCollisionShape* _Collision;
 	btRigidBody* _Body;
+
+	StencilMode _StencilMode;
 
 	std::vector<std::shared_ptr<Bindable>> OutlineEffect;
 	bool _CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values

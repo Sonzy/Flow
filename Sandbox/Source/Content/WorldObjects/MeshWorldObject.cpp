@@ -57,6 +57,5 @@ StaticMeshComponent* MeshWorldObject::GetMeshComponent() const
 void MeshWorldObject::InitPhysics(bool Simulate)
 {
 	MeshComponent->SetSimulatePhysics(Simulate);
-
 	MeshComponent->InitialisePhysics();
 }

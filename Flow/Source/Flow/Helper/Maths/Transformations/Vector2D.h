@@ -78,7 +78,7 @@ struct IntVector2D
 		return (X != Other.X) || (Y != Other.Y);
 	}
 
-	IntVector2D operator-(const IntVector2D& Other)
+	IntVector2D operator-(const IntVector2D& Other) const
 	{
 		return IntVector2D(X - Other.X, Y - Other.Y);
 	}
@@ -99,5 +99,11 @@ struct IntVector2D
 	{
 		X += Other.X;
 		Y += Other.Y;
+	}
+
+	float Distance(const IntVector2D& Other) const
+	{
+		IntVector2D Difference = Other - *this;
+		return sqrtf(((float)Difference.X * (float)Difference.X) + ((float)Difference.Y * (float)Difference.Y));
 	}
 };

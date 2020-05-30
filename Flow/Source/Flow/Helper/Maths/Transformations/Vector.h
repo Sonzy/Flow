@@ -32,14 +32,27 @@ struct Vector
 		return { X, Y, Z };
 	}
 
-	//Vector Normalize()
-	//{
-	//	const float SquareSum = X * X + Y * Y + Z * Z;
-	//	CHECK_RETURN_OBJECT(SquareSum <= 1.e-8f, *this, "Vector::Normalize: Failed to normalise the vector");
-	//
-	//	const float Scale = InvSqrt(SquareSum);
-	//	X *= Scale; Y *= Scale; Z *= Scale;
-	//}
+	static float Dot(const Vector& A, const Vector& B)
+	{
+		return (A.X * B.X) + (A.Y * B.Y) + (A.Z * B.Z);
+	}
+
+	static Vector Cross(const Vector& A, const Vector& B)
+	{
+		return Vector((A.Y * B.Z) - (A.Z * B.Y), (A.Z * B.X) - (A.X * B.Z) , (A.X * B.Y) - (A.Y * B.X) );
+	}
+
+	Vector Normalize()
+	{
+		float VecLength = Length();
+
+		return Vector(X / VecLength, Y / VecLength, Z / VecLength);
+	}
+
+	float Length()
+	{
+		return sqrt((X * X) + (Y * Y) + (Z * Z));
+	}
 
 	void operator+=(const Vector& Other)
 	{
@@ -48,19 +61,36 @@ struct Vector
 		Z += Other.Z;
 	}
 
-	Vector operator+(const Vector& Other)
+	Vector operator+(const Vector& Other) const
 	{
 		return Vector(X + Other.X, Y + Other.Y, Z + Other.Z);
 	}
 
-	Vector operator-(const Vector& Other)
+	Vector operator-(const Vector& Other) const
 	{
 		return Vector(X - Other.X, Y - Other.Y, Z - Other.Z);
 	}
 
-	Vector operator*(const float& Other)
+	Vector operator-() const
+	{
+		return Vector(-X, -Y, -Z);
+	}
+
+	Vector operator*(const Vector& Other) const
+	{
+		return Vector(X * Other.X, Y * Other.Y, Z * Other.Z);
+	}
+
+	Vector operator*(const float& Other) const
 	{
 		return Vector(X * Other, Y * Other, Z * Other);
+	}
+
+	void operator*=(const Vector& Other)
+	{
+		X *= Other.X;
+		Y *= Other.Y;
+		Z *= Other.Z;
 	}
 
 	template<typename OStream>

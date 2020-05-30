@@ -3,6 +3,8 @@
 
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
+#include "Flow/GameFramework/Components/WorldComponent.h"
+#include "Flow/GameFramework/WorldObject.h"
 
 class btCollisionShape;
 class btGhostObject;
@@ -12,15 +14,27 @@ class Material;
 class StaticMeshComponent;
 class World;
 
+enum class SelectedAxis
+{
+	None,
+	X,
+	Y,
+	Z
+};
+
 /* Gizmo used for moving objects within the world within the editor */
-class SelectionGizmo
+class SelectionGizmo : public WorldObject
 {
 public:
 	SelectionGizmo();
-	~SelectionGizmo();
+	virtual ~SelectionGizmo();
 
 	/* Generates the collision for all parts of the gizmo*/
 	void GenerateCollision();
+
+	void InitialisePhysics();
+
+	void UpdateSelection();
 
 	void UpdatePosition(Vector Position);
 	void UpdateRotation(Rotator Rotation);
@@ -35,6 +49,11 @@ public:
 	/* Adds the collision data to the physics world. */
 	void AddCollidersToWorld(World* World);
 
+	void OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object);
+	void OnDeselected();
+
+	SelectedAxis GetSelectedAxis() const { return _SelectedAxis; }
+
 private:
 	void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
 
@@ -47,6 +66,12 @@ private:
 	Material* _ArrowMaterial;
 
 	bool _Visible = false;
+
+	SelectedAxis _SelectedAxis;
+	IntVector2D _MouseLastUpdate;
+	WorldComponent* _SelectedComponent;
+	Vector _SelectedComponentStartPosition;
+	float _MouseDistanceThreshold = 1.0f;
 
 	//= Collision ================
 
