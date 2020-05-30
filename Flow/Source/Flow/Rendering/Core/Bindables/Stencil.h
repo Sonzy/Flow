@@ -6,7 +6,8 @@ enum class StencilMode
 {
 	Off,
 	Write,
-	Mask
+	Mask,
+	AlwaysOnTop
 };
 
 

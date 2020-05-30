@@ -143,7 +143,7 @@ void StaticMeshComponent::RefreshBinds()
 		OutlineEffect.push_back(std::make_shared<Stencil>(StencilMode::Mask));
 	}
 	else
-		AddBind(std::make_shared<Stencil>(StencilMode::Off));
+		AddBind(std::make_shared<Stencil>(_StencilMode));
 }
 
 DirectX::XMMATRIX StaticMeshComponent::GetTransformXM()
@@ -276,4 +276,6 @@ void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
 void StaticMeshComponent::SetStencilMode(StencilMode NewMode)
 {
 	_StencilMode = NewMode;
+
+	RefreshBinds();
 }

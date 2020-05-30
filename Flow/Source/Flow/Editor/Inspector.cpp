@@ -144,7 +144,22 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	{
 		if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(HitObject))
 		{
-			Gizmo->OnSelected(SelectedAxis::X, _FocusedComponent);
+			SelectedAxis Axis = SelectedAxis::None;
+
+			if(HitComp->_Tag._Equal("ArrowX"))
+				Axis = SelectedAxis::X;
+			if (HitComp->_Tag._Equal("ArrowY"))
+				Axis = SelectedAxis::Y;
+			if (HitComp->_Tag._Equal("ArrowZ"))
+				Axis = SelectedAxis::Z;
+
+			if (Axis == SelectedAxis::None)
+			{
+				FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
+				return true;
+			}
+
+			Gizmo->OnSelected(Axis, _FocusedComponent);
 			return true;
 		}
 		else if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(HitComp))

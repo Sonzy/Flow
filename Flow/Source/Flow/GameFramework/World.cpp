@@ -76,9 +76,12 @@ void World::Tick(float DeltaTime)
 		_PhysicsWorld->stepSimulation(DeltaTime, 0);
 	}
 
-	for (auto& WorldObj : _WorldObjects)
 	{
-		WorldObj->Tick(DeltaTime);
+		PROFILE_CURRENT_SCOPE("Tick Objects");
+		for (auto& WorldObj : _WorldObjects)
+		{
+			WorldObj->Tick(DeltaTime);
+		}
 	}
 
 	Renderer::Submit(_Skybox);

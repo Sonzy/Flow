@@ -29,3 +29,44 @@ int BulletDebugDraw::getDebugMode() const
 {
 	return _DebugMode;
 }
+
+btIDebugDraw::DefaultColors BulletDebugDraw::getDefaultColors() const
+{
+	return _DebugColours;
+}
+
+void BulletDebugDraw::SetDebugColour(BulletDebugColour Option, Vector Colour)
+{
+	switch (Option)
+	{
+	case BulletDebugColour::Active:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::Deactivated:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::WantsDeactivation:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::DisabledDeactivation:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::DisabledSimulation:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::AABB:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	case BulletDebugColour::ContactPoint:
+		_DebugColours.m_activeObject = btVector3(Colour.X, Colour.Y, Colour.Z);
+		break;
+	default:
+		FLOW_ENGINE_ERROR("BulletDebugDraw::SetDebugColour: Case Error");
+		break;
+	}
+}
+
+btIDebugDraw::DefaultColors& BulletDebugDraw::GetDebugColours()
+{
+	return _DebugColours;
+}

@@ -20,6 +20,18 @@ Stencil::Stencil(StencilMode Mode)
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
 		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		break;
+	case StencilMode::AlwaysOnTop:
+
+		Description.DepthEnable = TRUE;
+		Description.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		Description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+
+		Description.StencilEnable = TRUE;
+		Description.StencilReadMask = 0xFF;
+
+		Description.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+		break;
 	case StencilMode::Off:
 		break;
 	}

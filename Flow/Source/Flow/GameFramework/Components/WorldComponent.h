@@ -63,4 +63,7 @@ protected:
 	Transform _RelativeTransform;
 
 	bool _Visible = true;
+
+public:
+	std::string _Tag;
 };

@@ -62,6 +62,8 @@ public:
 	LineBatcher& GetLineBatcher() const { return s_LineBatcher; };
 	static LineBatcher& GetLineBatcher_S();
 
+	BulletDebugDraw& GetPhysicsDebugDrawer() { return _DebugDrawer; }
+
 protected:
 	void InitialisePhysics();
 

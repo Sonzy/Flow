@@ -128,7 +128,7 @@ void DX11RenderAPI::BeginFrame()
 void DX11RenderAPI::EndFrame()
 {
 	HRESULT ResultHandle;
-	CATCH_ERROR_DX(_SwapChain->Present(1, 0));
+	CATCH_ERROR_DX(_SwapChain->Present(0, 0));
 
 	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
 }

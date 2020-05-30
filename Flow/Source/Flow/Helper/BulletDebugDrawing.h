@@ -4,6 +4,26 @@
 
 #include "Flow\Rendering\Core\Line.h"
 
+
+//m_activeObject(1, 1, 1),
+//m_deactivatedObject(0, 1, 0),
+//m_wantsDeactivationObject(0, 1, 1),
+//m_disabledDeactivationObject(1, 0, 0),
+//m_disabledSimulationObject(1, 1, 0),
+//m_aabb(1, 0, 0),
+//m_contactPoint(1, 1, 0)
+
+enum class BulletDebugColour
+{
+	Active,
+	Deactivated,
+	WantsDeactivation,
+	DisabledDeactivation,
+	DisabledSimulation,
+	AABB,
+	ContactPoint
+};
+
 class BulletDebugDraw : public btIDebugDraw
 {
 public:
@@ -22,5 +42,12 @@ public:
 
 	virtual int getDebugMode() const;
 
+	virtual btIDebugDraw::DefaultColors getDefaultColors() const override;
+	void SetDebugColour(BulletDebugColour Option, Vector Colour);
+	btIDebugDraw::DefaultColors& GetDebugColours();
+
 	int _DebugMode;
+
+
+	DefaultColors _DebugColours;
 };

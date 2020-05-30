@@ -72,6 +72,7 @@ private:
 	WorldComponent* _SelectedComponent;
 	Vector _SelectedComponentStartPosition;
 	float _MouseDistanceThreshold = 1.0f;
+	Vector ArrowOffset;
 
 	//= Collision ================
 

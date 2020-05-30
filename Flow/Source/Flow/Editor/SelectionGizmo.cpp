@@ -27,6 +27,10 @@ SelectionGizmo::SelectionGizmo()
 	_ArrowY = new StaticMeshComponent("_ArrowY", Meshes, Mat);
 	_ArrowZ = new StaticMeshComponent("_ArrowZ", Meshes, Mat);
 
+	_ArrowX->_Tag = "ArrowX";
+	_ArrowY->_Tag = "ArrowY";
+	_ArrowZ->_Tag = "ArrowZ";
+
 	_ArrowX->SetParentComponent(nullptr);
 	_RootComponent = _ArrowX;
 	_RootComponent->AddChild(_ArrowY);
@@ -51,9 +55,9 @@ SelectionGizmo::SelectionGizmo()
 	_ArrowY->RefreshBinds();
 	_ArrowZ->RefreshBinds();
 
-	_ArrowX->SetStencilMode(StencilMode::Write);
-	_ArrowY->SetStencilMode(StencilMode::Write);
-	_ArrowZ->SetStencilMode(StencilMode::Write);
+	_ArrowX->SetStencilMode(StencilMode::AlwaysOnTop);
+	_ArrowY->SetStencilMode(StencilMode::AlwaysOnTop);
+	_ArrowZ->SetStencilMode(StencilMode::AlwaysOnTop);
 }
 
 SelectionGizmo::~SelectionGizmo()
@@ -98,6 +102,8 @@ void SelectionGizmo::UpdateSelection()
 		return;
 
 	IntVector2D MousePosition = Input::GetMousePosition();
+	IntVector2D MouseDifference = MousePosition - _MouseLastUpdate;
+	bool Add = MouseDifference.X > 0;
 
 	if (MousePosition.Distance(_MouseLastUpdate) < _MouseDistanceThreshold)
 		return;
@@ -109,33 +115,28 @@ void SelectionGizmo::UpdateSelection()
 		AxisDirection = Vector(1.0f, 0.0f, 0.0f);
 		break;
 	case SelectedAxis::Y:
-		AxisDirection = Vector(1.0f, 1.0f, 0.0f);
+		AxisDirection = Vector(0.0f, 1.0f, 0.0f);
 		break;
 	case SelectedAxis::Z:
-		AxisDirection = Vector(1.0f, 0.0f, 1.0f);
+		AxisDirection = Vector(0.0f, 0.0f, 1.0f);
 		break;
 	}
-
 
 	//Fire a ray from the current mouse position.
 	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
 	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
 
-	// Get line coordinates for the axis we are moving
-	
 
 	//Get the closest point on the axis line to the ray
 	float AxisClosestScale;
 	float RayClosestScale;
 	Math::GetClosestDistanceBetweenLines(Ray(_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Ray(Start, Direction), AxisClosestScale, RayClosestScale);
 
+	Vector NewPosition = _SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale) + ArrowOffset;
 
-	Vector NewPosition = _SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale);
+	//Original Position + Closest point on x axis to mouse + Offset from object to arrow
 	_SelectedComponent->SetWorldPosition(NewPosition);
 	UpdatePosition(NewPosition);
-
-	//FLOW_ENGINE_LOG();
-	FLOW_ENGINE_LOG("MouseDistance: {0}", MousePosition.Distance(_MouseLastUpdate));
 
 	_MouseLastUpdate = MousePosition;
 
@@ -207,6 +208,31 @@ void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Objec
 	_SelectedComponent = Object;
 	_SelectedComponentStartPosition = Object->GetWorldPosition();
 	_MouseLastUpdate = Input::GetMousePosition();
+
+	Vector AxisDirection;
+	switch (_SelectedAxis)
+	{
+	case SelectedAxis::X:
+		AxisDirection = Vector(1.0f, 0.0f, 0.0f);
+		break;
+	case SelectedAxis::Y:
+		AxisDirection = Vector(0.0f, 1.0f, 0.0f);
+		break;
+	case SelectedAxis::Z:
+		AxisDirection = Vector(0.0f, 0.0f, 1.0f);
+		break;
+	}
+
+
+
+	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(_MouseLastUpdate.X, _MouseLastUpdate.Y);
+
+	float SelectionAxisClosestScale;
+	float RayClosestScale;
+	//Get the closest point on the selection gizmo axis to the mouse click
+	Math::GetClosestDistanceBetweenLines(Ray(_ArrowX->GetWorldPosition(), AxisDirection), Ray(Start, Direction), SelectionAxisClosestScale, RayClosestScale);
+	ArrowOffset = AxisDirection * SelectionAxisClosestScale;
 }
 
 void SelectionGizmo::OnDeselected()
