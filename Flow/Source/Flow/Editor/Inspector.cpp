@@ -4,7 +4,7 @@
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 #include "Flow\Editor\SelectionGizmo.h"
 
 #include "btBulletCollisionCommon.h"
@@ -92,7 +92,7 @@ void Inspector::RenderHeirarchy()
 
 		ImGui::Separator();
 
-		for (auto Object : _CurrentWorld->_WorldObjects)
+		for (auto Object : _CurrentWorld->_Actors)
 		{
 			if (ImGui::Button(Object->GetName().c_str()))
 			{
@@ -138,7 +138,7 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 
 	//If we hit something, if it was a world component, assign this to the focused item.
 	WorldComponent* HitComp = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer()) : nullptr;
-	WorldObject* HitObject = Ray.hasHit() ? HitComp->GetParentWorldObject() : nullptr;
+	Actor* HitObject = Ray.hasHit() ? HitComp->GetParentActor() : nullptr;
 
 	if (_FocusedItem && HitObject != _FocusedItem)
 	{
@@ -227,10 +227,13 @@ void Inspector::Update()
 {
 	_Selector->UpdateSelection();
 
+	_FocusedItemChanged = false;
+}
+
+void Inspector::Render()
+{
 	RenderInspector();
 	RenderHeirarchy();
-
-	_FocusedItemChanged = false;
 }
 
 void Inspector::DrawSelectedComponentTransform()

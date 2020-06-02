@@ -1,10 +1,10 @@
 #pragma once
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 
 class StaticMeshComponent;
 
 /* WorldObject with a single static mesh component */
-class MeshWorldObject : public WorldObject
+class MeshWorldObject : public Actor
 {
 public:
 	MeshWorldObject();

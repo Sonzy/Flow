@@ -308,6 +308,16 @@ void Application::Shutdown()
 	Application::GetApplication()._Running = false;
 }
 
+void Application::SaveLevel()
+{
+	Application::GetWorld()->Save();
+}
+
+void Application::LoadLevel()
+{
+	Application::GetWorld()->Load();
+}
+
 std::string Application::GetLocalFilePath()
 {
 	return LocalPath_;

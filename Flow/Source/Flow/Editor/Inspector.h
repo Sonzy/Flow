@@ -1,7 +1,7 @@
 #pragma once
 #include "Flow/Events/MouseEvent.h"
 
-class WorldObject;
+class Actor;
 class World;
 class SelectionGizmo;
 class WorldComponent;
@@ -15,10 +15,8 @@ public:
 
 	void BeginPlay();
 
-	void RenderInspector();
-	void RenderHeirarchy();
-
 	void Update();
+	void Render();
 
 	void SetCurrentWorld(World* WorldReference);
 	bool OnMouseClicked(MouseButtonPressedEvent& e);
@@ -33,8 +31,11 @@ public:
 
 private:
 
+	void RenderInspector();
+	void RenderHeirarchy();
+
 	World* _CurrentWorld;
-	WorldObject* _FocusedItem;
+	Actor* _FocusedItem;
 	WorldComponent* _FocusedComponent;
 	SelectionGizmo* _Selector;
 

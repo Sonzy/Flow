@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-class WorldObject;
+class Actor;
 class MeshWorldObject;
 class CameraActor;
 
@@ -22,12 +22,12 @@ public:
 
 private:
 
-	std::vector<std::shared_ptr<WorldObject>> Actors;
+	std::vector<std::shared_ptr<Actor>> Actors;
 	std::shared_ptr<PointLight> Light;
 
 	std::shared_ptr<MeshWorldObject> TestCube;
 
-	std::shared_ptr<WorldObject> Example;
+	std::shared_ptr<Actor> Example;
 
 	std::shared_ptr<MeshWorldObject> WallObj;
 	std::shared_ptr<MeshWorldObject> Base;

@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "World.h"
-#include "WorldObject.h"
+#include "Actor.h"
 
 #include "Flow\Application.h"
 
@@ -26,7 +26,47 @@ World::World(const std::string& WorldName)
 
 World::~World()
 {
-	_WorldObjects.clear();
+	_Actors.clear();
+}
+
+void World::Save()
+{
+	//Create File - Overwrite existing
+	std::ofstream OutStream = std::ofstream("Saved/SaveFile.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
+	if (!OutStream)
+	{
+		FLOW_ENGINE_LOG("Failed to create save file");
+		return;
+	}
+
+	for (auto Object : _Actors)
+	{
+		const std::string& Name = Object->GetName();
+
+		OutStream.write((char*)&Name, sizeof(Name));
+	}
+
+	OutStream.close();
+}
+
+void World::Load()
+{
+	std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
+	if (!InStream)
+	{
+		FLOW_ENGINE_LOG("Failed to load save file");
+		return;
+	}
+
+	char* StringBuffer = new char[sizeof(std::string)];
+	auto Position = InStream.tellg();
+	while (!InStream.eof())
+	{
+		InStream.read(StringBuffer, sizeof(std::string));
+		FLOW_ENGINE_LOG("Output: {0}", (std::string)StringBuffer); //TODO: Fix this shiz
+	}
+
+	delete StringBuffer;
 }
 
 void World::InitialiseWorld()
@@ -35,13 +75,13 @@ void World::InitialiseWorld()
 
 	_Skybox = new Skybox();
 
-	std::shared_ptr<PlayerController> NewLocalController = SpawnWorldObject<PlayerController>("NewLocalController");
+	std::shared_ptr<PlayerController> NewLocalController = SpawnActor<PlayerController>("NewLocalController");
 	_RegisteredControllers.push_back(NewLocalController);
 }
 
 void World::DispatchBeginPlay()
 {
-	for (auto& WorldObj : _WorldObjects)
+	for (auto& WorldObj : _Actors)
 	{
 		WorldObj->BeginPlay();
 	}
@@ -78,7 +118,7 @@ void World::Tick(float DeltaTime)
 
 	{
 		PROFILE_CURRENT_SCOPE("Tick Objects");
-		for (auto& WorldObj : _WorldObjects)
+		for (auto& WorldObj : _Actors)
 		{
 			WorldObj->Tick(DeltaTime);
 		}

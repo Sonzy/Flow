@@ -15,7 +15,7 @@ class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 
-class WorldObject;
+class Actor;
 class Skybox;
 class Controller;
 
@@ -26,15 +26,18 @@ public:
 	World(const std::string& WorldName);
 	~World();
 
+	void Save();
+	void Load();
+
 	void InitialiseWorld();
 
 	void DispatchBeginPlay();
 
 	template<typename T>
-	std::shared_ptr<T> SpawnWorldObject(const std::string& Name)
+	std::shared_ptr<T> SpawnActor(const std::string& Name)
 	{
 		std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
-		_WorldObjects.push_back(NewObject);
+		_Actors.push_back(NewObject);
 
 		return NewObject;
 	}
@@ -70,7 +73,7 @@ protected:
 private:
 	friend class Inspector;
 
-	std::vector<std::shared_ptr<WorldObject>> _WorldObjects;
+	std::vector<std::shared_ptr<Actor>> _Actors;
 	std::string _WorldName;
 
 	//=== World Physics ===

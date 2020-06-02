@@ -2,7 +2,7 @@
 #include "Flow\GameFramework\Gameobject.h"
 #include <vector>
 
-class WorldObject;
+class Actor;
 class WorldComponent;
 
 /* Base class for all components, contains attachment properties to a world object */
@@ -14,9 +14,9 @@ public:
 	virtual ~Component();
 
 	WorldComponent* GetParentComponent() const;
-	WorldObject* GetParentWorldObject() const;
+	Actor* GetParentActor() const;
 
-	void SetParent(WorldObject* Parent);
+	void SetParent(Actor* Parent);
 	void SetParentComponent(WorldComponent* Parent);
 
 	virtual void Tick(float DeltaTime) override;
@@ -25,6 +25,6 @@ public:
 
 protected:
 
-	WorldObject* _ParentObject;
+	Actor* _ParentObject;
 	WorldComponent* _AttachedComponent;
 };

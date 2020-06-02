@@ -47,10 +47,10 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 
 	InitialiseDockspace(Offset);
 
+	_Inspector->Update();
 	if (DrawEditor)
 	{
-		_Inspector->Update();
-
+		_Inspector->Render();
 		RenderApplicationDebug(FrameDeltaTime);
 
 		if (_DrawDemoWindow)

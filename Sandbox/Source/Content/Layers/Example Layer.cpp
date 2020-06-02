@@ -31,31 +31,31 @@ ExampleLayer::ExampleLayer()
 {
 	//= Create Objects in level ===========
 
-	WallObj = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Floor");
-	TestCube = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("TestCube");
+	WallObj = Application::GetWorld()->SpawnActor<MeshWorldObject>("Floor");
+	TestCube = Application::GetWorld()->SpawnActor<MeshWorldObject>("TestCube");
 
-	Crate1_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate1");
-	Crate2_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate2");
-	Crate3_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate3");
-	Crate4_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate4");
-	Crate5_ = Application::GetWorld()->SpawnWorldObject<Crate>("Crate5");
+	Crate1_ = Application::GetWorld()->SpawnActor<Crate>("Crate1");
+	Crate2_ = Application::GetWorld()->SpawnActor<Crate>("Crate2");
+	Crate3_ = Application::GetWorld()->SpawnActor<Crate>("Crate3");
+	Crate4_ = Application::GetWorld()->SpawnActor<Crate>("Crate4");
+	Crate5_ = Application::GetWorld()->SpawnActor<Crate>("Crate5");
 	
-	Chair1_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair1");
-	Chair2_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair2");
-	Chair3_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair3");
-	Chair4_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Chair4");
+	Chair1_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair1");
+	Chair2_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair2");
+	Chair3_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair3");
+	Chair4_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair4");
 	
-	Table1_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table1");
-	Table2_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Table2");
+	Table1_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Table1");
+	Table2_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Table2");
 
-	Revolver_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Revolver");
-	Blunderbuss_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Blunderbuss");
-	Shotgun_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Shotgun");
-	Rifle_ = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Rifle");
+	Revolver_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Revolver");
+	Blunderbuss_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Blunderbuss");
+	Shotgun_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Shotgun");
+	Rifle_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Rifle");
 	
-	Base = Application::GetWorld()->SpawnWorldObject<MeshWorldObject>("Base");
+	Base = Application::GetWorld()->SpawnActor<MeshWorldObject>("Base");
 
-	_CameraActor = Application::GetWorld()->SpawnWorldObject<CameraActor>("Camera Actor");
+	_CameraActor = Application::GetWorld()->SpawnActor<CameraActor>("Camera Actor");
 
 	Actors.push_back(WallObj);
 	//Actors.push_back(Example);

@@ -35,6 +35,9 @@ public:
 	static World* GetWorld();
 	static void Shutdown();
 
+	static void SaveLevel();
+	static void LoadLevel();
+
 	/* Returns path to Flow solution directory */
 	std::string GetLocalFilePath();
 	std::wstring GetLocalFilePathWide();

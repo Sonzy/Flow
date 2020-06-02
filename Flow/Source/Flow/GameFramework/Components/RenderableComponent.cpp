@@ -14,6 +14,8 @@ RenderableComponent::RenderableComponent(const std::string& Name)
 
 void RenderableComponent::BindAll()
 {
+	PROFILE_FUNCTION();
+
 	for (auto& b : _Binds)
 	{
 		b->Bind();
@@ -27,6 +29,8 @@ const IndexBuffer& RenderableComponent::GetIndexBuffer() const
 
 DirectX::XMMATRIX RenderableComponent::GetTransformXM()
 {
+	PROFILE_FUNCTION();
+
 	Transform WorldTransform = GetWorldTransform();
 	Rotator RadianRotation = Rotator::AsRadians(WorldTransform._Rotation);
 	return 	DirectX::XMMatrixScaling(WorldTransform._Scale.X, WorldTransform._Scale.Y, WorldTransform._Scale.Z) *

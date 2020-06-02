@@ -47,6 +47,8 @@ void StaticMeshComponent::Tick(float DeltaTime)
 
 	if (_Body && _SimulatePhysics)
 	{
+		PROFILE_CURRENT_SCOPE("Update Mesh Physics Position");
+
 		btVector3 Vec = _Body->getWorldTransform().getOrigin();
 
 		//Need euler YZX 
@@ -251,6 +253,8 @@ void StaticMeshComponent::SetSimulatePhysics(bool Simulate)
 
 void StaticMeshComponent::MovePhysicsBody(Transform NewTransform)
 {
+	PROFILE_FUNCTION();
+
 	btMotionState* motionState = _Body->getMotionState();
 	btTransform Transform;
 	btQuaternion Rotation;

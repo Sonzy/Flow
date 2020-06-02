@@ -17,7 +17,7 @@
 #include "Flow/Helper/Maths.h"
 
 SelectionGizmo::SelectionGizmo()
-	: WorldObject("SelectionGizmo")
+	: Actor("SelectionGizmo")
 {
 	MeshAsset* Meshes = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");
 	Material* Mat = AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial();

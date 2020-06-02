@@ -23,6 +23,12 @@ ImVec2 Toolbar::Draw()
 
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Save"))
+				Application::SaveLevel();
+
+			if (ImGui::MenuItem("Load"))
+				Application::LoadLevel();
+
 			if (ImGui::MenuItem("Quit"))
 				Application::Shutdown();
 

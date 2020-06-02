@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "Controller.h"
-#include "Flow\GameFramework\ControlledObject.h"
+#include "Flow\GameFramework\Pawn.h"
 
 Controller::Controller()
 	: Controller("Controller")
@@ -8,11 +8,11 @@ Controller::Controller()
 }
 
 Controller::Controller(const std::string& Name)
-	: WorldObject(Name), _ControlledObject(nullptr), _Camera(nullptr)
+	: Actor(Name), _ControlledObject(nullptr), _Camera(nullptr)
 {
 }
 
-void Controller::ControlObject(ControlledObject* Obj)
+void Controller::ControlObject(Pawn* Obj)
 {
 	if (_ControlledObject)
 	{
@@ -22,7 +22,7 @@ void Controller::ControlObject(ControlledObject* Obj)
 	Obj->Control(this);
 }
 
-void Controller::RemoveControl(ControlledObject* Obj)
+void Controller::RemoveControl(Pawn* Obj)
 {
 	CHECK_RETURN(!_ControlledObject, "Controller::RemoveControl: Tried to remove control when no object is being controlled");
 

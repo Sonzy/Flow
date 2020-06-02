@@ -4,7 +4,7 @@
 #include "Flow\Rendering\Core\Bindable.h"
 #include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
 #include "Flow/GameFramework/Components/WorldComponent.h"
-#include "Flow/GameFramework/WorldObject.h"
+#include "Flow/GameFramework/Actor.h"
 
 class btCollisionShape;
 class btGhostObject;
@@ -23,7 +23,7 @@ enum class SelectedAxis
 };
 
 /* Gizmo used for moving objects within the world within the editor */
-class SelectionGizmo : public WorldObject
+class SelectionGizmo : public Actor
 {
 public:
 	SelectionGizmo();

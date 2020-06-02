@@ -22,6 +22,8 @@ void CameraComponent::Update(float DeltaTime)
 
 DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
 {
+	PROFILE_FUNCTION();
+
 	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	Rotator WorldRotation = Rotator::AsRadians(GetWorldRotation());
 	Vector WorldPosition = GetWorldPosition();

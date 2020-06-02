@@ -1,13 +1,13 @@
 #pragma once
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 
 class Controller;
 
-class FLOW_API ControlledObject : public WorldObject
+class FLOW_API Pawn : public Actor
 {
 public:
-	ControlledObject();
-	ControlledObject(const std::string& Name);
+	Pawn();
+	Pawn(const std::string& Name);
 
 	void Control(Controller* NewController);
 	void RemoveControl();

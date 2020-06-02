@@ -1,11 +1,11 @@
 #pragma once
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 #include "Flow\Helper\Maths.h"
 
 class StaticMeshComponent;
 
 /* Simple wall class with physics */
-class Wall : public WorldObject
+class Wall : public Actor
 {
 public:
 	Wall();

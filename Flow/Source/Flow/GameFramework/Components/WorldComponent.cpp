@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "WorldComponent.h"
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 #include "ThirdParty\ImGui\imgui.h"
 #include "Flow\Editor\Inspector.h"
 

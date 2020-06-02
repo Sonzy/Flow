@@ -17,7 +17,7 @@ Wall::Wall()
 }
 
 Wall::Wall(const std::string& NewName)
-	: WorldObject(NewName)
+	: Actor(NewName)
 {
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Box");
 	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial();
@@ -35,7 +35,7 @@ void Wall::Tick(float DeltaTime)
 
 void Wall::InitialisePhysics()
 {
-	WorldObject::InitialisePhysics();
+	Actor::InitialisePhysics();
 
 	//WallMesh->InitialisePhysics();
 

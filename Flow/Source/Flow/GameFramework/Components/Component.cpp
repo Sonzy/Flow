@@ -20,12 +20,12 @@ WorldComponent* Component::GetParentComponent() const
 	return _AttachedComponent;
 }
 
-WorldObject* Component::GetParentWorldObject() const
+Actor* Component::GetParentActor() const
 {
 	return _ParentObject;
 }
 
-void Component::SetParent(WorldObject* Parent)
+void Component::SetParent(Actor* Parent)
 {
 	_ParentObject = Parent;
 }

@@ -1,8 +1,8 @@
 #pragma once
-#include "Flow\GameFramework\WorldObject.h"
+#include "Flow\GameFramework\Actor.h"
 #include "Flow\GameFramework\Components\StaticMeshComponent.h"
 
-class ExampleWorldObject : public WorldObject
+class ExampleWorldObject : public Actor
 {
 public:
 	ExampleWorldObject();

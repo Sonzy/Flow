@@ -1,29 +1,29 @@
 #include "Flowpch.h"
-#include "WorldObject.h"
+#include "Actor.h"
 #include "Components\WorldComponent.h"
 #include "ThirdParty\ImGui\imgui.h"
 
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 
-WorldObject::WorldObject()
+Actor::Actor()
 	: _RootComponent(nullptr)
 {
 
 }
 
-WorldObject::WorldObject(const std::string& Name)
+Actor::Actor(const std::string& Name)
 	: GameObject(Name), _RootComponent(nullptr)
 {
 }
 
-WorldObject::~WorldObject()
+Actor::~Actor()
 {
 	_RootComponent = nullptr;
-	FLOW_ENGINE_LOG("WorldObject::~WorldObject");
+	FLOW_ENGINE_LOG("Actor::~Actor");
 }
 
-void WorldObject::BeginPlay()
+void Actor::BeginPlay()
 {
 	if (CollisionEnabled())
 	{
@@ -31,19 +31,19 @@ void WorldObject::BeginPlay()
 	}
 }
 
-void WorldObject::Tick(float DeltaTime)
+void Actor::Tick(float DeltaTime)
 {
 	GameObject::Tick(DeltaTime);
 
 	if (_RootComponent)
 		_RootComponent->Tick(DeltaTime);
 }
-WorldComponent* WorldObject::GetRootComponent()
+WorldComponent* Actor::GetRootComponent()
 {
 	return _RootComponent;
 }
 
-Vector WorldObject::GetLocation()
+Vector Actor::GetLocation()
 {
 	if (!_RootComponent)
 		return Vector();
@@ -51,7 +51,7 @@ Vector WorldObject::GetLocation()
 	return _RootComponent->GetRelativePosition();
 }
 
-Vector WorldObject::GetScale()
+Vector Actor::GetScale()
 {
 	if (!_RootComponent)
 		return Vector();
@@ -59,7 +59,7 @@ Vector WorldObject::GetScale()
 	return _RootComponent->GetRelativeScale();
 }
 
-Rotator WorldObject::GetRotation()
+Rotator Actor::GetRotation()
 {
 	if (!_RootComponent)
 		return Rotator();
@@ -67,39 +67,39 @@ Rotator WorldObject::GetRotation()
 	return _RootComponent->GetRelativeRotation();
 }
 
-void WorldObject::Render()
+void Actor::Render()
 {
 	if (_RootComponent && _Visible)
 		_RootComponent->Render();
 }
 
-bool WorldObject::IsSimulatingPhysics()
+bool Actor::IsSimulatingPhysics()
 {
 	return _SimulatePhysics;
 }
 
-bool WorldObject::CollisionEnabled()
+bool Actor::CollisionEnabled()
 {
 	return _HasCollision;
 }
 
-void WorldObject::InitialisePhysics()
+void Actor::InitialisePhysics()
 {
 	_RootComponent->InitialisePhysics();
 	_SimulatePhysics ? World::GetWorld()->AddPhysicsObject(_RootComponent->GetRigidBody()) : World::GetWorld()->AddCollisionObject(_RootComponent->GetRigidBody());
 }
 
-btRigidBody* WorldObject::GetRigidBody()
+btRigidBody* Actor::GetRigidBody()
 {
 	return _RootComponent->GetRigidBody();
 }
 
-void WorldObject::DrawDetailsWindow(bool bDontUpdate)
+void Actor::DrawDetailsWindow(bool bDontUpdate)
 {
 	ImGui::Checkbox("Is Visible", &_Visible);
 }
 
-void WorldObject::SetVisibility(bool Visible)
+void Actor::SetVisibility(bool Visible)
 {
 	_Visible = Visible;
 }

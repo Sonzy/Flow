@@ -8,13 +8,13 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
 MeshWorldObject::MeshWorldObject()
-	: WorldObject("Mesh Object")
+	: Actor("Mesh Object")
 {
 }
 
 //TODO: Get rid of this lul
 MeshWorldObject::MeshWorldObject(const std::string& NewName)
-	: WorldObject(NewName)
+	: Actor(NewName)
 {
 	_SimulatePhysics = true;
 	_HasCollision = true;
@@ -32,7 +32,7 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName)
 }
 
 MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& MeshName, const std::string& MaterialName)
-	: WorldObject(NewName), MeshName(MeshName), MaterialName(MaterialName)
+	: Actor(NewName), MeshName(MeshName), MaterialName(MaterialName)
 {
 	_SimulatePhysics = true;
 	_HasCollision = true;

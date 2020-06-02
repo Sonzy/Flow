@@ -17,7 +17,7 @@ ExampleWorldObject::ExampleWorldObject()
 }
 
 ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
-	: WorldObject(NewName)
+	: Actor(NewName)
 {
 	TestMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
 	TestMesh2 = CreateComponent<StaticMeshComponent>("Test Mesh 2");
@@ -49,5 +49,5 @@ void ExampleWorldObject::Tick(float DeltaTime)
 
 void ExampleWorldObject::InitialisePhysics()
 {
-	WorldObject::InitialisePhysics();
+	Actor::InitialisePhysics();
 }

@@ -11,12 +11,12 @@
 class WorldComponent;
 class Controller;
 
-class FLOW_API WorldObject : public GameObject
+class FLOW_API Actor : public GameObject
 {
 public:
-	WorldObject();
-	WorldObject(const std::string& Name);
-	virtual ~WorldObject();
+	Actor();
+	Actor(const std::string& Name);
+	virtual ~Actor();
 
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;

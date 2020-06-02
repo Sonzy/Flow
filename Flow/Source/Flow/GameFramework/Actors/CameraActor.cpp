@@ -12,7 +12,7 @@ CameraActor::CameraActor()
 }
 
 CameraActor::CameraActor(const std::string& Name)
-	: ControlledObject(Name), CameraMovementSpeed(1.0f), CameraHorizontalRotationSpeed(0.25f), CameraVerticalRotationSpeed(0.15f)
+	: Pawn(Name), CameraMovementSpeed(1.0f), CameraHorizontalRotationSpeed(0.25f), CameraVerticalRotationSpeed(0.15f)
 {
 	_CameraComponent = CreateComponent<CameraComponent>("Camera");
 
@@ -27,6 +27,8 @@ void CameraActor::OnControlled(Controller* OwningController)
 
 void CameraActor::Tick(float DeltaTime)
 {
+	PROFILE_FUNCTION();
+
 	IntVector2D Pos = Input::GetMousePosition();
 
 	Vector Translation(0.0f);

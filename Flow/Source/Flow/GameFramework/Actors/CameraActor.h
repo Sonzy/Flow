@@ -1,9 +1,9 @@
 #pragma once
-#include "Flow/GameFramework/ControlledObject.h"
+#include "Flow/GameFramework/Pawn.h"
 
 class CameraComponent;
 
-class FLOW_API CameraActor : public ControlledObject
+class FLOW_API CameraActor : public Pawn
 {
 public:
 	CameraActor();
