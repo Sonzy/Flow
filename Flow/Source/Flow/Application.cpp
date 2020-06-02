@@ -37,8 +37,8 @@ void Application::InitialiseApplication()
 
 	Instance = this;
 
-	MainWindow_ = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
-	MainWindow_->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+	_MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
+	_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
 	ImGuiLayer_ = new ImGuiLayer();
 	PushOverlay(ImGuiLayer_);
@@ -195,8 +195,8 @@ void Application::Run()
 
 		float DeltaTime = Timer_.Mark();
 
-		MainWindow_->PreUpdate();
-		MainWindow_->OnUpdate();
+		_MainWindow->PreUpdate();
+		_MainWindow->OnUpdate();
 
 		//If the window has sent a shutdown message return immediately
 		if (!_Running)
@@ -248,7 +248,19 @@ void Application::Run()
 
 		//= Post Update =
 
-		MainWindow_->PostUpdate();
+		_MainWindow->PostUpdate();
+
+		//Bad way of delaying window destruction, can fix to do it better another time
+		_UpdatingChildWindows = true;
+		//Update other windows
+		for (auto& Window : _Windows)
+		{
+			Window->PreUpdate();
+			Window->OnUpdate();
+			Window->PostUpdate();
+		}
+		_UpdatingChildWindows = false;
+		UpdateWindowDestruction();
 	}
 
 	Instrumentor::Get().EndSession();
@@ -328,9 +340,66 @@ std::wstring Application::GetLocalFilePathWide()
 	return std::wstring(LocalPath_.begin(), LocalPath_.end());
 }
 
+Window* Application::CreateNewWindow(const std::string& WindowName)
+{
+	Application& App = Application::GetApplication();
+
+	Window* Win = Window::Create(WindowProperties(WindowName, 1280u, 720u), false);
+	App._Windows.push_back(Win);
+	return Win;
+}
+
+bool Application::RegisterWindow(Window* NewWindow)
+{
+	Application& App = Application::GetApplication();
+	App._Windows.push_back(NewWindow);
+	return true;
+}
+
+bool Application::DeRegisterWindow(Window* Win)
+{
+	Application& App = Application::GetApplication();
+	if (App._UpdatingChildWindows)
+	{
+		App._WindowsToDestroy.push_back(Win);
+		return false;
+	}
+
+	auto FindIt = std::find(App._Windows.begin(), App._Windows.end(), Win);
+
+	if (FindIt == App._Windows.end())
+	{
+		FLOW_ENGINE_WARNING("Application::DeRegisterWindow: Tried to get rid of window but failed to find it");
+		return false;
+	}
+	
+	//Remove and delete it
+	Window* FoundWin = *FindIt;
+	App._Windows.erase(FindIt);
+	delete FoundWin;
+
+	return true;
+}
+
 Window& Application::GetWindow()
 {
-	return *MainWindow_;
+	return *_MainWindow;
+}
+
+void Application::UpdateWindowDestruction()
+{
+	std::vector<Window*> WindowsRemoved;
+	for (auto& Wind : _WindowsToDestroy)
+	{
+		if (DeRegisterWindow(Wind))
+			WindowsRemoved.push_back(Wind);
+	}
+
+	//Lazy way
+	for (auto& Wind : WindowsRemoved)
+	{
+		_WindowsToDestroy.erase(std::find(_WindowsToDestroy.begin(), _WindowsToDestroy.end(), Wind));
+	}
 }
 
 

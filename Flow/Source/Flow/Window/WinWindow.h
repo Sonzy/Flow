@@ -5,12 +5,13 @@
 class WinWindow : public Window
 {
 public:
-	WinWindow(const WindowProperties& Properties);
+	WinWindow(const WindowProperties& Properties, bool MainWindow);
 	virtual ~WinWindow();
 
 	void PreUpdate() override;
 	void OnUpdate() override;
 	void PostUpdate() override;
+	virtual void Shutdown() override;
 
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
@@ -34,7 +35,7 @@ private:
 	friend class WindowClass;
 
 	virtual void Initialise(const WindowProperties& Properties);
-	virtual void Shutdown();
+
 
 	static LRESULT WINAPI HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

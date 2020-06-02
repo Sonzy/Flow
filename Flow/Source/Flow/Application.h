@@ -42,6 +42,10 @@ public:
 	std::string GetLocalFilePath();
 	std::wstring GetLocalFilePathWide();
 
+	static Window* CreateNewWindow(const std::string& WindowName);
+	static bool RegisterWindow(Window* NewWindow);
+	static bool DeRegisterWindow(Window* Window);
+
 	Window& GetWindow();
 
 	EditorLayer* GetEditor() { return EditorLayer_; };
@@ -49,13 +53,20 @@ public:
 public:
 	std::string ApplicationName;
 
+private:
+
+	void UpdateWindowDestruction();
+
 
 private:
 	friend class EditorLayer;
 	//= Application =============
 
 	static Application* Instance;
-	std::unique_ptr<Window> MainWindow_;
+	std::unique_ptr<Window> _MainWindow;
+
+	std::vector<Window*> _Windows;
+	std::vector<Window*> _WindowsToDestroy;
 
 	ImGuiLayer* ImGuiLayer_;
 	EditorLayer* EditorLayer_;
@@ -63,6 +74,7 @@ private:
 	bool _Running = true;
 	bool Paused_ = false;
 	bool DrawCollision_ = false;
+	bool _UpdatingChildWindows = false;
 
 
 	//= Game ====================

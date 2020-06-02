@@ -23,10 +23,10 @@ ImVec2 Toolbar::Draw()
 
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save"))
+			if (ImGui::MenuItem("Save (WIP)"))
 				Application::SaveLevel();
 
-			if (ImGui::MenuItem("Load"))
+			if (ImGui::MenuItem("Load (WIP)"))
 				Application::LoadLevel();
 
 			if (ImGui::MenuItem("Quit"))
@@ -36,8 +36,8 @@ ImVec2 Toolbar::Draw()
 		}
 
 
-
 		//= TOOLS ================
+
 		if (ImGui::BeginMenu("Tools"))
 		{
 			if (ImGui::MenuItem("Toggle ImGui Demo Window"))
@@ -47,11 +47,23 @@ ImVec2 Toolbar::Draw()
 			{
 				Application& App = Application::GetApplication();
 				App._DrawEditor = !App._DrawEditor;
-			}	
+			}
+
+			if (ImGui::MenuItem("Create Test Window (UNSTABLE)"))
+			{
+				Application::CreateNewWindow("Test Window");
+			}
+
+			if (ImGui::MenuItem("Collision Editor (UNSTABLE)"))
+			{
+				/* Still need to decide how to handle multiple windows. Main window flickers since the subwindows
+				call the render commands on the main window. EZ fix but havent decided how to lay out framework
+				for drawing my own stuff to each window so ill come back to it another time*/
+				_Editor->OpenCollisionEditor();
+			}
 
 			ImGui::EndMenu();
 		}
-
 
 		//= Options ================
 
@@ -66,6 +78,20 @@ ImVec2 Toolbar::Draw()
 
 				ImGui::EndMenu();
 			}
+
+			ImGui::EndMenu();
+		}
+
+		//= Game ====================
+
+		if (ImGui::BeginMenu("Game"))
+		{
+			if (ImGui::MenuItem("Play"))
+				;
+			if (ImGui::MenuItem("Pause"))
+				;
+			if (ImGui::MenuItem("Stop"))
+				;
 
 			ImGui::EndMenu();
 		}

@@ -1,6 +1,7 @@
 #pragma once
 #include "Flow/Layers/Layer.h"
 #include "Flow/Events/MouseEvent.h"
+#include "Flow/Editor/Windows/EditorWindow.h"
 
 class Inspector;
 class Toolbar;
@@ -30,6 +31,11 @@ public:
 	void SetDemoWindowVisible(bool Enabled);
 	void ToggleImGuiDemoWindow();
 
+
+
+
+	void OpenCollisionEditor();
+
 protected:
 
 	/* Create my own dockspace that takes into account the offset of the main menu bar.
@@ -40,11 +46,15 @@ protected:
 	bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
+	void UpdateCollisionEditor();
+
 	Inspector* _Inspector;
 	Toolbar* _Toolbar;
 	SelectionGizmo* _SelectionGizmo;
 	bool _DrawDemoWindow = false;
 	Application* _ApplicationPointer;
+
+	std::vector<std::shared_ptr<EditorWindow>> _EditorWindows;
 
 
 	//App Statistics

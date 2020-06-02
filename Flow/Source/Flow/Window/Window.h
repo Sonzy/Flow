@@ -30,11 +30,12 @@ public:
 
 	virtual ~Window() {};
 
-	static Window* Create(const WindowProperties& Properties);
+	static Window* Create(const WindowProperties& Properties, bool MainWindow = true);
 
 	virtual void PreUpdate() = 0;
 	virtual void OnUpdate() = 0;
 	virtual void PostUpdate() = 0;
+	virtual void Shutdown() = 0;
 
 	virtual unsigned int GetWidth() const = 0;
 	virtual unsigned int GetHeight() const = 0;
@@ -47,4 +48,6 @@ public:
 
 protected:
 	WindowProperties Props;
+
+	bool _MainWindow;
 };

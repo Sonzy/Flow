@@ -10,21 +10,24 @@
 
 #include "Flow\Application.h"
 
-Window* Window::Create(const WindowProperties& Properties)
+Window* Window::Create(const WindowProperties& Properties, bool MainWindow)
 {
-	return new WinWindow(Properties);
+	return new WinWindow(Properties, MainWindow);
 }
 
-WinWindow::WinWindow(const WindowProperties& Properties)
+WinWindow::WinWindow(const WindowProperties& Properties, bool MainWindow)
 {
 	Initialise(Properties);
+
+	_MainWindow = MainWindow;
 
 	//TODO: Clean this up, we pass in the adjusted window rect value
 	RECT rect;
 	::GetClientRect(WindowHandle, &rect);
 	IntVector2D Adj = IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
 
-	RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.X, Adj.Y);
+	if(_MainWindow)
+		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.X, Adj.Y);
 }
 
 WinWindow::~WinWindow()
@@ -76,6 +79,7 @@ void WinWindow::Initialise(const WindowProperties& Properties)
 void WinWindow::Shutdown()
 {
 	DestroyWindow(WindowHandle);
+	Application::DeRegisterWindow(this);
 }
 
 void WinWindow::PreUpdate()
@@ -255,7 +259,7 @@ LRESULT WinWindow::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
 		m_WindowData.EventCallback(*e);
 	else if (bHandled)
 	{
-		FLOW_ENGINE_ERROR("WinWindow::HandleMessages: Event was nullptr");
+		FLOW_ENGINE_ERROR("WinWindow::HandleMessages: Event was nullptr or the window has no callback assigned");
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);

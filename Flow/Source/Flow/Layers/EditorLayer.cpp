@@ -12,6 +12,8 @@
 
 #include <Psapi.h> //memory debug
 
+#include "Flow/Editor/Windows/CollisionEditor.h"
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -52,6 +54,7 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 	{
 		_Inspector->Render();
 		RenderApplicationDebug(FrameDeltaTime);
+		UpdateCollisionEditor();
 
 		if (_DrawDemoWindow)
 			ImGui::ShowDemoWindow(&_DrawDemoWindow);
@@ -97,6 +100,11 @@ void EditorLayer::ToggleImGuiDemoWindow()
 	_DrawDemoWindow = !_DrawDemoWindow;
 }
 
+void EditorLayer::OpenCollisionEditor()
+{
+	_EditorWindows.push_back(std::make_shared<CollisionEditor>());
+}
+
 bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
 	if (_Inspector)
@@ -111,6 +119,18 @@ bool EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 		return _Inspector->OnMouseReleased(e);
 
 	return false;
+}
+
+void EditorLayer::UpdateCollisionEditor()
+{
+	//if (!_CollisionWindowOpen)
+	//	return;
+	
+	//if(ImGui::Begin("Collision Editor", &_CollisionWindowOpen))
+	//{
+	//
+	//}
+	//ImGui::End();
 }
 
 void EditorLayer::InitialiseDockspace(ImVec2 Offset)
