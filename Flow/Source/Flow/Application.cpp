@@ -10,8 +10,12 @@
 
 #include "Flow\GameFramework\World.h"
 
+#if WITH_EDITOR
+
 #include "Flow\Editor\Inspector.h"
 #include "Flow\Layers\EditorLayer.h"
+
+#endif
 
 //TODO: Load somewhere else
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
@@ -22,7 +26,7 @@
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
-Application* Application::Instance = nullptr;
+Application* Application::s_Instance = nullptr;
 
 Application::Application(const std::string& AppName)
 	: ApplicationName(AppName)
@@ -35,7 +39,7 @@ void Application::InitialiseApplication()
 	Instrumentor::Get().BeginSession("Application Startup", "Saved/Profiling-Startup.json");
 	PROFILE_FUNCTION();
 
-	Instance = this;
+	s_Instance = this;
 
 	_MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
 	_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
@@ -51,14 +55,8 @@ void Application::InitialiseApplication()
 
 	//TODO: Load assets somewhere
 	//= Models =
-	//AssetSystem::LoadAsset("Box2", "Flow/Assets/Models/Box2.obj");
+
 	AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
-	////AssetSystem::LoadAsset("WeirdBox", "Flow/Assets/Models/WeirdBox.obj"); 
-	//AssetSystem::LoadAsset("Hat_FancyMan", "Flow/Assets/Models/Hat_FancyMan.obj");
-	////AssetSystem::LoadAsset("Plane", "Flow/Assets/Models/Plane.obj");
-	////AssetSystem::LoadAsset("Train", "Flow/Assets/Models/Train.FBX");
-	//AssetSystem::LoadAsset("Hat_Sherif", "Flow/Assets/Models/Hat_Sherif.obj");
-	//AssetSystem::LoadAsset("Sphere", "Flow/Assets/Models/Sphere.obj");
 	AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
 	AssetSystem::LoadAsset("Wabble_Crate", "Flow/Assets/Models/Wabble_Crate.obj");
 	AssetSystem::LoadAsset("Wabble_Chair", "Flow/Assets/Models/Wabble_Chair.obj");
@@ -90,16 +88,13 @@ void Application::InitialiseApplication()
 	AssetSystem::GetAsset<MeshAsset>("Wabble_Crate")->GetMesh(0)->_CollisionName = "Wabble_Crate_Collision";
 
 	//= Textures =
-	//AssetSystem::LoadAsset("ExampleRed", "Flow/Assets/Textures/ExampleRed.png");
-	//AssetSystem::LoadAsset("TestTexture", "Flow/Assets/Textures/TestTexture.png");
-	//AssetSystem::LoadAsset("TestTextureFlip", "Flow/Assets/Textures/TestTextureFlip.png");
-	//AssetSystem::LoadAsset("CharacterTexture", "Flow/Assets/Textures/CharacterTexture.png"); 
+
 	AssetSystem::LoadAsset("Wabble_Props", "Flow/Assets/Textures/Wabble_Props.png");
 	AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png");
 	AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png");
 	AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png");
 	AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png");
-	//AssetSystem::LoadAsset("TrainTex", "Flow/Assets/Textures/TrainTexture.png"); 
+
 
 	//= Shaders =
 	AssetSystem::LoadAsset("TexturedLightVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
@@ -154,12 +149,18 @@ void Application::InitialiseApplication()
 	SkyMat->SetPixelShader("TexturedPS");
 	SkyMat->SetVertexShader("TexturedVS");
 
-
-	//Create the game world
-	GameWorld_ = new World("Game World");
+#if WITH_EDITOR
+	//Create the editor
 	EditorLayer_ = new EditorLayer();
 
+#endif
+	//Create the game world
+	GameWorld_ = new World("Game World");
+
+#if WITH_EDITOR
 	PushLayer(EditorLayer_);
+
+#endif
 }
 
 Application::~Application()
@@ -177,11 +178,13 @@ void Application::Run()
 
 		GameWorld_->InitialiseWorld();
 
-		for (Layer* layer : LayerStack_)
-		{
-			layer->BeginPlay();
-		}
-		GameWorld_->DispatchBeginPlay();
+#if WITH_EDITOR
+		GameWorld_->StartEditor();
+#else
+		StartGame();
+#endif // WITH_EDITOR
+
+
 
 		Timer_.Mark(); // Reset timer to avoid a long initial deltatime
 	}
@@ -241,7 +244,11 @@ void Application::Run()
 			ImGuiLayer_->Begin();
 			for (Layer* layer : LayerStack_)
 			{
+#if WITH_EDITOR
 				layer->OnImGuiRender(_DrawEditor);
+#else
+				layer->OnImGuiRender(false);
+#endif
 			}
 			ImGuiLayer_->End();
 		}
@@ -307,12 +314,12 @@ bool Application::OnWindowResized(WindowResizedEvent& e)
 
 Application& Application::GetApplication()
 {
-	return *Instance;
+	return *s_Instance;
 }
 
 World* Application::GetWorld()
 {
-	return Instance->GameWorld_;
+	return s_Instance->GameWorld_;
 }
 
 void Application::Shutdown()
@@ -384,6 +391,40 @@ bool Application::DeRegisterWindow(Window* Win)
 Window& Application::GetWindow()
 {
 	return *_MainWindow;
+}
+
+void Application::StartGame()
+{
+	Application& App = Application::GetApplication();
+
+	if (App.GameWorld_->GetWorldState() == WorldState::InGame)
+		return;
+
+	for (Layer* layer : App.LayerStack_)
+	{
+		layer->BeginPlay();
+	}
+	App.GameWorld_->StartGame();
+}
+
+void Application::PauseGame()
+{
+	Application& App = Application::GetApplication();
+
+	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
+		return;
+
+	App.GameWorld_->PauseGame();
+}
+
+void Application::StopGame()
+{
+	Application& App = Application::GetApplication();
+
+	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
+		return;
+
+	App.GameWorld_->StopGame();
 }
 
 void Application::UpdateWindowDestruction()

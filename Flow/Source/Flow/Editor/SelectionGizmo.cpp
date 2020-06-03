@@ -86,6 +86,10 @@ void SelectionGizmo::GenerateCollision()
 	GenerateCollisionData(_ArrowX, _XCollision, _XGhost);
 	GenerateCollisionData(_ArrowY, _YCollision, _YGhost);
 	GenerateCollisionData(_ArrowZ, _ZCollision, _ZGhost);
+
+	_XGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
+	_YGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
+	_ZGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
 }
 
 void SelectionGizmo::InitialisePhysics()
@@ -99,7 +103,12 @@ void SelectionGizmo::InitialisePhysics()
 void SelectionGizmo::UpdateSelection()
 {
 	if (_SelectedAxis == SelectedAxis::None)
+	{
+		if (_SelectedComponent)
+			UpdatePosition(_SelectedComponent->GetWorldPosition());
+			
 		return;
+	}
 
 	IntVector2D MousePosition = Input::GetMousePosition();
 	IntVector2D MouseDifference = MousePosition - _MouseLastUpdate;
@@ -202,6 +211,13 @@ void SelectionGizmo::AddCollidersToWorld(World* World)
 	World->AddCollisionObject(_ZGhost);
 }
 
+void SelectionGizmo::RemoveCollidersFromWorld(World* World)
+{
+	World::GetPhysicsWorld()->removeCollisionObject(_XGhost);
+	World::GetPhysicsWorld()->removeCollisionObject(_YGhost);
+	World::GetPhysicsWorld()->removeCollisionObject(_ZGhost);
+}
+
 void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object)
 {
 	_SelectedAxis = SelectedAxis;
@@ -235,8 +251,17 @@ void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Objec
 	ArrowOffset = AxisDirection * SelectionAxisClosestScale;
 }
 
+void SelectionGizmo::OnNewComponentSelected(WorldComponent* Object)
+{
+	_SelectedComponent = Object;
+}
+
 void SelectionGizmo::OnDeselected()
 {
+	//Update the bounding box since it isnt done when we move the rigidbody
+	if(_SelectedComponent)
+		_SelectedComponent->UpdateAABB();
+
 	_SelectedAxis = SelectedAxis::None;
 }
 

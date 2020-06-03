@@ -16,8 +16,8 @@ MeshWorldObject::MeshWorldObject()
 MeshWorldObject::MeshWorldObject(const std::string& NewName)
 	: Actor(NewName)
 {
-	_SimulatePhysics = true;
-	_HasCollision = true;
+	//_SimulatePhysics = true;
+	//_HasCollision = true;
 
 	//Initialise Components
 	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
@@ -34,8 +34,8 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName)
 MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& MeshName, const std::string& MaterialName)
 	: Actor(NewName), MeshName(MeshName), MaterialName(MaterialName)
 {
-	_SimulatePhysics = true;
-	_HasCollision = true;
+	//_SimulatePhysics = true;
+	//_HasCollision = true;
 
 	//Initialise Components
 	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
@@ -45,7 +45,7 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& 
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>(MeshName);
 	Material* Material = AssetSystem::GetAsset<MaterialAsset>(MaterialName)->GetMaterial();
 	MeshComponent->InitialiseComponent(Mesh, Material);
-	MeshComponent->SetSimulatePhysics(_SimulatePhysics);
+	//MeshComponent->SetSimulatePhysics(_SimulatePhysics);
 	//MeshComponent->InitialisePhysics();
 }
 

@@ -25,10 +25,22 @@ Actor::~Actor()
 
 void Actor::BeginPlay()
 {
-	if (CollisionEnabled())
+	if (!_RootComponent)
 	{
-		InitialisePhysics();
+		FLOW_ENGINE_WARNING("Actor::BeginPlay: Actor ' {0} ' has no root component", GetName());
+		return;
 	}
+	_RootComponent->BeginPlay();
+}
+
+void Actor::EditorBeginPlay()
+{
+	if (!_RootComponent)
+	{
+		FLOW_ENGINE_WARNING("Actor::EditorBeginPlay: Actor ' {0} ' has no root component", GetName());
+		return;
+	}
+	_RootComponent->EditorBeginPlay();
 }
 
 void Actor::Tick(float DeltaTime)
@@ -75,23 +87,12 @@ void Actor::Render()
 
 bool Actor::IsSimulatingPhysics()
 {
-	return _SimulatePhysics;
+	return _RootComponent ? _RootComponent->IsSimulatingPhysics() : false;
 }
 
 bool Actor::CollisionEnabled()
 {
-	return _HasCollision;
-}
-
-void Actor::InitialisePhysics()
-{
-	_RootComponent->InitialisePhysics();
-	_SimulatePhysics ? World::GetWorld()->AddPhysicsObject(_RootComponent->GetRigidBody()) : World::GetWorld()->AddCollisionObject(_RootComponent->GetRigidBody());
-}
-
-btRigidBody* Actor::GetRigidBody()
-{
-	return _RootComponent->GetRigidBody();
+	return _RootComponent ? _RootComponent->HasCollision() : false;
 }
 
 void Actor::DrawDetailsWindow(bool bDontUpdate)

@@ -19,12 +19,9 @@ public:
 
 	const IndexBuffer& GetIndexBuffer() const;
 
-	virtual DirectX::XMMATRIX GetTransformXM();
+	virtual DirectX::XMMATRIX GetTransformXM() const;
 
 protected:
-
-
-
 
 	virtual void RefreshBinds();
 

@@ -27,7 +27,7 @@ const IndexBuffer& RenderableComponent::GetIndexBuffer() const
 	return *_IndexBuffer;
 }
 
-DirectX::XMMATRIX RenderableComponent::GetTransformXM()
+DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 {
 	PROFILE_FUNCTION();
 

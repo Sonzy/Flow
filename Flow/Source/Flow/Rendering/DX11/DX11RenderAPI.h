@@ -37,6 +37,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Device> _Device = nullptr;
 
+#if WITH_EDITOR
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> _EditorRenderTexture = nullptr;
+#endif
+
 	/* Debug interfaces */
 	//Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
 	//Microsoft::WRL::ComPtr<ID3D11Debug> Debug2 = nullptr;

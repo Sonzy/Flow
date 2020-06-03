@@ -86,30 +86,34 @@ void Inspector::RenderInspector()
 
 void Inspector::RenderHeirarchy()
 {
-	if (ImGui::Begin("Heirarchy"))
+	if (ImGui::Begin("Scene Heirarchy"))
 	{
 		ImGui::Text(std::string("Level: " + _CurrentWorld->GetName()).c_str());
 
 		ImGui::Separator();
 
-		for (auto Object : _CurrentWorld->_Actors)
+		for (auto Object : _CurrentWorld->GetActors())
 		{
-			if (ImGui::Button(Object->GetName().c_str()))
-			{
-				if (_FocusedItem)
-				{
-					if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
-						Comp->EnableOutlineDrawing(false);
-				}
+			bool NodeOpen = ImGui::TreeNode(Object->GetName().c_str());
 
-				//TODO: Select object on click
+			if (ImGui::IsItemClicked())
+			{
 				_FocusedItem = Object.get();
 				_FocusedItemChanged = true;
 				_FocusedComponent = _FocusedItem->GetRootComponent();
 
-				if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedItem->GetRootComponent()))
-					Comp->EnableOutlineDrawing(true);
+				//TODO: Make select obj function
+				if (!_Selector->IsVisible())
+				{
+					_Selector->AddCollidersToWorld(World::GetWorld());
+					_Selector->SetVisibility(true);
+				}
+				_Selector->OnNewComponentSelected(Object->GetRootComponent());
+				_Selector->UpdatePosition(Object->GetLocation());
 			}
+
+			if(NodeOpen)
+				ImGui::TreePop();
 		}
 	}
 	ImGui::End();
@@ -184,18 +188,32 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 			Comp->EnableOutlineDrawing(true);
 	}
 
+	//If we have not hit anything, reset the selector
 	if (!_FocusedItem)
 	{
 		_FocusedComponent = nullptr;
-		_Selector->SetVisibility(false);
+
 		_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
 		_Selector->OnDeselected();
+		_Selector->OnNewComponentSelected(nullptr);
+
+		if (_Selector->IsVisible())
+		{
+			_Selector->RemoveCollidersFromWorld(World::GetWorld());
+			_Selector->SetVisibility(false);
+		}
+
 	}
-	//If we have not hit anything, reset the selector
 	else
 	{
+		if (!_Selector->IsVisible())
+		{
+			_Selector->AddCollidersToWorld(World::GetWorld());
+			_Selector->SetVisibility(true);
+		}
+		_Selector->OnNewComponentSelected(HitComp);
 		_Selector->UpdatePosition(HitObject->GetLocation());
-		_Selector->SetVisibility(true);
+
 	}
 
 

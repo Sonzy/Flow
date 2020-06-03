@@ -4,19 +4,49 @@
 #include "ThirdParty\ImGui\imgui.h"
 #include "Flow\Editor\Inspector.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+#include "Flow/Physics/MotionState.h"
+
+#include "Flow/GameFramework/World.h"
+
 WorldComponent::WorldComponent()
-	: Component("Unnamed WorldComponent"), _ParentComponent(nullptr)
+	: WorldComponent("Unnamed WorldComponent")
 {
 }
 
 WorldComponent::WorldComponent(const std::string& Name)
-	: Component(Name), _ParentComponent(nullptr)
+	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), _CollisionShape(nullptr),
+	_MotionState(nullptr)
 {
+	int b = 5;
 }
 
 WorldComponent::~WorldComponent()
 {
 	_Children.clear();
+
+	delete _RigidBody;
+	delete _CollisionShape;
+	delete _MotionState;
+}
+
+#if WITH_EDITOR
+void WorldComponent::EditorBeginPlay()
+{
+	for (auto& Child : _Children)
+	{
+		Child->EditorBeginPlay();
+	}
+}
+#endif
+
+void WorldComponent::BeginPlay()
+{
+	for (auto& Child : _Children)
+	{
+		Child->BeginPlay();
+	}
 }
 
 void WorldComponent::Tick(float DeltaTime)
@@ -73,6 +103,27 @@ void WorldComponent::SetWorldPosition(Vector NewPosition)
 	}
 
 	_RelativeTransform._Position = NewPosition - CurrentParentWorld;
+
+	// Update the physics transform. Data isnt grabbed from the motion state at runtime unless object is kinematic
+	if (_RigidBody)
+	{
+		btTransform NewTransform;
+		//We assume that the object is the root component
+		NewTransform.setOrigin(btVector3(_RelativeTransform._Position.X, _RelativeTransform._Position.Y, _RelativeTransform._Position.Z));
+
+		//Convert to radians for now, need to do rotations better lul
+		btQuaternion Rotation;
+		Rotator RadiansRotation = Rotator::AsRadians(_RelativeTransform._Rotation);
+		Rotation.setEuler(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
+		NewTransform.setRotation(Rotation);
+
+
+		_RigidBody->setWorldTransform(NewTransform);
+		//_RigidBody->clearForces();
+		//_RigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+		_RigidBody->activate();
+	}
+
 }
 
 void WorldComponent::SetRelativePosition(Vector NewPosition)
@@ -170,15 +221,6 @@ void WorldComponent::SetRelativeTransform(Transform NewTransform)
 	_RelativeTransform = NewTransform;
 }
 
-void WorldComponent::InitialisePhysics()
-{
-}
-
-btRigidBody* WorldComponent::GetRigidBody()
-{
-	return nullptr;
-}
-
 void WorldComponent::Render()
 {
 	for (auto Child : _Children)
@@ -246,6 +288,75 @@ void WorldComponent::SetVisibility(bool Visible)
 bool WorldComponent::IsVisible() const
 {
 	return _Visible;
+}
+
+void WorldComponent::InitialisePhysics()
+{
+}
+
+void WorldComponent::DestroyPhysics()
+{
+}
+
+void WorldComponent::CreateRigidBody()
+{
+	//Convert transform into BT Quaternion
+	btQuaternion Rotation;
+	Rotator Rot = Rotator::AsRadians(GetWorldRotation());
+	Vector Pos = GetWorldPosition();
+	Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
+
+	//Setup the motion state
+	btVector3 Position = btVector3(Pos.X, Pos.Y, Pos.Z);
+	//FOR NOW WE ASSUME THAT THE PHYSICS COMPONENT IS THE ROOT COMPONENT
+	MotionState* motionState = new MotionState(&_RelativeTransform._Position, &_RelativeTransform._Rotation);
+
+	//Initialise the mass and intertia values
+	btScalar bodyMass = _SimulatePhysics ? 20.0f : 0.0f;
+	btVector3 bodyInertia;
+	_CollisionShape->calculateLocalInertia(bodyMass, bodyInertia);
+
+	//Create the construction info for the body
+	btRigidBody::btRigidBodyConstructionInfo bodyCI =
+		btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, _CollisionShape, bodyInertia);
+	bodyCI.m_restitution = 0.4f;
+	bodyCI.m_friction = 0.5f;
+	bodyCI.m_rollingFriction = 0.2f;
+	bodyCI.m_spinningFriction = 0.3f;
+
+	_RigidBody = new btRigidBody(bodyCI);
+	_RigidBody->setUserPointer(this);
+}
+
+void WorldComponent::UpdateAABB()
+{
+	if(_RigidBody)
+		World::GetPhysicsWorld()->updateSingleAabb(_RigidBody);
+}
+
+btRigidBody* WorldComponent::GetRigidBody() const
+{
+	return _RigidBody;
+}
+
+btCollisionShape* WorldComponent::GetCollisionShape() const
+{
+	return _CollisionShape;
+}
+
+void WorldComponent::SetSimulatePhysics(bool Simulate)
+{
+	_SimulatePhysics = Simulate;
+}
+
+bool WorldComponent::IsSimulatingPhysics() const
+{
+	return _SimulatePhysics;
+}
+
+bool WorldComponent::HasCollision() const
+{
+	return _CollisionShape;
 }
 
 

@@ -19,6 +19,9 @@ public:
 	virtual ~Actor();
 
 	virtual void BeginPlay();
+#if WITH_EDITOR
+	virtual void EditorBeginPlay();
+#endif
 	virtual void Tick(float DeltaTime) override;
 
 	WorldComponent* GetRootComponent();
@@ -32,12 +35,11 @@ public:
 	bool IsSimulatingPhysics();
 	bool CollisionEnabled();
 
-	virtual void InitialisePhysics();
-	btRigidBody* GetRigidBody();
-
 	virtual void DrawDetailsWindow(bool bDontUpdate) override;
 
 	void SetVisibility(bool Visible);
+
+	bool IsTickEnabled() { return _TickEnabled; }
 
 protected:
 
@@ -57,16 +59,15 @@ protected:
 
 	WorldComponent* _RootComponent;
 
-	//= Physics ===================
-
-	bool _SimulatePhysics = false;
-	bool _HasCollision = false;
 	int  _Tag;
 	bool _Visible = true;
 
-
 	//= Controller
-
 	Controller* _CurrentController;
 
+protected:
+	friend class Level;
+
+	/* This only works in the constructor of a spawned actor, */
+	bool _TickEnabled = true;
 };

@@ -11,7 +11,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void InitialisePhysics() override;
+	//virtual void InitialisePhysics() override;
 
 protected:
 

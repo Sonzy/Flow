@@ -45,11 +45,14 @@ public:
 	[[nodiscard]] Vector GetPosition()  const;
 
 	void SetVisibility(bool Visible);
+	bool IsVisible() const { return _Visible; }
 
 	/* Adds the collision data to the physics world. */
-	void AddCollidersToWorld(World* World);
+	void AddCollidersToWorld(World* World);	
+	void RemoveCollidersFromWorld(World* World);	
 
 	void OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object);
+	void OnNewComponentSelected(WorldComponent* Object);
 	void OnDeselected();
 
 	SelectedAxis GetSelectedAxis() const { return _SelectedAxis; }

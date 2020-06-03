@@ -176,15 +176,28 @@ ExampleLayer::ExampleLayer()
 	Base->GetRootComponent()->SetWorldScale(Vector(4.0f, 0.1f, 2.0f));
 	WallObj->GetRootComponent()->SetRelativeScale(Vector(20.0f, 1.0f, 10.0f));
 
-	Chair1_->InitPhysics(false);
-	Chair2_->InitPhysics(false);
-	Chair3_->InitPhysics(false);
-	Chair4_->InitPhysics(false);
+	Base->GetRootComponent()->SetSimulatePhysics(false);
+	WallObj->GetRootComponent()->SetSimulatePhysics(false);
+	TestCube->GetRootComponent()->SetSimulatePhysics(true);
 
-	Revolver_->InitPhysics(true);
-	Shotgun_->InitPhysics(true);
-	Blunderbuss_->InitPhysics(true);
-	Rifle_->InitPhysics(true);
+	Crate1_->GetRootComponent()->SetSimulatePhysics(true);
+	Crate2_->GetRootComponent()->SetSimulatePhysics(true);
+	Crate3_->GetRootComponent()->SetSimulatePhysics(true);
+	Crate4_->GetRootComponent()->SetSimulatePhysics(true);
+	Crate5_->GetRootComponent()->SetSimulatePhysics(true);
+
+	Chair1_->GetRootComponent()->SetSimulatePhysics(true);
+	Chair2_->GetRootComponent()->SetSimulatePhysics(true);
+	Chair3_->GetRootComponent()->SetSimulatePhysics(true);
+	Chair4_->GetRootComponent()->SetSimulatePhysics(true);
+
+	Table1_->GetRootComponent()->SetSimulatePhysics(true);
+	Table2_->GetRootComponent()->SetSimulatePhysics(true);
+
+	Revolver_->GetRootComponent()->SetSimulatePhysics(true);
+	Shotgun_->GetRootComponent()->SetSimulatePhysics(true);
+	Blunderbuss_->GetRootComponent()->SetSimulatePhysics(true);
+	Rifle_->GetRootComponent()->SetSimulatePhysics(true);
 }
 
 ExampleLayer::~ExampleLayer()

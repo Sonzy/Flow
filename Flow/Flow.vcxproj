@@ -119,6 +119,7 @@
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
+    <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
     <ClInclude Include="Source\Flow\Editor\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\Toolbar.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\SkyboxComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Pawn.h" />
@@ -164,6 +166,7 @@
     <ClInclude Include="Source\Flow\Layers\LayerStack.h" />
     <ClInclude Include="Source\Flow\Logging\Log.h" />
     <ClInclude Include="Source\Flow\Layers\Layer.h" />
+    <ClInclude Include="Source\Flow\Physics\MotionState.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
@@ -298,6 +301,7 @@
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
+    <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\Toolbar.cpp" />
@@ -316,6 +320,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Pawn.cpp" />
@@ -335,6 +340,7 @@
     <ClCompile Include="Source\Flow\Layers\LayerStack.cpp" />
     <ClCompile Include="Source\Flow\Logging\Log.cpp" />
     <ClCompile Include="Source\Flow\Layers\Layer.cpp" />
+    <ClCompile Include="Source\Flow\Physics\MotionState.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.cpp" />

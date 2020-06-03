@@ -11,12 +11,22 @@ CameraComponent::CameraComponent(const std::string& Name)
 	: WorldComponent(Name)
 {
 	_Projection = DirectX::XMMATRIX();
-	_FieldOfView = Math::DegreesToRadians(90.0f);
+	_FieldOfView = 90.0f;
 }
 
 void CameraComponent::Update(float DeltaTime)
 {
 
+}
+
+void CameraComponent::MoveCamera(const Transform& NewTransform)
+{
+	_RelativeTransform = NewTransform;
+}
+
+Transform CameraComponent::GetCameraTransform() const
+{
+	return _RelativeTransform;
 }
 
 

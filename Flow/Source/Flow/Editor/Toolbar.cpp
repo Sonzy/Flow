@@ -13,6 +13,7 @@ Toolbar::Toolbar(EditorLayer* EditorPointer)
 
 ImVec2 Toolbar::Draw()
 {
+#if WITH_EDITOR
 	ImVec2 MenuSize;
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -87,11 +88,11 @@ ImVec2 Toolbar::Draw()
 		if (ImGui::BeginMenu("Game"))
 		{
 			if (ImGui::MenuItem("Play"))
-				;
+				Application::StartGame();
 			if (ImGui::MenuItem("Pause"))
-				;
-			if (ImGui::MenuItem("Stop"))
-				;
+				Application::PauseGame();
+			if (ImGui::MenuItem("Stop (WIP)"))
+				Application::StopGame();
 
 			ImGui::EndMenu();
 		}
@@ -104,6 +105,9 @@ ImVec2 Toolbar::Draw()
 		DrawBulletColourConfig();
 
 	return MenuSize;
+#endif
+
+	return ImVec2(0, 0);
 }
 
 void Toolbar::DrawBulletColourConfig()

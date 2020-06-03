@@ -7,6 +7,7 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Flow\Helper\BulletDebugDrawing.h"
+#include "Flow/GameFramework/Level.h"
 #include "Flow/Rendering/Core/DebugDrawing/LineBatcher.h"
 
 class btDefaultCollisionConfiguration;
@@ -19,6 +20,13 @@ class Actor;
 class Skybox;
 class Controller;
 
+enum class WorldState
+{
+	Paused,
+	Editor,
+	InGame
+};
+
 class FLOW_API World
 {
 public:
@@ -30,14 +38,15 @@ public:
 	void Load();
 
 	void InitialiseWorld();
-
-	void DispatchBeginPlay();
+#if WITH_EDITOR
+	void StartEditor();
+#endif
 
 	template<typename T>
 	std::shared_ptr<T> SpawnActor(const std::string& Name)
 	{
 		std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
-		_Actors.push_back(NewObject);
+		_MainLevel->GetActors().push_back(NewObject);
 
 		return NewObject;
 	}
@@ -67,14 +76,27 @@ public:
 
 	BulletDebugDraw& GetPhysicsDebugDrawer() { return _DebugDrawer; }
 
+	std::vector<std::shared_ptr<Actor>>& GetActors() { return _MainLevel->GetActors(); }
+
+protected:
+	friend class Application;
+	void StartGame();
+	void PauseGame();
+	void StopGame();
+
+	WorldState GetWorldState() const { return _WorldState; }
+
 protected:
 	void InitialisePhysics();
 
 private:
 	friend class Inspector;
 
-	std::vector<std::shared_ptr<Actor>> _Actors;
 	std::string _WorldName;
+
+	Level* _MainLevel;
+
+	WorldState _WorldState;
 
 	//=== World Physics ===
 
@@ -88,15 +110,18 @@ private:
 	btSequentialImpulseConstraintSolver* _Solver;
 	btDiscreteDynamicsWorld* _PhysicsWorld;
 
-
 	//= Debug ===
 
 	BulletDebugDraw _DebugDrawer;
-
 	static LineBatcher s_LineBatcher;
 
 	//= Other =======
-	Skybox* _Skybox;
+
+	//= Editor =========
+
+#if WITH_EDITOR
+	 std::shared_ptr<class EditorCamera> _EditorCam;
+#endif
 
 	//= Controllers =======
 

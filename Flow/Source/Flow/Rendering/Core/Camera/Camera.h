@@ -10,6 +10,8 @@ public:
 	virtual void SetProjectionMatrix(DirectX::XMMATRIX NewProjection);
 
 	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const = 0;
+	virtual void MoveCamera(const Transform& NewTransform) = 0;
+	virtual Transform GetCameraTransform() const = 0;
 
 
 	//TODO: Not sure whether to keep this here

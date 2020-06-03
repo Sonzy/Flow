@@ -3,6 +3,8 @@
 #include "Flow\Helper\Maths.h"
 
 class btRigidBody;
+class btCollisionShape;
+class MotionState;
 
 class FLOW_API WorldComponent : public Component
 {
@@ -11,6 +13,10 @@ public:
 	WorldComponent(const std::string& Name);
 	virtual ~WorldComponent();
 
+#if WITH_EDITOR
+	virtual void EditorBeginPlay() override;
+#endif
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	void AddChild(WorldComponent* Child);
@@ -37,10 +43,6 @@ public:
 	void SetWorldTransform(Transform NewTransform);
 	void SetRelativeTransform(Transform NewTransform);
 
-	virtual void InitialisePhysics();
-	virtual btRigidBody* GetRigidBody();
-
-
 	virtual void Render();
 
 	Vector* GetWriteablePosition();
@@ -55,6 +57,20 @@ public:
 	void SetVisibility(bool Visible);
 	bool IsVisible() const;
 
+	//= Physics =====
+
+	virtual void InitialisePhysics();
+	virtual void DestroyPhysics();
+	void CreateRigidBody();
+	void UpdateAABB();
+
+	btRigidBody* GetRigidBody() const;
+	btCollisionShape* GetCollisionShape() const;
+
+	void SetSimulatePhysics(bool Simulate);
+	bool IsSimulatingPhysics() const;
+	bool HasCollision() const;
+
 protected:
 
 	std::vector<WorldComponent*> _Children;
@@ -63,6 +79,13 @@ protected:
 	Transform _RelativeTransform;
 
 	bool _Visible = true;
+
+	//= Physics ========
+
+	bool _SimulatePhysics;
+	btRigidBody* _RigidBody;
+	btCollisionShape* _CollisionShape;
+	MotionState* _MotionState;
 
 public:
 	std::string _Tag;

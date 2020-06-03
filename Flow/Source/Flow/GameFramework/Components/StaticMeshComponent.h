@@ -19,6 +19,10 @@ public:
 
 	void InitialiseComponent(MeshAsset* Mesh, Material* Material);
 	virtual void Tick(float DeltaTime) override;
+#if WITH_EDITOR
+	virtual void EditorBeginPlay() override;
+#endif
+	virtual void BeginPlay() override;
 
 	void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
 	void SetStaticMesh(const std::string& MeshName);
@@ -29,7 +33,7 @@ public:
 	/* Renderable Component Interface */
 
 	virtual void RefreshBinds() override;
-	virtual DirectX::XMMATRIX GetTransformXM() override;
+	virtual DirectX::XMMATRIX GetTransformXM() const override;
 
 
 	//Temp - TODO: Actually use component movement for rendering
@@ -44,16 +48,11 @@ public:
 
 	/* Generates new collision from the mesh */
 	void GenerateCollision();
-	void CreateRigidBody();
 
 	virtual void InitialisePhysics() override;
-	virtual btRigidBody* GetRigidBody() override;
-
-	void SetSimulatePhysics(bool Simulate);
-
-
+	virtual void DestroyPhysics() override;
 	//TODO: Temp movement with rigidbodies
-	void MovePhysicsBody(Transform NewTransform);
+	//void MovePhysicsBody(Transform NewTransform);
 
 	void SetStencilMode(StencilMode NewMode);
 
@@ -65,9 +64,6 @@ protected:
 
 	Mesh* _StaticMesh;
 	Material* _Material;
-
-	btCollisionShape* _Collision;
-	btRigidBody* _Body;
 
 	StencilMode _StencilMode;
 

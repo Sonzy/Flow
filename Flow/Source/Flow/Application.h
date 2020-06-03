@@ -48,12 +48,22 @@ public:
 
 	Window& GetWindow();
 
+#if WITH_EDITOR
 	EditorLayer* GetEditor() { return EditorLayer_; };
 	bool _DrawEditor = true;
+#else
+	EditorLayer* GetEditor() { return nullptr; };
+#endif
+
+	static void StartGame();
+	static void PauseGame();
+	static void StopGame();
+
 public:
 	std::string ApplicationName;
 
 private:
+
 
 	void UpdateWindowDestruction();
 
@@ -62,14 +72,18 @@ private:
 	friend class EditorLayer;
 	//= Application =============
 
-	static Application* Instance;
+	static Application* s_Instance;
+
 	std::unique_ptr<Window> _MainWindow;
 
 	std::vector<Window*> _Windows;
 	std::vector<Window*> _WindowsToDestroy;
 
 	ImGuiLayer* ImGuiLayer_;
+
+#if WITH_EDITOR
 	EditorLayer* EditorLayer_;
+#endif
 
 	bool _Running = true;
 	bool Paused_ = false;

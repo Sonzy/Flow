@@ -11,6 +11,9 @@ public:
 	CameraComponent(const std::string& Name);
 
 	virtual void Update(float DeltaTime) override;
+	virtual void MoveCamera(const Transform& NewTransform) override;
+	virtual Transform GetCameraTransform() const override;
+
 
 	// === ICamera interface ===
 

@@ -26,24 +26,24 @@ Wall::Wall(const std::string& NewName)
 	WallMesh->InitialiseComponent(Mesh, Material);
 	_RootComponent = WallMesh.get();
 
-	_HasCollision = true;
+//	_HasCollision = true;
 }
 
 void Wall::Tick(float DeltaTime)
 {
 }
 
-void Wall::InitialisePhysics()
-{
-	Actor::InitialisePhysics();
-
-	//WallMesh->InitialisePhysics();
-
-	//WallMesh->MovePhysicsBody(WallMesh->GetRelativeTransform());
-}
+//void Wall::InitialisePhysics()
+//{
+//	Actor::InitialisePhysics();
+//
+//	//WallMesh->InitialisePhysics();
+//
+//	//WallMesh->MovePhysicsBody(WallMesh->GetRelativeTransform());
+//}
 
 void Wall::UpdateScale(Vector Scale)
 {
 	Transform WallTrans = WallMesh->GetRelativeTransform();
-	WallMesh->MovePhysicsBody(WallTrans);
+	//WallMesh->MovePhysicsBody(WallTrans);
 }

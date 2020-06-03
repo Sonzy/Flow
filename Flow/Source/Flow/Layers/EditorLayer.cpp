@@ -21,7 +21,6 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::BeginPlay()
 {
-	_SelectionGizmo->AddCollidersToWorld(World::GetWorld());
 	_SelectionGizmo->InitialisePhysics();
 }
 

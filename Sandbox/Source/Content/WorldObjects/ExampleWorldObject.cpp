@@ -12,8 +12,8 @@
 ExampleWorldObject::ExampleWorldObject()
 	: ExampleWorldObject("Example World Object")
 {
-	_SimulatePhysics = true;
-	_HasCollision = true;
+	//_SimulatePhysics = true;
+	//_HasCollision = true;
 }
 
 ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
@@ -47,7 +47,7 @@ void ExampleWorldObject::Tick(float DeltaTime)
 	//FLOW_LOG("TestMeshPosition: {0}", TestMesh->GetRelativeLocation());
 }
 
-void ExampleWorldObject::InitialisePhysics()
-{
-	Actor::InitialisePhysics();
-}
+//void ExampleWorldObject::InitialisePhysics()
+//{
+//	//Actor::InitialisePhysics();
+//}

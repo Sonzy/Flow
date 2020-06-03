@@ -14,7 +14,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void InitialisePhysics() override;
 
 	void UpdateScale(Vector Scale);
 

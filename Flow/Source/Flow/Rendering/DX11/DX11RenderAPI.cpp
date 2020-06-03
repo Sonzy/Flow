@@ -122,7 +122,7 @@ void DX11RenderAPI::BeginFrame()
 	Clear();
 
 	//Init Camera Projection	
-	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(_MainCamera->GetFOV(), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
 }
 
 void DX11RenderAPI::EndFrame()
@@ -193,7 +193,7 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	Viewport.TopLeftY = 0.0f;
 
 	_Context->RSSetViewports(1u, &Viewport);
-	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(_MainCamera->GetFOV(), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
 }
 
 Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
