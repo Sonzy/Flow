@@ -132,7 +132,7 @@ void StaticMeshComponent::RefreshBinds()
 	AddBind(Transform);
 	_Material->BindMaterial(this, MeshLayout);
 
-	AddBind(Rasterizer::Resolve(false));
+	AddBind(Rasterizer::Resolve(CullMode::Back));
 
 	//TODO: Temp stencil testing
 	if (_DrawOutline)

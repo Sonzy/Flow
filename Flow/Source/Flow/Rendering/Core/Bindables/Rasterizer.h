@@ -1,16 +1,23 @@
 #pragma once
 #include "Flow\Rendering\Core\Bindable.h"
 
+enum class CullMode
+{
+	None = 0,
+	Front = 2,
+	Back = 3
+};
+
 class Rasterizer : public Bindable
 {
 public:
-	Rasterizer(bool DoubleSided);
+	Rasterizer(CullMode CullMode);
 	void Bind() override;
 
-	static std::shared_ptr<Rasterizer> Resolve(bool DoubleSided);
-	static std::string GenerateUID(bool DoubleSided);
+	static std::shared_ptr<Rasterizer> Resolve(CullMode CullMode);
+	static std::string GenerateUID(CullMode CullMode);
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> _Rasterizer;
-	bool _DoubleSided;
+	CullMode _CullMode;
 };

@@ -135,6 +135,7 @@
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\SkyboxActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Blender.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h" />
@@ -317,6 +319,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Actors\SkyboxActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
@@ -343,6 +346,7 @@
     <ClCompile Include="Source\Flow\Physics\MotionState.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableCodex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BindableVertexBuffer.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Blender.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\DynamicConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\IndexBuffer.cpp" />

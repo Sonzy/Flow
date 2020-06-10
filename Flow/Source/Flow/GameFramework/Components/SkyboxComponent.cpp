@@ -7,12 +7,14 @@
 #include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
 #include "Flow\Rendering\Core\Bindables\Rasterizer.h"
 #include "Flow\Rendering\Core\Vertex\VertexBuffer.h"
+#include "Flow/Rendering/Renderer.h"
 
 #include "Flow/Assets/AssetSystem.h"
 
 #include "Flow\Assets\Meshes\MeshAsset.h" 
 
 SkyboxComponent::SkyboxComponent(const std::string& Name)
+	: RenderableComponent(Name)
 {
 	AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
@@ -60,16 +62,22 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 	//Bind Transform
 	AddBind(std::make_shared<TransformConstantBuffer>(this));
 
-	AddBind(Rasterizer::Resolve(true));
+	AddBind(Rasterizer::Resolve(CullMode::Front));
+
+	_SimulatePhysics = false;
 }
 
-SkyboxComponent::~SkyboxComponent()
-{
-}
 
 DirectX::XMMATRIX SkyboxComponent::GetTransformXM() const
 {
 	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
 	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+}
+
+void SkyboxComponent::Render()
+{
+	Renderer::Submit(this);
+
+	WorldComponent::Render();
 }

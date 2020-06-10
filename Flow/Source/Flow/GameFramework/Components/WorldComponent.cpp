@@ -292,6 +292,7 @@ bool WorldComponent::IsVisible() const
 
 void WorldComponent::InitialisePhysics()
 {
+	_SimulatePhysics = false;
 }
 
 void WorldComponent::DestroyPhysics()

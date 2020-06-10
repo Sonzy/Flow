@@ -23,6 +23,7 @@
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
 #include "Flow/GameFramework/Actors/CameraActor.h"
+#include "Flow/GameFramework/Actors/SkyboxActor.h"
 
 #include "Flow/GameFramework/Controllers/Controller.h"
 
@@ -56,6 +57,7 @@ ExampleLayer::ExampleLayer()
 	Base = Application::GetWorld()->SpawnActor<MeshWorldObject>("Base");
 
 	_CameraActor = Application::GetWorld()->SpawnActor<CameraActor>("Camera Actor");
+	_Skybox = Application::GetWorld()->SpawnActor<SkyboxActor>("Skybox Actor");
 
 	Actors.push_back(WallObj);
 	//Actors.push_back(Example);
@@ -80,6 +82,9 @@ ExampleLayer::ExampleLayer()
 	Actors.push_back(Shotgun_);
 	Actors.push_back(Blunderbuss_);
 	Actors.push_back(Rifle_);
+
+	Actors.push_back(_CameraActor);
+	Actors.push_back(_Skybox);
 	
 
 

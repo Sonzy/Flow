@@ -2,13 +2,14 @@
 #include "Rasterizer.h"
 #include "BindableCodex.h"
 
-Rasterizer::Rasterizer(bool DoubleSided)
-	: _DoubleSided(DoubleSided)
+Rasterizer::Rasterizer(CullMode CullMode)
+	: _CullMode(CullMode)
 {
 	CREATE_RESULT_HANDLE();
 
 	CD3D11_RASTERIZER_DESC Description = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
-	Description.CullMode = DoubleSided ? D3D11_CULL_NONE : D3D11_CULL_BACK; //TODO: Cba for now but should really just cull front for the skybox
+	Description.CullMode = static_cast<D3D11_CULL_MODE>(_CullMode); 
+	//TODO: Need to flip the normals in the shaders if it is a back face
 
 	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &_Rasterizer));
 }
@@ -18,12 +19,29 @@ void Rasterizer::Bind()
 	RenderCommand::DX11GetContext()->RSSetState(_Rasterizer.Get());
 }
 
-std::shared_ptr<Rasterizer> Rasterizer::Resolve(bool DoubleSided)
+std::shared_ptr<Rasterizer> Rasterizer::Resolve(CullMode CullMode)
 {
-	return BindableCodex::Resolve<Rasterizer>(DoubleSided);
+	return BindableCodex::Resolve<Rasterizer>(CullMode);
 }
-std::string Rasterizer::GenerateUID(bool DoubleSided)
+
+std::string Rasterizer::GenerateUID(CullMode CullMode)
 {
 	using namespace std::string_literals;
-	return typeid(Rasterizer).name() + "#"s + (DoubleSided ? "Double" : "Single");
+	std::string Type;
+	switch (CullMode)
+	{
+	case CullMode::None:
+		Type = "None";
+		break;
+	case CullMode::Back:
+		Type = "Back";
+		break;
+	case CullMode::Front:
+		Type = "Front";
+		break;
+	default:
+		break;
+	}
+
+	return typeid(Rasterizer).name() + "#"s + Type;
 }

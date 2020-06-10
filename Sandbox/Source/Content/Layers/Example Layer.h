@@ -8,6 +8,7 @@
 class Actor;
 class MeshWorldObject;
 class CameraActor;
+class SkyboxActor;
 
 class ExampleLayer : public Layer
 {
@@ -52,5 +53,8 @@ private:
 	std::shared_ptr<MeshWorldObject> Blunderbuss_;
 	std::shared_ptr<MeshWorldObject> Rifle_;
 
+
+
 	std::shared_ptr<CameraActor> _CameraActor;
+	std::shared_ptr<SkyboxActor> _Skybox;
 };

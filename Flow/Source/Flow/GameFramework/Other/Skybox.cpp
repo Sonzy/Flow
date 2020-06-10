@@ -68,7 +68,7 @@ Skybox::Skybox()
 	//Bind Transform
 	AddBind(std::make_shared<TransformConstantBuffer>(this));
 
-	AddBind(Rasterizer::Resolve(true));
+	AddBind(Rasterizer::Resolve(CullMode::Front));
 }
 
 DirectX::XMMATRIX Skybox::GetTransformXM() const

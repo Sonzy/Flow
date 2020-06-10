@@ -149,7 +149,10 @@ void SelectionGizmo::UpdateSelection()
 
 	_MouseLastUpdate = MousePosition;
 
-
+	//TODO: Make the collision were moving kinematic - or disable movement on non-kinematic object - or dont allow deactivation whilst moving
+	// Update the bounding box of selected component whilst moving it
+	if (_SelectedComponent)
+		_SelectedComponent->UpdateAABB();
 }
 
 void SelectionGizmo::UpdatePosition(Vector Position)
@@ -259,8 +262,8 @@ void SelectionGizmo::OnNewComponentSelected(WorldComponent* Object)
 void SelectionGizmo::OnDeselected()
 {
 	//Update the bounding box since it isnt done when we move the rigidbody
-	if(_SelectedComponent)
-		_SelectedComponent->UpdateAABB();
+	//if(_SelectedComponent)
+	//	_SelectedComponent->UpdateAABB();
 
 	_SelectedAxis = SelectedAxis::None;
 }
