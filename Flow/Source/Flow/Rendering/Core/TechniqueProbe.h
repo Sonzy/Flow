@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DCB
+namespace DynamicCB
 {
 	class Buffer;
 }
@@ -14,7 +14,7 @@ public:
 
 	void SetTechnique(Technique* Technique_In);
 	void SetStep(Step* Step_In);
-	virtual bool VisitBuffer(DCB::Buffer&) = 0;
+	virtual bool VisitBuffer(DynamicCB::Buffer&) = 0;
 
 protected:
 

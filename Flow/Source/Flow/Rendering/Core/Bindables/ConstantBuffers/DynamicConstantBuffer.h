@@ -369,7 +369,7 @@ namespace DynamicCB
 	{
 	public:
 		Buffer(RawLayout&& Layout);
-		Buffer(const CookedLayout* Layout);
+		Buffer(const CookedLayout& Layout);
 		Buffer(CookedLayout&& Layout);
 		Buffer(const Buffer&);
 		Buffer(Buffer&&);

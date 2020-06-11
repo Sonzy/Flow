@@ -389,8 +389,8 @@ namespace DynamicCB
 	{
 	}
 
-	Buffer::Buffer(const CookedLayout* Layout)
-		: LayoutRoot_(Layout->ShareRoot()), Bytes_(LayoutRoot_->GetOffsetEnd())
+	Buffer::Buffer(const CookedLayout& Layout)
+		: LayoutRoot_(Layout.ShareRoot()), Bytes_(LayoutRoot_->GetOffsetEnd())
 	{
 	}
 
