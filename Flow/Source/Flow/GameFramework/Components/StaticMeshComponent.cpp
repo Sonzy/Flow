@@ -111,9 +111,6 @@ void StaticMeshComponent::Render()
 
 	Renderer::Submit(this);
 
-	//if (_DrawOutline)
-	//	DrawOutline();
-
 	WorldComponent::Render();
 }
 

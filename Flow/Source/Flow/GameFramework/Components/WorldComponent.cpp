@@ -229,10 +229,12 @@ void WorldComponent::SetRelativeTransform(Transform NewTransform)
 
 void WorldComponent::Render()
 {
+	PROFILE_CURRENT_SCOPE("Render Children");
+
 	for (auto Child : _Children)
 	{
-		if (WorldComponent* WorldChild = static_cast<WorldComponent*>(Child))
-			WorldChild->Render();
+		if (Child)
+			Child->Render();
 	}
 }
 

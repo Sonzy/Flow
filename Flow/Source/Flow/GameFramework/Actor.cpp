@@ -81,6 +81,8 @@ Rotator Actor::GetRotation()
 
 void Actor::Render()
 {
+	PROFILE_FUNCTION();
+
 	if (_RootComponent && _Visible)
 		_RootComponent->Render();
 }

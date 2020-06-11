@@ -217,6 +217,8 @@ void ExampleLayer::BeginPlay()
 
 void ExampleLayer::OnUpdate(float DeltaTime)
 {
+	PROFILE_FUNCTION();
+
 	int Count = 0;
 	Renderer::BeginScene();
 
