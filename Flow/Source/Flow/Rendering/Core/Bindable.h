@@ -6,6 +6,7 @@
 #include "Flow/Rendering/RenderCommand.h"
 
 class Renderable;
+class TechniqueProbe;
 
 class FLOW_API Bindable
 {
@@ -13,6 +14,8 @@ public:
 	virtual void Bind() = 0;
 
 	virtual void InitialiseParentReferences(const Renderable&) {};
+
+	virtual void AcceptProbe(TechniqueProbe&) {};
 
 	//= Template interface for bindable codex. =======
 

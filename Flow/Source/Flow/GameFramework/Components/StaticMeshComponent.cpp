@@ -188,16 +188,7 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();
 
-	//TODO: Proper technique probing
-
 	ImGui::Checkbox("Draw Outline", &_Techniques[1].GetWriteAccessToActive());
-
-	bool BindsDirty = false;
-	BindsDirty |= ImGui::Checkbox("Outline", &_DrawOutline);
-	BindsDirty |= ImGui::InputFloat("Outline Scale", &_OutlineThickness, 0.0f, 0.0f, "%.2f", ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue);
-
-	if (BindsDirty)
-		RefreshBinds();
 }
 
 void StaticMeshComponent::GenerateCollision()

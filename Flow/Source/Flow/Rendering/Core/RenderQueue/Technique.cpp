@@ -1,6 +1,17 @@
 #include "Flowpch.h"
 #include "Technique.h"
 #include "Flow/Rendering/Core/RenderQueue/Step.h"
+#include "Flow/Rendering/Core/TechniqueProbe.h"
+
+Technique::Technique()
+	: Technique("Unnamed Technique")
+{
+}
+
+Technique::Technique(const std::string& Name)
+	: _Name(Name)
+{
+}
 
 void Technique::Submit(const Renderable& Drawable) const
 {
@@ -33,5 +44,15 @@ void Technique::InitialiseParentReferences(const Renderable& Parent)
 	for (auto& S : _Steps)
 	{
 		S.InitialiseParentReferences(Parent);
+	}
+}
+
+void Technique::AcceptProbe(TechniqueProbe& Probe)
+{
+	Probe.SetTechnique(this);
+
+	for (auto& S : _Steps)
+	{
+		S.AcceptProbe(Probe);
 	}
 }

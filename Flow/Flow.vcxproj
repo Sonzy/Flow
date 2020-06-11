@@ -204,6 +204,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\RenderQueue\RenderQueue.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderQueue\Step.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\RenderQueue\Technique.h" />
+    <ClInclude Include="Source\Flow\Rendering\Core\TechniqueProbe.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\TemplateBuffers\TemplateBuffers.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\Vertex.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.h" />
@@ -381,6 +382,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\RenderQueue\Step.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\RenderQueue\Technique.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Core\TechniqueProbe.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.cpp" />

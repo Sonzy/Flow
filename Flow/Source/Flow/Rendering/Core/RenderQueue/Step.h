@@ -2,6 +2,7 @@
 
 class Bindable;
 class Renderable;
+class TechniqueProbe;
 
 class Step
 {
@@ -13,6 +14,8 @@ public:
 	void InitialiseParentReferences(const Renderable& Drawable);
 	void AddBindable(std::shared_ptr<Bindable> NewBind);
 	void AddBindables(std::vector<std::shared_ptr<Bindable>> Binds);
+
+	void AcceptProbe(TechniqueProbe& Probe);
 
 private:
 
