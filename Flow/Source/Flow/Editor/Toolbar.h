@@ -10,10 +10,17 @@ public:
 	Toolbar(EditorLayer* EditorPointer);
 	ImVec2 Draw();
 
-	void DrawBulletColourConfig();
+
 
 private:
 	EditorLayer* _Editor;
+	bool _Visible_BulletConfiguration;
+	bool _Visible_EditorSettings;
 
-	bool _ShowBulletConfigurationWindow;
+private:
+
+	//= Windows ========
+
+	void Window_BulletDebugDrawSettings();
+	void Window_EditorSettings();
 };

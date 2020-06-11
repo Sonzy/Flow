@@ -12,19 +12,17 @@ class TransformConstantBuffer : public Bindable
 public:
 
 	TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
-	TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot = 0);
 	void Bind() override;
 
-private:
+protected:
 	struct Transforms
 	{
 		DirectX::XMMATRIX modelView;
 		DirectX::XMMATRIX modelViewProj;
 	};
 
-private:
+protected:
 	std::string _Tag;
 	static std::unique_ptr<VertexConstantBuffer<Transforms>> _VertexConstBuffer;
 	Renderable* _ParentObject;
-	RenderableComponent* _ParentComponent;
 };

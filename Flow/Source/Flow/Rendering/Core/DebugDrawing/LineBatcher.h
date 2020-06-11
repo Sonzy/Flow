@@ -26,6 +26,9 @@ public:
 
 
 private:
+	void BindAll();
+	void AddBind(std::shared_ptr<Bindable> NewBind);
+	std::vector<std::shared_ptr<Bindable>> _Binds;
 
 	VertexBuffer* _VertexBuffer;
 	BindableVertexBuffer* _BindableVertexBuffer;

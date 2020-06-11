@@ -6,14 +6,15 @@
 #include "Flow\Assets\AssetSystem.h"
 
 PointLight::PointLight(float LightRadius)
-	: _Mesh("Box"), _PixelConstantBuffer(0)
+	//: _Mesh("Box"), _PixelConstantBuffer(0)
+	:  _PixelConstantBuffer(0)
 {
 	Reset();
 
 	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour")->GetMaterial();
 
-	_Mesh.InitialiseStaticMesh("Sphere", Material);
-	_Mesh.SetScale(10.0f);
+	//_Mesh.InitialiseStaticMesh("Sphere", Material);
+	//_Mesh.SetScale(10.0f);
 }
 
 void PointLight::Reset()
@@ -35,15 +36,16 @@ void PointLight::BindLight(DirectX::FXMMATRIX ViewMatrix)
 	const auto Position = DirectX::XMLoadFloat3(&_ConstantBuffer.pos);
 
 	DirectX::XMStoreFloat3(&Copy.pos, DirectX::XMVector3Transform(Position, ViewMatrix));
-	_Mesh.SetPosition(Vector(_ConstantBuffer.pos.x, _ConstantBuffer.pos.y, _ConstantBuffer.pos.z));
+
 
 	_PixelConstantBuffer.Update(Copy);
 	_PixelConstantBuffer.Bind();
 
-	if (_DrawMesh)
-	{
-		Renderer::Submit(&_Mesh);
-	}
+	//if (_DrawMesh)
+	//{
+	//	_Mesh.SetPosition(Vector(_ConstantBuffer.pos.x, _ConstantBuffer.pos.y, _ConstantBuffer.pos.z));
+	//	Renderer::Submit(&_Mesh);
+	//}
 }
 
 void PointLight::RenderControlWindow()

@@ -49,7 +49,7 @@ void Inspector::RenderInspector()
 
 			ImGui::Separator();
 
-			if (!_HideTree)
+			if (!_HideTree && _FocusedItem->GetRootComponent())
 				_FocusedItem->GetRootComponent()->DrawInspectionTree(_FocusedComponent);
 
 			if (ImGui::Button(_HideTree ? "Show Tree" : "Collapse Tree"))
@@ -76,6 +76,8 @@ void Inspector::RenderInspector()
 
 			if (_FocusedComponent)
 			{
+				//TODO: Not sure what the difference is
+				_FocusedComponent->DrawComponentDetailsWindow(); //TODO: Move this where I want
 				_FocusedComponent->DrawDetailsWindow(false);
 			}
 		}
@@ -178,19 +180,29 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	_FocusedItem = HitObject;
 
 	if (_FocusedComponentChanged)
+	{
+		//If we had a selected component, update it before deselecting
+		if (_FocusedComponent)
+		{
+			_FocusedComponent->OnViewportDeselected();
+		}
+
 		_FocusedComponent = HitComp;
 
-	//TODO: If we hit, run selection gizmo logic.
-	if (Ray.hasHit() && static_cast<SelectionGizmo*>(Ray.m_collisionObject->getUserPointer()))
-	{
-		//FLOW_ENGINE_LOG("We hit the selection. TODO: Detection on each arro");
-		if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(_FocusedComponent))
-			Comp->EnableOutlineDrawing(true);
+		//If we have selected a new component
+		if (_FocusedComponent)
+		{
+			_FocusedComponent->OnViewportSelected();
+		}
 	}
+
+
 
 	//If we have not hit anything, reset the selector
 	if (!_FocusedItem)
 	{
+		if(_FocusedComponent)
+			_FocusedComponent->OnViewportDeselected();
 		_FocusedComponent = nullptr;
 
 		_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));

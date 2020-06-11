@@ -27,30 +27,15 @@ void Mat_FlatColour::SetColour(Vector NewColour)
 	_Colour = { DirectX::XMFLOAT4(NewColour.X, NewColour.Y, NewColour.Z, 1.0f) };
 }
 
-void Mat_FlatColour::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
+void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
-	CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
-
 	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-	Parent->AddBind(std::move(vShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+	RenderingStep->AddBindable(std::move(vShader));
+	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
+	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
-	Parent->AddBind(PixelConstantBuffer<ColorBuffer>::Resolve(_Colour, 2u, GenerateTag()));
-}
-
-void Mat_FlatColour::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
-{
-	CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
-
-	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
-	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-	Parent->AddBind(std::move(vShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
-
-	Parent->AddBind(PixelConstantBuffer<ColorBuffer>::Resolve(_Colour, 2u, GenerateTag()));
+	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(_Colour, 2u, GenerateTag()));
 }
 
 std::string Mat_FlatColour::GenerateTag()

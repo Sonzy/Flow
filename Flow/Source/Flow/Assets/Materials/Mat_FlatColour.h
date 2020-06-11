@@ -12,8 +12,7 @@ public:
 	/* Make sure to call refresh binds after, only use this with a new instance of flat colour otherwise it will change them all */
 	void SetColour(Vector NewColour);
 
-	virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout) override;
-	virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout) override;
+	virtual void BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
 
 protected:
 

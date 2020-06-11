@@ -135,6 +135,7 @@ void DX11RenderAPI::EndFrame()
 
 void DX11RenderAPI::DrawIndexed(int Count)
 {
+	//TODO: Allow for unsigned int type instead, cba right now
 	_Context->DrawIndexed(Count, 0, 0);
 }
 

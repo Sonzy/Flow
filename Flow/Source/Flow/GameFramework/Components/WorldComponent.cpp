@@ -39,6 +39,12 @@ void WorldComponent::EditorBeginPlay()
 		Child->EditorBeginPlay();
 	}
 }
+void WorldComponent::OnViewportSelected()
+{
+}
+void WorldComponent::OnViewportDeselected()
+{
+}
 #endif
 
 void WorldComponent::BeginPlay()

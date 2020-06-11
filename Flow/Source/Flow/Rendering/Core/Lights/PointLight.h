@@ -15,7 +15,8 @@ public:
 
 	void RenderControlWindow();
 
-	StaticMesh* GetMesh() { return &_Mesh; }
+	//StaticMesh* GetMesh() { return &_Mesh; }
+	StaticMesh* GetMesh() { return nullptr; }
 
 private:
 
@@ -31,8 +32,8 @@ private:
 	};
 
 private:
-	StaticMesh _Mesh;
-	bool _DrawMesh = false; //TODO fix mesh
+	//StaticMesh _Mesh;
+	//bool _DrawMesh = false; //TODO fix mesh
 
 	LightConstantBuffer _ConstantBuffer;
 	PixelConstantBuffer<LightConstantBuffer> _PixelConstantBuffer;

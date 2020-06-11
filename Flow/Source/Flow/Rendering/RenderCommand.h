@@ -5,6 +5,8 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
+#include "Flow/Rendering/Core/RenderQueue/Job.h"
+
 class CameraBase;
 
 class FLOW_API RenderCommand

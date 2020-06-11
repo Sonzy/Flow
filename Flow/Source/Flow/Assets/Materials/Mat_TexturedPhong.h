@@ -10,8 +10,7 @@ public:
 
 	Mat_TexturedPhong();
 
-	virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout) override;
-	virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout) override;
+	virtual void BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
 
 	ObjectLightBuffer _LightCBuffer;
 };

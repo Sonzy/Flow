@@ -9,6 +9,19 @@ class SelectionGizmo;
 class Application;
 struct ImVec2;
 
+struct EditorSettings
+{
+	EditorSettings()
+		:
+		_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
+	{
+
+	}
+
+
+	Vector _ObjectHighlightColour;
+};
+
 class EditorLayer : public Layer
 {
 public:
@@ -25,14 +38,12 @@ public:
 	virtual void OnUpdate(float DeltaTime) override;
 
 	static EditorLayer* GetEditor();
+	static EditorSettings& GetEditorSettings();
 	Inspector* GetInspector() const;
 	Toolbar* GetToolbar() const;
 
 	void SetDemoWindowVisible(bool Enabled);
 	void ToggleImGuiDemoWindow();
-
-
-
 
 	void OpenCollisionEditor();
 
@@ -53,6 +64,7 @@ protected:
 	SelectionGizmo* _SelectionGizmo;
 	bool _DrawDemoWindow = false;
 	Application* _ApplicationPointer;
+	EditorSettings _Settings;
 
 	std::vector<std::shared_ptr<EditorWindow>> _EditorWindows;
 

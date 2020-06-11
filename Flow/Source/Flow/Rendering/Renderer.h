@@ -5,6 +5,7 @@
 #include "Flow/Rendering/Core/Renderable.h"
 
 class RenderableComponent;
+class Technique;
 
 class FLOW_API Renderer
 {
@@ -18,8 +19,8 @@ public:
 	static void EndScene();
 
 	static int SubmitWithoutDraw(Renderable* Renderables);
-	static void Submit(Renderable* const Renderables);
-	static void Submit(RenderableComponent* const Renderable);
+	static void Submit(Renderable* const Object);
+
 
 	static void Draw(int Count);
 

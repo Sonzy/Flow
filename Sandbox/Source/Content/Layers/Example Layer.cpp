@@ -225,6 +225,7 @@ void ExampleLayer::OnUpdate(float DeltaTime)
 
 	//RenderCommand::GetCamera().Tick(DeltaTime);
 
+	//TODO: Move this stuff
 	for (auto& Actor : Actors)
 	{
 		Actor->Render();

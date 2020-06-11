@@ -1,13 +1,17 @@
 #include "Flowpch.h"
 #include "Stencil.h"
+#include "BindableCodex.h"
 
 Stencil::Stencil(StencilMode Mode)
+	: _Mode(Mode)
 {
 	D3D11_DEPTH_STENCIL_DESC Description = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
 
 	switch (Mode)
 	{
 	case StencilMode::Write:
+		Description.DepthEnable = FALSE;
+		Description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		Description.StencilEnable = TRUE;
 		Description.StencilWriteMask = 0xFF;
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
@@ -15,6 +19,7 @@ Stencil::Stencil(StencilMode Mode)
 		break;
 	case StencilMode::Mask:
 		Description.DepthEnable = FALSE;
+		Description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		Description.StencilEnable = TRUE;
 		Description.StencilReadMask = 0xFF;
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
@@ -42,4 +47,33 @@ Stencil::Stencil(StencilMode Mode)
 void Stencil::Bind()
 {
 	RenderCommand::DX11GetContext()->OMSetDepthStencilState(_Stencil.Get(), 0xFF);
+}
+
+std::shared_ptr<Bindable> Stencil::Resolve(StencilMode mode)
+{
+	return BindableCodex::Resolve<Stencil>(mode);
+}
+
+std::string Stencil::GenerateUID(StencilMode mode)
+{
+	using namespace std::string_literals;
+	return typeid(Stencil).name() + "#"s + Stencil::GetModeAsString(mode);
+}
+
+std::string Stencil::GetUID() const
+{
+	return GenerateUID(_Mode);
+}
+
+std::string Stencil::GetModeAsString(StencilMode mode)
+{
+	switch (mode)
+	{
+	case StencilMode::Off: 			return "Off"; 
+	case StencilMode::Write:		return "Write";
+	case StencilMode::Mask:			return "Mask";
+	case StencilMode::AlwaysOnTop:	return "AlwaysOnTop";
+	}
+
+	return "UNKNOWN";
 }

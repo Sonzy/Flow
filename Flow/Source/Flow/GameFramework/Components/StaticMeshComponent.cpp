@@ -5,7 +5,7 @@
 #include "Flow\Rendering\Renderer.h"
 #include "Flow\Rendering\Core\Vertex\VertexLayout.h"
 #include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Flow\Rendering\Core\Bindables\Rasterizer.h"
+#include "Flow/Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 
 #include "ThirdParty\ImGui\imgui.h"
 
@@ -19,8 +19,7 @@ StaticMeshComponent::StaticMeshComponent()
 }
 
 StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
-	: RenderableComponent(Name), _StaticMesh(nullptr), _Material(nullptr),
-	_StencilMode(StencilMode::Off)
+	: RenderableComponent(Name), _StaticMesh(nullptr), _Material(nullptr)
 {
 	if (Mesh && Material)
 		SetMeshAndMaterial(Mesh, Material, MeshIndex);
@@ -41,7 +40,7 @@ void StaticMeshComponent::BeginPlay()
 	WorldComponent::BeginPlay();
 
 #if WITH_EDITOR
-	//InitialisePhysics();
+	//InitialisePhysics(); //TODO: Editor physics?
 #else
 	InitialisePhysics();
 #endif
@@ -53,27 +52,6 @@ void StaticMeshComponent::Tick(float DeltaTime)
 
 	WorldComponent::Tick(DeltaTime);
 
-	//if (_Body && _SimulatePhysics)
-	//{
-	//	PROFILE_CURRENT_SCOPE("Update Mesh Physics Position");
-	//
-	//	btVector3 Vec = _Body->getWorldTransform().getOrigin();
-	//
-	//	//Need euler YZX 
-	//	btScalar m[16];
-	//	_Body->getWorldTransform().getOpenGLMatrix(m);
-	//	float fAngZ = atan2f(m[1], m[5]);
-	//	float fAngY = atan2f(m[8], m[10]);
-	//	float fAngX = -asinf(m[9]);
-	//
-	//	SetWorldPosition(Vector(Vec.x(), Vec.y(), Vec.z()));
-	//	SetWorldRotation(Rotator::AsDegrees(Rotator(fAngX, fAngZ, fAngY)));
-	//}
-
-	//if (!_SimulatePhysics && _Body)
-	//{
-	//	MovePhysicsBody(GetWorldTransform());
-	//}
 }
 
 void StaticMeshComponent::EditorBeginPlay()
@@ -82,6 +60,21 @@ void StaticMeshComponent::EditorBeginPlay()
 
 	InitialisePhysics();
 }
+
+void StaticMeshComponent::OnViewportSelected()
+{
+	RenderableComponent::OnViewportSelected();
+
+	_Techniques[1].Activate();
+}
+
+void StaticMeshComponent::OnViewportDeselected()
+{
+	RenderableComponent::OnViewportSelected();
+
+	_Techniques[1].Deactivate();
+}
+
 
 void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex)
 {
@@ -114,63 +107,78 @@ void StaticMeshComponent::SetMaterial(Material* NewMaterial)
 
 void StaticMeshComponent::Render()
 {
+	PROFILE_FUNCTION();
+
 	Renderer::Submit(this);
 
-	if (_DrawOutline)
-		DrawOutline();
+	//if (_DrawOutline)
+	//	DrawOutline();
 
 	WorldComponent::Render();
 }
 
 void StaticMeshComponent::RefreshBinds()
 {
+	_Techniques.clear();
+
+	//= Standard Rendering ====
 	VertexLayout MeshLayout;
-	_Binds = _StaticMesh->GenerateBinds(MeshLayout);
-	_IndexBuffer = _StaticMesh->GetIndexBuffer();
-
 	auto Transform = std::make_shared<TransformConstantBuffer>(this);
-	AddBind(Transform);
-	_Material->BindMaterial(this, MeshLayout);
 
-	AddBind(Rasterizer::Resolve(CullMode::Back));
-
-	//TODO: Temp stencil testing
-	if (_DrawOutline)
+	Technique Standard;
 	{
-		AddBind(std::make_shared<Stencil>(StencilMode::Write));
-		VertexBuffer Dummy = VertexBuffer(MeshLayout);
-		std::vector<unsigned short> Dummy2;
+		Step MainStep(0);
 
-		OutlineEffect.push_back(BindableVertexBuffer::Resolve(_StaticMesh->_Parent->GetAssetName() + std::to_string(_StaticMesh->_MeshIndex), Dummy));
-		OutlineEffect.push_back(IndexBuffer::Resolve(_StaticMesh->_Parent->GetAssetName() + std::to_string(_StaticMesh->_MeshIndex), Dummy2));
+		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
+		_StaticMesh->GenerateBinds(MeshLayout);
+		_VertexBuffer = _StaticMesh->_BindableVBuffer;
+		_IndexBuffer = _StaticMesh->_IndexBuffer;
+		_Topology = _StaticMesh->_Topology;
+
+		_Material->BindMaterial(&MainStep, MeshLayout);
+
+		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+
+		Standard.AddStep(std::move(MainStep));
+	}
+	AddTechnique(std::move(Standard));
+
+	Technique Outline;
+	Outline.Deactivate();
+	{
+		Step Masking(3);
 
 		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColourVS")->GetPath());
 		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
-		OutlineEffect.push_back(std::move(VS));
-		OutlineEffect.push_back(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColourPS")->GetPath()));
-		struct SolidColorBuffer
-		{
-			DirectX::XMFLOAT4 color = { 1.0f,0.4f,0.4f,1.0f };
-		} scb;
-		OutlineEffect.push_back(PixelConstantBuffer<SolidColorBuffer>::Resolve(scb, 2u));
+		Masking.AddBindable(std::move(VS));
 
-		OutlineEffect.push_back(InputLayout::Resolve(MeshLayout, VSByteCode));
-		OutlineEffect.push_back(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-		OutlineEffect.push_back(Transform);
-		OutlineEffect.push_back(std::make_shared<Stencil>(StencilMode::Mask));
+		Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+		Masking.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+
+		Outline.AddStep(std::move(Masking));
 	}
-	else
-		AddBind(std::make_shared<Stencil>(_StencilMode));
+	{
+		Step DrawOutline(4);
+
+		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColourVS")->GetPath());
+		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
+
+		DrawOutline.AddBindable(std::move(VS));
+		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColourPS")->GetPath()));
+		DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+		DrawOutline.AddBindable(std::make_shared<ScaledTransformConstantBuffer>(this));
+
+		Outline.AddStep(DrawOutline);
+	}
+
+	AddTechnique(std::move(Outline));
 }
 
 DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
 {
 	Transform WorldTransform = GetWorldTransform();
 	Rotator RadianRotation = Rotator::AsRadians(WorldTransform._Rotation);
-
 	Vector Scale = WorldTransform._Scale;
-	if (_CurrentlyOutlining)
-		Scale += _OutlineThickness;
 
 	auto Trans = DirectX::XMMatrixScaling(Scale.X, Scale.Y, Scale.Z) *
 		DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) *
@@ -179,20 +187,13 @@ DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
 	return Trans;
 }
 
-void StaticMeshComponent::DrawOutline()
-{
-	_CurrentlyOutlining = true;
-	for (auto& b : OutlineEffect)
-	{
-		b->Bind();
-	}
-	RenderCommand::DrawIndexed(GetIndexBuffer().GetCount());
-	_CurrentlyOutlining = false;
-}
-
 void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();
+
+	//TODO: Proper technique probing
+
+	ImGui::Checkbox("Draw Outline", &_Techniques[1].GetWriteAccessToActive());
 
 	bool BindsDirty = false;
 	BindsDirty |= ImGui::Checkbox("Outline", &_DrawOutline);
@@ -276,7 +277,8 @@ void StaticMeshComponent::DestroyPhysics()
 
 void StaticMeshComponent::SetStencilMode(StencilMode NewMode)
 {
-	_StencilMode = NewMode;
+	FLOW_ENGINE_WARNING("StaticMeshComponent::SetStencilMode: TODO: Update");
+	//_StencilMode = NewMode;
 
 	RefreshBinds();
 }

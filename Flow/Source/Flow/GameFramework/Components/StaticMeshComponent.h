@@ -21,6 +21,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 #if WITH_EDITOR
 	virtual void EditorBeginPlay() override;
+	virtual void OnViewportSelected() override;
+	virtual void OnViewportDeselected() override;
 #endif
 	virtual void BeginPlay() override;
 
@@ -40,7 +42,6 @@ public:
 	Mesh* GetMesh() { return _StaticMesh; }
 
 	void EnableOutlineDrawing(bool Enabled) { _DrawOutline = Enabled; RefreshBinds(); }
-	void DrawOutline();
 
 	virtual void DrawComponentDetailsWindow() override;
 
@@ -51,8 +52,6 @@ public:
 
 	virtual void InitialisePhysics() override;
 	virtual void DestroyPhysics() override;
-	//TODO: Temp movement with rigidbodies
-	//void MovePhysicsBody(Transform NewTransform);
 
 	void SetStencilMode(StencilMode NewMode);
 
@@ -65,9 +64,5 @@ protected:
 	Mesh* _StaticMesh;
 	Material* _Material;
 
-	StencilMode _StencilMode;
-
-	std::vector<std::shared_ptr<Bindable>> OutlineEffect;
-	bool _CurrentlyOutlining = false; //Used to specify we are currently drawing an outline so get different values
 	float _OutlineThickness = 0.05f;
 };

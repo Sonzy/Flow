@@ -8,14 +8,7 @@
 std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::_VertexConstBuffer;
 
 TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
-	: _ParentObject(Parent), _ParentComponent(nullptr)
-{
-	if (!_VertexConstBuffer)
-		_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
-}
-
-TransformConstantBuffer::TransformConstantBuffer(RenderableComponent* Parent, UINT VertexSlot)
-	: _ParentObject(nullptr), _ParentComponent(Parent)
+	: _ParentObject(Parent)
 {
 	if (!_VertexConstBuffer)
 		_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
@@ -26,8 +19,6 @@ void TransformConstantBuffer::Bind()
 	DirectX::XMMATRIX ParentMatrix;
 	if (_ParentObject)
 		ParentMatrix = _ParentObject->GetTransformXM();
-	else if (_ParentComponent)
-		ParentMatrix = _ParentComponent->GetTransformXM();
 	else
 		FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 

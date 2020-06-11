@@ -24,6 +24,7 @@
 
 #include "Flow\Helper\Profiling.h"
 
+
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
 Application* Application::s_Instance = nullptr;

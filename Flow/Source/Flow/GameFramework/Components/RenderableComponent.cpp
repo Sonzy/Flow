@@ -3,23 +3,13 @@
 #include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
 
 RenderableComponent::RenderableComponent()
-	: WorldComponent("Unnamed RenderableComponent"), _IndexBuffer(nullptr)
+	: WorldComponent("Unnamed RenderableComponent")
 {
 }
 
 RenderableComponent::RenderableComponent(const std::string& Name)
-	: WorldComponent(Name), _IndexBuffer(nullptr)
+	: WorldComponent(Name)
 {
-}
-
-void RenderableComponent::BindAll()
-{
-	PROFILE_FUNCTION();
-
-	for (auto& b : _Binds)
-	{
-		b->Bind();
-	}
 }
 
 const IndexBuffer& RenderableComponent::GetIndexBuffer() const
@@ -38,17 +28,6 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 		DirectX::XMMatrixTranslation(WorldTransform._Position.X, WorldTransform._Position.Y, WorldTransform._Position.Z);
 }
 
-void RenderableComponent::AddBind(std::shared_ptr<Bindable> bind)
-{
-	//If index buffer, only allow single bind.
-	if (typeid(*bind) == typeid(IndexBuffer))
-	{
-		assert("Renderable::AddBind: Cannot bind multiple index buffers." && _IndexBuffer == nullptr);
-		_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
-	}
-
-	_Binds.push_back(std::move(bind));
-}
 void RenderableComponent::RefreshBinds()
 {
 }

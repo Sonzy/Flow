@@ -87,3 +87,16 @@ void LineBatcher::FlushLines()
 	_VertexBuffer = new VertexBuffer(*_VertexLayout);
 	Lines = 0;
 }
+
+void LineBatcher::BindAll()
+{
+	for (const auto& Bind : _Binds)
+	{
+		Bind->Bind();
+	}
+}
+
+void LineBatcher::AddBind(std::shared_ptr<Bindable> NewBind)
+{
+	_Binds.push_back(std::move(NewBind));
+}

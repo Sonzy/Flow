@@ -31,34 +31,16 @@ Mat_TexturedPhong::Mat_TexturedPhong()
 	};
 }
 
-void Mat_TexturedPhong::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
+void Mat_TexturedPhong::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
-	CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
-
-	Parent->AddBind(Texture::Resolve(_Texture, 0));
-	Parent->AddBind(Sampler::Resolve());
+	RenderingStep->AddBindable(Texture::Resolve(_Texture, 0));
+	RenderingStep->AddBindable(Sampler::Resolve());
 	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-	Parent->AddBind(std::move(vShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+	RenderingStep->AddBindable(std::move(vShader));
+	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
+	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
 
-	Parent->AddBind(PixelConstantBuffer<ObjectLightBuffer>::Resolve(_LightCBuffer, 1u));
-}
-
-void Mat_TexturedPhong::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
-{
-	CHECK_RETURN(!Parent, "Mat_FlatColour::BindMaterial: Parent was nullptr");
-
-	Parent->AddBind(Texture::Resolve(_Texture, 0));
-	Parent->AddBind(Sampler::Resolve());
-	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
-	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-	Parent->AddBind(std::move(vShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
-
-
-	Parent->AddBind(PixelConstantBuffer<ObjectLightBuffer>::Resolve(_LightCBuffer, 1u));
+	RenderingStep->AddBindable(PixelConstantBuffer<ObjectLightBuffer>::Resolve(_LightCBuffer, 1u));
 }

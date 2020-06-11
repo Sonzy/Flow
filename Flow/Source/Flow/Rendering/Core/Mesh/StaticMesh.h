@@ -15,4 +15,10 @@ public:
 	void InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
 
 	virtual DirectX::XMMATRIX GetTransformXM() const override;
+
+protected:
+
+	Vector _Position;
+	Rotator _Rotation;
+	Vector _Scale;
 };

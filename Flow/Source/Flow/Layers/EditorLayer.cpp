@@ -79,6 +79,11 @@ EditorLayer* EditorLayer::GetEditor()
 	return Application::GetApplication().GetEditor();
 }
 
+EditorSettings& EditorLayer::GetEditorSettings()
+{
+	return EditorLayer::GetEditor()->_Settings;
+}
+
 Inspector* EditorLayer::GetInspector() const
 {
 	return _Inspector;
@@ -157,6 +162,8 @@ void EditorLayer::InitialiseDockspace(ImVec2 Offset)
 	ImGui::End();
 }
 
+#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
+
 void EditorLayer::RenderApplicationDebug(float DeltaTime)
 {
 	TimeSinceFrameUpdate += DeltaTime;
@@ -182,6 +189,17 @@ void EditorLayer::RenderApplicationDebug(float DeltaTime)
 		GetProcessMemoryInfo(GetCurrentProcess(), &MemoryData, sizeof(MemoryData));
 
 		ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
+	}
+	ImGui::End();
+
+	if (ImGui::Begin("Rendering Configuration"))
+	{
+		RenderQueue* Queue = RenderQueue::Get();
+		ImGui::Checkbox("Pass 0", &Queue->_Pass0Enabled);
+		ImGui::Checkbox("Pass 1", &Queue->_Pass1Enabled);
+		ImGui::Checkbox("Pass 2", &Queue->_Pass2Enabled);
+		ImGui::Checkbox("Pass 3", &Queue->_Pass3Enabled);
+		ImGui::Checkbox("Pass 4", &Queue->_Pass4Enabled);
 	}
 	ImGui::End();
 }

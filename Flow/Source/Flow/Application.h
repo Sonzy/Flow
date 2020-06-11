@@ -90,7 +90,6 @@ private:
 	bool DrawCollision_ = false;
 	bool _UpdatingChildWindows = false;
 
-
 	//= Game ====================
 
 	World* GameWorld_;

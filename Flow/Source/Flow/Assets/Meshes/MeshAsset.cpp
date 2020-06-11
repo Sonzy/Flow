@@ -10,6 +10,7 @@
 
 #include "Flow\Rendering\Core\Bindables\Topology.h"
 #include "Flow\Rendering\Core\Bindables\BindableVertexBuffer.h"
+#include "Flow/Rendering/Core/Bindables/IndexBuffer.h"
 
 MeshAsset::MeshAsset()
 {
@@ -133,7 +134,8 @@ std::vector<std::shared_ptr<Bindable>> Mesh::GenerateBinds(VertexLayout& OutVert
 		return _Binds;
 	}
 
-	_Binds.push_back(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	_Topology = std::dynamic_pointer_cast<Topology>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	_Binds.push_back(_Topology);
 
 	// Define Vertex Layout
 	_VertexLayout.Append(ElementType::Position3D);
@@ -163,20 +165,20 @@ std::vector<std::shared_ptr<Bindable>> Mesh::GenerateBinds(VertexLayout& OutVert
 	}
 
 	//Add Vertex Buffer Bind
-	_Binds.push_back(BindableVertexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), VBuffer));
+	_BindableVBuffer = std::dynamic_pointer_cast<BindableVertexBuffer>(BindableVertexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), VBuffer));
+	_Binds.push_back(_BindableVBuffer);
 
 	//Bind Index Buffer
-	std::shared_ptr<Bindable> Index = IndexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), indices);
 	assert("MeshAsset::GenerateBinds: Cannot bind multiple index buffers." && _IndexBuffer == nullptr);
-	_Binds.push_back(Index);
-	_IndexBuffer = static_cast<IndexBuffer*>(Index.get());
+	_IndexBuffer = std::dynamic_pointer_cast<IndexBuffer>(IndexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), indices));
+	_Binds.push_back(_IndexBuffer);
 
 	OutVertexLayout = _VertexLayout;
 
 	return _Binds;
 }
 
-const IndexBuffer* Mesh::GetIndexBuffer() const
+std::shared_ptr<IndexBuffer> Mesh::GetIndexBuffer() const
 {
 	return _IndexBuffer;
 }

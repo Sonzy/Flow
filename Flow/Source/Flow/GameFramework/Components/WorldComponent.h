@@ -15,6 +15,8 @@ public:
 
 #if WITH_EDITOR
 	virtual void EditorBeginPlay() override;
+	virtual void OnViewportSelected();
+	virtual void OnViewportDeselected();
 #endif
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

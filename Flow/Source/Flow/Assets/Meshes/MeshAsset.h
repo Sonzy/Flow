@@ -66,8 +66,13 @@ public:
 	std::vector<Vector> _TexCoords;
 	std::vector<MeshFace> _Faces;
 
-	const IndexBuffer* _IndexBuffer;
+	//const IndexBuffer* _IndexBuffer;
 	std::vector<std::shared_ptr<Bindable>> _Binds;
+
+	//TODO: Clean up, these are the necessary binds for the mesh specifically
+	std::shared_ptr<BindableVertexBuffer> _BindableVBuffer;
+	std::shared_ptr<IndexBuffer> _IndexBuffer;
+	std::shared_ptr<Topology> _Topology;
 	VertexLayout _VertexLayout;
 
 public:
@@ -75,7 +80,7 @@ public:
 	[[nodiscard]] const std::vector<MeshFace>& GetFaces() const { return _Faces; };
 	[[nodiscard]] const size_t GetNumFaces() const { return _Faces.size(); };
 	[[nodiscard]] std::vector<MeshVertex> GetVertices() const;
-	[[nodiscard]] const IndexBuffer* GetIndexBuffer() const;
+	[[nodiscard]] std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 
 	/* Creates and returns a vector of all binds required from this mesh */
 	std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);

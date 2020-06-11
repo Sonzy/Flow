@@ -70,16 +70,25 @@ ImVec2 Toolbar::Draw()
 
 		if (ImGui::BeginMenu("Options"))
 		{
-			if (ImGui::BeginMenu("Bullet Physics"))
+			if (ImGui::BeginMenu("Editor Settings"))
 			{
-				if (ImGui::MenuItem("Configure Debug Colours"))
+				if (ImGui::MenuItem("Colour Settings"))
 				{
-					_ShowBulletConfigurationWindow = true;
+					_Visible_EditorSettings = true;
 				}
 
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Bullet Physics"))
+			{
+				if (ImGui::MenuItem("Configure Debug Colours"))
+				{
+					_Visible_BulletConfiguration = true;
+				}
+
+				ImGui::EndMenu();
+			}
 			ImGui::EndMenu();
 		}
 
@@ -101,8 +110,10 @@ ImVec2 Toolbar::Draw()
 	}
 
 
-	if (_ShowBulletConfigurationWindow)
-		DrawBulletColourConfig();
+	if (_Visible_BulletConfiguration)
+		Window_BulletDebugDrawSettings();
+	if (_Visible_EditorSettings)
+		Window_EditorSettings();
 
 	return MenuSize;
 #endif
@@ -110,9 +121,9 @@ ImVec2 Toolbar::Draw()
 	return ImVec2(0, 0);
 }
 
-void Toolbar::DrawBulletColourConfig()
+void Toolbar::Window_BulletDebugDrawSettings()
 {
-	if (ImGui::Begin("Bullet Physics Debug Colours", &_ShowBulletConfigurationWindow))
+	if (ImGui::Begin("Bullet Physics Debug Colours", &_Visible_BulletConfiguration))
 	{
 		btIDebugDraw::DefaultColors& Colours = Application::GetWorld()->GetPhysicsDebugDrawer().GetDebugColours();
 		ImGui::ColorPicker3("Active Objects", Colours.m_activeObject.m_floats);
@@ -122,6 +133,15 @@ void Toolbar::DrawBulletColourConfig()
 		ImGui::ColorPicker3("Disabled Deactivation Objects", Colours.m_disabledDeactivationObject.m_floats);
 		ImGui::ColorPicker3("Disabled Simulation Objects", Colours.m_disabledSimulationObject.m_floats);
 		ImGui::ColorPicker3("Wants Deactivation Objects", Colours.m_wantsDeactivationObject.m_floats);
+	}
+	ImGui::End();
+}
+
+void Toolbar::Window_EditorSettings()
+{
+	if (ImGui::Begin("Editor Settings", &_Visible_EditorSettings))
+	{ 
+		ImGui::ColorPicker3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorLayer::GetEditorSettings()._ObjectHighlightColour));
 	}
 	ImGui::End();
 }

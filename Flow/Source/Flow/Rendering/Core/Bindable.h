@@ -5,10 +5,16 @@
 #include "Flow/ErrorHandling/ErrorMacros.h"
 #include "Flow/Rendering/RenderCommand.h"
 
+class Renderable;
+
 class FLOW_API Bindable
 {
 public:
 	virtual void Bind() = 0;
+
+	virtual void InitialiseParentReferences(const Renderable&) {};
+
+	//= Template interface for bindable codex. =======
 
 	//static std::shared_ptr<Bindable> Resolve();
 	/* Generates the Unique ID for this bindable without an instance of the bindable */
@@ -18,6 +24,7 @@ public:
 		assert(false && "Must be overriden if used");
 		return "";
 	};
+	//==========================================
 
 public:
 	bool _Bound = false;

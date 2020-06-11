@@ -17,34 +17,23 @@
 
 #include "Flow\Rendering\Core\Vertex\VertexLayout.h"
 
+#include "Flow/Rendering/Core/RenderQueue/Step.h"
+
 Material::Material()
 {
 }
 
-void Material::BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout)
+void Material::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
-	Parent->AddBind(Texture::Resolve(_Texture, 0));
-	Parent->AddBind(Sampler::Resolve());
+	RenderingStep->AddBindable(Texture::Resolve(_Texture, 0));
+	RenderingStep->AddBindable(Sampler::Resolve());
 
 	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-	Parent->AddBind(std::move(vShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
+	RenderingStep->AddBindable(std::move(vShader));
+	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
 
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, vShaderByteCode));
-}
-
-void Material::BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout)
-{
-	Parent->AddBind(Texture::Resolve(_Texture, 0));
-	Parent->AddBind(Sampler::Resolve());
-
-	auto VShader = VertexShader::Resolve(_VertexShader->GetPath());
-	auto VShaderByteCode = static_cast<VertexShader&>(*VShader).GetByteCode();
-	Parent->AddBind(std::move(VShader));
-	Parent->AddBind(PixelShader::Resolve(_PixelShader->GetPath()));
-
-	Parent->AddBind(InputLayout::Resolve(VertexLayout, VShaderByteCode));
+	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 }
 
 void Material::SetTexture(const std::string& TextureName)

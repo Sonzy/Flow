@@ -3,7 +3,7 @@
 
 enum class CullMode
 {
-	None = 0,
+	None = 1,
 	Front = 2,
 	Back = 3
 };

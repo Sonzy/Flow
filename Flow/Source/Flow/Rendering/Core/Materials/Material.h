@@ -7,6 +7,7 @@ class VertexLayout;
 class ShaderAsset;
 class TextureAsset;
 class Renderable;
+class Step;
 
 /* Base class for materials. Allows for easy setting of textures and shaders. To be extended in the future for dynamic materials */
 class FLOW_API Material
@@ -14,9 +15,7 @@ class FLOW_API Material
 public:
 	Material();
 
-	virtual void BindMaterial(Renderable* Parent, const VertexLayout& VertexLayout);
-	virtual void BindMaterial(RenderableComponent* Parent, const VertexLayout& VertexLayout);
-
+	virtual void BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout);
 
 	void SetTexture(const std::string& TextureName);
 	void SetPixelShader(const std::string& ShaderName);

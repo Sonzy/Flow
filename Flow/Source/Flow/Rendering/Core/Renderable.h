@@ -1,50 +1,32 @@
 #pragma once
 #include "Bindable.h"
 #include <DirectXMath.h>
-#include "Bindables/IndexBuffer.h"
-#include "Flow/Helper/Maths.h"
+#include "Flow/Rendering/Core/RenderQueue/Technique.h"
 
+class IndexBuffer;
+class BindableVertexBuffer;
+class Topology;
+
+/* Interface class for anything that can be rendered*/
 class FLOW_API Renderable
 {
 public:
-	Renderable();
-	Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector Unique ptr errors, but deleting lvalue copy constructor doesnt.
+	//Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector Unique ptr errors, but deleting lvalue copy constructor doesnt.
 	virtual ~Renderable();
-
-	virtual void Update(float deltaTime) {};
 
 	virtual DirectX::XMMATRIX GetTransformXM() const = 0;
 
-	const IndexBuffer& GetIndexBuffer();
+	//= Render Queue Framework ===========
 
-	void SetPosition(Vector Location);
-	void SetRotation(Rotator Rotation);
-	void SetScale(Vector Scale);
-	Vector GetPosition() { return _Position; }
-	Rotator GetRotation() { return _Rotation; }
-	Vector GetScale() { return _Scale; }
-
-	void BindAll();
-	void AddBind(std::shared_ptr<Bindable> bind);
+	void Bind() const;
+	void AddTechnique(Technique NewTechnique);
+	UINT GetIndexCount() const;
 
 protected:
+	friend class Renderer;
 
-	template<class T>
-	T* GetBindable() noexcept
-	{
-		for (auto& pb : _Binds)
-		{
-			if (auto pt = dynamic_cast<T*>(pb.get()))
-				return pt;
-		}
-		return nullptr;
-	}
-
-protected:
-	Vector _Position;
-	Vector _Scale;
-	Rotator _Rotation;
-
-	std::vector<std::shared_ptr<Bindable>> _Binds;
-	const IndexBuffer* _IndexBuffer = nullptr;
+	std::shared_ptr<IndexBuffer> _IndexBuffer;
+	std::shared_ptr<BindableVertexBuffer> _VertexBuffer;
+	std::shared_ptr<Topology> _Topology;
+	std::vector<Technique> _Techniques;
 };
