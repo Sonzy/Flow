@@ -1,6 +1,7 @@
 #include "Flowpch.h"
 #include "ShaderAsset.h"
 #include "Flow\Application.h"
+#include "Flow/Assets/AssetSystem.h"
 
 ShaderAsset::ShaderAsset()
 {
@@ -8,7 +9,7 @@ ShaderAsset::ShaderAsset()
 
 bool ShaderAsset::LoadAsset(const std::string& AssetPath)
 {
-	_ShaderPath = Application::GetApplication().GetLocalFilePath() + AssetPath;
+	_ShaderPath = AssetPath;
 	_AssetSize = sizeof(_ShaderPath);
 
 	return true;

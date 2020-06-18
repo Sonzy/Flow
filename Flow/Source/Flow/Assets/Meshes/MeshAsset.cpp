@@ -24,7 +24,7 @@ MeshAsset::~MeshAsset()
 bool MeshAsset::LoadAsset(const std::string& LocalPath)
 {
 	Assimp::Importer Importer;
-	const aiScene* Scene = Importer.ReadFile(Application::GetApplication().GetLocalFilePath() + LocalPath,
+	const aiScene* Scene = Importer.ReadFile(LocalPath,
 		aiProcess_Triangulate |  //Force Tris
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded);
@@ -73,7 +73,7 @@ std::vector<Mesh*> MeshAsset::GetAllMeshes() const
 
 Mesh* MeshAsset::GetMesh(int Index) const
 {
-	return _Meshes[Index];
+	return (_Meshes.size() > 0) ? _Meshes[Index] : nullptr;
 }
 
 void MeshAsset::GenerateAssetSize()

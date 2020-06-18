@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "TextureAsset.h"
-
+#include "Flow/Assets/AssetSystem.h"
 #include "Flow\Application.h"
 #include "DXTex/DirectXTex.h"
 
@@ -13,7 +13,7 @@ bool TextureAsset::LoadAsset(const std::string& FilePath)
 	HRESULT ResultHandle;
 
 	//Load file using DirectXTex
-	std::string Path = Application::GetApplication().GetLocalFilePath() + FilePath;
+	std::string Path = FilePath;
 	std::wstring WidePath = std::wstring(Path.begin(), Path.end());
 	CATCH_ERROR_DX(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, _Image));
 

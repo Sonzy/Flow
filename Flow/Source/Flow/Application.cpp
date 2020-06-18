@@ -49,33 +49,34 @@ void Application::InitialiseApplication()
 	PushOverlay(ImGuiLayer_);
 
 	//Get Local File Path
-	char Path[128];
-	GetModuleFileName(nullptr, Path, sizeof(Path));
-	std::string ExeDir = std::string(Path);
-	LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
+	//char Path[128];
+	//GetModuleFileName(nullptr, Path, sizeof(Path));
+	//std::string ExeDir = std::string(Path);
+	//LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
+	_ApplicationPath = std::filesystem::current_path();
 
 	//TODO: Load assets somewhere
 	//= Models =
 
-	AssetSystem::LoadAsset("Box", "Flow/Assets/Models/Box.obj");
-	AssetSystem::LoadAsset("SelectionGizmo", "Flow/Assets/Models/SelectionGizmo.obj");
-	AssetSystem::LoadAsset("Wabble_Crate", "Flow/Assets/Models/Wabble_Crate.obj");
-	AssetSystem::LoadAsset("Wabble_Chair", "Flow/Assets/Models/Wabble_Chair.obj");
-	AssetSystem::LoadAsset("Wabble_Table", "Flow/Assets/Models/Wabble_Table.obj");
-	AssetSystem::LoadAsset("Wabble_Revolver", "Flow/Assets/Models/Wabble_Revolver.obj");
-	AssetSystem::LoadAsset("Wabble_Rifle", "Flow/Assets/Models/Wabble_Rifle.obj");
-	AssetSystem::LoadAsset("Wabble_Shotgun", "Flow/Assets/Models/Wabble_Shotgun.obj");
-	AssetSystem::LoadAsset("Wabble_Blunderbuss", "Flow/Assets/Models/Wabble_Blunderbuss.obj");
+	AssetSystem::LoadEditorAsset("Box", "Assets/Models/Box.obj");
+	AssetSystem::LoadEditorAsset("SelectionGizmo", "Assets/Models/SelectionGizmo.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Crate", "Assets/Models/Wabble_Crate.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Chair", "Assets/Models/Wabble_Chair.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Table", "Assets/Models/Wabble_Table.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Revolver", "Assets/Models/Wabble_Revolver.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Rifle", "Assets/Models/Wabble_Rifle.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Shotgun", "Assets/Models/Wabble_Shotgun.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss", "Assets/Models/Wabble_Blunderbuss.obj");
 
 	//= Collision ======================
 
-	AssetSystem::LoadAsset("Wabble_Table_Collision", "Flow/Assets/Collision/Collision_Wabble_Table.obj");
-	AssetSystem::LoadAsset("Wabble_Chair_Collision", "Flow/Assets/Collision/Collision_Wabble_Chair.obj");
-	AssetSystem::LoadAsset("Wabble_Shotgun_Collision", "Flow/Assets/Collision/Collision_Wabble_Shotgun.obj");
-	AssetSystem::LoadAsset("Wabble_Rifle_Collision", "Flow/Assets/Collision/Collision_Wabble_Rifle.obj");
-	AssetSystem::LoadAsset("Wabble_Revolver_Collision", "Flow/Assets/Collision/Collision_Wabble_Revolver.obj");
-	AssetSystem::LoadAsset("Wabble_Blunderbuss_Collision", "Flow/Assets/Collision/Collision_Wabble_Blunderbuss.obj");
-	AssetSystem::LoadAsset("Wabble_Crate_Collision", "Flow/Assets/Collision/Collision_Wabble_Crate.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Table_Collision", "Assets/Collision/Collision_Wabble_Table.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Chair_Collision", "Assets/Collision/Collision_Wabble_Chair.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Shotgun_Collision", "Assets/Collision/Collision_Wabble_Shotgun.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Rifle_Collision", "Assets/Collision/Collision_Wabble_Rifle.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Revolver_Collision", "Assets/Collision/Collision_Wabble_Revolver.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss_Collision", "Assets/Collision/Collision_Wabble_Blunderbuss.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Crate_Collision", "Assets/Collision/Collision_Wabble_Crate.obj");
 
 
 	//Assign Collisions to meshes
@@ -90,26 +91,26 @@ void Application::InitialiseApplication()
 
 	//= Textures =
 
-	AssetSystem::LoadAsset("Wabble_Props", "Flow/Assets/Textures/Wabble_Props.png");
-	AssetSystem::LoadAsset("Wabble_Weapons", "Flow/Assets/Textures/Wabble_Weapons.png");
-	AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png");
-	AssetSystem::LoadAsset("Wabble_Sand", "Flow/Assets/Textures/Wabble_Sand.png");
-	AssetSystem::LoadAsset("SkyCube_Test", "Flow/Assets/Textures/TestCubeMap2.png");
+	AssetSystem::LoadEditorAsset("Wabble_Props", "Assets/Textures/Wabble_Props.png");
+	AssetSystem::LoadEditorAsset("Wabble_Weapons", "Assets/Textures/Wabble_Weapons.png");
+	AssetSystem::LoadEditorAsset("Wabble_Wood", "Assets/Textures/Wabble_Wood.png");
+	AssetSystem::LoadEditorAsset("Wabble_Sand", "Assets/Textures/Wabble_Sand.png");
+	AssetSystem::LoadEditorAsset("SkyCube_Test", "Assets/Textures/TestCubeMap2.png");
 
 
 	//= Shaders =
-	AssetSystem::LoadAsset("TexturedLightVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
-	AssetSystem::LoadAsset("TexturedLightPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
-	AssetSystem::LoadAsset("TexturedPhongPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPhongPS.cso");
-	AssetSystem::LoadAsset("TexturedPhongVS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturedPhongVS.cso");
-	AssetSystem::LoadAsset("TexturedVS", "Flow/Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
-	AssetSystem::LoadAsset("TexturedPS", "Flow/Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
-	AssetSystem::LoadAsset("SolidColourVS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
-	AssetSystem::LoadAsset("SolidColourPS", "Flow/Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
-	AssetSystem::LoadAsset("LineShaderP", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
-	AssetSystem::LoadAsset("LineShaderV", "Flow/Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");
-	AssetSystem::LoadAsset("LineColourP", "Flow/Source/Flow/Rendering/Core/Shaders/LineColour_PS.cso");
-	AssetSystem::LoadAsset("LineColourV", "Flow/Source/Flow/Rendering/Core/Shaders/LineColour_VS.cso");
+	AssetSystem::LoadEditorAsset("TexturedLightVS", "Source/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedLightPS", "Source/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPhongPS", "Source/Rendering/Core/Shaders/TexturedPhongPS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPhongVS", "Source/Rendering/Core/Shaders/TexturedPhongVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedVS", "Source/Rendering/Core/Shaders/TextureVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPS", "Source/Rendering/Core/Shaders/TexturePS.cso");
+	AssetSystem::LoadEditorAsset("SolidColourVS", "Source/Rendering/Core/Shaders/SolidColorVS.cso");
+	AssetSystem::LoadEditorAsset("SolidColourPS", "Source/Rendering/Core/Shaders/SolidColourPS.cso");
+	AssetSystem::LoadEditorAsset("LineShaderP", "Source/Rendering/Core/Shaders/LineShaderP.cso");
+	AssetSystem::LoadEditorAsset("LineShaderV", "Source/Rendering/Core/Shaders/LineShaderV.cso");
+	AssetSystem::LoadEditorAsset("LineColourP", "Source/Rendering/Core/Shaders/LineColour_PS.cso");
+	AssetSystem::LoadEditorAsset("LineColourV", "Source/Rendering/Core/Shaders/LineColour_VS.cso");
 
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
@@ -338,15 +339,15 @@ void Application::LoadLevel()
 	Application::GetWorld()->Load();
 }
 
-std::string Application::GetLocalFilePath()
-{
-	return LocalPath_;
-}
-
-std::wstring Application::GetLocalFilePathWide()
-{
-	return std::wstring(LocalPath_.begin(), LocalPath_.end());
-}
+//std::string Application::GetLocalFilePath()
+//{
+//	return LocalPath_;
+//}
+//
+//std::wstring Application::GetLocalFilePathWide()
+//{
+//	return std::wstring(LocalPath_.begin(), LocalPath_.end());
+//}
 
 Window* Application::CreateNewWindow(const std::string& WindowName)
 {

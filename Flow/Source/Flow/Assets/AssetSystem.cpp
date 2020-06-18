@@ -32,16 +32,17 @@ void AssetSystem::InitialiseAssetSystem()
 
 }
 
-bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& AssetPath)
+bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& AssetPath, bool EditorAsset, bool AbsolutePath)
 {
 	//Create a new asset
 	AssetBase* NewAsset = CreateAsset(AssetSystem::GetAssetTypeFromFileExtension(AssetPath));
 	CHECK_RETURN_FALSE(!NewAsset, "AssetSystem::LoadAsset: Failed to create asset for file type.");
 
+	std::string UpdatedPath = AbsolutePath ? AssetPath : GetAssetDirectoryString(EditorAsset) + AssetPath;
 	//Try to load asset, log if we fail
-	if (!NewAsset->LoadAsset(AssetPath))
+	if (!NewAsset->LoadAsset(UpdatedPath))
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, AssetPath);
+		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, UpdatedPath);
 		delete NewAsset;
 		return false;
 	}
@@ -55,6 +56,11 @@ bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& Ass
 	AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
 
 	return true;
+}
+
+bool AssetSystem::LoadEditorAsset(const std::string& AssetName, const std::string& FilePath, bool AbsolutePath)
+{
+	return LoadAsset(AssetName, FilePath, true);
 }
 
 
@@ -164,7 +170,22 @@ void AssetSystem::RenderDebugWindow(bool Render)
 	ImGui::End();
 }
 
-std::filesystem::path AssetSystem::GetRootDirectory()
+std::filesystem::path AssetSystem::GetRootDirectory(bool EditorPath)
 {
-	return std::filesystem::current_path();
+	return EditorPath ? std::filesystem::current_path().parent_path().append("Flow") : std::filesystem::current_path();
+}
+
+std::string AssetSystem::GetRootDirectoryString(bool EditorPath)
+{	
+	return EditorPath ? std::filesystem::current_path().parent_path().append("Flow").string() + "/" : std::filesystem::current_path().string() + "/";
+}
+
+std::filesystem::path AssetSystem::GetAssetDirectory(bool EditorPath)
+{
+	return EditorPath ? std::filesystem::current_path().parent_path().append("Flow") : std::filesystem::current_path();
+}
+
+std::string AssetSystem::GetAssetDirectoryString(bool EditorPath)
+{
+	return EditorPath ? std::filesystem::current_path().parent_path().append("Flow").string() + "/" : std::filesystem::current_path().string() + "/";
 }

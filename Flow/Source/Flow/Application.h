@@ -9,6 +9,8 @@
 
 #include "UserInterface/imgui/ImGuiLayer.h"
 
+#include <filesystem>
+
 class World;
 class Inspector;
 class EditorLayer;
@@ -39,8 +41,8 @@ public:
 	static void LoadLevel();
 
 	/* Returns path to Flow solution directory */
-	std::string GetLocalFilePath();
-	std::wstring GetLocalFilePathWide();
+	//std::string GetLocalFilePath();
+	//std::wstring GetLocalFilePathWide();
 
 	static Window* CreateNewWindow(const std::string& WindowName);
 	static bool RegisterWindow(Window* NewWindow);
@@ -105,7 +107,10 @@ private:
 
 	//= Paths =================
 
-	std::string LocalPath_;
+	//std::string LocalPath_;
+
+
+	std::filesystem::path _ApplicationPath;
 };
 
 //Is defined externally
