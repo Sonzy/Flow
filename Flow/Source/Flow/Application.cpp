@@ -99,18 +99,18 @@ void Application::InitialiseApplication()
 
 
 	//= Shaders =
-	AssetSystem::LoadEditorAsset("TexturedLightVS", "Source/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedLightPS", "Source/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPhongPS", "Source/Rendering/Core/Shaders/TexturedPhongPS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPhongVS", "Source/Rendering/Core/Shaders/TexturedPhongVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedVS", "Source/Rendering/Core/Shaders/TextureVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPS", "Source/Rendering/Core/Shaders/TexturePS.cso");
-	AssetSystem::LoadEditorAsset("SolidColourVS", "Source/Rendering/Core/Shaders/SolidColorVS.cso");
-	AssetSystem::LoadEditorAsset("SolidColourPS", "Source/Rendering/Core/Shaders/SolidColourPS.cso");
-	AssetSystem::LoadEditorAsset("LineShaderP", "Source/Rendering/Core/Shaders/LineShaderP.cso");
-	AssetSystem::LoadEditorAsset("LineShaderV", "Source/Rendering/Core/Shaders/LineShaderV.cso");
-	AssetSystem::LoadEditorAsset("LineColourP", "Source/Rendering/Core/Shaders/LineColour_PS.cso");
-	AssetSystem::LoadEditorAsset("LineColourV", "Source/Rendering/Core/Shaders/LineColour_VS.cso");
+	AssetSystem::LoadEditorAsset("TexturedLightVS", "Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedLightPS", "Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPhongPS", "Source/Flow/Rendering/Core/Shaders/TexturedPhongPS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPhongVS", "Source/Flow/Rendering/Core/Shaders/TexturedPhongVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedVS", "Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
+	AssetSystem::LoadEditorAsset("TexturedPS", "Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
+	AssetSystem::LoadEditorAsset("SolidColourVS", "Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
+	AssetSystem::LoadEditorAsset("SolidColourPS", "Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
+	AssetSystem::LoadEditorAsset("LineShaderP", "Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
+	AssetSystem::LoadEditorAsset("LineShaderV", "Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");
+	AssetSystem::LoadEditorAsset("LineColourP", "Source/Flow/Rendering/Core/Shaders/LineColour_PS.cso");
+	AssetSystem::LoadEditorAsset("LineColourV", "Source/Flow/Rendering/Core/Shaders/LineColour_VS.cso");
 
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");

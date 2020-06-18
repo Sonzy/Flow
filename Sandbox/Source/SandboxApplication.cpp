@@ -30,9 +30,9 @@ public:
 
 		/* Load assets for this app*/
 
-		AssetSystem::LoadAsset("CharacterPlane", "Sandbox/Assets/Models/Plane.obj");
-		AssetSystem::LoadAsset("CharacterPlaneTexture", "Sandbox/Assets/Textures/PlaneUVAttempt1.png");
-		AssetSystem::LoadAsset("Wabble_Wood", "Flow/Assets/Textures/Wabble_Wood.png");
+		AssetSystem::LoadAsset("CharacterPlane", "Assets/Models/Plane.obj");
+		AssetSystem::LoadAsset("CharacterPlaneTexture", "Assets/Textures/PlaneUVAttempt1.png");
+		AssetSystem::LoadEditorAsset("Wabble_Wood", "Assets/Textures/Wabble_Wood.png");
 
 		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
 		Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
