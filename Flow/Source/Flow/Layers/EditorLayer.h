@@ -8,6 +8,7 @@ class Toolbar;
 class SelectionGizmo;
 class Application;
 struct ImVec2;
+class AssetWindow;
 
 struct EditorSettings
 {
@@ -62,6 +63,7 @@ protected:
 	Inspector* _Inspector;
 	Toolbar* _Toolbar;
 	SelectionGizmo* _SelectionGizmo;
+	AssetWindow* _AssetWindow;
 	bool _DrawDemoWindow = false;
 	Application* _ApplicationPointer;
 	EditorSettings _Settings;

@@ -33,6 +33,9 @@
     <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Content\WorldObjects\Car.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Content\Wall.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Content\WorldObjects\Car.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

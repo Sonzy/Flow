@@ -163,3 +163,8 @@ void AssetSystem::RenderDebugWindow(bool Render)
 	}
 	ImGui::End();
 }
+
+std::filesystem::path AssetSystem::GetRootDirectory()
+{
+	return std::filesystem::current_path();
+}

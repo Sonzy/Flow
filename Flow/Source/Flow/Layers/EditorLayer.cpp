@@ -7,12 +7,14 @@
 #include "Flow\Editor\SelectionGizmo.h"
 #include "Flow/GameFramework/World.h"
 #include "Flow/Editor/Toolbar.h"
+#include "Flow/Editor/Windows/AssetWindow.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 
 #include <Psapi.h> //memory debug
 
 #include "Flow/Editor/Windows/CollisionEditor.h"
+
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -35,6 +37,8 @@ void EditorLayer::OnAttach()
 	_Inspector->SetCurrentWorld(World::GetWorld());
 
 	_ApplicationPointer = &Application::GetApplication();
+
+	_AssetWindow = new AssetWindow();
 }
 
 void EditorLayer::OnDetach()
@@ -54,6 +58,7 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 		_Inspector->Render();
 		RenderApplicationDebug(FrameDeltaTime);
 		UpdateCollisionEditor();
+		_AssetWindow->DrawWindow();
 
 		if (_DrawDemoWindow)
 			ImGui::ShowDemoWindow(&_DrawDemoWindow);

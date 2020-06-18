@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Content\Crate.cpp" />
     <ClCompile Include="Source\Content\Wall.cpp" />
+    <ClCompile Include="Source\Content\WorldObjects\Car.cpp" />
     <ClCompile Include="Source\Content\WorldObjects\MeshWorldObject.cpp" />
     <ClCompile Include="Source\Content\Layers\Example Layer.cpp" />
     <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp" />
@@ -102,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Content\Crate.h" />
     <ClInclude Include="Source\Content\Wall.h" />
+    <ClInclude Include="Source\Content\WorldObjects\Car.h" />
     <ClInclude Include="Source\Content\WorldObjects\MeshWorldObject.h" />
     <ClInclude Include="Source\Content\Layers\Example Layer.h" />
     <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h" />

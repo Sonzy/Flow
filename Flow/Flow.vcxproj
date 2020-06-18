@@ -123,6 +123,7 @@
     <ClInclude Include="Source\Flow\Editor\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\Toolbar.h" />
+    <ClInclude Include="Source\Flow\Editor\Windows\AssetWindow.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\CollisionEditor.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\EditorWindow.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\Toolbar.cpp" />
+    <ClCompile Include="Source\Flow\Editor\Windows\AssetWindow.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\CollisionEditor.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\EditorWindow.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />

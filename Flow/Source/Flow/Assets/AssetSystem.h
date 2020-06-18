@@ -9,6 +9,8 @@
 #include "Flow\Assets\Textures\TextureAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
+#include <filesystem>
+
 /* Asset management class used for managing all assets in the engine */
 class FLOW_API AssetSystem
 {
@@ -64,4 +66,8 @@ public:
 	std::unordered_map<size_t, AssetBase*> LoadedAssets_;
 
 	size_t LoadedAssetSize_ = 0;
+
+public:
+
+	static std::filesystem::path GetRootDirectory();
 };

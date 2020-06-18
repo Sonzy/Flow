@@ -269,7 +269,7 @@ void ImGuiLayer::ConfigureStyle()
 	colors[ImGuiCol_PopupBg] = ImVec4(0.313f, 0.313f, 0.313f, 1.000f);
 	colors[ImGuiCol_Border] = ImVec4(0.266f, 0.266f, 0.266f, 1.000f);
 	colors[ImGuiCol_BorderShadow] = ImVec4(0.000f, 0.000f, 0.000f, 0.000f);
-	colors[ImGuiCol_FrameBg] = ImVec4(0.160f, 0.160f, 0.160f, 1.000f);
+	colors[ImGuiCol_FrameBg] = ImVec4(0.114f, 0.114f, 0.114f, 1.000f);
 	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.200f, 0.200f, 0.200f, 1.000f);
 	colors[ImGuiCol_FrameBgActive] = ImVec4(0.280f, 0.280f, 0.280f, 1.000f);
 	colors[ImGuiCol_TitleBg] = ImVec4(0.148f, 0.148f, 0.148f, 1.000f);
@@ -314,7 +314,7 @@ void ImGuiLayer::ConfigureStyle()
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.000f, 0.000f, 0.000f, 0.586f);
 
 	style->ChildRounding = 4.0f;
-	style->FrameBorderSize = 1.0f;
+	style->FrameBorderSize = 0.0f;
 	style->FrameRounding = 2.0f;
 	style->GrabMinSize = 7.0f;
 	style->PopupRounding = 2.0f;
