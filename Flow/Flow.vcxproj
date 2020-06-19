@@ -136,9 +136,11 @@
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\PointLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\SkyboxActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\PointLightComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\SkyboxComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
@@ -332,9 +334,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Actors\PointLightActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\SkyboxActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\PointLightComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />

@@ -24,6 +24,7 @@
 
 #include "Flow/GameFramework/Actors/CameraActor.h"
 #include "Flow/GameFramework/Actors/SkyboxActor.h"
+#include "Flow/GameFramework/Actors/PointLightActor.h"
 
 #include "Flow/GameFramework/Controllers/Controller.h"
 
@@ -58,6 +59,7 @@ ExampleLayer::ExampleLayer()
 
 	_CameraActor = Application::GetWorld()->SpawnActor<CameraActor>("Camera Actor");
 	_Skybox = Application::GetWorld()->SpawnActor<SkyboxActor>("Skybox Actor");
+	_PointLightActor = Application::GetWorld()->SpawnActor<PointLightActor>("PointLight Actor");
 
 	Actors.push_back(WallObj);
 	//Actors.push_back(Example);
@@ -85,8 +87,7 @@ ExampleLayer::ExampleLayer()
 
 	Actors.push_back(_CameraActor);
 	Actors.push_back(_Skybox);
-	
-
+	Actors.push_back(_PointLightActor);
 
 	//= Setup World Object properties ==========
 
@@ -155,6 +156,8 @@ ExampleLayer::ExampleLayer()
 	Shotgun_->GetRootComponent()->SetWorldPosition(Vector(-1.5f, 1.2f, -1.3f));
 	Blunderbuss_->GetRootComponent()->SetWorldPosition(Vector(5.0f, 0.8f, 0.0f));
 	Rifle_->GetRootComponent()->SetWorldPosition(Vector(-2.0f, 2.2f, 0.0f));
+
+	_PointLightActor->GetRootComponent()->SetWorldPosition(Vector(0.0f, 10.8f, 0.0f));
 															   	
 	//= Rotation
 	Crate1_->GetRootComponent()->SetWorldRotation(Rotator(0.0f, 0.0f, 0.0f));
