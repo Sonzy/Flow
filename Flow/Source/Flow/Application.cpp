@@ -24,6 +24,8 @@
 
 #include "Flow\Helper\Profiling.h"
 
+#include "Flow/GameFramework/Other/ClassFactory.h"
+
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -32,7 +34,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application(const std::string& AppName)
 	: ApplicationName(AppName)
 {
-	
+
 }
 
 void Application::InitialiseApplication()
@@ -54,6 +56,8 @@ void Application::InitialiseApplication()
 	//std::string ExeDir = std::string(Path);
 	//LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
 	_ApplicationPath = std::filesystem::current_path();
+
+	_ClassFactory = new ClassFactory();
 
 	//TODO: Load assets somewhere
 	//= Models =
@@ -220,6 +224,14 @@ void Application::Run()
 		}
 
 		{
+			PROFILE_CURRENT_SCOPE("Game - Render World");
+
+			//TODO: Check where to move the world since I'm using layers
+			GameWorld_->Render();
+		}
+
+
+		{
 			PROFILE_CURRENT_SCOPE("Game - Layer Updates");
 
 			for (Layer* layer : LayerStack_)
@@ -331,12 +343,12 @@ void Application::Shutdown()
 
 void Application::SaveLevel()
 {
-	Application::GetWorld()->Save();
+	Application::GetWorld()->SaveLevel();
 }
 
 void Application::LoadLevel()
 {
-	Application::GetWorld()->Load();
+	Application::GetWorld()->LoadLevel();
 }
 
 //std::string Application::GetLocalFilePath()

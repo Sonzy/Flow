@@ -8,7 +8,7 @@ std::string Event::ToString() const
 
 bool Event::IsInCategory(EventCategory Category) const
 {
-	return GetCategoryFlags() & Category;
+	return GetCategoryFlags() & (int)Category; //TODO: Check if I wiffed changing to enum class
 }
 
 EventDispatcher::EventDispatcher(Event& event)

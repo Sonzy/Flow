@@ -1,5 +1,4 @@
 #pragma once
-#include "Flowpch.h"
 #include "Flow/Core.h"
 #include "Flow/Events/Event.h"
 
@@ -19,11 +18,7 @@ public:
 
 	virtual void OnImGuiRender(bool DrawEditor);
 
-
-
 	const std::string& GetName() const;
 protected:
 	std::string _Name;
-
-
 };

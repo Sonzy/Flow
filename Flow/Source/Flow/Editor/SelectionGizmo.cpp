@@ -23,9 +23,9 @@ SelectionGizmo::SelectionGizmo()
 	Material* Mat = AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial();
 
 	//Create and assign mesh components.
-	_ArrowX = new StaticMeshComponent("_ArrowX", Meshes, Mat);
-	_ArrowY = new StaticMeshComponent("_ArrowY", Meshes, Mat);
-	_ArrowZ = new StaticMeshComponent("_ArrowZ", Meshes, Mat);
+	_ArrowX = new StaticMeshComponent("_ArrowX", "SelectionGizmo", "Mat_FlatColour_White");
+	_ArrowY = new StaticMeshComponent("_ArrowY", "SelectionGizmo", "Mat_FlatColour_White");
+	_ArrowZ = new StaticMeshComponent("_ArrowZ", "SelectionGizmo", "Mat_FlatColour_White");
 
 	_ArrowX->_Tag = "ArrowX";
 	_ArrowY->_Tag = "ArrowY";

@@ -1,6 +1,7 @@
 #pragma once
 #include "VertexElement.h"
 #include <vector>
+#include "Flow/Logging/Log.h"
 
 class VertexLayout
 {

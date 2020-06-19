@@ -12,7 +12,7 @@ public:
 	std::string ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseMoved)
-		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input)
+		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput)
 private:
 	int _MouseX;
 	int _MouseY;
@@ -29,7 +29,7 @@ public:
 	std::string ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseScrolled)
-		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input)
+		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput)
 
 private:
 	float _XOffset;
@@ -41,7 +41,7 @@ class FLOW_API MouseButtonEvent : public Event
 public:
 	int GetMouseButton() const;
 
-	EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton)
+	EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput | EventCategory::MouseButton)
 protected:
 	MouseButtonEvent(int Button);
 

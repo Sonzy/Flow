@@ -20,10 +20,10 @@ Wall::Wall(const std::string& NewName)
 	: Actor(NewName)
 {
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Box");
-	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial();
+	MaterialAsset* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_Wood");
 
 	WallMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
-	WallMesh->InitialiseComponent(Mesh, Material);
+	WallMesh->SetMeshAndMaterial(Mesh, Material);
 	_RootComponent = WallMesh.get();
 
 //	_HasCollision = true;

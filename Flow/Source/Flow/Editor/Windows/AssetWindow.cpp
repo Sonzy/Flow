@@ -10,6 +10,8 @@ AssetWindow::AssetWindow()
 
 void AssetWindow::DrawWindow()
 {
+	PROFILE_FUNCTION();
+
 	if (ImGui::Begin("Asset Browser"))
 	{
 		float TotalWidth = ImGui::GetContentRegionAvail().x;
@@ -72,11 +74,13 @@ void AssetWindow::DrawDirectory(const std::filesystem::path& CurrentPath)
 		if (IsDirectory)
 		{
 			auto RelativePath = std::filesystem::relative(Element.path(), _CurrentParentDirectory);
-			if (ImGui::TreeNode(RelativePath.string().c_str()))
-			{
-				if (ImGui::IsItemClicked())
-					_SelectedDirectory = Element.path();
+			bool TreeOpen = ImGui::TreeNode(RelativePath.string().c_str());
 
+			if (ImGui::IsItemClicked())
+				_SelectedDirectory = Element.path();
+
+			if(TreeOpen)
+			{
 				//If a directory, draw the children before proceeding
 				DrawDirectory(Element.path());
 				ImGui::TreePop();

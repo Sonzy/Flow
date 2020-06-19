@@ -6,18 +6,20 @@ class btCollisionShape;
 class btRigidBody;
 
 class MeshAsset;
+class MaterialAsset;
 class Material;
 class Mesh;
+
 
 class FLOW_API StaticMeshComponent : public RenderableComponent
 {
 public:
 	StaticMeshComponent();
-	StaticMeshComponent(const std::string& Name, MeshAsset* Mesh = nullptr, Material* Material = nullptr, int MeshIndex = 0);
+	StaticMeshComponent(const std::string& Name, const std::string& MeshName = "", const std::string& MaterialName = "", int MeshIndex = 0);
 	virtual ~StaticMeshComponent();
 
 
-	void InitialiseComponent(MeshAsset* Mesh, Material* Material);
+	void InitialiseComponent(const std::string& MeshName, const std::string& MaterialName);
 	virtual void Tick(float DeltaTime) override;
 #if WITH_EDITOR
 	virtual void EditorBeginPlay() override;
@@ -26,9 +28,20 @@ public:
 #endif
 	virtual void BeginPlay() override;
 
-	void SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex = 0);
+	void SetMeshAndMaterial(const std::string& MeshName, const std::string& MaterialName, int MeshIndex = 0);
 	void SetStaticMesh(const std::string& MeshName);
-	void SetMaterial(Material* NewMaterial);
+	void SetMaterial(const std::string& MaterialName);
+
+	void SetMeshAndMaterial(MeshAsset* NewMesh, MaterialAsset* NewMaterial, int MeshIndex = 0);
+	void SetStaticMesh(MeshAsset* NewMesh);
+	void SetMaterial(MaterialAsset* NewMaterial);
+
+	//= Saving and loading ==========
+
+	virtual void Serialize(std::ofstream* Archive);
+	virtual void Deserialize(std::ifstream* Archive, Actor* NewParent) override;
+
+	//= Rendering ==========
 
 	virtual void Render() override;
 
@@ -61,7 +74,11 @@ protected:
 	bool _SimulatePhysics = false;
 	bool _DrawOutline = false;
 
+	//TODO: Rework how we store meshes
 	Mesh* _StaticMesh;
+	int _MeshIndex;
+	std::string _MeshIdentifier;
+	std::string _MaterialIdentifier;
 	Material* _Material;
 
 	float _OutlineThickness = 0.05f;

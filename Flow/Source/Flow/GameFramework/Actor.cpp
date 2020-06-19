@@ -6,6 +6,8 @@
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 #include "Flow\GameFramework\World.h"
 
+//#include "Flow/GameFramework/Other/ClassFactory.h"
+
 Actor::Actor()
 	: _RootComponent(nullptr)
 {
@@ -15,11 +17,11 @@ Actor::Actor()
 Actor::Actor(const std::string& Name)
 	: GameObject(Name), _RootComponent(nullptr)
 {
+	ClassFactory::Get().RegisterFactoryClass<Actor>();
 }
 
 Actor::~Actor()
 {
-	_RootComponent = nullptr;
 	FLOW_ENGINE_LOG("Actor::~Actor");
 }
 
@@ -50,7 +52,7 @@ void Actor::Tick(float DeltaTime)
 	if (_RootComponent)
 		_RootComponent->Tick(DeltaTime);
 }
-WorldComponent* Actor::GetRootComponent()
+WorldComponent* Actor::GetRootComponent() const
 {
 	return _RootComponent;
 }
@@ -106,3 +108,58 @@ void Actor::SetVisibility(bool Visible)
 {
 	_Visible = Visible;
 }
+
+Component* Actor::GetComponentByName(const std::string& Name) const
+{
+	if (auto Root = GetRootComponent())
+	{
+		return Root->GetChildByName(Name);
+	}
+	else
+		return nullptr;
+}
+
+void Actor::Serialize(std::ofstream* Archive)
+{
+	//Actor class
+	std::string ClassName = typeid(Actor).name();
+	Archive->write(ClassName.c_str(), sizeof(char) * 32);
+
+	//Name of actor (TODO: Max character length)
+	Archive->write(GetName().c_str(), sizeof(char) * 32);
+
+	SerializeComponents(Archive);
+}
+
+void Actor::SerializeComponents(std::ofstream* Archive)
+{
+	auto Root = GetRootComponent();
+	Root ? Root->Serialize(Archive) : FLOW_ENGINE_WARNING("Trying to save a nullptr root component on actor {0}", GetName());
+}
+
+void Actor::Deserialize(std::ifstream* Archive)
+{
+	//Set the actor name
+	char ActorName[32] = "";
+	Archive->read(ActorName, sizeof(char) * 32);
+	SetName(ActorName);
+
+	DeserializeComponents(Archive);
+}
+
+void Actor::DeserializeComponents(std::ifstream* Archive)
+{
+	//Get the UID for the class
+	char ActorClassID[32] = "";
+	Archive->read(ActorClassID, sizeof(char) * 32);
+
+	WorldComponent* NewRoot = ClassFactory::Get().CreateObjectFromID<WorldComponent>(std::string(ActorClassID));
+	if (!NewRoot)
+	{
+		FLOW_ENGINE_ERROR("Tried to load a component that had an invalid class");
+		return;
+	}
+	NewRoot->Deserialize(Archive, this);
+	_RootComponent = NewRoot;
+}
+

@@ -37,44 +37,36 @@ World::~World()
 {
 }
 
-void World::Save()
+void World::SaveLevel()
 {
-	////Create File - Overwrite existing
-	//std::ofstream OutStream = std::ofstream("Saved/SaveFile.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
-	//if (!OutStream)
-	//{
-	//	FLOW_ENGINE_LOG("Failed to create save file");
-	//	return;
-	//}
-	//
-	//for (auto Object : _Actors)
-	//{
-	//	const std::string& Name = Object->GetName();
-	//
-	//	OutStream.write((char*)&Name, sizeof(Name));
-	//}
-	//
-	//OutStream.close();
+	std::ofstream OutStream = std::ofstream("Saved/SaveFile.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
+	_MainLevel->Save(OutStream);
+	OutStream.close();
 }
 
-void World::Load()
+void World::LoadLevel()
 {
-	//std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
-	//if (!InStream)
-	//{
-	//	FLOW_ENGINE_LOG("Failed to load save file");
-	//	return;
-	//}
-	//
-	//char* StringBuffer = new char[sizeof(std::string)];
-	//auto Position = InStream.tellg();
-	//while (!InStream.eof())
-	//{
-	//	InStream.read(StringBuffer, sizeof(std::string));
-	//	FLOW_ENGINE_LOG("Output: {0}", (std::string)StringBuffer); //TODO: Fix this shiz
-	//}
-	//
-	//delete StringBuffer;
+	std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
+	_MainLevel->Load(InStream);
+	InStream.close();
+}
+
+void World::Render()
+{
+	PROFILE_FUNCTION();
+
+	int Count = 0;
+	Renderer::BeginScene();
+
+	//Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
+
+	//TODO: Move this stuff
+	for (auto& Actor : _MainLevel->GetActors())
+	{
+		Actor->Render();
+	}
+
+	Renderer::EndScene();
 }
 
 void World::InitialiseWorld()

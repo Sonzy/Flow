@@ -34,8 +34,11 @@ public:
 	World(const std::string& WorldName);
 	~World();
 
-	void Save();
-	void Load();
+	void SaveLevel();
+	void LoadLevel();
+
+	//TODO: Temp rendering in the level
+	void Render();
 
 	void InitialiseWorld();
 #if WITH_EDITOR

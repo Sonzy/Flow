@@ -108,24 +108,24 @@ ExampleLayer::ExampleLayer()
 	MaterialAsset* Sand = AssetSystem::GetAsset<MaterialAsset>("Mat_Sand");
 	MaterialAsset* SkyCube = AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube");
 
-	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand->GetMaterial());
-	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood->GetMaterial());
-	TestCube->GetMeshComponent()->SetMeshAndMaterial(Box, SkyCube->GetMaterial());
+	WallObj->GetMeshComponent()->SetMeshAndMaterial(Box, Sand);
+	Base->GetMeshComponent()->SetMeshAndMaterial(Box, Wood);
+	TestCube->GetMeshComponent()->SetMeshAndMaterial(Box, SkyCube);
 	//Base->GetMeshComponent()->EnableOutlineDrawing(true);
 	//Base->GetMeshComponent()->RefreshBinds();
 	
-	Table1_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
-	Table2_->GetMeshComponent()->SetMeshAndMaterial(Table, Props->GetMaterial());
+	Table1_->GetMeshComponent()->SetMeshAndMaterial(Table, Props);
+	Table2_->GetMeshComponent()->SetMeshAndMaterial(Table, Props);
 	
-	Chair1_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	Chair2_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	Chair3_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
-	Chair4_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props->GetMaterial());
+	Chair1_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props);
+	Chair2_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props);
+	Chair3_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props);
+	Chair4_->GetMeshComponent()->SetMeshAndMaterial(Chair, Props);
 
-	Revolver_->GetMeshComponent()->SetMeshAndMaterial(Revolver, Weapons->GetMaterial());
-	Shotgun_->GetMeshComponent()->SetMeshAndMaterial(Shotgun, Weapons->GetMaterial());
-	Blunderbuss_->GetMeshComponent()->SetMeshAndMaterial(Blunderbuss, Weapons->GetMaterial());
-	Rifle_->GetMeshComponent()->SetMeshAndMaterial(Rifle, Weapons->GetMaterial());
+	Revolver_->GetMeshComponent()->SetMeshAndMaterial(Revolver, Weapons);
+	Shotgun_->GetMeshComponent()->SetMeshAndMaterial(Shotgun, Weapons);
+	Blunderbuss_->GetMeshComponent()->SetMeshAndMaterial(Blunderbuss, Weapons);
+	Rifle_->GetMeshComponent()->SetMeshAndMaterial(Rifle, Weapons);
 
 	//= Place everything in the level
 
@@ -217,23 +217,23 @@ void ExampleLayer::BeginPlay()
 
 void ExampleLayer::OnUpdate(float DeltaTime)
 {
-	PROFILE_FUNCTION();
-
-	int Count = 0;
-	Renderer::BeginScene();
-
-	Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
-	//Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
-
-	//RenderCommand::GetCamera().Tick(DeltaTime);
-
-	//TODO: Move this stuff
-	for (auto& Actor : Actors)
-	{
-		Actor->Render();
-	}
-
-	Renderer::EndScene();
+	//PROFILE_FUNCTION();
+	//
+	//int Count = 0;
+	//Renderer::BeginScene();
+	//
+	//Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
+	////Line::DrawLine(Vector(0.0f, 50.0f, 0.0f), Vector(200.0f, 50.0f, 0.0f), Vector(0.0f, 0.0f, 1.0f));
+	//
+	////RenderCommand::GetCamera().Tick(DeltaTime);
+	//
+	////TODO: Move this stuff
+	//for (auto& Actor : Actors)
+	//{
+	//	Actor->Render();
+	//}
+	//
+	//Renderer::EndScene();
 }
 
 void ExampleLayer::OnImGuiRender(bool DrawEditor)

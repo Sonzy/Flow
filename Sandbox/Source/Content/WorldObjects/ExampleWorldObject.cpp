@@ -28,9 +28,9 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 	//MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Hat_Sherif");
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");
 	MeshAsset* Mesh2 = AssetSystem::GetAsset<MeshAsset>("Hat_FancyMan");
-	Material* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_HatFancyMan")->GetMaterial();
-	TestMesh->InitialiseComponent(Mesh2, Material);
-	TestMesh2->InitialiseComponent(Mesh, Material);
+	MaterialAsset* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_HatFancyMan");
+	TestMesh->SetMeshAndMaterial(Mesh2, Material);
+	TestMesh2->SetMeshAndMaterial(Mesh, Material);
 	TestMesh2->SetRelativePosition(Vector(100.0f, 10.0f, 10.0f));
 	//TestMesh2->SetWorldRotation(Rotator(90.0f, 0.0f, 0.0f));
 

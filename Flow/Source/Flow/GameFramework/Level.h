@@ -9,6 +9,9 @@ public:
 	Level() = delete;
 	Level(const std::string& LevelName);
 
+	void Save(std::ofstream& Output);
+	void Load(std::ifstream& Input);
+
 	void InitialiseTickList();
 	void DispatchBeginPlay();
 #if WITH_EDITOR

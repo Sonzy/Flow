@@ -15,8 +15,10 @@ public:
 	 * to update are incorrect, so we shouldnt write to any values */
 	virtual void DrawDetailsWindow(bool bDontUpdate);
 
-	const std::string& GetName();
+	const std::string& GetName() const;
 	std::string& GetWritableName();
+
+	void SetName(const std::string& NewName);
 
 protected:
 

@@ -2,6 +2,7 @@
 
 #include "Flow/Core.h"
 #include "Flow/Helper/Maths.h"
+#include <functional>
 
 //TODO: Make buffered events instead of blocking
 enum class EventType
@@ -28,7 +29,7 @@ enum EventCategory
 {
 	None = 0,
 	App = BITMASK(0),
-	Input = BITMASK(1),
+	UserInput = BITMASK(1),
 	Keyboard = BITMASK(2),
 	Mouse = BITMASK(3),
 	MouseButton = BITMASK(4),
@@ -40,7 +41,7 @@ enum EventCategory
 								virtual const char* GetName() const override { return #Type; }
 
 		//Lazy method of defining the category flag returns
-#define EVENT_CLASS_CATEGORY(Category) virtual int GetCategoryFlags() const override { return Category; }
+#define EVENT_CLASS_CATEGORY(Category) virtual int GetCategoryFlags() const override { return (int)Category; }
 
 class FLOW_API Event
 {

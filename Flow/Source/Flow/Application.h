@@ -1,5 +1,4 @@
 #pragma once
-#include "Flowpch.h"
 #include "Core.h"
 #include "Flow/Window/Window.h"
 #include "Layers/LayerStack.h"
@@ -14,6 +13,8 @@
 class World;
 class Inspector;
 class EditorLayer;
+class ClassFactory;
+class Layer;
 
 class FLOW_API Application
 {
@@ -61,6 +62,8 @@ public:
 	static void PauseGame();
 	static void StopGame();
 
+	ClassFactory& GetClassFactory() { return *_ClassFactory; }
+
 public:
 	std::string ApplicationName;
 
@@ -104,6 +107,7 @@ private:
 
 	LayerStack LayerStack_;
 	Timer Timer_;
+	ClassFactory* _ClassFactory;
 
 	//= Paths =================
 

@@ -4,6 +4,7 @@
 #include "Components\Component.h"
 #include <memory>
 #include <type_traits>
+#include <fstream>
 
 #include "Flow\Helper\Maths.h"
 #include "btBulletCollisionCommon.h"
@@ -24,7 +25,7 @@ public:
 #endif
 	virtual void Tick(float DeltaTime) override;
 
-	WorldComponent* GetRootComponent();
+	WorldComponent* GetRootComponent() const;
 
 	Vector GetLocation();
 	Vector GetScale();
@@ -40,6 +41,28 @@ public:
 	void SetVisibility(bool Visible);
 
 	bool IsTickEnabled() { return _TickEnabled; }
+
+	Component* GetComponentByName(const std::string& Name) const;
+
+public:
+
+	virtual void Serialize(std::ofstream* Archive);
+	void SerializeComponents(std::ofstream* Archive);
+	virtual void Deserialize(std::ifstream* Archive);
+	void DeserializeComponents(std::ifstream* Archive);
+
+	friend std::ofstream& operator<<(std::ofstream& Out, const Actor& Object)
+	{
+		//Name of actor (TODO: Max character length)
+		const std::string& Name = Object.GetName();
+		
+
+		Out.write(Name.c_str(), sizeof(char) * 32);
+		std::streampos Pos = Out.tellp();
+		FLOW_ENGINE_LOG("Offset: {0}", static_cast<int>(Pos));
+
+		Out << Object.GetRootComponent();
+	}
 
 protected:
 
@@ -71,3 +94,4 @@ protected:
 	/* This only works in the constructor of a spawned actor, */
 	bool _TickEnabled = true;
 };
+

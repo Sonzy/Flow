@@ -25,4 +25,7 @@
 
 #include "Flow/Helper/Profiling.h"
 
+//Saving and loading
+#include "Flow/GameFramework/Other/ClassFactory.h"
+
 #define _CRT_SECURE_NO_WARNINGS //defined for imgui warnings //TODO: Make sure this isnt causing issues

@@ -10,6 +10,8 @@
 
 #include "Flow/GameFramework/World.h"
 
+#include "Flow/GameFramework/Other/ClassFactory.h"
+
 WorldComponent::WorldComponent()
 	: WorldComponent("Unnamed WorldComponent")
 {
@@ -19,7 +21,7 @@ WorldComponent::WorldComponent(const std::string& Name)
 	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), _CollisionShape(nullptr),
 	_MotionState(nullptr)
 {
-	int b = 5;
+	ClassFactory::Get().RegisterFactoryClass<WorldComponent>();
 }
 
 WorldComponent::~WorldComponent()
@@ -289,6 +291,18 @@ std::vector<WorldComponent*> WorldComponent::GetChildren() const
 {
 	return _Children;
 }
+
+WorldComponent* WorldComponent::GetChildByName(const std::string& ChildName)
+{
+	for (auto& Comp : _Children)
+	{
+		if (Comp->GetName() == ChildName)
+			return Comp;
+	}
+
+	return nullptr;
+}
+
 void WorldComponent::SetVisibility(bool Visible)
 {
 	_Visible = Visible;
@@ -366,6 +380,55 @@ bool WorldComponent::IsSimulatingPhysics() const
 bool WorldComponent::HasCollision() const
 {
 	return _CollisionShape;
+}
+
+void WorldComponent::Serialize(std::ofstream* Archive)
+{
+	//Component Class
+	std::string ClassName = typeid(WorldComponent).name();
+	Archive->write(ClassName.c_str(), sizeof(char) * 32);
+
+	//Name of Component (TODO: Max character length)
+	Archive->write(GetName().c_str(), sizeof(char) * 32);
+
+	//Name of parent component
+	auto Parent = GetParentComponent();
+	if(Parent)
+		Archive->write(Parent->GetName().c_str(), sizeof(char) * 32);
+	else
+		Archive->write("None", sizeof(char) * 32);
+
+	//Write the component transform
+	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
+
+	SerializeChildren(Archive);
+}
+
+void WorldComponent::SerializeChildren(std::ofstream* Archive)
+{
+	//Write all child components
+	for (auto& Comp : GetChildren())
+	{
+		Comp->Serialize(Archive);
+	}
+}
+
+void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
+{
+	//Set the actor name
+	char ActorName[32] = "";
+	Archive->read(ActorName, sizeof(char) * 32);
+	SetName(ActorName);
+
+	DeserializeChildren(Archive, NewParent);
+}
+
+void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParent)
+{
+	for (auto& Comp : _Children)
+	{
+		Comp->Deserialize(Archive, NewParent);
+	}
 }
 
 

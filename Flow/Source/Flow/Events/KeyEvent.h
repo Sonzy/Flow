@@ -6,7 +6,7 @@ class FLOW_API KeyEvent : public Event
 public:
 	[[nodiscard]] int GetKeyCode() const;
 
-	EVENT_CLASS_CATEGORY(EventCategory::Keyboard | EventCategory::Input)
+	EVENT_CLASS_CATEGORY(EventCategory::Keyboard | EventCategory::UserInput)
 protected:
 	KeyEvent(int KeyCode);
 

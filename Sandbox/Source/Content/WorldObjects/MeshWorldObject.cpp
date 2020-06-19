@@ -43,8 +43,8 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& 
 
 	//Initialise Mesh Component
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>(MeshName);
-	Material* Material = AssetSystem::GetAsset<MaterialAsset>(MaterialName)->GetMaterial();
-	MeshComponent->InitialiseComponent(Mesh, Material);
+	MaterialAsset* Material = AssetSystem::GetAsset<MaterialAsset>(MaterialName);
+	MeshComponent->SetMeshAndMaterial(Mesh, Material);
 	//MeshComponent->SetSimulatePhysics(_SimulatePhysics);
 	//MeshComponent->InitialisePhysics();
 }

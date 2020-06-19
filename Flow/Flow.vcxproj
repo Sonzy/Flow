@@ -143,6 +143,7 @@
     <ClInclude Include="Source\Flow\GameFramework\Components\SkyboxComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Other\ClassFactory.h" />
     <ClInclude Include="Source\Flow\GameFramework\Pawn.h" />
     <ClInclude Include="Source\Flow\GameFramework\Controllers\Controller.h" />
     <ClInclude Include="Source\Flow\GameFramework\Controllers\PlayerController.h" />
@@ -338,6 +339,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Components\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Other\ClassFactory.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Pawn.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Controllers\Controller.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Controllers\PlayerController.cpp" />

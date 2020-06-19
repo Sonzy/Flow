@@ -9,30 +9,31 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 
-
-
 #include "Flow\GameFramework\World.h"
 
+#include "Flow/GameFramework/Actor.h"
+
 StaticMeshComponent::StaticMeshComponent()
-	: RenderableComponent("Unnamed StaticMesh Component"), _StaticMesh(nullptr), _Material(nullptr)
+	: StaticMeshComponent("Unnamed StaticMesh Component")
 {
 }
 
-StaticMeshComponent::StaticMeshComponent(const std::string& Name, MeshAsset* Mesh, Material* Material, int MeshIndex)
+StaticMeshComponent::StaticMeshComponent(const std::string& Name, const std::string& MeshName, const std::string& MaterialName, int MeshIndex)
 	: RenderableComponent(Name), _StaticMesh(nullptr), _Material(nullptr)
 {
-	if (Mesh && Material)
-		SetMeshAndMaterial(Mesh, Material, MeshIndex);
+	ClassFactory::Get().RegisterFactoryClass<StaticMeshComponent>();
+
+	if(!MeshName.empty() && !MaterialName.empty())
+		SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
 }
 
 StaticMeshComponent::~StaticMeshComponent()
 {
-	delete _StaticMesh;
 }
 
-void StaticMeshComponent::InitialiseComponent(MeshAsset* Mesh, Material* Material)
+void StaticMeshComponent::InitialiseComponent(const std::string& MeshName, const std::string& MaterialName)
 {
-	SetMeshAndMaterial(Mesh, Material);
+	SetMeshAndMaterial(MeshName, MaterialName);
 }
 
 void StaticMeshComponent::BeginPlay()
@@ -76,13 +77,33 @@ void StaticMeshComponent::OnViewportDeselected()
 }
 
 
-void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* Mesh, Material* Material, int MeshIndex)
+void StaticMeshComponent::SetMeshAndMaterial(const std::string& MeshName, const std::string& MaterialName, int MeshIndex)
 {
-	CHECK_RETURN(!Mesh, "StaticMeshComponent::SetMeshAndMaterial: Mesh was nullptr");
-	CHECK_RETURN(!Material, "StaticMeshComponent::SetMeshAndMaterial: Material was nullptr");
+	//Set the material
+	MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MaterialName);
+	if (!FoundMat)
+	{
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", MaterialName);
+		return;
+	}
+	_Material = FoundMat->GetMaterial();
 
-	_StaticMesh = Mesh->GetMesh(MeshIndex);
-	_Material = Material;
+	//Set the mesh
+	MeshAsset* FoundAsset = AssetSystem::GetAsset<MeshAsset>(MeshName);
+	if (!FoundAsset)
+	{
+		_StaticMesh = nullptr;
+		_MeshIndex = -1;
+		_MeshIdentifier = "None";
+		_MaterialIdentifier = "None";
+	}
+	else
+	{
+		_StaticMesh = FoundAsset->GetMesh(MeshIndex);
+		_MaterialIdentifier = MaterialName;
+		_MeshIndex = MeshIndex;
+		_MeshIdentifier = MeshName;
+	}
 
 	RefreshBinds();
 }
@@ -98,11 +119,137 @@ void StaticMeshComponent::SetStaticMesh(const std::string& MeshName)
 	RefreshBinds(); //TODO: Dont call this twice? dunno
 }
 
-void StaticMeshComponent::SetMaterial(Material* NewMaterial)
+void StaticMeshComponent::SetMaterial(const std::string& MaterialName)
 {
-	_Material = NewMaterial;
+	MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MaterialName);
+	if (!FoundMat)
+	{
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", MaterialName);
+		return;
+	}
+	_Material = FoundMat->GetMaterial();
 
 	RefreshBinds();
+}
+
+void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* NewMesh, MaterialAsset* NewMaterial, int MeshIndex)
+{
+	//Set the material
+	if (!NewMaterial)
+	{
+		_MaterialIdentifier = "None";
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
+		return;
+	}
+	_Material = NewMaterial->GetMaterial();
+	_MaterialIdentifier = NewMaterial->GetAssetName();
+
+	//Set the mesh
+	if (!NewMesh)
+	{
+		_StaticMesh = nullptr;
+		_MeshIndex = -1;
+		_MeshIdentifier = "None";
+	}
+	else
+	{
+		_StaticMesh = NewMesh->GetMesh(MeshIndex);
+		_MeshIndex = MeshIndex;
+		_MeshIdentifier = NewMesh->GetAssetName();
+	}
+
+	RefreshBinds();
+}
+
+void StaticMeshComponent::SetStaticMesh(MeshAsset* NewMesh)
+{
+	CHECK_RETURN(!NewMesh, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
+	_StaticMesh = NewMesh->GetMesh(0);
+	RefreshBinds(); //TODO: Dont call this twice? dunno
+}
+
+void StaticMeshComponent::SetMaterial(MaterialAsset* NewMaterial)
+{
+	if (!NewMaterial)
+	{
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
+		return;
+	}
+	_Material = NewMaterial->GetMaterial();
+	RefreshBinds();
+}
+
+void StaticMeshComponent::Serialize(std::ofstream* Archive)
+{
+	//TODO: Update the serialisation framework
+
+	//Component Class
+	std::string ClassName = typeid(StaticMeshComponent).name();
+	Archive->write(ClassName.c_str(), sizeof(char) * 32);
+
+	//Name of Component (TODO: Max character length)
+	Archive->write(GetName().c_str(), sizeof(char) * 32);
+
+	//Name of parent component
+	auto Parent = GetParentComponent();
+	if (Parent)
+		Archive->write(Parent->GetName().c_str(), sizeof(char) * 32);
+	else
+		Archive->write("None", sizeof(char) * 32);
+
+	//Write the component transform
+	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
+
+	//= SAVE COMPONENT SPECIFIC DATA ==
+
+	//Save Mesh and material
+	Archive->write(_MeshIdentifier.c_str(), sizeof(char) * 32);
+	Archive->write(_MaterialIdentifier.c_str(), sizeof(char) * 32);
+	Archive->write(reinterpret_cast<char*>(&_MeshIndex), sizeof(int));
+	
+	//==================================
+
+	SerializeChildren(Archive);
+}
+
+void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
+{
+	//Set the component name
+	char ComponentName[32] = "";
+	Archive->read(ComponentName, sizeof(char) * 32);
+	SetName(ComponentName);
+
+	//= LOAD COMPONENT SPECIFIC DATA ==
+
+	//Load Component Parent
+	Archive->read(ComponentName, sizeof(char) * 32);
+	if (auto Comp = NewParent->GetComponentByName(ComponentName))
+		SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
+	else
+		FLOW_ENGINE_ERROR("Failed to load component parent with name {0}", ComponentName);
+
+
+	//Load Component Transform
+	Transform NewTrans;
+	Archive->read(reinterpret_cast<char*>(&NewTrans), sizeof(Transform));
+	SetRelativeTransform(NewTrans);
+
+	//Load Mesh and material
+	char MeshName[32];
+	char MaterialName[32];
+	int MeshIndex;
+
+	Archive->read(MeshName, sizeof(char) * 32);
+	Archive->read(MaterialName, sizeof(char) * 32);
+	Archive->read(reinterpret_cast<char*>(&MeshIndex), sizeof(int));
+	SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
+
+	//==================================
+
+	DeserializeChildren(Archive, NewParent);
+
+	FLOW_ENGINE_LOG("Loaded Static Mesh (Material : {0}) (Mesh : {1}) (Mesh Index : {2})",
+		MaterialName, MeshName, MeshIndex);
 }
 
 void StaticMeshComponent::Render()

@@ -23,7 +23,7 @@ void GameObject::DrawDetailsWindow(bool bDontUpdate)
 {
 }
 
-const std::string& GameObject::GetName()
+const std::string& GameObject::GetName() const
 {
 	return _ObjectName;
 }
@@ -31,4 +31,9 @@ const std::string& GameObject::GetName()
 std::string& GameObject::GetWritableName()
 {
 	return _ObjectName;
+}
+
+void GameObject::SetName(const std::string& NewName)
+{
+	_ObjectName = NewName;
 }
