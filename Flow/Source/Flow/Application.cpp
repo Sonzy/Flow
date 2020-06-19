@@ -351,6 +351,16 @@ void Application::LoadLevel()
 	Application::GetWorld()->LoadLevel();
 }
 
+void Application::SavePlayState()
+{
+	Application::GetWorld()->SavePlayState();
+}
+
+void Application::LoadPlayState()
+{
+	Application::GetWorld()->LoadPlayState();
+}
+
 //std::string Application::GetLocalFilePath()
 //{
 //	return LocalPath_;

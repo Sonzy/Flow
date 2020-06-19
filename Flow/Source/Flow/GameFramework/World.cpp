@@ -47,8 +47,73 @@ void World::SaveLevel()
 void World::LoadLevel()
 {
 	std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
+
+	//Clear Physics World State
+	delete _CollisionConfig;
+	delete _Dispatcher;
+	delete _Solver;
+	delete _PhysicsWorld;
+	delete _OverlappingPairCache;
+	InitialisePhysics();
+
 	_MainLevel->Load(InStream);
+
+	//TODO: Gravity has to be set after object are added to physics world
+	_PhysicsWorld->setGravity(btVector3(0, -9.81, 0));
+
 	InStream.close();
+
+#if WITH_EDITOR
+	//Reinitialise all actors for editor
+	for (auto& Act : _MainLevel->GetActors())
+	{
+		Act->EditorBeginPlay();
+	}
+#endif
+}
+
+void World::SavePlayState()
+{
+	std::ofstream OutStream = std::ofstream("Saved/PlayState.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
+	_MainLevel->Save(OutStream);
+	OutStream.close();
+}
+
+void World::LoadPlayState()
+{
+	std::ifstream InStream = std::ifstream("Saved/PlayState.flvl", std::ios::in | std::ios::binary);
+
+
+	// Remove all collision objects from the world then delete and restart the physics world
+	for (int i = _PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = _PhysicsWorld->getCollisionObjectArray()[i];
+		_PhysicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	//Clear Physics World State
+	delete _CollisionConfig;
+	delete _Dispatcher;
+	delete _Solver;
+	delete _PhysicsWorld;
+	delete _OverlappingPairCache;
+	InitialisePhysics();
+
+	_MainLevel->Load(InStream);
+
+	InStream.close();
+
+#if WITH_EDITOR
+	//Reinitialise all actors for editor
+	for (auto& Act : _MainLevel->GetActors())
+	{
+		Act->EditorBeginPlay();
+	}
+#endif
+
+	//TODO: Gravity has to be set after object are added to physics world
+	_PhysicsWorld->setGravity(btVector3(0, -9.81, 0));
 }
 
 void World::Render()
@@ -93,6 +158,12 @@ void World::StartGame()
 	_WorldState = WorldState::InGame;
 	_MainLevel->InitialiseTickList();
 	_MainLevel->DispatchBeginPlay();
+
+	for (int i = _PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = _PhysicsWorld->getCollisionObjectArray()[i];
+		obj->activate(true);
+	}
 
 
 #if WITH_EDITOR

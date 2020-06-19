@@ -226,8 +226,9 @@ void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	if (auto Comp = NewParent->GetComponentByName(ComponentName))
 		SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
 	else
-		FLOW_ENGINE_ERROR("Failed to load component parent with name {0}", ComponentName);
+		FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name {0}", ComponentName);
 
+	SetParent(NewParent);
 
 	//Load Component Transform
 	Transform NewTrans;

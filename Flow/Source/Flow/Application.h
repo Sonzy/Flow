@@ -40,6 +40,8 @@ public:
 
 	static void SaveLevel();
 	static void LoadLevel();
+	static void SavePlayState();
+	static void LoadPlayState();
 
 	/* Returns path to Flow solution directory */
 	//std::string GetLocalFilePath();

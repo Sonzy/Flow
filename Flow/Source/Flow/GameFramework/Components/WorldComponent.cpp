@@ -349,6 +349,9 @@ void WorldComponent::CreateRigidBody()
 
 	_RigidBody = new btRigidBody(bodyCI);
 	_RigidBody->setUserPointer(this);
+
+	//TODO: Testing flag issues
+	_RigidBody->setCollisionFlags(0);
 }
 
 void WorldComponent::UpdateAABB()
@@ -419,6 +422,8 @@ void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	char ActorName[32] = "";
 	Archive->read(ActorName, sizeof(char) * 32);
 	SetName(ActorName);
+
+	SetParent(NewParent);
 
 	DeserializeChildren(Archive, NewParent);
 }

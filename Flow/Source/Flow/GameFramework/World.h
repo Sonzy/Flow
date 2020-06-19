@@ -37,6 +37,9 @@ public:
 	void SaveLevel();
 	void LoadLevel();
 
+	void SavePlayState();
+	void LoadPlayState();
+
 	//TODO: Temp rendering in the level
 	void Render();
 

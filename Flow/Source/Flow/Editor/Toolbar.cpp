@@ -97,11 +97,20 @@ ImVec2 Toolbar::Draw()
 		if (ImGui::BeginMenu("Game"))
 		{
 			if (ImGui::MenuItem("Play"))
+			{
+				Application::SavePlayState();
 				Application::StartGame();
+			}
+	
 			if (ImGui::MenuItem("Pause"))
 				Application::PauseGame();
+
 			if (ImGui::MenuItem("Stop (WIP)"))
+			{
 				Application::StopGame();
+				Application::LoadPlayState();
+			}
+
 
 			ImGui::EndMenu();
 		}
