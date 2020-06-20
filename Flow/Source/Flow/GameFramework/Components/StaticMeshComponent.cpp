@@ -202,6 +202,9 @@ void StaticMeshComponent::Serialize(std::ofstream* Archive)
 
 	//= SAVE COMPONENT SPECIFIC DATA ==
 
+	//= Physics
+	Archive->write(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
+
 	//Save Mesh and material
 	Archive->write(_MeshIdentifier.c_str(), sizeof(char) * 32);
 	Archive->write(_MaterialIdentifier.c_str(), sizeof(char) * 32);
@@ -234,6 +237,10 @@ void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	Transform NewTrans;
 	Archive->read(reinterpret_cast<char*>(&NewTrans), sizeof(Transform));
 	SetRelativeTransform(NewTrans);
+
+	//= Physics
+
+	Archive->read(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
 
 	//Load Mesh and material
 	char MeshName[32];

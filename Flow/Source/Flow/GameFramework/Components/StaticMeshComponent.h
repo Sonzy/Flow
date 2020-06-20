@@ -71,7 +71,6 @@ public:
 
 protected:
 
-	bool _SimulatePhysics = false;
 	bool _DrawOutline = false;
 
 	//TODO: Rework how we store meshes

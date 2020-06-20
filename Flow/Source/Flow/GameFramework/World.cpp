@@ -100,6 +100,8 @@ void World::LoadPlayState()
 	delete _OverlappingPairCache;
 	InitialisePhysics();
 
+	int Objects = _PhysicsWorld->getNumCollisionObjects();
+
 	_MainLevel->Load(InStream);
 
 	InStream.close();
@@ -156,6 +158,8 @@ void World::StartEditor()
 void World::StartGame()
 {
 	_WorldState = WorldState::InGame;
+	FLOW_ENGINE_LOG("World State set to InGame");
+
 	_MainLevel->InitialiseTickList();
 	_MainLevel->DispatchBeginPlay();
 
@@ -182,6 +186,7 @@ void World::StopGame()
 {
 #if WITH_EDITOR
 	_WorldState = WorldState::Editor;
+	FLOW_ENGINE_LOG("World State set to Editor");
 #endif
 	// Quit here? should be editor only tbh, might make the whole func editor only
 }

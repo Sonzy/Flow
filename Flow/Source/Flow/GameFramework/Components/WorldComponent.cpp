@@ -404,6 +404,16 @@ void WorldComponent::Serialize(std::ofstream* Archive)
 	//Write the component transform
 	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
 
+	//= Component Specific stuff ===========
+
+	//= Physics
+
+	Archive->write(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
+
+
+
+	//======================================
+
 	SerializeChildren(Archive);
 }
 
@@ -419,11 +429,28 @@ void WorldComponent::SerializeChildren(std::ofstream* Archive)
 void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 {
 	//Set the actor name
-	char ActorName[32] = "";
-	Archive->read(ActorName, sizeof(char) * 32);
-	SetName(ActorName);
+	char ComponentName[32] = "";
+	Archive->read(ComponentName, sizeof(char) * 32);
+	SetName(ComponentName);
 
 	SetParent(NewParent);
+
+	//Load Component Parent
+	Archive->read(ComponentName, sizeof(char) * 32);
+	if (auto Comp = NewParent->GetComponentByName(ComponentName))
+		SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
+	else
+		FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name {0}", ComponentName);
+
+	SetParent(NewParent);
+
+	//Load Component Transform
+	Transform NewTrans;
+	Archive->read(reinterpret_cast<char*>(&NewTrans), sizeof(Transform));
+	SetRelativeTransform(NewTrans);
+
+	//= Load Physics properties
+	Archive->read(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
 
 	DeserializeChildren(Archive, NewParent);
 }
