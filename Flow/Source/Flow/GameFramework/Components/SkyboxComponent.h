@@ -7,11 +7,13 @@ class MeshAsset;
 class SkyboxComponent : public RenderableComponent
 {
 public:
-	SkyboxComponent() = delete;
+	SkyboxComponent();
 	SkyboxComponent(const std::string& Name);
 
 	virtual DirectX::XMMATRIX GetTransformXM() const override;
 	virtual void Render() override;
+
+	virtual std::string GetClassSerializationUID(std::ofstream* Archive);
 
 protected:
 

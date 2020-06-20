@@ -57,7 +57,9 @@ void Application::InitialiseApplication()
 	//LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
 	_ApplicationPath = std::filesystem::current_path();
 
+	//= Build class factory map before the application starts
 	_ClassFactory = new ClassFactory();
+	_ClassFactory->RegisterClassUIDs();
 
 	//TODO: Load assets somewhere
 	//= Models =

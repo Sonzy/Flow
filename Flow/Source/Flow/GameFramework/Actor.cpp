@@ -17,7 +17,6 @@ Actor::Actor()
 Actor::Actor(const std::string& Name)
 	: GameObject(Name), _RootComponent(nullptr)
 {
-	ClassFactory::Get().RegisterFactoryClass<Actor>();
 }
 
 Actor::~Actor()
@@ -128,13 +127,20 @@ void Actor::Serialize(std::ofstream* Archive)
 	//Name of actor (TODO: Max character length)
 	Archive->write(GetName().c_str(), sizeof(char) * 32);
 
+	//Save whether to load components
+	bool HasRoot = _RootComponent;
+	Archive->write(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
+
 	SerializeComponents(Archive);
 }
 
 void Actor::SerializeComponents(std::ofstream* Archive)
 {
-	auto Root = GetRootComponent();
-	Root ? Root->Serialize(Archive) : FLOW_ENGINE_WARNING("Trying to save a nullptr root component on actor {0}", GetName());
+	if (auto Root = GetRootComponent())
+	{
+		Root->Serialize(Archive);
+		Root->SerializeChildren(Archive);
+	}
 }
 
 void Actor::Deserialize(std::ifstream* Archive)
@@ -144,7 +150,12 @@ void Actor::Deserialize(std::ifstream* Archive)
 	Archive->read(ActorName, sizeof(char) * 32);
 	SetName(ActorName);
 
-	DeserializeComponents(Archive);
+	//Check if the actor had any components
+	bool HasRoot = false;
+	Archive->read(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
+
+	if(HasRoot)
+		DeserializeComponents(Archive);
 }
 
 void Actor::DeserializeComponents(std::ifstream* Archive)
@@ -159,7 +170,9 @@ void Actor::DeserializeComponents(std::ifstream* Archive)
 		FLOW_ENGINE_ERROR("Tried to load a component that had an invalid class");
 		return;
 	}
-	NewRoot->Deserialize(Archive, this);
+
 	_RootComponent = NewRoot;
+	NewRoot->Deserialize(Archive, this);
+	NewRoot->DeserializeChildren(Archive, this);
 }
 

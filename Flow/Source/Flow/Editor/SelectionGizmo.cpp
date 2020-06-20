@@ -221,6 +221,13 @@ void SelectionGizmo::RemoveCollidersFromWorld(World* World)
 	World::GetPhysicsWorld()->removeCollisionObject(_ZGhost);
 }
 
+void SelectionGizmo::Reset()
+{
+	_SelectedAxis = SelectedAxis::None;
+	_SelectedComponent = nullptr;
+	_Visible = false;
+}
+
 void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object)
 {
 	_SelectedAxis = SelectedAxis;

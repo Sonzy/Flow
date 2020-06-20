@@ -38,7 +38,8 @@ public:
 
 	//= Saving and loading ==========
 
-	virtual void Serialize(std::ofstream* Archive);
+	virtual std::string GetClassSerializationUID(std::ofstream* Archive) override;
+	virtual void Serialize(std::ofstream* Archive) override;
 	virtual void Deserialize(std::ifstream* Archive, Actor* NewParent) override;
 
 	//= Rendering ==========

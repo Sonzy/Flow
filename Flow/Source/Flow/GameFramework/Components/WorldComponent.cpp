@@ -21,7 +21,6 @@ WorldComponent::WorldComponent(const std::string& Name)
 	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), _CollisionShape(nullptr),
 	_MotionState(nullptr)
 {
-	ClassFactory::Get().RegisterFactoryClass<WorldComponent>();
 }
 
 WorldComponent::~WorldComponent()
@@ -385,36 +384,29 @@ bool WorldComponent::HasCollision() const
 	return _CollisionShape;
 }
 
+std::string WorldComponent::GetClassSerializationUID(std::ofstream* Archive)
+{
+	return typeid(WorldComponent).name();
+}
+
 void WorldComponent::Serialize(std::ofstream* Archive)
 {
-	//Component Class
-	std::string ClassName = typeid(WorldComponent).name();
-	Archive->write(ClassName.c_str(), sizeof(char) * 32);
+	//= Object Class ======
+	std::string ClassUID = GetClassSerializationUID(Archive);
+	Archive->write(ClassUID.c_str(), sizeof(char) * 32);
 
-	//Name of Component (TODO: Max character length)
+	// Component Name (TODO: Decide on a fixed string size)
 	Archive->write(GetName().c_str(), sizeof(char) * 32);
 
-	//Name of parent component
+	// Name of parent component
 	auto Parent = GetParentComponent();
-	if(Parent)
-		Archive->write(Parent->GetName().c_str(), sizeof(char) * 32);
-	else
-		Archive->write("None", sizeof(char) * 32);
-
-	//Write the component transform
+	(Parent) ?	Archive->write(Parent->GetName().c_str(), sizeof(char) * 32) :	Archive->write("None", sizeof(char) * 32);
+	
+	// Write the component transform
 	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
 
-	//= Component Specific stuff ===========
-
-	//= Physics
-
+	//= Physics ===
 	Archive->write(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
-
-
-
-	//======================================
-
-	SerializeChildren(Archive);
 }
 
 void WorldComponent::SerializeChildren(std::ofstream* Archive)
@@ -423,26 +415,31 @@ void WorldComponent::SerializeChildren(std::ofstream* Archive)
 	for (auto& Comp : GetChildren())
 	{
 		Comp->Serialize(Archive);
+		Comp->SerializeChildren(Archive);
 	}
 }
 
 void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 {
-	//Set the actor name
+	// Component Name
 	char ComponentName[32] = "";
 	Archive->read(ComponentName, sizeof(char) * 32);
 	SetName(ComponentName);
 
+	// Set the parent Actor
 	SetParent(NewParent);
 
-	//Load Component Parent
+	// Load Component Parent
 	Archive->read(ComponentName, sizeof(char) * 32);
-	if (auto Comp = NewParent->GetComponentByName(ComponentName))
-		SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
-	else
-		FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name {0}", ComponentName);
+	std::string CompNameStr(ComponentName);
+	if (CompNameStr != "None")
+	{
+		auto Comp = NewParent->GetComponentByName(ComponentName);
 
-	SetParent(NewParent);
+		Comp ?
+			SetParentComponent(dynamic_cast<WorldComponent*>(Comp)) :
+			FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name {0}", ComponentName);
+	}
 
 	//Load Component Transform
 	Transform NewTrans;
@@ -451,8 +448,6 @@ void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 
 	//= Load Physics properties
 	Archive->read(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
-
-	DeserializeChildren(Archive, NewParent);
 }
 
 void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParent)
@@ -460,6 +455,7 @@ void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParen
 	for (auto& Comp : _Children)
 	{
 		Comp->Deserialize(Archive, NewParent);
+		Comp->DeserializeChildren(Archive, NewParent);
 	}
 }
 

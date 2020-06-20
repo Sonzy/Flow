@@ -50,6 +50,7 @@ public:
 	/* Adds the collision data to the physics world. */
 	void AddCollidersToWorld(World* World);	
 	void RemoveCollidersFromWorld(World* World);	
+	void Reset();
 
 	void OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object);
 	void OnNewComponentSelected(WorldComponent* Object);

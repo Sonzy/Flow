@@ -13,6 +13,9 @@
 
 #if WITH_EDITOR
 #include "Flow/Editor/EditorCamera.h"
+#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/Inspector.h"
+#include "Flow/Editor/SelectionGizmo.h"
 #endif
 
 LineBatcher World::s_LineBatcher = LineBatcher();
@@ -83,24 +86,16 @@ void World::LoadPlayState()
 {
 	std::ifstream InStream = std::ifstream("Saved/PlayState.flvl", std::ios::in | std::ios::binary);
 
-
 	// Remove all collision objects from the world then delete and restart the physics world
 	for (int i = _PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = _PhysicsWorld->getCollisionObjectArray()[i];
 		_PhysicsWorld->removeCollisionObject(obj);
-		delete obj;
+
+
 	}
 
-	//Clear Physics World State
-	delete _CollisionConfig;
-	delete _Dispatcher;
-	delete _Solver;
-	delete _PhysicsWorld;
-	delete _OverlappingPairCache;
-	InitialisePhysics();
-
-	int Objects = _PhysicsWorld->getNumCollisionObjects();
+	EditorLayer::GetEditor()->GetInspector()->GetSelector()->Reset();
 
 	_MainLevel->Load(InStream);
 
@@ -113,9 +108,6 @@ void World::LoadPlayState()
 		Act->EditorBeginPlay();
 	}
 #endif
-
-	//TODO: Gravity has to be set after object are added to physics world
-	_PhysicsWorld->setGravity(btVector3(0, -9.81, 0));
 }
 
 void World::Render()

@@ -96,44 +96,9 @@ public:
 
 public:
 
+	virtual std::string GetClassSerializationUID(std::ofstream* Archive);
 	virtual void Serialize(std::ofstream* Archive);
 	void SerializeChildren(std::ofstream* Archive);
 	virtual void Deserialize(std::ifstream* Archive, Actor* NewParent);
 	void DeserializeChildren(std::ifstream* Archive, Actor* NewParent);
-
-	friend std::ofstream& operator<<(std::ofstream& Out, const WorldComponent& Object)
-	{
-		//Name of Component (TODO: Max character length)
-		const std::string& Name = Object.GetName();
-		//Out.write(reinterpret_cast<char*>(&Name), sizeof(char) * 32);
-		Out.write(Name.data(), sizeof(char) * 32);
-
-		//Write the component transform
-		Out.write(reinterpret_cast<char*>(&Object.GetRelativeTransform()), sizeof(Transform));
-
-		//Write all child components
-		for (auto& Comp : Object.GetChildren())
-		{
-			Out << Comp;
-		}
-	}
-
-	friend std::ifstream& operator>>(std::ifstream& In, WorldComponent& Object)
-	{
-		std::streampos InPosition = In.tellg();
-		Object._ObjectName = *reinterpret_cast<std::string*>(&InPosition);
-
-		////Name of Component (TODO: Max character length)
-		//const std::string& Name = Object->GetName();
-		//Out.write(reinterpret_cast<char*>(&Name), sizeof(char) * 32);
-		//
-		////Write the component transform
-		//Out.write(reinterpret_cast<char*>(&Object.GetRelativeTransform()), sizeof(Transform));
-		//
-		////Write all child components
-		//for (auto& Comp : Object.GetChildren())
-		//{
-		//	Out << Comp;
-		//}
-	}
 };

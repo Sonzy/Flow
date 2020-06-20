@@ -10,7 +10,8 @@
 class ClassFactory
 {
 public:
-	ClassFactory() {};
+	ClassFactory();
+	void RegisterClassUIDs();
 
 	static ClassFactory& Get();
 

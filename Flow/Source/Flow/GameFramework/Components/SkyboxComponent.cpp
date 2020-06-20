@@ -13,11 +13,17 @@
 
 #include "Flow\Assets\Meshes\MeshAsset.h" 
 
+SkyboxComponent::SkyboxComponent()
+	: SkyboxComponent("Skybox Component")
+{
+}
+
 SkyboxComponent::SkyboxComponent(const std::string& Name)
 	: RenderableComponent(Name)
 {
 	_Mesh = AssetSystem::GetAsset<MeshAsset>(_MeshPath);
 	_Material = AssetSystem::GetAsset<MaterialAsset>(_MaterialPath)->GetMaterial();
+
 	Technique Standard;
 	{
 		Step MainStep(1);
@@ -52,4 +58,9 @@ void SkyboxComponent::Render()
 	Renderer::Submit(this);
 
 	WorldComponent::Render();
+}
+
+std::string SkyboxComponent::GetClassSerializationUID(std::ofstream* Archive)
+{
+	return typeid(SkyboxComponent).name();
 }

@@ -31,7 +31,6 @@ void Level::Save(std::ofstream& Output)
 
 	for (auto Object : _Actors)
 	{
-		//OutStream << Object;
 		Object->Serialize(&OutStream);
 	}
 
