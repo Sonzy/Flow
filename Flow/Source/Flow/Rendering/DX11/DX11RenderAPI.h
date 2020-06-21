@@ -23,12 +23,21 @@ public:
 	virtual void DrawIndexed(int Count) override;
 	virtual void Draw(unsigned int  Count) override;
 
-	virtual void Resize(int Width, int Height);
+	virtual void Resize(int Width, int Height) override;
+	virtual void ResizeDepthBuffer(int Width, int Height) override;
 
 	virtual Vector GetScreenToWorldDirection(int X, int Y);
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetContext();
+
+	virtual void BindBackBuffer() override;
+	virtual void BindFrameBuffer(FrameBuffer* Buffer) override;
+
+#if WITH_EDITOR
+	void BindEditorFrameBuffer();
+	FrameBuffer* GetEditorBuffer() const;
+#endif
 
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> _SwapChain = nullptr;
@@ -38,10 +47,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Device> _Device = nullptr;
 
 #if WITH_EDITOR
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> _EditorRenderTexture = nullptr;
+	FrameBuffer* _EditorBuffer;
+	bool _EditorBufferBound;
 #endif
 
 	/* Debug interfaces */
 	//Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
-	//Microsoft::WRL::ComPtr<ID3D11Debug> Debug2 = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Debug> _DeviceDebug = nullptr;
 };

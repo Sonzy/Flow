@@ -74,6 +74,26 @@ void RenderCommand::Shutdown()
 	delete s_RendererAPI;
 }
 
+void RenderCommand::BindEditorBuffer()
+{
+	dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->BindEditorFrameBuffer();
+}
+
+FrameBuffer* RenderCommand::GetEditorFrameBuffer()
+{
+	return dynamic_cast<DX11RenderAPI*>(s_RendererAPI)->GetEditorBuffer();
+}
+
+void RenderCommand::BindFrameBuffer(FrameBuffer* Buffer)
+{
+	s_RendererAPI->BindFrameBuffer(Buffer);
+}
+
+void RenderCommand::BindBackBuffer()
+{
+	s_RendererAPI->BindBackBuffer();
+}
+
 IntVector2D RenderCommand::GetWindowSize()
 {
 	return s_RendererAPI->GetWindowSize();

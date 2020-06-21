@@ -15,9 +15,11 @@
 
 #include "Flow/Editor/Windows/CollisionEditor.h"
 
+#include "Flow/Rendering/Other/FrameBuffer.h"
+
 
 EditorLayer::EditorLayer()
-	: Layer("Editor Layer")
+	: Layer("Editor Layer"), _EditorViewportSize(0,0)
 {
 }
 
@@ -59,6 +61,7 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 		RenderApplicationDebug(FrameDeltaTime);
 		UpdateCollisionEditor();
 		_AssetWindow->DrawWindow();
+		DrawSceneWindow();
 
 		if (_DrawDemoWindow)
 			ImGui::ShowDemoWindow(&_DrawDemoWindow);
@@ -140,6 +143,23 @@ void EditorLayer::UpdateCollisionEditor()
 	//
 	//}
 	//ImGui::End();
+}
+
+void EditorLayer::DrawSceneWindow()
+{
+	if (ImGui::Begin("Scene"))
+	{
+		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
+		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
+		if (*reinterpret_cast<Vector2D*>(&ViewportSize) != _EditorViewportSize)//TODO: Stop being naughty
+		{
+			Buff->Resize(ViewportSize.x, ViewportSize.y);
+			_EditorViewportSize = *reinterpret_cast<Vector2D*>(&ViewportSize);
+		}
+	
+		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(1, 0, 0, 1));
+	}
+	ImGui::End();
 }
 
 void EditorLayer::InitialiseDockspace(ImVec2 Offset)

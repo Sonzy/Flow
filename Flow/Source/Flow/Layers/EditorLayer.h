@@ -59,6 +59,7 @@ protected:
 	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
 	void UpdateCollisionEditor();
+	void DrawSceneWindow();
 
 	Inspector* _Inspector;
 	Toolbar* _Toolbar;
@@ -78,6 +79,9 @@ protected:
 	float FrameDeltaTime = 0.0f;
 	float LastFrameTime = 0.0f;
 	const float UpdateInterval = 1.0f;
+
+	//Editor Window
+	Vector2D _EditorViewportSize;
 
 
 };

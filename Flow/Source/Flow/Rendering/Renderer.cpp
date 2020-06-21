@@ -11,13 +11,16 @@ Renderer::~Renderer()
 void Renderer::BeginScene()
 {
 	s_ObjectsRendered = 0;
+
+	RenderCommand::BindEditorBuffer();
 }
 
 void Renderer::EndScene()
 {
 	RenderQueue::Execute();
 	RenderQueue::Reset();
-	//FLOW_ENGINE_LOG("Rendered: {0} objects.", s_ObjectsRendered);
+
+	RenderCommand::BindBackBuffer();
 }
 
 int Renderer::SubmitWithoutDraw(Renderable* Renderables)

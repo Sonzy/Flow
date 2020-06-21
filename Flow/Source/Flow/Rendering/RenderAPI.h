@@ -1,6 +1,8 @@
 #pragma once
 #include "Flow/Rendering/Core/Camera/Camera.h"
 
+class FrameBuffer;
+
 class FLOW_API RenderAPI
 {
 public:
@@ -28,6 +30,7 @@ public:
 	virtual void EndFrame() = 0;
 
 	virtual void Resize(int Width, int Height) = 0;
+	virtual void ResizeDepthBuffer(int Width, int Height) = 0;
 
 	virtual Vector GetScreenToWorldDirection(int X, int Y) = 0;
 
@@ -35,6 +38,9 @@ public:
 
 	void SetMainCamera(std::shared_ptr<CameraBase> Camera) { _MainCamera = Camera;	}
 	std::shared_ptr<CameraBase> GetMainCamera() const { return _MainCamera; }
+
+	virtual void BindBackBuffer() = 0;
+	virtual void BindFrameBuffer(FrameBuffer* Buffer) = 0;
 
 public:
 

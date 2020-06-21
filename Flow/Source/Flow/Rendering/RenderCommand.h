@@ -8,6 +8,7 @@
 #include "Flow/Rendering/Core/RenderQueue/Job.h"
 
 class CameraBase;
+class FrameBuffer;
 
 class FLOW_API RenderCommand
 {
@@ -35,6 +36,13 @@ public:
 	static void EndFrame();
 
 	static void Shutdown();
+
+#if WITH_EDITOR
+	static void BindEditorBuffer();
+	static FrameBuffer* GetEditorFrameBuffer();
+#endif
+	static void BindFrameBuffer(FrameBuffer* Buffer);
+	static void BindBackBuffer();
 
 	static IntVector2D GetWindowSize();
 

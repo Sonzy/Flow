@@ -8,6 +8,7 @@
 #include "Flow\Window\WinWindow.h"
 
 #include "Flow/Rendering/Core/Camera/Camera.h"
+#include "Flow/Rendering/Other/FrameBuffer.h"
 
 
 #pragma comment(lib, "d3d11.lib")
@@ -62,6 +63,8 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 			_Context.GetAddressOf())
 	);
 
+	CATCH_ERROR_DX(_Device->QueryInterface(__uuidof(ID3D11Debug), (void**)&_DeviceDebug));
+
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
 
 	// Create render target view and populate backbuffer
@@ -102,6 +105,10 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 	Viewport.TopLeftY = 0.0f;
 
 	_Context->RSSetViewports(1u, &Viewport);
+
+#if WITH_EDITOR
+	_EditorBuffer = new FrameBuffer(ViewportWidth, ViewportHeight);
+#endif
 }
 void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 {
@@ -121,7 +128,6 @@ void DX11RenderAPI::BeginFrame()
 {
 	Clear();
 
-	//Init Camera Projection	
 	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
 }
 
@@ -146,21 +152,23 @@ void DX11RenderAPI::Draw(unsigned int Count)
 
 void DX11RenderAPI::Resize(int Width, int Height)
 {
+	//TODO: Shouldnt have to do anything different for editor since the windows messages should be processed befoer the scene is rendered
 	HRESULT ResultHandle;
 
 	_ViewportSize = IntVector2D(Width, Height);
 
 	_Context->OMSetRenderTargets(0, 0, 0);
 	_RenderTarget->Release();
+	_DepthStencilView->Release();
 
-	CATCH_ERROR_DX(_SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
+	//_DeviceDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 
-	// Create render target view and populate backbuffer
+	CATCH_ERROR_DX(_SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0));
+
+	//// Create render target view and populate backbuffer
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
 	CATCH_ERROR_DX(_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, _RenderTarget.GetAddressOf()));
-
-	_DepthStencilView->Release();
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
 	D3D11_TEXTURE2D_DESC DepthDescription = {};
@@ -194,7 +202,34 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	Viewport.TopLeftY = 0.0f;
 
 	_Context->RSSetViewports(1u, &Viewport);
+
 	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+}
+
+void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
+{
+	HRESULT ResultHandle;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
+	D3D11_TEXTURE2D_DESC DepthDescription = {};
+	DepthDescription.Width = Width;
+	DepthDescription.Height = Height;
+	DepthDescription.MipLevels = 1u;
+	DepthDescription.ArraySize = 1u;
+	DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	DepthDescription.SampleDesc.Count = 1u;
+	DepthDescription.SampleDesc.Quality = 0u;
+	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
+	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &DepthStencil));
+
+	// Create the depth stencil view
+	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
+	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
+	CATCH_ERROR_DX(_Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &_DepthStencilView));
+
 }
 
 Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
@@ -240,4 +275,58 @@ ID3D11Device* DX11RenderAPI::GetDevice()
 ID3D11DeviceContext* DX11RenderAPI::GetContext()
 {
 	return _Context.Get();
+}
+
+void DX11RenderAPI::BindBackBuffer()
+{
+	CREATE_RESULT_HANDLE();
+
+	// Create render target view and populate backbuffer
+	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
+	CATCH_ERROR_DX(_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
+	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &_RenderTarget));
+
+	Window& Win = Application::GetApplication().GetWindow();
+	IntVector2D AdjWindowSize = dynamic_cast<WinWindow&>(Win).GetAdjustedWindowSize();
+	_ViewportSize = { AdjWindowSize.X, AdjWindowSize.Y };
+
+	ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+ 
+#if WITH_EDITOR
+	_EditorBufferBound = false;
+#endif
+}
+
+void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer)
+{
+	CREATE_RESULT_HANDLE();
+
+	//Create Render Target view and bind framebuffer
+	CATCH_ERROR_DX(_Device->CreateRenderTargetView(Buffer->GetTexture(), nullptr, &_RenderTarget));
+
+	_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight()};
+	ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+
+#if WITH_EDITOR
+	_EditorBufferBound = false;
+#endif
+}
+
+void DX11RenderAPI::BindEditorFrameBuffer()
+{
+	//Bind the frame buffer
+	BindFrameBuffer(_EditorBuffer);
+	_EditorBufferBound = true;
+
+	//Update the window rendering properties
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+}
+
+FrameBuffer* DX11RenderAPI::GetEditorBuffer() const
+{
+	return _EditorBuffer;
 }
