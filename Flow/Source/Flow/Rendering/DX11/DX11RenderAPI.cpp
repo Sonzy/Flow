@@ -9,6 +9,10 @@
 #include "Flow/Rendering/Other/FrameBuffer.h"
 #include "Flow/Rendering/Other/DepthBuffer.h"
 
+#if WITH_EDITOR
+#include "Flow/Layers/EditorLayer.h"
+#endif
+
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -182,6 +186,12 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	_Context->RSSetViewports(1u, &Viewport);
 
 	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+
+	//Note: See ScreenToWorldVec, will fix properly another time
+#if WITH_EDITOR
+	if (CurrentBuffer == _EditorBuffer)
+		_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+#endif
 }
 
 void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
@@ -208,21 +218,35 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 	CATCH_ERROR_DX(_Device->CreateDepthStencilView(_DepthTexture.Get(), &DepthStencilViewDescription, &_DepthTextureView));
 }
 
-Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
+Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin)
 {
+	//TODO: need to pass in the window size instead incase im checking from any other window
+#if WITH_EDITOR
+	IntVector2D WinSize = EditorLayer::GetEditor()->GetSceneWindowSize();
+#else
 	IntVector2D WinSize = WinWindow::GetAdjustedWindowSize();
-	float Width = WinSize.X;
-	float Height = WinSize.Y;
+#endif
+
+	float Width = (float)WindowSize.X;
+	float Height = (float)WindowSize.Y;
 
 	//Normalise into +1 to -1
-	float MouseX = ((2 * X) / Width) - 1;
-	float MouseY = -(((2 * Y) / Height) - 1);
+	float MouseX = ((2 * (X - Origin.X)) / Width) - 1;
+	float MouseY = -(((2 * (Y - Origin.Y)) / Height) - 1);
 
 	//FLOW_ENGINE_ERROR("X: {0}, Y: {1}", MouseX, MouseY);
 
 	//Adjust for the projection matrix
 	DirectX::XMFLOAT4X4 Projection;
+
+#if WITH_EDITOR
+	//Note: Patch fix, since input events are fired before the scene begins, the projection matrix is incorrect in the editor
+	//		since the current projection is fullscreen. So were lazy and grab a cached version from the previous frame
+	DirectX::XMStoreFloat4x4(&Projection, _MainCamera->GetSceneProjectionMatrix());	
+#else
 	DirectX::XMStoreFloat4x4(&Projection, _MainCamera->GetProjectionMatrix());
+#endif
+
 	MouseX = MouseX / Projection._11;
 	MouseY = MouseY / Projection._22;
 
@@ -330,6 +354,7 @@ void DX11RenderAPI::BindEditorFrameBuffer()
 
 	//Update the window rendering properties
 	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
 }
 
 FrameBuffer* DX11RenderAPI::GetEditorBuffer() const

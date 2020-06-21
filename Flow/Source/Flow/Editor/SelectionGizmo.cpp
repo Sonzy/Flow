@@ -16,6 +16,8 @@
 
 #include "Flow/Helper/Maths.h"
 
+#include "Flow/Layers/EditorLayer.h"
+
 SelectionGizmo::SelectionGizmo()
 	: Actor("SelectionGizmo")
 {
@@ -133,7 +135,7 @@ void SelectionGizmo::UpdateSelection()
 
 	//Fire a ray from the current mouse position.
 	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
 
 
 	//Get the closest point on the axis line to the ray
@@ -252,7 +254,7 @@ void SelectionGizmo::OnSelected(SelectedAxis SelectedAxis, WorldComponent* Objec
 
 
 	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(_MouseLastUpdate.X, _MouseLastUpdate.Y);
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(_MouseLastUpdate.X, _MouseLastUpdate.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
 
 	float SelectionAxisClosestScale;
 	float RayClosestScale;

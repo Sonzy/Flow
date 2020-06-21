@@ -136,7 +136,7 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 	DirectX::XMFLOAT3 Pos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
 	IntVector2D MousePosition = Input::GetMousePosition();
 	Vector Start = Vector(Pos.x, Pos.y, Pos.z);
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y);
+	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
 	Vector End = Start + (Direction * 1000.0f);
 
 	//Raytrace into the world

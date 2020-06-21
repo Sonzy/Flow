@@ -6,6 +6,18 @@ void CameraBase::SetProjectionMatrix(DirectX::XMMATRIX Projection)
 	_Projection = Projection;
 }
 
+#if WITH_EDITOR
+void CameraBase::SetSceneProjection(DirectX::XMMATRIX NewProjection)
+{
+	_SceneProjection = NewProjection;
+}
+
+DirectX::XMMATRIX CameraBase::GetSceneProjectionMatrix() const
+{
+	return _SceneProjection;
+}
+#endif
+
 DirectX::XMMATRIX CameraBase::GetProjectionMatrix() const
 {
 	return _Projection;
@@ -49,4 +61,34 @@ DirectX::XMMATRIX CameraBase::GetCachedView()
 
 	CacheMatrices();
 	return _CachedView;
+}
+
+bool CameraBase::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+{
+	return false;
+}
+
+bool CameraBase::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
+{
+	return false;
+}
+
+bool CameraBase::OnMouseMoved(MouseMovedEvent& e)
+{
+	return false;
+}
+
+bool CameraBase::OnMouseScrolled(MouseScrolledEvent& e)
+{
+	return false;
+}
+
+bool CameraBase::OnKeyPressed(KeyPressedEvent& e)
+{
+	return false;
+}
+
+bool CameraBase::OnKeyReleased(KeyReleasedEvent& e)
+{
+	return false;
 }

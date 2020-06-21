@@ -26,7 +26,7 @@ public:
 	virtual void Resize(int Width, int Height) override;
 	virtual void ResizeDepthBuffer(int Width, int Height) override;
 
-	virtual Vector GetScreenToWorldDirection(int X, int Y);
+	virtual Vector GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0));
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetContext();

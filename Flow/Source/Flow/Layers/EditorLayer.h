@@ -9,6 +9,16 @@ class SelectionGizmo;
 class Application;
 struct ImVec2;
 class AssetWindow;
+class EditorCamera;
+
+class MouseButtonPressedEvent;
+class MouseButtonReleasedEvent;
+class MouseMovedEvent;
+class MouseScrolledEvent;
+class KeyPressedEvent;
+class KeyReleasedEvent;
+class WindowResizedEvent;
+class KeyTypedEvent;
 
 struct EditorSettings
 {
@@ -48,6 +58,12 @@ public:
 
 	void OpenCollisionEditor();
 
+	bool IsSceneWindowFocused() const;
+	bool IsMouseOverScene() const;
+
+	IntVector2D GetSceneWindowSize() const;
+	IntVector2D GetSceneWindowPosition() const;
+
 protected:
 
 	/* Create my own dockspace that takes into account the offset of the main menu bar.
@@ -57,6 +73,12 @@ protected:
 
 	bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+	bool OnMouseMoved(MouseMovedEvent& e);
+	bool OnMouseScrolled(MouseScrolledEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
+	bool OnKeyTyped(KeyTypedEvent& e);
+	bool OnKeyReleased(KeyReleasedEvent& e);
+	bool OnWindowResized(WindowResizedEvent& e);
 
 	void UpdateCollisionEditor();
 	void DrawSceneWindow();
@@ -68,6 +90,11 @@ protected:
 	bool _DrawDemoWindow = false;
 	Application* _ApplicationPointer;
 	EditorSettings _Settings;
+	std::shared_ptr<EditorCamera> _EditorCam;
+	bool _SceneWindowFocused;
+	bool _MouseOverScene;
+	IntVector2D _SceneWindowSize;
+	IntVector2D _SceneWindowPosition;
 
 	std::vector<std::shared_ptr<EditorWindow>> _EditorWindows;
 

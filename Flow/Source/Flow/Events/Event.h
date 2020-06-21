@@ -4,6 +4,8 @@
 #include "Flow/Helper/Maths.h"
 #include <functional>
 
+#define CONSUMES_INPUT(DispatchInputFunction, InputFunction) if(DispatchInputFunction){ bool Consumes = InputFunction; if(Consumes) return Consumes;}
+
 //TODO: Make buffered events instead of blocking
 enum class EventType
 {

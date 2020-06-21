@@ -14,11 +14,14 @@ public:
 	virtual void Update(float DeltaTime) override;
 
 protected:
+	friend class EditorLayer;
 
+	bool _CanUpdate;
+	IntVector2D _MouseLastFrame;
 
 	Vector _Position;
 	Rotator _Rotation;
 
-	IntVector2D _MouseLastFrame;
+
 	float _CameraSpeed;
 };

@@ -48,7 +48,7 @@ public:
 
 	//= Helper ===============
 
-	static Vector GetScreenToWorldDirectionVector(int X, int Y);
+	static Vector GetScreenToWorldDirectionVector(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0,0));
 
 private:
 	static RenderAPI* s_RendererAPI;

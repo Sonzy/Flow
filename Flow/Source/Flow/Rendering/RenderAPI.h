@@ -32,7 +32,7 @@ public:
 	virtual void Resize(int Width, int Height) = 0;
 	virtual void ResizeDepthBuffer(int Width, int Height) = 0;
 
-	virtual Vector GetScreenToWorldDirection(int X, int Y) = 0;
+	virtual Vector GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0)) = 0;
 
 	static API GetAPI() { return s_API; };
 

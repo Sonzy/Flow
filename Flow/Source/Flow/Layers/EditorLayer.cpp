@@ -16,6 +16,7 @@
 #include "Flow/Editor/Windows/CollisionEditor.h"
 
 #include "Flow/Rendering/Other/FrameBuffer.h"
+#include "Flow/Editor/EditorCamera.h"
 
 
 EditorLayer::EditorLayer()
@@ -73,11 +74,21 @@ void EditorLayer::OnEvent(Event& e)
 	EventDispatcher Dispatcher(e);
 	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonPressed));
 	Dispatcher.Dispatch<MouseButtonReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseButtonReleased));
+	Dispatcher.Dispatch<MouseMovedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseMoved));
+	Dispatcher.Dispatch<MouseScrolledEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnMouseScrolled));
+	Dispatcher.Dispatch<KeyPressedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnKeyPressed));
+	Dispatcher.Dispatch<KeyTypedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnKeyTyped));
+	Dispatcher.Dispatch<KeyReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnKeyReleased));
+	Dispatcher.Dispatch<WindowResizedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnWindowResized));
+
 }
 
 void EditorLayer::OnUpdate(float DeltaTime)
 {
 	FrameDeltaTime = DeltaTime;
+
+	if (!_EditorCam)
+		_EditorCam = std::dynamic_pointer_cast<EditorCamera>(RenderCommand::GetMainCamera());
 
 	_SelectionGizmo->Render();
 }
@@ -117,19 +128,85 @@ void EditorLayer::OpenCollisionEditor()
 	_EditorWindows.push_back(std::make_shared<CollisionEditor>());
 }
 
+bool EditorLayer::IsSceneWindowFocused() const
+{
+	return _SceneWindowFocused;
+}
+
+bool EditorLayer::IsMouseOverScene() const
+{
+	return _MouseOverScene;
+}
+
+IntVector2D EditorLayer::GetSceneWindowSize() const
+{
+	return _SceneWindowSize;
+}
+
+IntVector2D EditorLayer::GetSceneWindowPosition() const
+{
+	return _SceneWindowPosition;
+}
+
 bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
-	if (_Inspector)
-		return _Inspector->OnMouseClicked(e);
+	bool Handled = false;
+
+	CONSUMES_INPUT(_EditorCam, _EditorCam->OnMouseButtonPressed(e));
+
+	if (_Inspector && _Inspector->OnMouseClicked(e))
+		return true;
 
 	return false;
 }
 
 bool EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
-	if (_Inspector)
-		return _Inspector->OnMouseReleased(e);
+	if (_EditorCam && _EditorCam->OnMouseButtonReleased(e))
+		return true;
 
+	if (_Inspector && _Inspector->OnMouseReleased(e))
+		return true;
+
+	return false;
+}
+
+bool EditorLayer::OnMouseMoved(MouseMovedEvent& e)
+{
+	return false;
+}
+
+bool EditorLayer::OnMouseScrolled(MouseScrolledEvent& e)
+{
+	if (_EditorCam && _EditorCam->OnMouseScrolled(e))
+		return true;
+
+	return false;
+}
+
+bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+{
+	if (_EditorCam && _EditorCam->OnKeyPressed(e))
+		return true;
+
+	return false;
+}
+
+bool EditorLayer::OnKeyTyped(KeyTypedEvent& e)
+{
+	return false;
+}
+
+bool EditorLayer::OnKeyReleased(KeyReleasedEvent& e)
+{
+	if (_EditorCam && _EditorCam->OnKeyReleased(e))
+		return true;
+
+	return false;
+}
+
+bool EditorLayer::OnWindowResized(WindowResizedEvent& e)
+{
 	return false;
 }
 
@@ -149,14 +226,32 @@ void EditorLayer::DrawSceneWindow()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	if (ImGui::Begin("Scene"))
+	auto State = World::GetWorld()->GetWorldState();
+	std::string WindowName;
+	switch (State)
 	{
+	case WorldState::Paused: WindowName = "Scene - Paused###Scene"; break;
+	case WorldState::Editor: WindowName = "Scene###Scene"; break;
+	case WorldState::InGame: WindowName = "Scene - Playing###Scene"; break;
+	}
+
+	if (ImGui::Begin(WindowName.c_str()))
+	{
+		_SceneWindowFocused = ImGui::IsWindowFocused();
+		if (_EditorCam)
+			_EditorCam->_CanUpdate = _SceneWindowFocused ? true : !ImGui::IsAnyItemActive();
+
 		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
-		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
-		if (*reinterpret_cast<Vector2D*>(&ViewportSize) != _EditorViewportSize)//TODO: Stop being naughty
+			
+		//Note: We assume that the scene image has no padding and is flush to the window x. 
+		_SceneWindowPosition = IntVector2D(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y);
+		_SceneWindowSize = IntVector2D(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+		_MouseOverScene = ImGui::IsWindowHovered();
+
+		if (*reinterpret_cast<Vector2D*>(&_SceneWindowSize) != _EditorViewportSize)//TODO: Stop being naughty
 		{
-			Buff->Resize(ViewportSize.x, ViewportSize.y);
-			_EditorViewportSize = *reinterpret_cast<Vector2D*>(&ViewportSize);
+			Buff->Resize(_SceneWindowSize.X, _SceneWindowSize.Y);
+			_EditorViewportSize = *reinterpret_cast<Vector2D*>(&_SceneWindowSize);
 		}
 	
 		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()));

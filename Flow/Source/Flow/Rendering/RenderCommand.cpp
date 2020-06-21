@@ -99,7 +99,7 @@ IntVector2D RenderCommand::GetWindowSize()
 	return s_RendererAPI->GetWindowSize();
 }
 
-Vector RenderCommand::GetScreenToWorldDirectionVector(int X, int Y)
+Vector RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2D WindowSize, IntVector2D Origin)
 {
-	return s_RendererAPI->GetScreenToWorldDirection(X, Y);
+	return s_RendererAPI->GetScreenToWorldDirection(X, Y, WindowSize, Origin);
 }

@@ -84,13 +84,13 @@ public:
 
 	std::vector<std::shared_ptr<Actor>>& GetActors() { return _MainLevel->GetActors(); }
 
+	WorldState GetWorldState() const { return _WorldState; }
 protected:
 	friend class Application;
 	void StartGame();
 	void PauseGame();
 	void StopGame();
 
-	WorldState GetWorldState() const { return _WorldState; }
 
 protected:
 	void InitialisePhysics();

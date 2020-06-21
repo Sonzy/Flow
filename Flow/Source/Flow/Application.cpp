@@ -217,6 +217,8 @@ void Application::Run()
 			return;
 		}
 
+		Renderer::BeginScene();
+
 		if (!Paused_)
 		{
 			PROFILE_CURRENT_SCOPE("Game - Tick");
@@ -231,6 +233,7 @@ void Application::Run()
 			//TODO: Check where to move the world since I'm using layers
 			GameWorld_->Render();
 		}
+
 
 
 		{
@@ -253,6 +256,7 @@ void Application::Run()
 			GameWorld_->GetLineBatcher().DrawLines();
 		}
 
+		Renderer::EndScene();
 
 		//= UI Rendering =
 		{

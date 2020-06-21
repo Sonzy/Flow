@@ -1,6 +1,8 @@
 #include "Flowpch.h"
 #include "EditorCamera.h"
 #include "Flow/Input/Input.h"
+#include "Flow/Events/MouseEvent.h"
+#include "Flow/Events/KeyEvent.h"
 
 EditorCamera::EditorCamera()
 	: _Position(0), _Rotation(0), _MouseLastFrame(0), _CameraSpeed(0.2f)
@@ -55,6 +57,9 @@ Vector EditorCamera::GetCameraPosition() const
 
 void EditorCamera::Update(float DeltaTime)
 {
+	if (!_CanUpdate)
+		return;
+
 	IntVector2D MousePosition = Input::GetMousePosition();
 	Vector Translation(0.0f);
 

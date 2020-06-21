@@ -115,7 +115,7 @@ void World::Render()
 	PROFILE_FUNCTION();
 
 	int Count = 0;
-	Renderer::BeginScene();
+
 
 	//Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
 
@@ -125,7 +125,7 @@ void World::Render()
 		Actor->Render();
 	}
 
-	Renderer::EndScene();
+
 }
 
 void World::InitialiseWorld()
