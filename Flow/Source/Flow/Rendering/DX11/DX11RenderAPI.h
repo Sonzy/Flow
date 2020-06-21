@@ -43,8 +43,11 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> _SwapChain = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> _Context = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _RenderTarget = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Device> _Device = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> _DepthTexture = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthTextureView = nullptr;
+
+	FrameBuffer* CurrentBuffer;
 
 #if WITH_EDITOR
 	FrameBuffer* _EditorBuffer;

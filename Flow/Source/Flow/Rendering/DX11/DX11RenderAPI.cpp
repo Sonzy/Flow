@@ -1,7 +1,5 @@
 #include "Flowpch.h"
 #include "DX11RenderAPI.h"
-#include "ThirdParty/ImGui/imgui.h"
-#include "ThirdParty/ImGui/examples/imgui_impl_dx11.h"
 
 #include "Flow\Rendering\RenderCommand.h"
 #include "Flow\Application.h"
@@ -9,6 +7,7 @@
 
 #include "Flow/Rendering/Core/Camera/Camera.h"
 #include "Flow/Rendering/Other/FrameBuffer.h"
+#include "Flow/Rendering/Other/DepthBuffer.h"
 
 
 #pragma comment(lib, "d3d11.lib")
@@ -63,37 +62,17 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 			_Context.GetAddressOf())
 	);
 
-	CATCH_ERROR_DX(_Device->QueryInterface(__uuidof(ID3D11Debug), (void**)&_DeviceDebug));
-
-	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
+	//CATCH_ERROR_DX(_Device->QueryInterface(__uuidof(ID3D11Debug), (void**)&_DeviceDebug));
 
 	// Create render target view and populate backbuffer
+	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
 	CATCH_ERROR_DX(_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &_RenderTarget));
 
-	// Create the depth stencil texture
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
-	D3D11_TEXTURE2D_DESC DepthDescription = {};
-	DepthDescription.Width = ViewportWidth;
-	DepthDescription.Height = ViewportHeight;
-	DepthDescription.MipLevels = 1u;
-	DepthDescription.ArraySize = 1u;
-	DepthDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; //24 bit depth, 8 bit stencil
-	DepthDescription.SampleDesc.Count = 1u;
-	DepthDescription.SampleDesc.Quality = 0u;
-	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
-	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &DepthStencil));
-
-	// Create the depth stencil view
-	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
-	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
-	CATCH_ERROR_DX(_Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &_DepthStencilView));
+	ResizeDepthBuffer(ViewportWidth, ViewportHeight);
 
 	// Bind the Depth Stencil to the Output Merger
-	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
 
 	//Setup Viewport
 	D3D11_VIEWPORT Viewport;
@@ -107,8 +86,10 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 	_Context->RSSetViewports(1u, &Viewport);
 
 #if WITH_EDITOR
-	_EditorBuffer = new FrameBuffer(ViewportWidth, ViewportHeight);
+	_EditorBuffer = new FrameBuffer(ViewportWidth, ViewportHeight, true);
 #endif
+
+	CurrentBuffer = nullptr;
 }
 void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 {
@@ -121,7 +102,7 @@ void DX11RenderAPI::SetClearColour(float R, float G, float B, float A)
 void DX11RenderAPI::Clear()
 {
 	_Context->ClearRenderTargetView(_RenderTarget.Get(), _BackgroundColour);
-	_Context->ClearDepthStencilView(_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+	_Context->ClearDepthStencilView(_DepthTextureView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 }
 
 void DX11RenderAPI::BeginFrame()
@@ -136,7 +117,7 @@ void DX11RenderAPI::EndFrame()
 	HRESULT ResultHandle;
 	CATCH_ERROR_DX(_SwapChain->Present(0, 0));
 
-	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
 }
 
 void DX11RenderAPI::DrawIndexed(int Count)
@@ -159,8 +140,6 @@ void DX11RenderAPI::Resize(int Width, int Height)
 
 	_Context->OMSetRenderTargets(0, 0, 0);
 	_RenderTarget->Release();
-	_DepthStencilView->Release();
-
 	//_DeviceDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 
 	CATCH_ERROR_DX(_SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0));
@@ -168,9 +147,8 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	//// Create render target view and populate backbuffer
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
 	CATCH_ERROR_DX(_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
-	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, _RenderTarget.GetAddressOf()));
+	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &_RenderTarget));
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
 	D3D11_TEXTURE2D_DESC DepthDescription = {};
 	DepthDescription.Width = Width;
 	DepthDescription.Height = Height;
@@ -181,16 +159,16 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	DepthDescription.SampleDesc.Quality = 0u;
 	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
 	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &DepthStencil));
+	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &_DepthTexture));
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
 	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
-	CATCH_ERROR_DX(_Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, _DepthStencilView.GetAddressOf()));
+	CATCH_ERROR_DX(_Device->CreateDepthStencilView(_DepthTexture.Get(), &DepthStencilViewDescription, &_DepthTextureView));
 
-	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
 
 	//Setup Viewport
 	D3D11_VIEWPORT Viewport;
@@ -210,7 +188,6 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 {
 	HRESULT ResultHandle;
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencil = nullptr;
 	D3D11_TEXTURE2D_DESC DepthDescription = {};
 	DepthDescription.Width = Width;
 	DepthDescription.Height = Height;
@@ -221,15 +198,14 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 	DepthDescription.SampleDesc.Quality = 0u;
 	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
 	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &DepthStencil));
+	CATCH_ERROR_DX(_Device->CreateTexture2D(&DepthDescription, nullptr, &_DepthTexture));
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
 	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
-	CATCH_ERROR_DX(_Device->CreateDepthStencilView(DepthStencil.Get(), &DepthStencilViewDescription, &_DepthStencilView));
-
+	CATCH_ERROR_DX(_Device->CreateDepthStencilView(_DepthTexture.Get(), &DepthStencilViewDescription, &_DepthTextureView));
 }
 
 Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y)
@@ -290,9 +266,19 @@ void DX11RenderAPI::BindBackBuffer()
 	IntVector2D AdjWindowSize = dynamic_cast<WinWindow&>(Win).GetAdjustedWindowSize();
 	_ViewportSize = { AdjWindowSize.X, AdjWindowSize.Y };
 
-	ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+	//ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
 
-	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
+
+	D3D11_VIEWPORT Viewport;
+	Viewport.Width = (FLOAT)_ViewportSize.X;
+	Viewport.Height = (FLOAT)_ViewportSize.Y;
+	Viewport.MinDepth = 0.0f;
+	Viewport.MaxDepth = 1.0f;
+	Viewport.TopLeftX = 0.0f;
+	Viewport.TopLeftY = 0.0f;
+
+	_Context->RSSetViewports(1u, &Viewport);
  
 #if WITH_EDITOR
 	_EditorBufferBound = false;
@@ -307,10 +293,30 @@ void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer)
 	CATCH_ERROR_DX(_Device->CreateRenderTargetView(Buffer->GetTexture(), nullptr, &_RenderTarget));
 
 	_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight()};
-	ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+	if (!Buffer->HasDepthBuffer())
+	{
+		ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+		_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
+	}
+	else
+	{
+		_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), Buffer->GetDepthBuffer()->GetTextureView());
 
-	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthStencilView.Get());
+		_Context->ClearRenderTargetView(_RenderTarget.Get(), _BackgroundColour);
+		_Context->ClearDepthStencilView(Buffer->GetDepthBuffer()->GetTextureView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+	}
 
+	D3D11_VIEWPORT Viewport;
+	Viewport.Width = (FLOAT)Buffer->GetWidth();
+	Viewport.Height = (FLOAT)Buffer->GetHeight();
+	Viewport.MinDepth = 0.0f;
+	Viewport.MaxDepth = 1.0f;
+	Viewport.TopLeftX = 0.0f;
+	Viewport.TopLeftY = 0.0f;
+
+	_Context->RSSetViewports(1u, &Viewport);
+
+	CurrentBuffer = Buffer;
 #if WITH_EDITOR
 	_EditorBufferBound = false;
 #endif

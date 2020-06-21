@@ -216,6 +216,7 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexElement.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.h" />
     <ClInclude Include="Source\Flow\Rendering\DX11\DX11RenderAPI.h" />
+    <ClInclude Include="Source\Flow\Rendering\Other\DepthBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\Other\FrameBuffer.h" />
     <ClInclude Include="Source\Flow\Rendering\RenderAPI.h" />
     <ClInclude Include="Source\Flow\Rendering\RenderCommand.h" />
@@ -398,6 +399,7 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexElement.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Vertex\VertexLayout.cpp" />
     <ClCompile Include="Source\Flow\Rendering\DX11\DX11RenderAPI.cpp" />
+    <ClCompile Include="Source\Flow\Rendering\Other\DepthBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Other\FrameBuffer.cpp" />
     <ClCompile Include="Source\Flow\Rendering\RenderAPI.cpp" />
     <ClCompile Include="Source\Flow\Rendering\RenderCommand.cpp" />

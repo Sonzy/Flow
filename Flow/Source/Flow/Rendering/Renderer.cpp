@@ -5,6 +5,7 @@
 #include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
 
 int Renderer::s_ObjectsRendered = 0;
+
 Renderer::~Renderer()
 {
 }

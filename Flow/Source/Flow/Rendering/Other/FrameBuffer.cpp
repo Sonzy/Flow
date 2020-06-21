@@ -1,8 +1,10 @@
 #include "Flowpch.h"
 #include "FrameBuffer.h"
 #include "Flow/Rendering/RenderCommand.h"
+#include "DepthBuffer.h"
 
-FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height)
+FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer)
+	: _HasDepthBuffer(CreateDepthBuffer)
 {
 	Resize(Width, Height);
 }
@@ -10,6 +12,7 @@ FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height)
 FrameBuffer::~FrameBuffer()
 {
 	_Texture->Release();
+	_TextureView->Release();
 }
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
@@ -43,6 +46,14 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = -1;
 	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(_Texture.Get(), &SRVDesc, &_TextureView));
+
+	if (_HasDepthBuffer)
+	{
+		if (!_DepthBuffer)
+			_DepthBuffer = std::make_shared<DepthBuffer>(Width, Height);
+		else
+			_DepthBuffer->Resize(Width, Height);
+	}
 }
 
 ID3D11Texture2D* FrameBuffer::GetTexture() const
@@ -55,6 +66,11 @@ ID3D11ShaderResourceView* FrameBuffer::GetTextureView() const
 	return _TextureView.Get();
 }
 
+std::shared_ptr<DepthBuffer> FrameBuffer::GetDepthBuffer() const
+{
+	return _DepthBuffer;
+}
+
 unsigned int FrameBuffer::GetWidth() const
 {
 	return _Width;
@@ -63,4 +79,9 @@ unsigned int FrameBuffer::GetWidth() const
 unsigned int FrameBuffer::GetHeight() const
 {
 	return _Height;
+}
+
+bool FrameBuffer::HasDepthBuffer() const
+{
+	return _HasDepthBuffer;
 }

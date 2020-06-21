@@ -147,6 +147,8 @@ void EditorLayer::UpdateCollisionEditor()
 
 void EditorLayer::DrawSceneWindow()
 {
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
 	if (ImGui::Begin("Scene"))
 	{
 		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
@@ -157,9 +159,11 @@ void EditorLayer::DrawSceneWindow()
 			_EditorViewportSize = *reinterpret_cast<Vector2D*>(&ViewportSize);
 		}
 	
-		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(1, 0, 0, 1));
+		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()));
 	}
 	ImGui::End();
+
+	ImGui::PopStyleVar();
 }
 
 void EditorLayer::InitialiseDockspace(ImVec2 Offset)

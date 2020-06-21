@@ -165,6 +165,9 @@ bool ImGuiLayer::OnMouseScrolled(MouseScrolledEvent& e)
 	IO.MouseWheelH += e.GetXOffset();
 	IO.MouseWheel += e.GetYOffset();
 
+	if (IO.WantCaptureMouse)
+		return true;
+
 	return false;
 }
 
@@ -172,6 +175,9 @@ bool ImGuiLayer::OnKeyPressed(KeyPressedEvent& e)
 {
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.KeysDown[e.GetKeyCode()] = true;
+
+	if (IO.WantCaptureMouse)
+		return true;
 
 	IO.KeyCtrl = IO.KeysDown[VK_LCONTROL] || IO.KeysDown[VK_RCONTROL];
 	IO.KeyShift = IO.KeysDown[VK_LSHIFT] || IO.KeysDown[VK_RSHIFT];
@@ -191,6 +197,9 @@ bool ImGuiLayer::OnKeyReleased(KeyReleasedEvent& e)
 {
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.KeysDown[e.GetKeyCode()] = false;
+
+	if (IO.WantCaptureMouse)
+		return true;
 
 	IO.KeyCtrl = !IO.KeysDown[VK_LCONTROL] && !IO.KeysDown[VK_RCONTROL];
 	IO.KeyShift = !IO.KeysDown[VK_LSHIFT] && !IO.KeysDown[VK_RSHIFT];
