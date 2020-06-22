@@ -57,7 +57,8 @@ public:
 		return NewObject;
 	}
 
-	void DestroyActor(std::shared_ptr<Actor>& Act);
+	void DestroyActor(std::shared_ptr<Actor> Act);
+	void DestroyActor(Actor* Act);
 
 	void Tick(float DeltaTime);
 

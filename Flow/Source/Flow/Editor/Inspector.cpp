@@ -245,10 +245,12 @@ bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 {
 	if (e.GetKeyCode() == FLOW_KEY_DELETE && _FocusedItem)
 	{
-		std::shared_ptr<Actor> ActorPtr = std::shared_ptr<Actor>(_FocusedItem);
-		World::GetWorld()->DestroyActor(ActorPtr);
+		//std::shared_ptr<Actor> ActorPtr(_FocusedItem);
+		//World::GetWorld()->DestroyActor(ActorPtr);
 
-		_FocusedItem = nullptr;
+		World::GetWorld()->DestroyActor(_FocusedItem);
+
+		//_FocusedItem = nullptr;
 
 		if (_FocusedComponent)
 			_FocusedComponent->OnViewportDeselected();
@@ -264,8 +266,11 @@ bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 			_Selector->SetVisibility(false);
 		}
 
+		FLOW_ENGINE_LOG("Event");
 		return true;
 	}
+
+	FLOW_ENGINE_LOG("Events");
 
 	return false;
 }

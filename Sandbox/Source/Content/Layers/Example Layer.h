@@ -6,7 +6,7 @@
 #include <memory>
 
 class Actor;
-class MeshWorldObject;
+class StaticMeshActor;
 class CameraActor;
 class SkyboxActor;
 class PointLightActor;
@@ -27,32 +27,32 @@ private:
 	std::vector<std::shared_ptr<Actor>> Actors;
 	std::shared_ptr<PointLight> Light;
 
-	std::shared_ptr<MeshWorldObject> TestCube;
+	std::shared_ptr<StaticMeshActor> TestCube;
 
 	std::shared_ptr<Actor> Example;
 
-	std::shared_ptr<MeshWorldObject> WallObj;
-	std::shared_ptr<MeshWorldObject> Base;
-	std::shared_ptr<MeshWorldObject> Base2;
+	std::shared_ptr<StaticMeshActor> WallObj;
+	std::shared_ptr<StaticMeshActor> Base;
+	std::shared_ptr<StaticMeshActor> Base2;
 
-	std::shared_ptr<MeshWorldObject> Crate1_;
-	std::shared_ptr<MeshWorldObject> Crate2_;
-	std::shared_ptr<MeshWorldObject> Crate3_;
-	std::shared_ptr<MeshWorldObject> Crate4_;
-	std::shared_ptr<MeshWorldObject> Crate5_;
+	std::shared_ptr<StaticMeshActor> Crate1_;
+	std::shared_ptr<StaticMeshActor> Crate2_;
+	std::shared_ptr<StaticMeshActor> Crate3_;
+	std::shared_ptr<StaticMeshActor> Crate4_;
+	std::shared_ptr<StaticMeshActor> Crate5_;
 
-	std::shared_ptr<MeshWorldObject> Chair1_;
-	std::shared_ptr<MeshWorldObject> Chair2_;
-	std::shared_ptr<MeshWorldObject> Chair3_;
-	std::shared_ptr<MeshWorldObject> Chair4_;
+	std::shared_ptr<StaticMeshActor> Chair1_;
+	std::shared_ptr<StaticMeshActor> Chair2_;
+	std::shared_ptr<StaticMeshActor> Chair3_;
+	std::shared_ptr<StaticMeshActor> Chair4_;
 
-	std::shared_ptr<MeshWorldObject> Table1_;
-	std::shared_ptr<MeshWorldObject> Table2_;
+	std::shared_ptr<StaticMeshActor> Table1_;
+	std::shared_ptr<StaticMeshActor> Table2_;
 
-	std::shared_ptr<MeshWorldObject> Revolver_;
-	std::shared_ptr<MeshWorldObject> Shotgun_;
-	std::shared_ptr<MeshWorldObject> Blunderbuss_;
-	std::shared_ptr<MeshWorldObject> Rifle_;
+	std::shared_ptr<StaticMeshActor> Revolver_;
+	std::shared_ptr<StaticMeshActor> Shotgun_;
+	std::shared_ptr<StaticMeshActor> Blunderbuss_;
+	std::shared_ptr<StaticMeshActor> Rifle_;
 
 	std::shared_ptr<CameraActor> _CameraActor;
 	std::shared_ptr<SkyboxActor> _Skybox;

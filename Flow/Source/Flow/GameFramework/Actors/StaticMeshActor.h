@@ -3,11 +3,12 @@
 
 class StaticMeshComponent;
 
-class StaticMeshActor : public Actor
+class FLOW_API StaticMeshActor : public Actor
 {
 public:
 	StaticMeshActor();
 	StaticMeshActor(const std::string& NewName);
+	virtual ~StaticMeshActor();
 
 	StaticMeshComponent* GetMeshComponent() const;
 

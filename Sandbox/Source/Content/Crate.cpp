@@ -1,6 +1,9 @@
 #include "Flowpch.h"
 #include "Crate.h"
+#include "Flow/GameFramework/Components/StaticMeshComponent.h"
 
 Crate::Crate(const std::string& Name)
-	: MeshWorldObject(Name, "Wabble_Crate", "Mat_Wabble_Props")
-{}
+	: StaticMeshActor(Name)
+{
+	GetMeshComponent()->SetMeshAndMaterial("Wabble_Crate", "Mat_Wabble_Props");
+}

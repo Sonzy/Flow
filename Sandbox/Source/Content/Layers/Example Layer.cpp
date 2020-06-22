@@ -25,6 +25,7 @@
 #include "Flow/GameFramework/Actors/CameraActor.h"
 #include "Flow/GameFramework/Actors/SkyboxActor.h"
 #include "Flow/GameFramework/Actors/PointLightActor.h"
+#include "Flow/GameFramework/Actors/StaticMeshActor.h"
 
 #include "Flow/GameFramework/Controllers/Controller.h"
 
@@ -33,8 +34,8 @@ ExampleLayer::ExampleLayer()
 {
 	//= Create Objects in level ===========
 
-	WallObj = Application::GetWorld()->SpawnActor<MeshWorldObject>("Floor");
-	TestCube = Application::GetWorld()->SpawnActor<MeshWorldObject>("TestCube");
+	WallObj = Application::GetWorld()->SpawnActor<StaticMeshActor>("Floor");
+	TestCube = Application::GetWorld()->SpawnActor<StaticMeshActor>("TestCube");
 
 	Crate1_ = Application::GetWorld()->SpawnActor<Crate>("Crate1");
 	Crate2_ = Application::GetWorld()->SpawnActor<Crate>("Crate2");
@@ -42,20 +43,20 @@ ExampleLayer::ExampleLayer()
 	Crate4_ = Application::GetWorld()->SpawnActor<Crate>("Crate4");
 	Crate5_ = Application::GetWorld()->SpawnActor<Crate>("Crate5");
 	
-	Chair1_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair1");
-	Chair2_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair2");
-	Chair3_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair3");
-	Chair4_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Chair4");
+	Chair1_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Chair1");
+	Chair2_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Chair2");
+	Chair3_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Chair3");
+	Chair4_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Chair4");
 	
-	Table1_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Table1");
-	Table2_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Table2");
+	Table1_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Table1");
+	Table2_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Table2");
 
-	Revolver_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Revolver");
-	Blunderbuss_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Blunderbuss");
-	Shotgun_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Shotgun");
-	Rifle_ = Application::GetWorld()->SpawnActor<MeshWorldObject>("Rifle");
+	Revolver_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Revolver");
+	Blunderbuss_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Blunderbuss");
+	Shotgun_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Shotgun");
+	Rifle_ = Application::GetWorld()->SpawnActor<StaticMeshActor>("Rifle");
 	
-	Base = Application::GetWorld()->SpawnActor<MeshWorldObject>("Base");
+	Base = Application::GetWorld()->SpawnActor<StaticMeshActor>("Base");
 
 	_CameraActor = Application::GetWorld()->SpawnActor<CameraActor>("Camera Actor");
 	_Skybox = Application::GetWorld()->SpawnActor<SkyboxActor>("Skybox Actor");

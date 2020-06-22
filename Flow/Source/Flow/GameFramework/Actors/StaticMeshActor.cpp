@@ -14,6 +14,11 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 	_RootComponent = _MeshComponent.get();
 }
 
+StaticMeshActor::~StaticMeshActor()
+{
+	FLOW_ENGINE_LOG("StaticMeshActor::~StaticMeshActor");
+}
+
 StaticMeshComponent* StaticMeshActor::GetMeshComponent() const
 {
 	return _MeshComponent.get();
