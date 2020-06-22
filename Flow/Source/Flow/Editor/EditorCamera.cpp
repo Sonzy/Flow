@@ -5,7 +5,7 @@
 #include "Flow/Events/KeyEvent.h"
 
 EditorCamera::EditorCamera()
-	: _Position(0), _Rotation(0), _MouseLastFrame(0), _CameraSpeed(0.2f)
+	: _Position(0), _Rotation(0), _MouseLastFrame(0), _CameraSpeed(10.0f)
 {
 }
 
@@ -87,7 +87,7 @@ void EditorCamera::Update(float DeltaTime)
 		}
 	}
 
-	_Position += _Rotation.RotateVector(Translation);
+	_Position += _Rotation.RotateVector(Translation * DeltaTime);
 
 	_MouseLastFrame = MousePosition;
 

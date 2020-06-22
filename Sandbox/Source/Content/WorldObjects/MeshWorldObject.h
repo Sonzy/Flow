@@ -10,7 +10,7 @@ public:
 	MeshWorldObject();
 	MeshWorldObject(const std::string& NewName);
 	MeshWorldObject(const std::string& NewName, const std::string& MeshName, const std::string& MaterialName);
-	~MeshWorldObject() = default;
+	virtual ~MeshWorldObject();
 
 	[[nodiscard]] StaticMeshComponent* GetMeshComponent() const;
 

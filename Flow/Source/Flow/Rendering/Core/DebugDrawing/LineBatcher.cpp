@@ -6,6 +6,7 @@
 #include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Flow/Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Flow/Rendering/Core/Bindables/Stencil.h"
 
 #include "Flow/Rendering/Core/Vertex/VertexLayout.h"
 #include "Flow/Rendering/Core/Vertex/VertexBuffer.h"
@@ -41,6 +42,7 @@ void LineBatcher::Initialise()
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	AddBind(std::move(vShader));
 	AddBind(InputLayout::Resolve(*_VertexLayout, vShaderByteCode));
+	AddBind(Stencil::Resolve(StencilMode::AlwaysOnTop));
 
 	_VertexCB = new VertexConstantBuffer<ViewProjectionBuffer>(0);
 }

@@ -121,11 +121,13 @@
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
     <ClInclude Include="Source\Flow\Editor\Inspector.h" />
+    <ClInclude Include="Source\Flow\Editor\LevelManager.h" />
     <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\Toolbar.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\AssetWindow.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\CollisionEditor.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\EditorWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\Windows\SpawnWindow.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\ErrorHelpers.h" />
@@ -138,6 +140,7 @@
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\PointLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\SkyboxActor.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\StaticMeshActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\PointLightComponent.h" />
@@ -321,11 +324,13 @@
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
+    <ClCompile Include="Source\Flow\Editor\LevelManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\Toolbar.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\AssetWindow.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\CollisionEditor.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\EditorWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\Windows\SpawnWindow.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />
@@ -338,6 +343,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\PointLightActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\SkyboxActor.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Actors\StaticMeshActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\PointLightComponent.cpp" />

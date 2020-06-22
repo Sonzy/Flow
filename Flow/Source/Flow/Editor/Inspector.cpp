@@ -18,12 +18,10 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Flow\GameFramework\Components\WorldComponent.h"
-#include "Flow\GameFramework\Components\StaticMeshComponent.h" //TODO: Remove dependency
-
-
-
+#include "Flow\GameFramework\Components\StaticMeshComponent.h"
 #include "Flow\GameFramework\Components\CameraComponent.h"
-#include "Flow/GameFramework/Components/WorldComponent.h"
+
+#include "Flow/Events/KeyEvent.h"
 
 #include "Flow/Layers/EditorLayer.h"
 
@@ -237,6 +235,35 @@ bool Inspector::OnMouseReleased(MouseButtonReleasedEvent& e)
 	if (_Selector->GetSelectedAxis() != SelectedAxis::None)
 	{
 		_Selector->OnDeselected();
+		return true;
+	}
+
+	return false;
+}
+
+bool Inspector::OnKeyPressed(KeyPressedEvent& e)
+{
+	if (e.GetKeyCode() == FLOW_KEY_DELETE && _FocusedItem)
+	{
+		std::shared_ptr<Actor> ActorPtr = std::shared_ptr<Actor>(_FocusedItem);
+		World::GetWorld()->DestroyActor(ActorPtr);
+
+		_FocusedItem = nullptr;
+
+		if (_FocusedComponent)
+			_FocusedComponent->OnViewportDeselected();
+		_FocusedComponent = nullptr;
+
+		_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		_Selector->OnDeselected();
+		_Selector->OnNewComponentSelected(nullptr);
+
+		if (_Selector->IsVisible())
+		{
+			_Selector->RemoveCollidersFromWorld(World::GetWorld());
+			_Selector->SetVisibility(false);
+		}
+
 		return true;
 	}
 

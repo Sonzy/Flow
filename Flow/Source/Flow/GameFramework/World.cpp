@@ -204,6 +204,28 @@ void World::InitialisePhysics()
 	_PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 }
 
+void World::DestroyActor(std::shared_ptr<Actor>& Act)
+{
+	if(!Act)
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete nullptr actor");
+		return;
+	}
+
+	auto& ActorArry = _MainLevel->GetActors();
+	auto Iterator = std::find(ActorArry.begin(), ActorArry.end(), Act);
+
+	if (Iterator == ActorArry.end())
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array {0}", Act->GetName());
+		return;
+	}
+
+	ActorArry.erase(Iterator);
+
+	//TODO: actually need to destroy all actor stuff
+}
+
 void World::Tick(float DeltaTime)
 {
 	{

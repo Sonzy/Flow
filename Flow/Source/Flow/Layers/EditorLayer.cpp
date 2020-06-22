@@ -17,6 +17,8 @@
 
 #include "Flow/Rendering/Other/FrameBuffer.h"
 #include "Flow/Editor/EditorCamera.h"
+#include "Flow/Editor/LevelManager.h"
+#include "Flow/Editor/Windows/SpawnWindow.h"
 
 
 EditorLayer::EditorLayer()
@@ -31,21 +33,20 @@ void EditorLayer::BeginPlay()
 
 void EditorLayer::OnAttach()
 {
+	_ApplicationPointer = &Application::GetApplication();
 	_SelectionGizmo = new SelectionGizmo();
 	_SelectionGizmo->GenerateCollision();
-
 	_Toolbar = new Toolbar(this);
-
 	_Inspector = new Inspector(_SelectionGizmo);
 	_Inspector->SetCurrentWorld(World::GetWorld());
-
-	_ApplicationPointer = &Application::GetApplication();
-
 	_AssetWindow = new AssetWindow();
+	_LevelManager = new LevelManager();
+	_SpawnWindow = new SpawnWindow(World::GetWorld());
 }
 
 void EditorLayer::OnDetach()
 {
+	//TODO: Actually need to release all heap stuff, will do later since this persists through the entire program lifecycle
 }
 
 void EditorLayer::OnImGuiRender(bool DrawEditor)
@@ -63,6 +64,8 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 		UpdateCollisionEditor();
 		_AssetWindow->DrawWindow();
 		DrawSceneWindow();
+		_LevelManager->DrawWindows();
+		_SpawnWindow->Draw();
 
 		if (_DrawDemoWindow)
 			ImGui::ShowDemoWindow(&_DrawDemoWindow);
@@ -121,6 +124,11 @@ void EditorLayer::SetDemoWindowVisible(bool Enabled)
 void EditorLayer::ToggleImGuiDemoWindow()
 {
 	_DrawDemoWindow = !_DrawDemoWindow;
+}
+
+void EditorLayer::Open_NewLevelWindow()
+{
+	_LevelManager->Open_NewLevelWindow();
 }
 
 void EditorLayer::OpenCollisionEditor()
@@ -187,6 +195,9 @@ bool EditorLayer::OnMouseScrolled(MouseScrolledEvent& e)
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 {
 	if (_EditorCam && _EditorCam->OnKeyPressed(e))
+		return true;
+
+	if (_Inspector && _Inspector->OnKeyPressed(e))
 		return true;
 
 	return false;

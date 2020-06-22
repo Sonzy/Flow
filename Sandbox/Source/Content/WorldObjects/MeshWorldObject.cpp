@@ -49,6 +49,11 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& 
 	//MeshComponent->InitialisePhysics();
 }
 
+MeshWorldObject::~MeshWorldObject()
+{
+	FLOW_LOG("~MeshWorldObject");
+}
+
 StaticMeshComponent* MeshWorldObject::GetMeshComponent() const
 {
 	return MeshComponent.get();

@@ -5,6 +5,7 @@ class Actor;
 class World;
 class SelectionGizmo;
 class WorldComponent;
+class KeyPressedEvent;
 
 /*	Inspector within the editor. Provides details of the current selected object as well as modifiable properties of the object.
 	Also displays the world heirarchy in the editor. */
@@ -19,9 +20,10 @@ public:
 	void Render();
 
 	void SetCurrentWorld(World* WorldReference);
-	bool OnMouseClicked(MouseButtonPressedEvent& e);
 
+	bool OnMouseClicked(MouseButtonPressedEvent& e);
 	bool OnMouseReleased(MouseButtonReleasedEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
 
 	static void UpdateSelectedComponent(WorldComponent* NewComp);
 	void DrawSelectedComponentTransform();

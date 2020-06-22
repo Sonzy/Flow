@@ -46,7 +46,9 @@ struct Vector
 	{
 		float VecLength = Length();
 
-		return Vector(X / VecLength, Y / VecLength, Z / VecLength);
+		return VecLength > 0 ?
+			Vector(X / VecLength, Y / VecLength, Z / VecLength) :
+			*this;	
 	}
 
 	float Length()

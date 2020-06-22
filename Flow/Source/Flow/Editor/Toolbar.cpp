@@ -24,10 +24,13 @@ ImVec2 Toolbar::Draw()
 
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save (WIP)"))
+			if (ImGui::MenuItem("New Level"))
+				_Editor->Open_NewLevelWindow();//TODO: Open new levels
+
+			if (ImGui::MenuItem("Save"))
 				Application::SaveLevel();
 
-			if (ImGui::MenuItem("Load (WIP)"))
+			if (ImGui::MenuItem("Load"))
 				Application::LoadLevel();
 
 			if (ImGui::MenuItem("Quit"))
@@ -107,8 +110,8 @@ ImVec2 Toolbar::Draw()
 
 			if (ImGui::MenuItem("Stop (WIP)"))
 			{
-				Application::StopGame();
-				Application::LoadPlayState();
+				if(Application::StopGame())
+					Application::LoadPlayState();
 			}
 
 

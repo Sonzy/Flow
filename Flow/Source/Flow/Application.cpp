@@ -357,6 +357,10 @@ void Application::LoadLevel()
 	Application::GetWorld()->LoadLevel();
 }
 
+void Application::NewLevel()
+{
+}
+
 void Application::SavePlayState()
 {
 	Application::GetWorld()->SavePlayState();
@@ -423,38 +427,41 @@ Window& Application::GetWindow()
 	return *_MainWindow;
 }
 
-void Application::StartGame()
+bool Application::StartGame()
 {
 	Application& App = Application::GetApplication();
 
 	if (App.GameWorld_->GetWorldState() == WorldState::InGame)
-		return;
+		return false;
 
 	for (Layer* layer : App.LayerStack_)
 	{
 		layer->BeginPlay();
 	}
 	App.GameWorld_->StartGame();
+	return true;
 }
 
-void Application::PauseGame()
+bool Application::PauseGame()
 {
 	Application& App = Application::GetApplication();
 
 	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
-		return;
+		return false;
 
 	App.GameWorld_->PauseGame();
+	return true;
 }
 
-void Application::StopGame()
+bool Application::StopGame()
 {
 	Application& App = Application::GetApplication();
 
 	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
-		return;
+		return false;
 
 	App.GameWorld_->StopGame();
+	return true;
 }
 
 void Application::UpdateWindowDestruction()

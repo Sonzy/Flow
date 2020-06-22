@@ -75,6 +75,15 @@ struct Rotator
 			Yaw == Other.Yaw;
 	}
 
+	Vector ToVector() const
+	{
+		Rotator Radians = Rotator::AsRadians(*this);
+		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
+		DirectX::XMFLOAT3 Rotated;
+		DirectX::XMStoreFloat3(&Rotated, UpdatedVector);
+		return Vector(Rotated.x, Rotated.y, Rotated.z);
+	}
+
 	Vector RotateVector(Vector Other)
 	{
 		Rotator Radians = Rotator::AsRadians(*this);

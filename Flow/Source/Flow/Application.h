@@ -40,6 +40,7 @@ public:
 
 	static void SaveLevel();
 	static void LoadLevel();
+	static void NewLevel();
 	static void SavePlayState();
 	static void LoadPlayState();
 
@@ -60,9 +61,9 @@ public:
 	EditorLayer* GetEditor() { return nullptr; };
 #endif
 
-	static void StartGame();
-	static void PauseGame();
-	static void StopGame();
+	static bool StartGame();
+	static bool PauseGame();
+	static bool StopGame();
 
 	ClassFactory& GetClassFactory() { return *_ClassFactory; }
 
