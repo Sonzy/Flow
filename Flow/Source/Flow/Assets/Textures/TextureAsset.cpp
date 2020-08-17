@@ -18,10 +18,13 @@ bool TextureAsset::LoadAsset(const std::string& FilePath)
 	CATCH_ERROR_DX(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, _Image));
 
 	//Convert to our image format
-	if (_Image.GetImage(0, 0, 0)->format != _Format)
+	DXGI_FORMAT ImageFormat = _Image.GetImage(0, 0, 0)->format;
+	if (ImageFormat != _Format)
 	{
 		DirectX::ScratchImage ConvertedImage;
 		CATCH_ERROR_DX(DirectX::Convert(*_Image.GetImage(0, 0, 0), _Format, DirectX::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, ConvertedImage));
+
+		_Image.InitializeFromImage(*ConvertedImage.GetImage(0, 0, 0));
 	}
 
 	//Update asset data

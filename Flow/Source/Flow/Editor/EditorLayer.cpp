@@ -6,7 +6,7 @@
 
 #include "Flow\Editor\SelectionGizmo.h"
 #include "Flow/GameFramework/World.h"
-#include "Flow/Editor/Toolbar.h"
+#include "Flow/Editor/MenuBar.h"
 #include "Flow/Editor/Windows/AssetWindow.h"
 
 #include "ThirdParty/ImGui/imgui.h"
@@ -20,28 +20,57 @@
 #include "Flow/Editor/LevelManager.h"
 #include "Flow/Editor/Windows/SpawnWindow.h"
 
+#include "Flow/Editor/Toolbar.h"
+#include "Flow/Editor/Tools/Tool.h"
+#include "Flow/Editor/Tools/SelectionTool.h"
+
+#define DISPATCH_TO_TOOL(ClassName)																				\
+	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseButtonPressed));	\
+	Dispatcher.Dispatch<MouseButtonReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseButtonReleased));	\
+	Dispatcher.Dispatch<MouseMovedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseMoved));					\
+	Dispatcher.Dispatch<MouseScrolledEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseScrolled));				\
+	Dispatcher.Dispatch<KeyPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyPressed));					\
+	Dispatcher.Dispatch<KeyTypedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyTyped));						\
+	Dispatcher.Dispatch<KeyReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyReleased));					\
+	Dispatcher.Dispatch<WindowResizedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnWindowResized));			
+
+#define REGISTER_TOOL(NewTool) RegisterTool(new NewTool);
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer"), _EditorViewportSize(0,0)
 {
+
+}
+
+EditorLayer::~EditorLayer()
+{
+	m_Tools.clear();
+}
+
+void EditorLayer::Initialise()
+{
+	m_MenuBar = new MenuBar(this);
+	_Inspector = new Inspector();
+	_AssetWindow = new AssetWindow();
+	_LevelManager = new LevelManager();
+	_SpawnWindow = new SpawnWindow(World::Get());
+	m_Toolbar = new ToolBar();
+
+	REGISTER_TOOL(SelectionTool);
 }
 
 void EditorLayer::BeginPlay()
 {
-	_SelectionGizmo->InitialisePhysics();
+	for (Tool* tool : m_Tools)
+	{
+		tool->BeginPlay();
+	}
 }
 
 void EditorLayer::OnAttach()
 {
 	_ApplicationPointer = &Application::GetApplication();
-	_SelectionGizmo = new SelectionGizmo();
-	_SelectionGizmo->GenerateCollision();
-	_Toolbar = new Toolbar(this);
-	_Inspector = new Inspector(_SelectionGizmo);
-	_Inspector->SetCurrentWorld(World::GetWorld());
-	_AssetWindow = new AssetWindow();
-	_LevelManager = new LevelManager();
-	_SpawnWindow = new SpawnWindow(World::GetWorld());
+	_Inspector->SetCurrentWorld(World::Get());
 }
 
 void EditorLayer::OnDetach()
@@ -52,7 +81,7 @@ void EditorLayer::OnDetach()
 void EditorLayer::OnImGuiRender(bool DrawEditor)
 {
 	//NEED TO DRAW TOOLBAR FIRST - Otherwise the toolbar gets overlapped by the dockspace.
-	ImVec2 Offset = _Toolbar->Draw();
+	ImVec2 Offset = m_MenuBar->Draw();
 
 	InitialiseDockspace(Offset);
 
@@ -63,12 +92,24 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 		RenderApplicationDebug(FrameDeltaTime);
 		UpdateCollisionEditor();
 		_AssetWindow->DrawWindow();
-		DrawSceneWindow();
+		m_SceneManager.DrawWindow_Scene();
 		_LevelManager->DrawWindows();
 		_SpawnWindow->Draw();
+		
+
+		//Draw configuration UI
+		for (auto& tool : m_Tools)
+		{
+			if (tool->IsConfigWindowOpen())
+			{
+				tool->DrawConfigWindow();
+			}
+		}
 
 		if (_DrawDemoWindow)
+		{
 			ImGui::ShowDemoWindow(&_DrawDemoWindow);
+		}			
 	}
 }
 
@@ -84,6 +125,17 @@ void EditorLayer::OnEvent(Event& e)
 	Dispatcher.Dispatch<KeyReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnKeyReleased));
 	Dispatcher.Dispatch<WindowResizedEvent>(FLOW_BIND_EVENT_FUNCTION(EditorLayer::OnWindowResized));
 
+	for (Tool* tool : m_Tools)
+	{
+				if (EventDispatcher::IsMatchingFunction<MouseButtonPressedEvent>(e))	tool->OnMouseButtonPressed(static_cast<MouseButtonPressedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<MouseButtonReleasedEvent>(e))	tool->OnMouseButtonReleased(static_cast<MouseButtonReleasedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<MouseMovedEvent>(e))			tool->OnMouseMoved(static_cast<MouseMovedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<MouseScrolledEvent>(e))			tool->OnMouseScrolled(static_cast<MouseScrolledEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<KeyPressedEvent>(e))			tool->OnKeyPressed(static_cast<KeyPressedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<KeyTypedEvent>(e))				tool->OnKeyTyped(static_cast<KeyTypedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<KeyReleasedEvent>(e))			tool->OnKeyReleased(static_cast<KeyReleasedEvent&>(e));
+		else	if (EventDispatcher::IsMatchingFunction<WindowResizedEvent>(e))			tool->OnWindowResized(static_cast<WindowResizedEvent&>(e));
+	}
 }
 
 void EditorLayer::OnUpdate(float DeltaTime)
@@ -93,7 +145,36 @@ void EditorLayer::OnUpdate(float DeltaTime)
 	if (!_EditorCam)
 		_EditorCam = std::dynamic_pointer_cast<EditorCamera>(RenderCommand::GetMainCamera());
 
-	_SelectionGizmo->Render();
+	//_SelectionGizmo->Render();
+
+	UpdateTools(DeltaTime);
+	RenderTools();
+}
+
+void EditorLayer::UpdateTools(float DeltaTime)
+{
+	for (Tool* tool : m_Tools)
+	{
+		tool->UpdateTool(DeltaTime);
+	}
+}
+
+void EditorLayer::RenderTools()
+{
+	for (Tool* tool : m_Tools)
+	{
+		tool->RenderTool();
+	}
+}
+
+void EditorLayer::RegisterTool(Tool* newTool)
+{
+	if (std::find(m_Tools.begin(), m_Tools.end(), newTool) != m_Tools.end())
+	{
+		FLOW_ENGINE_WARNING("EditorLayer::RegisterTool: Already registered tool");
+	}
+
+	m_Tools.push_back(newTool);
 }
 
 EditorLayer* EditorLayer::GetEditor()
@@ -111,9 +192,9 @@ Inspector* EditorLayer::GetInspector() const
 	return _Inspector;
 }
 
-Toolbar* EditorLayer::GetToolbar() const
+MenuBar* EditorLayer::GetMenuBar() const
 {
-	return _Toolbar;
+	return m_MenuBar;
 }
 
 void EditorLayer::SetDemoWindowVisible(bool Enabled)
@@ -138,22 +219,22 @@ void EditorLayer::OpenCollisionEditor()
 
 bool EditorLayer::IsSceneWindowFocused() const
 {
-	return _SceneWindowFocused;
+	return m_SceneManager.IsSceneWindowFocused();
 }
 
 bool EditorLayer::IsMouseOverScene() const
 {
-	return _MouseOverScene;
+	return m_SceneManager.IsMouseOverScene();
 }
 
 IntVector2D EditorLayer::GetSceneWindowSize() const
 {
-	return _SceneWindowSize;
+	return m_SceneManager.GetSceneWindowSize();
 }
 
 IntVector2D EditorLayer::GetSceneWindowPosition() const
 {
-	return _SceneWindowPosition;
+	return m_SceneManager.GetSceneWindowPosition();
 }
 
 bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
@@ -233,44 +314,7 @@ void EditorLayer::UpdateCollisionEditor()
 	//ImGui::End();
 }
 
-void EditorLayer::DrawSceneWindow()
-{
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	auto State = World::GetWorld()->GetWorldState();
-	std::string WindowName;
-	switch (State)
-	{
-	case WorldState::Paused: WindowName = "Scene - Paused###Scene"; break;
-	case WorldState::Editor: WindowName = "Scene###Scene"; break;
-	case WorldState::InGame: WindowName = "Scene - Playing###Scene"; break;
-	}
-
-	if (ImGui::Begin(WindowName.c_str()))
-	{
-		_SceneWindowFocused = ImGui::IsWindowFocused();
-		if (_EditorCam)
-			_EditorCam->_CanUpdate = _SceneWindowFocused ? true : !ImGui::IsAnyItemActive();
-
-		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
-			
-		//Note: We assume that the scene image has no padding and is flush to the window x. 
-		_SceneWindowPosition = IntVector2D(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y);
-		_SceneWindowSize = IntVector2D(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
-		_MouseOverScene = ImGui::IsWindowHovered();
-
-		if (*reinterpret_cast<Vector2D*>(&_SceneWindowSize) != _EditorViewportSize)//TODO: Stop being naughty
-		{
-			Buff->Resize(_SceneWindowSize.X, _SceneWindowSize.Y);
-			_EditorViewportSize = *reinterpret_cast<Vector2D*>(&_SceneWindowSize);
-		}
-	
-		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()));
-	}
-	ImGui::End();
-
-	ImGui::PopStyleVar();
-}
 
 void EditorLayer::InitialiseDockspace(ImVec2 Offset)
 {

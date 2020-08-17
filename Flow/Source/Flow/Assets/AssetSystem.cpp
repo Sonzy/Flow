@@ -49,7 +49,7 @@ bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& Ass
 
 	//Add the asset to the stored assets
 	NewAsset->SetAssetName(AssetName);
-	std::size_t HashedName = std::hash<std::string>{}(AssetName);
+	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str());//Use the c_str otherwise the null char is hashed too
 	AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
 
 	//Update tracked data size
@@ -67,12 +67,12 @@ bool AssetSystem::LoadEditorAsset(const std::string& AssetName, const std::strin
 AssetBase* AssetSystem::GetAsset(const std::string& AssetName)
 {
 	//Hash the string
-	std::size_t HashedName = std::hash<std::string>{}(AssetName);
+	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str()); //Use the c_str otherwise the null char is hashed too
 
 	//Error if the path doesnt exist in the system
 	if (AssetSystem_s->LoadedAssets_.find(HashedName) == AssetSystem_s->LoadedAssets_.end())
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName);
+		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName.c_str());
 		return nullptr;
 	}
 

@@ -48,6 +48,9 @@ public:
 	void StartEditor();
 #endif
 
+	/* Adds an actor to the world that was default created, takes ownership*/
+	void AddDefaultInitialisedActor(Actor* NewActor);
+	void AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor);
 	template<typename T>
 	std::shared_ptr<T> SpawnActor(const std::string& Name)
 	{
@@ -67,7 +70,7 @@ public:
 	static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
 
 	static btDiscreteDynamicsWorld* GetPhysicsWorld();
-	static World* GetWorld();
+	static World* Get();
 
 	void AddPhysicsObject(btRigidBody* Obj);
 	void AddCollisionObject(btCollisionObject* Obj);

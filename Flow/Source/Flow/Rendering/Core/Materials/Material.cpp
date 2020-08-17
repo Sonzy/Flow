@@ -20,6 +20,7 @@
 #include "Flow/Rendering/Core/RenderQueue/Step.h"
 
 Material::Material()
+	: _Texture(nullptr), _PixelShader(nullptr), _VertexShader(nullptr), _WrappingMethod(false)
 {
 }
 

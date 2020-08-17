@@ -27,6 +27,8 @@ protected:
 	TextureAsset* _Texture;
 	ShaderAsset* _VertexShader;
 	ShaderAsset* _PixelShader;
+
+	bool _WrappingMethod;
 };
 
 /* Struct used for sending light data vis */

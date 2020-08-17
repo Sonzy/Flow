@@ -8,10 +8,14 @@
 #include "Flow/Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 
 #include "ThirdParty\ImGui\imgui.h"
+#include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
+#include "Flow/Helper/ImGuiHelper.h"
 
 #include "Flow\GameFramework\World.h"
 
 #include "Flow/GameFramework/Actor.h"
+
+#include <algorithm>
 
 StaticMeshComponent::StaticMeshComponent()
 	: StaticMeshComponent("Unnamed StaticMesh Component")
@@ -64,14 +68,17 @@ void StaticMeshComponent::OnViewportSelected()
 {
 	RenderableComponent::OnViewportSelected();
 
-	_Techniques[1].Activate();
+	if (_Techniques.size() >= 2)
+		_Techniques[1].Activate();
 }
 
 void StaticMeshComponent::OnViewportDeselected()
 {
 	RenderableComponent::OnViewportSelected();
 
-	_Techniques[1].Deactivate();
+	//TODO: dont hard code
+	if(_Techniques.size() >= 2)
+		_Techniques[1].Deactivate();
 }
 
 
@@ -234,7 +241,8 @@ void StaticMeshComponent::RefreshBinds()
 		_IndexBuffer = _StaticMesh->_IndexBuffer;
 		_Topology = _StaticMesh->_Topology;
 
-		_Material->BindMaterial(&MainStep, MeshLayout);
+		if(_Material)
+			_Material->BindMaterial(&MainStep, MeshLayout);
 
 		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 
@@ -290,14 +298,49 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();
 
-	ImGui::Checkbox("Draw Outline", &_Techniques[1].GetWriteAccessToActive());
+	if(_Techniques.size() >= 2) //TODO: better system for this
+		ImGui::Checkbox("Draw Outline", &_Techniques[1].GetWriteAccessToActive());
+
+	std::string MeshNameTemp = _MeshIdentifier;
+	std::string MatNameTemp = _MaterialIdentifier;
+
+	if (_MeshIdentifier.empty())	_MeshIdentifier = "None";
+	if (_MaterialIdentifier.empty())	_MaterialIdentifier = "None";
+
+	if (ImGui::InputText("Mesh Identifier", &MeshNameTemp, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		//Format the string correctly.
+		std::string::iterator it = std::remove(MeshNameTemp.begin(), MeshNameTemp.end(), ' ');
+		MeshNameTemp.erase(it, MeshNameTemp.end());
+
+		MeshAsset* FoundMesh = AssetSystem::GetAsset<MeshAsset>(MeshNameTemp);
+		if (!FoundMesh)
+		{
+			FLOW_ENGINE_ERROR("StaticMeshComponent::DrawComponentDetailsWindow: Failed to find mesh with name {0}.", MeshNameTemp);
+			return;
+		}
+
+		_MeshIdentifier = MeshNameTemp;
+		SetStaticMesh(FoundMesh);
+		InitialisePhysics();
+	}
+																									//Doesnt allow us to add it, is added automatically?
+	if (ImGui::InputText("Material Identifier", &MatNameTemp, ImGuiInputTextFlags_EnterReturnsTrue /*| ImGuiInputTextFlags_CallbackResize */ , ImHelp::InputTextCallback))
+	{
+		MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MatNameTemp);
+		if (!FoundMat)
+		{
+			FLOW_ENGINE_ERROR("StaticMeshComponent::DrawComponentDetailsWindow: Failed to find material with name {0}", MatNameTemp);
+			return;
+		}
+
+		_MaterialIdentifier = MatNameTemp;
+		SetMaterial(FoundMat);
+	}
 }
 
 void StaticMeshComponent::GenerateCollision()
 {
-	if(_CollisionShape)
-		delete _CollisionShape;
-
 	btConvexHullShape* Shape = new btConvexHullShape();
 	auto Vertices = _StaticMesh->GetCollisionVertices();
 	for (auto Vert : Vertices)
@@ -316,14 +359,30 @@ void StaticMeshComponent::GenerateCollision()
 
 void StaticMeshComponent::InitialisePhysics()
 {
+	if (!_StaticMesh)
+	{
+		FLOW_ENGINE_WARNING("StaticMeshComponent::InitialisePhysics: StaticMesh was nullptr, skipped init");
+		return;
+	}
+
+	if (_RigidBody)
+	{
+		World::GetPhysicsWorld()->removeRigidBody(_RigidBody);
+		delete _RigidBody;
+	}
+	if (_CollisionShape)
+	{
+		delete _CollisionShape;
+	}
+
 	GenerateCollision();
 	CreateRigidBody();
 
-	World* CurrentWorld = World::GetWorld();
+	World* CurrentWorld = World::Get();
 
 	if (!_RigidBody)
 	{
-		FLOW_ENGINE_ERROR("Tried to add physics object when ");
+		FLOW_ENGINE_ERROR("StaticMeshComponent::InitialisePhysics: Rigidbody was nullptr");
 		return;
 	}
 
@@ -335,7 +394,7 @@ void StaticMeshComponent::DestroyPhysics()
 	if (!_RigidBody)
 		return;
 
-	World::GetWorld()->GetPhysicsWorld()->removeRigidBody(_RigidBody);
+	World::Get()->GetPhysicsWorld()->removeRigidBody(_RigidBody);
 	delete _RigidBody;
 }
 

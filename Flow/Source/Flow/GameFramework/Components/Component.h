@@ -19,9 +19,6 @@ public:
 	void SetParent(Actor* Parent);
 	void SetParentComponent(WorldComponent* Parent);
 
-#if WITH_EDITOR
-	virtual void EditorBeginPlay();
-#endif
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
 

@@ -15,7 +15,7 @@ public:
 	~LineBatcher();
 
 	void Initialise();
-	void AddLine(Vector From, Vector To, Vector Colour);
+	void AddLine(Vector From, Vector To, Vector Colour = Vector(1.0f, 1.0f, 1.0f));
 	void DrawLines();
 	void FlushLines();
 

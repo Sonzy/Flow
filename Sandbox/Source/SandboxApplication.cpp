@@ -1,9 +1,6 @@
 #include <Flow.h>
-#include "Content\Layers\Example Layer.h"
 #include "Flow\Assets\AssetSystem.h"
-
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
-
 #include "Flow\Helper\Profiling.h"
 
 class Sandbox : public Application
@@ -39,9 +36,6 @@ public:
 		WoodMat->SetTexture("Wabble_Wood");
 		WoodMat->SetPixelShader("TexturedPhongPS");
 		WoodMat->SetVertexShader("TexturedPhongVS");
-
-		ExampleLayer* Example = new ExampleLayer();
-		PushLayer(Example);
 	}
 };
 

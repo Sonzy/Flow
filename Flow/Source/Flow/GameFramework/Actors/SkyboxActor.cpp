@@ -2,6 +2,11 @@
 #include "SkyboxActor.h"
 #include "Flow/GameFramework/Components/SkyboxComponent.h"
 
+SkyboxActor::SkyboxActor()
+	: SkyboxActor("Skybox Actor")
+{
+}
+
 SkyboxActor::SkyboxActor(const std::string& Name)
 	: Actor(Name)
 {

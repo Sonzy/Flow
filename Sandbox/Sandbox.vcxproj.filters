@@ -27,9 +27,6 @@
     <ClCompile Include="Source\Content\Crate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Content\Layers\Example Layer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Content\Crate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Content\Layers\Example Layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h">

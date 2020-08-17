@@ -10,7 +10,7 @@
 #include "Flow/Rendering/Other/DepthBuffer.h"
 
 #if WITH_EDITOR
-#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/EditorLayer.h"
 #endif
 
 

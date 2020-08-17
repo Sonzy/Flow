@@ -4,12 +4,23 @@
 #include "Flow/GameFramework/World.h"
 
 #include "Flow/GameFramework/Actors/StaticMeshActor.h"
+#include "Flow/GameFramework/Actors/PointLightActor.h"
+#include "Flow/GameFramework/Actors/SkyboxActor.h"
+#include "Flow/GameFramework/Actors/CameraActor.h"
+
 #include "Flow/GameFramework/Components/StaticMeshComponent.h"
+
+#include "Flow/GameFramework/Other/ClassFactory.h"
 
 SpawnWindow::SpawnWindow(World* WorldReference)
 	: _WorldReference(WorldReference)
 {
 	_SpawnDistance = 20.0f;
+
+	RegisterActorClass<StaticMeshActor>("Static Mesh Actor");
+	RegisterActorClass<PointLightActor>("Point Light Actor");
+	RegisterActorClass<SkyboxActor>("Skybox Actor");
+	RegisterActorClass<CameraActor>("Camera Actor");
 }
 
 void SpawnWindow::Draw()
@@ -27,11 +38,14 @@ void SpawnWindow::Draw()
 			SpawnedActor = std::dynamic_pointer_cast<Actor>(MeshActor);
 		}
 
-
-
-
-
-
+		for (auto& ActorClass : _ActorClassMap)
+		{
+			if (ImGui::Button(ActorClass.second.c_str()) && !SpawnedActor)
+			{
+				SpawnedActor = std::shared_ptr<Actor>(ClassFactory::Get().CreateObjectFromID<Actor>(ActorClass.first));
+				World::Get()->AddDefaultInitialisedActor(SpawnedActor);
+			}
+		}
 
 		// Initialise the spawned actor if we spawned one
 		if (SpawnedActor)

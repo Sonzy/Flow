@@ -44,6 +44,14 @@ void Actor::EditorBeginPlay()
 	_RootComponent->EditorBeginPlay();
 }
 
+void Actor::OnViewportSelected()
+{
+}
+
+void Actor::OnViewportDeselected()
+{
+}
+
 void Actor::Tick(float DeltaTime)
 {
 	GameObject::Tick(DeltaTime);

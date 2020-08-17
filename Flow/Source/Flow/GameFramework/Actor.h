@@ -20,8 +20,11 @@ public:
 	virtual ~Actor();
 
 	virtual void BeginPlay();
+
 #if WITH_EDITOR
-	virtual void EditorBeginPlay();
+	virtual void EditorBeginPlay() override;
+	virtual void OnViewportSelected() override;
+	virtual void OnViewportDeselected() override;
 #endif
 	virtual void Tick(float DeltaTime) override;
 

@@ -35,13 +35,6 @@ void Component::SetParentComponent(WorldComponent* Parent)
 	_AttachedComponent = Parent;
 }
 
-#if WITH_EDITOR
-void Component::EditorBeginPlay()
-{
-}
-
-#endif
-
 void Component::BeginPlay()
 {
 

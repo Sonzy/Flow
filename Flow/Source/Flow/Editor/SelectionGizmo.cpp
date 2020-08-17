@@ -16,7 +16,7 @@
 
 #include "Flow/Helper/Maths.h"
 
-#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/EditorLayer.h"
 
 SelectionGizmo::SelectionGizmo()
 	: Actor("SelectionGizmo")
@@ -172,9 +172,13 @@ void SelectionGizmo::UpdatePosition(Vector Position)
 	Transform.setRotation(btQuaternion(0.0f, Math::PI / 2, 0.0f));
 	_ZGhost->setWorldTransform(Transform);
 
-	World::GetPhysicsWorld()->updateSingleAabb(_XGhost);
-	World::GetPhysicsWorld()->updateSingleAabb(_YGhost);
-	World::GetPhysicsWorld()->updateSingleAabb(_ZGhost);
+	btDiscreteDynamicsWorld* physicsWorld = World::GetPhysicsWorld();
+	if (physicsWorld)
+	{
+		physicsWorld->updateSingleAabb(_XGhost);
+		physicsWorld->updateSingleAabb(_YGhost);
+		physicsWorld->updateSingleAabb(_ZGhost);
+	}
 }
 
 void SelectionGizmo::UpdateRotation(Rotator Rotation)

@@ -13,7 +13,7 @@
 
 #if WITH_EDITOR
 #include "Flow/Editor/EditorCamera.h"
-#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/EditorLayer.h"
 #include "Flow/Editor/Inspector.h"
 #include "Flow/Editor/SelectionGizmo.h"
 #endif
@@ -95,7 +95,8 @@ void World::LoadPlayState()
 
 	}
 
-	EditorLayer::GetEditor()->GetInspector()->GetSelector()->Reset();
+	//TODO:
+	//EditorLayer::GetEditor()->GetInspector()->GetSelector()->Reset();
 
 	_MainLevel->Load(InStream);
 
@@ -145,6 +146,22 @@ void World::StartEditor()
 {
 	_WorldState = WorldState::Editor;
 	_MainLevel->DispatchEditorBeginPlay();
+}
+
+void World::AddDefaultInitialisedActor(Actor* NewActor)
+{
+	auto Ownership = std::shared_ptr<Actor>(NewActor);
+	AddDefaultInitialisedActor(Ownership);
+}
+
+void World::AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor)
+{
+	if (!NewActor)
+	{
+		FLOW_ENGINE_ERROR("World::AddDefaultInitialisedActor: Actor was nullptr");
+		return;
+	}
+	_MainLevel->GetActors().push_back(NewActor);
 }
 
 void World::StartGame()
@@ -287,7 +304,7 @@ btDiscreteDynamicsWorld* World::GetPhysicsWorld()
 	return Application::GetWorld()->_PhysicsWorld;
 }
 
-World* World::GetWorld()
+World* World::Get()
 {
 	return Application::GetWorld();
 }

@@ -8,7 +8,7 @@
 #include "Flow/Rendering/Core/Bindables/Rasterizer.h"
 
 #if WITH_EDITOR
-#include "Flow/Layers/EditorLayer.h"
+#include "Flow/Editor/EditorLayer.h"
 #include "Flow/Rendering/Core/TemplateBuffers/TemplateBuffers.h"
 #endif
 

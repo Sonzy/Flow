@@ -4,23 +4,29 @@
 class FLOW_API GameObject
 {
 public:
-	GameObject();
-	GameObject(const std::string& Name);
-	virtual ~GameObject();
+							GameObject();
+							GameObject(const std::string& Name);
+	virtual					~GameObject();
 
-	virtual void Tick(float DeltaTime);
+#if WITH_EDITOR
+	virtual void			EditorBeginPlay() {};
+	virtual void			OnViewportSelected() {};
+	virtual void			OnViewportDeselected() {};
+#endif
 
-	/* To be overriden, assumes Imgui::Begin and Imgui::End are being handled externally. Draws widgets for itself in here
-	 * Typically DontUpdate is true if we have swapped objects, since it means that the references for object properties
-	 * to update are incorrect, so we shouldnt write to any values */
-	virtual void DrawDetailsWindow(bool bDontUpdate);
+	virtual void			Tick(float DeltaTime);
 
-	const std::string& GetName() const;
-	std::string& GetWritableName();
+	//To be overriden, assumes Imgui::Begin and Imgui::End are being handled externally. Draws widgets for itself in here
+	//Typically DontUpdate is true if we have swapped objects, since it means that the references for object properties
+	//to update are incorrect, so we shouldnt write to any values
+	virtual void			DrawDetailsWindow(bool bDontUpdate);
 
-	void SetName(const std::string& NewName);
+	const std::string&		GetName() const;
+	std::string&			GetWritableName();
+
+	void					SetName(const std::string& NewName);
 
 protected:
 
-	std::string _ObjectName;
+	std::string				_ObjectName;
 };

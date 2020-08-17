@@ -1,26 +1,20 @@
 #pragma once
+#include "Flow/Rendering/Core/Bindables/Texture.h"
 
-class EditorLayer;
-struct ImVec2;
-
-class Toolbar
+class ToolBar
 {
 public:
 
-	Toolbar(EditorLayer* EditorPointer);
-	ImVec2 Draw();
+	ToolBar();
+	~ToolBar();
+	ToolBar(ToolBar&) = delete;
+	ToolBar(ToolBar&&) = delete;
 
+	void DrawWindow();
 
+	Texture* m_Icon_SelectionTool;
 
-private:
-	EditorLayer* _Editor;
-	bool _Visible_BulletConfiguration;
-	bool _Visible_EditorSettings;
-
-private:
-
-	//= Windows ========
-
-	void Window_BulletDebugDrawSettings();
-	void Window_EditorSettings();
+	Texture* m_Icon_Play;
+	Texture* m_Icon_Pause;
+	Texture* m_Icon_Stop;
 };

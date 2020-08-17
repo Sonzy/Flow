@@ -79,6 +79,12 @@ public:
 		return true;
 	}
 
+	template<typename T>
+	static bool IsMatchingFunction(Event& event)
+	{
+		return event.GetEventType() == T::GetStaticType();
+	}
+
 private:
 	Event& _Event;
 };

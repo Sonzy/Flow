@@ -2,16 +2,18 @@
 #include "Flow/Layers/Layer.h"
 #include "Flow/Events/MouseEvent.h"
 #include "Flow/Editor/Windows/EditorWindow.h"
+#include "Flow/Editor/SceneManager.h"
 
 class Inspector;
-class Toolbar;
-class SelectionGizmo;
+class MenuBar;
+class ToolBar;
 class Application;
 struct ImVec2;
 class AssetWindow;
 class EditorCamera;
 class LevelManager;
 class SpawnWindow;
+class Tool;
 
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
@@ -39,8 +41,11 @@ class EditorLayer : public Layer
 {
 public:
 	EditorLayer();
+	~EditorLayer();
 
 	/* Layer interface */
+
+	void Initialise();
 
 	virtual void BeginPlay() override;
 	virtual void OnAttach() override;
@@ -53,7 +58,7 @@ public:
 	static EditorLayer* GetEditor();
 	static EditorSettings& GetEditorSettings();
 	Inspector* GetInspector() const;
-	Toolbar* GetToolbar() const;
+	MenuBar* GetMenuBar() const;
 
 	void SetDemoWindowVisible(bool Enabled);
 	void ToggleImGuiDemoWindow();
@@ -69,6 +74,22 @@ public:
 	//Open Windows
 	void Open_NewLevelWindow();
 	void OpenCollisionEditor();
+
+	void					RegisterTool(Tool* newTool);
+
+	template<typename T>
+	T* GetTool() const
+	{
+		for (auto& tool : m_Tools)
+		{
+			if (T* casted = dynamic_cast<T*>(tool))
+			{
+				return casted;
+			}
+		}
+
+		return nullptr;
+	}
 protected:
 
 	/* Create my own dockspace that takes into account the offset of the main menu bar.
@@ -87,27 +108,29 @@ protected:
 
 	//Draw Windows
 	void UpdateCollisionEditor();
-	void DrawSceneWindow();
+
+
+	void					UpdateTools(float DeltaTime);
+	void					RenderTools();
+
 
 	Inspector* _Inspector;
-	Toolbar* _Toolbar;
-	SelectionGizmo* _SelectionGizmo;
+	MenuBar* m_MenuBar;
 	AssetWindow* _AssetWindow;
 	bool _DrawDemoWindow = false;
 	Application* _ApplicationPointer;
 	EditorSettings _Settings;
+	SceneManager m_SceneManager;
+	ToolBar* m_Toolbar;
 	std::shared_ptr<EditorCamera> _EditorCam;
-
-	bool _SceneWindowFocused;
-	bool _MouseOverScene;
-	IntVector2D _SceneWindowSize;
-	IntVector2D _SceneWindowPosition;
 
 	LevelManager* _LevelManager;
 
 	SpawnWindow* _SpawnWindow;
 
 	std::vector<std::shared_ptr<EditorWindow>> _EditorWindows;
+
+	std::vector<Tool*> m_Tools;
 
 
 	//App Statistics

@@ -15,6 +15,7 @@ public:
 
 protected:
 	friend class EditorLayer;
+	friend class SceneManager;
 
 	bool _CanUpdate;
 	IntVector2D _MouseLastFrame;

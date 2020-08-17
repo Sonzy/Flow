@@ -10,10 +10,11 @@
 
 #include "Flow\GameFramework\World.h"
 
+#include "Flow/Layers/GameLayer.h"
 #if WITH_EDITOR
 
 #include "Flow\Editor\Inspector.h"
-#include "Flow\Layers\EditorLayer.h"
+#include "Flow/Editor/EditorLayer.h"
 
 #endif
 
@@ -31,6 +32,7 @@
 
 Application* Application::s_Instance = nullptr;
 
+//TODO: Being naughty, need to null initialise
 Application::Application(const std::string& AppName)
 	: ApplicationName(AppName)
 {
@@ -103,6 +105,13 @@ void Application::InitialiseApplication()
 	AssetSystem::LoadEditorAsset("Wabble_Sand", "Assets/Textures/Wabble_Sand.png");
 	AssetSystem::LoadEditorAsset("SkyCube_Test", "Assets/Textures/TestCubeMap2.png");
 
+	//= Icons =
+
+	AssetSystem::LoadEditorAsset("Icon_SelectionTool", "Assets/Images/SelectionTool.png");
+	AssetSystem::LoadEditorAsset("Icon_Play", "Assets/Images/Icon_Play.png");
+	AssetSystem::LoadEditorAsset("Icon_Pause", "Assets/Images/Icon_Pause.png");
+	AssetSystem::LoadEditorAsset("Icon_Stop", "Assets/Images/Icon_Stop.png");
+
 
 	//= Shaders =
 	AssetSystem::LoadEditorAsset("TexturedLightVS", "Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
@@ -157,17 +166,21 @@ void Application::InitialiseApplication()
 	SkyMat->SetPixelShader("TexturedPS");
 	SkyMat->SetVertexShader("TexturedVS");
 
-#if WITH_EDITOR
-	//Create the editor
-	EditorLayer_ = new EditorLayer();
+	_GameLayer = new GameLayer();
 
-#endif
 	//Create the game world
 	GameWorld_ = new World("Game World");
 
 #if WITH_EDITOR
-	PushLayer(EditorLayer_);
+	//Create the editor
+	EditorLayer_ = new EditorLayer();
+	EditorLayer_->Initialise();
+#endif
 
+	
+	PushLayer(_GameLayer);
+#if WITH_EDITOR
+	PushLayer(EditorLayer_);
 #endif
 }
 

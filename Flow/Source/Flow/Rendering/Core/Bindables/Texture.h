@@ -9,6 +9,8 @@ public:
 	Texture(TextureAsset* Asset, UINT slot);
 	void Bind() override;
 
+	ID3D11ShaderResourceView* GetTextureView() const { return _TextureView.Get(); } //TODO: being lazy, can go out of scope whilst in use
+
 	//= Bindable Interface =
 
 	static std::shared_ptr<Bindable> Resolve(TextureAsset* Asset, UINT slot);

@@ -39,6 +39,6 @@ protected:
 
 	DirectX::ScratchImage _Image;
 
-	static constexpr DXGI_FORMAT _Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+	static constexpr DXGI_FORMAT _Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
 	std::string _AssetPath;
 };

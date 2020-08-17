@@ -13,7 +13,7 @@ FrameBuffer::~FrameBuffer()
 {
 	_Texture->Release();
 	_TextureView->Release();
-}
+}//
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 {

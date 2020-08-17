@@ -12,8 +12,8 @@
 #include "Flow/Window/WinWindow.h"
 #include "Flow/Rendering/DX11/DX11RenderAPI.h"
 
-#include "Flow/Layers/EditorLayer.h"
-#include "Flow/Editor/Toolbar.h"
+#include "Flow/Editor/EditorLayer.h"
+//#include "Flow/Editor/MenuBar.h"
 
 ImGuiLayer::ImGuiLayer()
 	: Layer("ImGui Layer")

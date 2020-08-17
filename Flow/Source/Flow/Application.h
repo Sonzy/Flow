@@ -14,6 +14,7 @@ class World;
 class Inspector;
 class EditorLayer;
 class ClassFactory;
+class GameLayer;
 class Layer;
 
 class FLOW_API Application
@@ -88,10 +89,10 @@ private:
 	std::vector<Window*> _WindowsToDestroy;
 
 	ImGuiLayer* ImGuiLayer_;
-
 #if WITH_EDITOR
 	EditorLayer* EditorLayer_;
 #endif
+	GameLayer* _GameLayer;
 
 	bool _Running = true;
 	bool Paused_ = false;

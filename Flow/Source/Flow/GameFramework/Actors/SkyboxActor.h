@@ -6,7 +6,7 @@ class SkyboxComponent;
 class FLOW_API SkyboxActor : public Actor
 {
 public:
-	SkyboxActor() = delete;
+	SkyboxActor();
 	SkyboxActor(const std::string& Name);
 	
 	std::shared_ptr<SkyboxComponent> _Skybox;
