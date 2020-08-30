@@ -69,10 +69,12 @@ public:
 
 	void						SetStencilMode(StencilMode NewMode);
 
-
+	//TODO: Move
+	bool						m_DrawWithoutDepth = false;
 protected:
 
 	bool						_DrawOutline = false;
+
 
 	//TODO: Rework how we store meshes
 	Mesh*						_StaticMesh;

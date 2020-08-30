@@ -129,8 +129,7 @@
     <ClInclude Include="Source\Flow\Editor\Tools\SelectionTool.h" />
     <ClInclude Include="Source\Flow\Editor\Tools\Tool.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\AssetWindow.h" />
-    <ClInclude Include="Source\Flow\Editor\Windows\CollisionEditor.h" />
-    <ClInclude Include="Source\Flow\Editor\Windows\EditorWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\Windows\Console.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\SpawnWindow.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
@@ -339,8 +338,7 @@
     <ClCompile Include="Source\Flow\Editor\Tools\SelectionTool.cpp" />
     <ClCompile Include="Source\Flow\Editor\Tools\Tool.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\AssetWindow.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Windows\CollisionEditor.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Windows\EditorWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\Windows\Console.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\SpawnWindow.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />

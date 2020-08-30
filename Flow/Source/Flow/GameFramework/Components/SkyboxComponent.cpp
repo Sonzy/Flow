@@ -24,7 +24,7 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 	_Mesh = AssetSystem::GetAsset<MeshAsset>(_MeshPath);
 	_Material = AssetSystem::GetAsset<MaterialAsset>(_MaterialPath)->GetMaterial();
 
-	Technique Standard;
+	Technique Standard("SkyboxComponent_Standard");
 	{
 		Step MainStep(1);
 
@@ -40,7 +40,7 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 		Standard.AddStep(MainStep);
 	}
-	AddTechnique(std::move(Standard));
+	AddTechnique(Standard);
 
 	_SimulatePhysics = false;
 }

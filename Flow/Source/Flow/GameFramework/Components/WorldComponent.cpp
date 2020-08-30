@@ -18,8 +18,8 @@ WorldComponent::WorldComponent()
 }
 
 WorldComponent::WorldComponent(const std::string& Name)
-	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), _CollisionShape(nullptr),
-	_MotionState(nullptr)
+	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), m_CollisionShape(nullptr),
+	_MotionState(nullptr), m_CollisionEnabled(true)
 {
 }
 
@@ -28,7 +28,7 @@ WorldComponent::~WorldComponent()
 	_Children.clear();
 
 	delete _RigidBody;
-	delete _CollisionShape;
+	delete m_CollisionShape;
 	delete _MotionState;
 }
 
@@ -162,7 +162,6 @@ void WorldComponent::SetWorldRotation(Rotator NewRotation)
 		CurrentParentWorld = Parent->GetWorldRotation();
 
 	_RelativeTransform._Rotation = NewRotation - CurrentParentWorld;
-
 	//TODO: UpdatePhysics Movement
 }
 
@@ -199,11 +198,15 @@ void WorldComponent::SetWorldScale(Vector NewScale)
 	}
 
 	_RelativeTransform._Scale = NewScale - CurrentParentWorld;
+
+	UpdateCollisionScale();
 }
 
 void WorldComponent::SetRelativeScale(Vector NewScale)
 {
 	_RelativeTransform._Scale = NewScale;
+
+	UpdateCollisionScale();
 }
 
 Transform WorldComponent::GetWorldTransform() const
@@ -322,6 +325,11 @@ void WorldComponent::DestroyPhysics()
 
 void WorldComponent::CreateRigidBody()
 {
+	if (!m_CollisionEnabled)
+	{
+		return;
+	}
+
 	//Convert transform into BT Quaternion
 	btQuaternion Rotation;
 	Rotator Rot = Rotator::AsRadians(GetWorldRotation());
@@ -336,11 +344,11 @@ void WorldComponent::CreateRigidBody()
 	//Initialise the mass and intertia values
 	btScalar bodyMass = _SimulatePhysics ? 20.0f : 0.0f;
 	btVector3 bodyInertia;
-	_CollisionShape->calculateLocalInertia(bodyMass, bodyInertia);
+	m_CollisionShape->calculateLocalInertia(bodyMass, bodyInertia);
 
 	//Create the construction info for the body
 	btRigidBody::btRigidBodyConstructionInfo bodyCI =
-		btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, _CollisionShape, bodyInertia);
+		btRigidBody::btRigidBodyConstructionInfo(bodyMass, motionState, m_CollisionShape, bodyInertia);
 	bodyCI.m_restitution = 0.4f;
 	bodyCI.m_friction = 0.5f;
 	bodyCI.m_rollingFriction = 0.2f;
@@ -366,7 +374,7 @@ btRigidBody* WorldComponent::GetRigidBody() const
 
 btCollisionShape* WorldComponent::GetCollisionShape() const
 {
-	return _CollisionShape;
+	return m_CollisionShape;
 }
 
 void WorldComponent::SetSimulatePhysics(bool Simulate)
@@ -381,7 +389,18 @@ bool WorldComponent::IsSimulatingPhysics() const
 
 bool WorldComponent::HasCollision() const
 {
-	return _CollisionShape;
+	return m_CollisionShape;
+}
+
+void WorldComponent::UpdateCollisionScale()
+{
+	if (!m_CollisionEnabled || !m_CollisionShape || !_RigidBody)
+	{
+		return;
+	}
+
+	m_CollisionShape->setLocalScaling(_RelativeTransform._Scale.ToBulletVector());
+	World::GetPhysicsWorld()->updateSingleAabb(_RigidBody);
 }
 
 std::string WorldComponent::GetClassSerializationUID(std::ofstream* Archive)

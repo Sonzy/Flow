@@ -11,8 +11,8 @@ void Log::InitialiseEngineLogger()
 
 	EngineLogger = InitialiseLogger("Flow");
 	EngineLogger ?
-		FLOW_ENGINE_LOG("Engine Logger (Flow) Initialised") :
-		FLOW_ENGINE_ERROR("Failed to initialise logger (Flow)");
+		FLOW_ENGINE_LOG_NO_EDITOR("Engine Logger (Flow) Initialised") :
+		FLOW_ENGINE_ERROR_NO_EDITOR("Failed to initialise logger (Flow)");
 
 	EngineLogger->set_level(spdlog::level::trace);
 }
@@ -32,8 +32,8 @@ std::shared_ptr<spdlog::logger> Log::InitialiseLogger(const std::string& LoggerN
 	if (EngineLogger)
 	{
 		NewLogger ?
-			FLOW_ENGINE_LOG("Logger " + LoggerName + " Initialised") :
-			FLOW_ENGINE_ERROR("Failed to initialise logger (" + LoggerName + ")");
+			FLOW_ENGINE_LOG_NO_EDITOR("Logger {0} Initialised.", LoggerName) :
+			FLOW_ENGINE_ERROR_NO_EDITOR("Failed to initialise logger ({0})", LoggerName);
 	}
 
 	return NewLogger;

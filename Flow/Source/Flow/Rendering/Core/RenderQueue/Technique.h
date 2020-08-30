@@ -8,7 +8,6 @@ class TechniqueProbe;
 class Technique
 {
 public:
-	Technique();
 	Technique(const std::string& Name);
 
 	void Submit(const Renderable& Drawable) const;
@@ -24,9 +23,11 @@ public:
 
 	void AcceptProbe(TechniqueProbe& Probe);
 
+	const std::string& GetName() const { return m_Name; }
+
 private:
 
 	bool _Active = true;
 	std::vector<Step> _Steps;
-	std::string _Name;
+	std::string m_Name;
 };

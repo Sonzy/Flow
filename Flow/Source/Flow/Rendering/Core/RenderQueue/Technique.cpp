@@ -3,13 +3,8 @@
 #include "Flow/Rendering/Core/RenderQueue/Step.h"
 #include "Flow/Rendering/Core/TechniqueProbe.h"
 
-Technique::Technique()
-	: Technique("Unnamed Technique")
-{
-}
-
 Technique::Technique(const std::string& Name)
-	: _Name(Name)
+	: m_Name(Name)
 {
 }
 

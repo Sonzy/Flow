@@ -42,8 +42,8 @@ std::string Mat_FlatColour::GenerateTag()
 {
 	return std::string("FlatColour") +
 		std::to_string(_Colour.Colour.x) +
-		std::to_string(_Colour.Colour.x) +
-		std::to_string(_Colour.Colour.x) +
-		std::to_string(_Colour.Colour.x);
+		std::to_string(_Colour.Colour.y) +
+		std::to_string(_Colour.Colour.z) +
+		std::to_string(_Colour.Colour.w);
 }
 

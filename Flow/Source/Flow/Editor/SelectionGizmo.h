@@ -13,8 +13,9 @@ class Mesh;
 class Material;
 class StaticMeshComponent;
 class World;
+class MeshAsset;
 
-enum class SelectedAxis
+enum class Axis
 {
 	None,
 	X,
@@ -25,6 +26,14 @@ enum class SelectedAxis
 /* Gizmo used for moving objects within the world within the editor */
 class SelectionGizmo : public Actor
 {
+public:
+	enum Transform
+	{
+		Translation,
+		Rotation,
+		Scale
+	};
+
 public:
 	SelectionGizmo();
 	virtual ~SelectionGizmo();
@@ -52,38 +61,61 @@ public:
 	void RemoveCollidersFromWorld(World* World);	
 	void Reset();
 
-	void OnSelected(SelectedAxis SelectedAxis, WorldComponent* Object);
+	void OnSelected(Axis SelectedAxis, WorldComponent* Object);
 	void OnNewComponentSelected(WorldComponent* Object);
 	void OnDeselected();
 
-	SelectedAxis GetSelectedAxis() const { return _SelectedAxis; }
+	Axis GetSelectedAxis() const { return m_SelectedAxis; }
+
+	StaticMeshComponent* GetArrow(Axis axis) const;;
+	btCollisionShape* GetArrowCollision(Axis axis) const;
+
+	SelectionGizmo::Transform GetTransformationMode() const				{ return m_TransformMode; }
+	void SetTransformationMode(SelectionGizmo::Transform newMode);
 
 private:
 	void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
 
 private:
 
-	StaticMeshComponent* _ArrowX;
-	StaticMeshComponent* _ArrowY;
-	StaticMeshComponent* _ArrowZ;
+	WorldComponent*					m_Root;
+	StaticMeshComponent*			m_ArrowX;
+	StaticMeshComponent*			m_ArrowY;
+	StaticMeshComponent*			m_ArrowZ;
 
-	Material* _ArrowMaterial;
+	bool							m_Visible = false;
 
-	bool _Visible = false;
+	SelectionGizmo::Transform		m_TransformMode;
+	Axis							m_SelectedAxis;
+	IntVector2D						m_MouseLastUpdate;
+	WorldComponent*					m_SelectedComponent;
+	Vector							m_SelectedComponentStartPosition;
+	Vector							m_SelectedComponentStartScale;
+	float							m_MouseDistanceThreshold = 1.0f;
+	Vector							m_ArrowOffset;
 
-	SelectedAxis _SelectedAxis;
-	IntVector2D _MouseLastUpdate;
-	WorldComponent* _SelectedComponent;
-	Vector _SelectedComponentStartPosition;
-	float _MouseDistanceThreshold = 1.0f;
-	Vector ArrowOffset;
+	//= Defaults =================
+
+	Rotator							m_Translation_X_Rot;
+	Rotator							m_Translation_Y_Rot;
+	Rotator							m_Translation_Z_Rot;
+
+	Rotator							m_Rotation_X_Rot;
+	Rotator							m_Rotation_Y_Rot;
+	Rotator							m_Rotation_Z_Rot;
+
+	//= Meshes ===================
+
+	MeshAsset*						m_MeshTranslate;
+	MeshAsset*						m_MeshRotate;
+	MeshAsset*						m_MeshScale;
 
 	//= Collision ================
 
-	btCollisionShape* _XCollision;
-	btCollisionShape* _YCollision;
-	btCollisionShape* _ZCollision;
-	btGhostObject* _XGhost;
-	btGhostObject* _YGhost;
-	btGhostObject* _ZGhost;
+	btCollisionShape*				m_XCollision;
+	btCollisionShape*				m_YCollision;
+	btCollisionShape*				m_ZCollision;
+	btGhostObject*					m_XGhost;
+	btGhostObject*					m_YGhost;
+	btGhostObject*					m_ZGhost;
 };

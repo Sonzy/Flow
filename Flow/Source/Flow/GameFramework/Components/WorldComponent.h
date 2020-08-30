@@ -74,6 +74,9 @@ public:
 	void							SetSimulatePhysics(bool Simulate);
 	bool							IsSimulatingPhysics() const;
 	bool							HasCollision() const;
+	void							SetCollisionEnabled(bool Enabled) { m_CollisionEnabled = Enabled; }
+
+	void							UpdateCollisionScale();
 
 protected:
 
@@ -87,8 +90,9 @@ protected:
 	//= Physics ========
 
 	bool							_SimulatePhysics;
+	bool							m_CollisionEnabled;
 	btRigidBody*					_RigidBody;
-	btCollisionShape*				_CollisionShape;
+	btCollisionShape*				m_CollisionShape;
 	MotionState*					_MotionState;
 
 public:

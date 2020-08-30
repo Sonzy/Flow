@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Flowpch.h"
 #include "SelectionTool.h"
 #include "Flow/Editor/EditorLayer.h"
@@ -8,6 +9,7 @@
 #include "Flow/Physics/Physics.h"
 
 #include "Flow/GameFramework/Components/WorldComponent.h"
+#include "Flow/GameFramework/Components/StaticMeshComponent.h"
 #include "Flow/GameFramework/World.h"
 
 #include "Flow/Editor/SelectionGizmo.h"
@@ -72,7 +74,8 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 	//TODO: Filter out other objects that arent world components
 	//Raytrace into the world 
-	Physics::TraceResult result = Physics::RayTrace(Start, End);
+	Physics::TraceResultMulti result = Physics::RayTraceMulti(Start, End);
+
 
 	//Store the hit objects
 	WorldComponent* HitComponent = nullptr;
@@ -80,41 +83,45 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	bool HitAnything = result.hasHit();
 	if (HitAnything)
 	{
-		HitComponent = reinterpret_cast<WorldComponent*>(result.m_collisionObject->getUserPointer());
-		HitActor = HitComponent->GetParentActor();
-
-		//If we have hit something new
-		if (m_SelectedComponent != HitComponent)
+		//TODO: Move this check to check the object that last drew the pixel
+		//Check if we hit a selection gimzo
+		for (int i = 0; i < result.m_collisionObjects.size(); i++)
 		{
-			//If it was the gizmo, update it
-		}
+			WorldComponent* comp = reinterpret_cast<WorldComponent*>(result.m_collisionObjects[i]->getUserPointer());
+			Actor* actor = comp->GetParentActor();
 
-		//If we hit the selection gizmo
-		if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(HitActor))
-		{
-			SelectedAxis Axis = SelectedAxis::None;
-
-			if (HitComponent->_Tag._Equal("ArrowX"))
-				Axis = SelectedAxis::X;
-			else if (HitComponent->_Tag._Equal("ArrowY"))
-				Axis = SelectedAxis::Y;
-			else if (HitComponent->_Tag._Equal("ArrowZ"))
-				Axis = SelectedAxis::Z;
-
-			if (Axis == SelectedAxis::None)
+			if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(actor))
 			{
-				FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
+				Axis Axis = Axis::None;
+
+				if (comp->_Tag._Equal("ArrowX"))
+					Axis = Axis::X;
+				else if (comp->_Tag._Equal("ArrowY"))
+					Axis = Axis::Y;
+				else if (comp->_Tag._Equal("ArrowZ"))
+					Axis = Axis::Z;
+
+				if (Axis == Axis::None)
+				{
+					FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
+					return true;
+				}
+
+				Gizmo->OnSelected(Axis, m_SelectedComponent);
 				return true;
 			}
-
-			Gizmo->OnSelected(Axis, m_SelectedComponent);
-			return true; 
 		}
+
+		HitComponent = reinterpret_cast<WorldComponent*>(result.m_collisionObject->getUserPointer());
+		HitActor = HitComponent->GetParentActor();
 	}
 
+	bool SelectedObjectChanged = false;
 	//Pass on the onclicked event
 	if (m_SelectedActor != HitActor)
 	{
+		SelectedObjectChanged = true;
+
 		if (m_SelectedActor)
 		{
 			m_SelectedActor->OnViewportDeselected();
@@ -130,6 +137,8 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	//Pass on the on clicked event
 	if (m_SelectedComponent != HitComponent)
 	{
+		SelectedObjectChanged = true;
+
 		if (m_SelectedComponent)
 		{
 			m_SelectedComponent->OnViewportDeselected();
@@ -176,6 +185,12 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 		m_Gizmo->OnNewComponentSelected(HitComponent);
 		m_Gizmo->UpdatePosition(HitActor->GetLocation());
+
+		if (SelectedObjectChanged)
+		{
+			//TODO: Try keep it uniform in screen space
+			m_Gizmo->SetScale(Vector(1.5f, 1.5f, 1.5f));
+		}
 	}
 
 	return false;
@@ -209,6 +224,21 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		return true;
 	}
 
+	if (e.GetKeyCode() == FLOW_KEY_W)
+	{
+		m_Gizmo->SetTransformationMode(SelectionGizmo::Translation);
+	}
+
+	if (e.GetKeyCode() == FLOW_KEY_E)
+	{
+		m_Gizmo->SetTransformationMode(SelectionGizmo::Rotation);
+	}
+
+	if (e.GetKeyCode() == FLOW_KEY_R)
+	{
+		m_Gizmo->SetTransformationMode(SelectionGizmo::Scale);
+	}
+
 	return false;
 }
 
@@ -216,7 +246,7 @@ bool SelectionTool::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
 	if (e.GetMouseButton() == FLOW_MOUSE_LEFT)
 	{
-		if (m_Gizmo->GetSelectedAxis() != SelectedAxis::None)
+		if (m_Gizmo->GetSelectedAxis() != Axis::None)
 		{
 			m_Gizmo->OnDeselected();
 		}

@@ -11,5 +11,17 @@ Physics::TraceResult Physics::RayTrace(Vector Start, Vector End)
 
 	btCollisionWorld::ClosestRayResultCallback Result(InternalStart, InternaEnd);
 	Application::GetWorld()->GetPhysicsWorld()->rayTest(InternalStart, InternaEnd, Result);
+
+	return Result;
+}
+
+Physics::TraceResultMulti Physics::RayTraceMulti(Vector Start, Vector End)
+{
+	btVector3 InternalStart = btVector3(Start.X, Start.Y, Start.Z);
+	btVector3 InternaEnd = btVector3(End.X, End.Y, End.Z);
+
+	btCollisionWorld::AllHitsRayResultCallback Result(InternalStart, InternaEnd);
+	Application::GetWorld()->GetPhysicsWorld()->rayTest(InternalStart, InternaEnd, Result);
+
 	return Result;
 }

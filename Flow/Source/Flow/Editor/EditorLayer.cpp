@@ -13,8 +13,6 @@
 
 #include <Psapi.h> //memory debug
 
-#include "Flow/Editor/Windows/CollisionEditor.h"
-
 #include "Flow/Rendering/Other/FrameBuffer.h"
 #include "Flow/Editor/EditorCamera.h"
 #include "Flow/Editor/LevelManager.h"
@@ -37,7 +35,7 @@
 #define REGISTER_TOOL(NewTool) RegisterTool(new NewTool);
 
 EditorLayer::EditorLayer()
-	: Layer("Editor Layer"), _EditorViewportSize(0,0)
+	: Layer("Editor Layer"), _EditorViewportSize(0,0), Initialised(false)
 {
 
 }
@@ -50,13 +48,15 @@ EditorLayer::~EditorLayer()
 void EditorLayer::Initialise()
 {
 	m_MenuBar = new MenuBar(this);
-	_Inspector = new Inspector();
-	_AssetWindow = new AssetWindow();
-	_LevelManager = new LevelManager();
-	_SpawnWindow = new SpawnWindow(World::Get());
+	m_Inspector = new Inspector();
+	m_AssetWindow = new AssetWindow();
+	m_LevelManager = new LevelManager();
+	m_SpawnWindow = new SpawnWindow(World::Get());
 	m_Toolbar = new ToolBar();
 
 	REGISTER_TOOL(SelectionTool);
+
+	Initialised = true;
 }
 
 void EditorLayer::BeginPlay()
@@ -69,8 +69,8 @@ void EditorLayer::BeginPlay()
 
 void EditorLayer::OnAttach()
 {
-	_ApplicationPointer = &Application::GetApplication();
-	_Inspector->SetCurrentWorld(World::Get());
+	m_ApplicationPointer = &Application::GetApplication();
+	m_Inspector->SetCurrentWorld(World::Get());
 }
 
 void EditorLayer::OnDetach()
@@ -85,16 +85,17 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 
 	InitialiseDockspace(Offset);
 
-	_Inspector->Update();
+	m_Inspector->Update();
 	if (DrawEditor)
 	{
-		_Inspector->Render();
+		m_Inspector->Render();
 		RenderApplicationDebug(FrameDeltaTime);
 		UpdateCollisionEditor();
-		_AssetWindow->DrawWindow();
+		m_AssetWindow->DrawWindow();
 		m_SceneManager.DrawWindow_Scene();
-		_LevelManager->DrawWindows();
-		_SpawnWindow->Draw();
+		m_LevelManager->DrawWindows();
+		m_SpawnWindow->Draw();
+		//m_Console.Draw();
 		
 
 		//Draw configuration UI
@@ -106,9 +107,9 @@ void EditorLayer::OnImGuiRender(bool DrawEditor)
 			}
 		}
 
-		if (_DrawDemoWindow)
+		if (m_DrawDemoWindow)
 		{
-			ImGui::ShowDemoWindow(&_DrawDemoWindow);
+			ImGui::ShowDemoWindow(&m_DrawDemoWindow);
 		}			
 	}
 }
@@ -142,8 +143,8 @@ void EditorLayer::OnUpdate(float DeltaTime)
 {
 	FrameDeltaTime = DeltaTime;
 
-	if (!_EditorCam)
-		_EditorCam = std::dynamic_pointer_cast<EditorCamera>(RenderCommand::GetMainCamera());
+	if (!m_EditorCam)
+		m_EditorCam = std::dynamic_pointer_cast<EditorCamera>(RenderCommand::GetMainCamera());
 
 	//_SelectionGizmo->Render();
 
@@ -184,12 +185,12 @@ EditorLayer* EditorLayer::GetEditor()
 
 EditorSettings& EditorLayer::GetEditorSettings()
 {
-	return EditorLayer::GetEditor()->_Settings;
+	return EditorLayer::GetEditor()->m_Settings;
 }
 
 Inspector* EditorLayer::GetInspector() const
 {
-	return _Inspector;
+	return m_Inspector;
 }
 
 MenuBar* EditorLayer::GetMenuBar() const
@@ -199,22 +200,22 @@ MenuBar* EditorLayer::GetMenuBar() const
 
 void EditorLayer::SetDemoWindowVisible(bool Enabled)
 {
-	_DrawDemoWindow = Enabled;
+	m_DrawDemoWindow = Enabled;
 }
 
 void EditorLayer::ToggleImGuiDemoWindow()
 {
-	_DrawDemoWindow = !_DrawDemoWindow;
+	m_DrawDemoWindow = !m_DrawDemoWindow;
 }
 
 void EditorLayer::Open_NewLevelWindow()
 {
-	_LevelManager->Open_NewLevelWindow();
+	m_LevelManager->Open_NewLevelWindow();
 }
 
-void EditorLayer::OpenCollisionEditor()
+Console& EditorLayer::GetConsole()
 {
-	_EditorWindows.push_back(std::make_shared<CollisionEditor>());
+	return m_Console;
 }
 
 bool EditorLayer::IsSceneWindowFocused() const
@@ -241,9 +242,9 @@ bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
 	bool Handled = false;
 
-	CONSUMES_INPUT(_EditorCam, _EditorCam->OnMouseButtonPressed(e));
+	CONSUMES_INPUT(m_EditorCam, m_EditorCam->OnMouseButtonPressed(e));
 
-	if (_Inspector && _Inspector->OnMouseClicked(e))
+	if (m_Inspector && m_Inspector->OnMouseClicked(e))
 		return true;
 
 	return false;
@@ -251,10 +252,10 @@ bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 bool EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
-	if (_EditorCam && _EditorCam->OnMouseButtonReleased(e))
+	if (m_EditorCam && m_EditorCam->OnMouseButtonReleased(e))
 		return true;
 
-	if (_Inspector && _Inspector->OnMouseReleased(e))
+	if (m_Inspector && m_Inspector->OnMouseReleased(e))
 		return true;
 
 	return false;
@@ -267,7 +268,7 @@ bool EditorLayer::OnMouseMoved(MouseMovedEvent& e)
 
 bool EditorLayer::OnMouseScrolled(MouseScrolledEvent& e)
 {
-	if (_EditorCam && _EditorCam->OnMouseScrolled(e))
+	if (m_EditorCam && m_EditorCam->OnMouseScrolled(e))
 		return true;
 
 	return false;
@@ -275,10 +276,10 @@ bool EditorLayer::OnMouseScrolled(MouseScrolledEvent& e)
 
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 {
-	if (_EditorCam && _EditorCam->OnKeyPressed(e))
+	if (m_EditorCam && m_EditorCam->OnKeyPressed(e))
 		return true;
 
-	if (_Inspector && _Inspector->OnKeyPressed(e))
+	if (m_Inspector && m_Inspector->OnKeyPressed(e))
 		return true;
 
 	return false;
@@ -291,7 +292,7 @@ bool EditorLayer::OnKeyTyped(KeyTypedEvent& e)
 
 bool EditorLayer::OnKeyReleased(KeyReleasedEvent& e)
 {
-	if (_EditorCam && _EditorCam->OnKeyReleased(e))
+	if (m_EditorCam && m_EditorCam->OnKeyReleased(e))
 		return true;
 
 	return false;
@@ -358,8 +359,8 @@ void EditorLayer::RenderApplicationDebug(float DeltaTime)
 
 	if (ImGui::Begin("Application Statistics"))
 	{
-		ImGui::Checkbox("Pause Game", &_ApplicationPointer->Paused_);
-		ImGui::Checkbox("Draw Collision", &_ApplicationPointer->DrawCollision_);
+		ImGui::Checkbox("Pause Game", &m_ApplicationPointer->Paused_);
+		ImGui::Checkbox("Draw Collision", &m_ApplicationPointer->DrawCollision_);
 
 		ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
 		ImGui::Text("FrameTime: %.1f ms", LastFrameTime);
@@ -374,11 +375,12 @@ void EditorLayer::RenderApplicationDebug(float DeltaTime)
 	if (ImGui::Begin("Rendering Configuration"))
 	{
 		RenderQueue* Queue = RenderQueue::Get();
-		ImGui::Checkbox("Pass 0", &Queue->_Pass0Enabled);
-		ImGui::Checkbox("Pass 1", &Queue->_Pass1Enabled);
-		ImGui::Checkbox("Pass 2", &Queue->_Pass2Enabled);
-		ImGui::Checkbox("Pass 3", &Queue->_Pass3Enabled);
-		ImGui::Checkbox("Pass 4", &Queue->_Pass4Enabled);
+		ImGui::Checkbox("Pass 0", &Queue->m_Pass0Enabled);
+		ImGui::Checkbox("Pass 1", &Queue->m_Pass1Enabled);
+		ImGui::Checkbox("Pass 2", &Queue->m_Pass2Enabled);
+		ImGui::Checkbox("Pass 3", &Queue->m_Pass3Enabled);
+		ImGui::Checkbox("Pass 4", &Queue->m_Pass4Enabled);
+		ImGui::Checkbox("Pass 5", &Queue->m_Pass5Enabled);
 	}
 	ImGui::End();
 }

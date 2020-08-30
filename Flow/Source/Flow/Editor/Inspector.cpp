@@ -136,108 +136,7 @@ void Inspector::SetCurrentWorld(World* WorldReference)
 
 bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 {
-	////Ensure mouse left.
-	//if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
-	//	return false;
-	//
-	////Calculate the ray bounds
-	//DirectX::XMFLOAT3 Pos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
-	//IntVector2D MousePosition = Input::GetMousePosition();
-	//Vector Start = Vector(Pos.x, Pos.y, Pos.z);
-	//Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
-	//Vector End = Start + (Direction * 1000.0f);
-	//
-	////Raytrace into the world
-	//btCollisionWorld::ClosestRayResultCallback Ray = World::WorldTrace(Start, End);
-	//
-	////If we hit something, if it was a world component, assign this to the focused item.
-	//WorldComponent* HitComp = Ray.hasHit() ? static_cast<WorldComponent*>(Ray.m_collisionObject->getUserPointer()) : nullptr;
-	//Actor* HitObject = Ray.hasHit() ? HitComp->GetParentActor() : nullptr;
-	//
-	//if (_FocusedItem && HitObject != _FocusedItem)
-	//{
-	//	if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(HitObject))
-	//	{
-	//		SelectedAxis Axis = SelectedAxis::None;
-	//
-	//		if(HitComp->_Tag._Equal("ArrowX"))
-	//			Axis = SelectedAxis::X;
-	//		if (HitComp->_Tag._Equal("ArrowY"))
-	//			Axis = SelectedAxis::Y;
-	//		if (HitComp->_Tag._Equal("ArrowZ"))
-	//			Axis = SelectedAxis::Z;
-	//
-	//		if (Axis == SelectedAxis::None)
-	//		{
-	//			FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
-	//			return true;
-	//		}
-	//
-	//		Gizmo->OnSelected(Axis, _FocusedComponent);
-	//		return true;
-	//	}
-	//	else if (StaticMeshComponent* Comp = dynamic_cast<StaticMeshComponent*>(HitComp))
-	//		Comp->EnableOutlineDrawing(false);
-	//
-	//}
-	//
-	//_FocusedItemChanged = HitObject && _FocusedItem != HitObject;
-	//_FocusedComponentChanged = HitComp && _FocusedComponent != HitComp;
-	//
-	//
-	//_FocusedItem = HitObject;
-	//
-	//if (_FocusedComponentChanged)
-	//{
-	//	//If we had a selected component, update it before deselecting
-	//	if (_FocusedComponent)
-	//	{
-	//		_FocusedComponent->OnViewportDeselected();
-	//	}
-	//
-	//	_FocusedComponent = HitComp;
-	//
-	//	//If we have selected a new component
-	//	if (_FocusedComponent)
-	//	{
-	//		_FocusedComponent->OnViewportSelected();
-	//	}
-	//}
-	//
-	//
-	//
-	////If we have not hit anything, reset the selector
-	//if (!_FocusedItem)
-	//{
-	//	if(_FocusedComponent)
-	//		_FocusedComponent->OnViewportDeselected();
-	//	_FocusedComponent = nullptr;
-	//
-	//	_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
-	//	_Selector->OnDeselected();
-	//	_Selector->OnNewComponentSelected(nullptr);
-	//
-	//	if (_Selector->IsVisible())
-	//	{
-	//		_Selector->RemoveCollidersFromWorld(World::Get());
-	//		_Selector->SetVisibility(false);
-	//	}
-	//
-	//}
-	//else
-	//{
-	//	if (!_Selector->IsVisible())
-	//	{
-	//		_Selector->AddCollidersToWorld(World::Get());
-	//		_Selector->SetVisibility(true);
-	//	}
-	//	_Selector->OnNewComponentSelected(HitComp);
-	//	_Selector->UpdatePosition(HitObject->GetLocation());
-	//
-	//}
-
-
-	return true;
+	return false;
 }
 
 bool Inspector::OnMouseReleased(MouseButtonReleasedEvent& e)
@@ -312,11 +211,15 @@ void Inspector::DrawSelectedComponentTransform()
 	bool bUpdate = false;
 	bUpdate |= ImGui::InputFloat3("Position", (float*)m_FocusedComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
 	bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_FocusedComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	bUpdate |= ImGui::InputFloat3("Scale", (float*)m_FocusedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-
+	if (ImGui::InputFloat3("Scale", (float*)m_FocusedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		bUpdate = true;
+		m_FocusedComponent->UpdateCollisionScale();
+	}
 	//TODO:
 	//if (bUpdate)
 	//	_FocusedComponent->UpdatePhysicsBody(true);
+	//TODO: Update collision scale
 }
 
 //SelectionGizmo* Inspector::GetSelector() const

@@ -60,14 +60,6 @@ ImVec2 MenuBar::Draw()
 				Application::CreateNewWindow("Test Window");
 			}
 
-			if (ImGui::MenuItem("Collision Editor (UNSTABLE)"))
-			{
-				/* Still need to decide how to handle multiple windows. Main window flickers since the subwindows
-				call the render commands on the main window. EZ fix but havent decided how to lay out framework
-				for drawing my own stuff to each window so ill come back to it another time*/
-				_Editor->OpenCollisionEditor();
-			}
-
 			ImGui::EndMenu();
 		}
 

@@ -6,6 +6,7 @@
 #include "Flow/Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 #include "Flow/Rendering/Core/Bindables/Shaders/NullPixelShader.h"
 #include "Flow/Rendering/Core/Bindables/Rasterizer.h"
+#include "Flow/Rendering/Other/DepthBuffer.h"
 
 #if WITH_EDITOR
 #include "Flow/Editor/EditorLayer.h"
@@ -21,6 +22,7 @@ RenderQueue::RenderQueue()
 	_Passes.emplace_back(new Pass()); //Main Pass (Two Sided)
 	_Passes.emplace_back(new Pass()); //Mask Pass
 	_Passes.emplace_back(new Pass()); //Outline Draw Pass
+	_Passes.emplace_back(new Pass()); //No Depth
 }
 
 RenderQueue::~RenderQueue()
@@ -45,7 +47,7 @@ void RenderQueue::Execute()
 
 	//= Main Render pass
 
-	if (Queue->_Pass0Enabled)
+	if (Queue->m_Pass0Enabled)
 	{
 		Rasterizer::Resolve(CullMode::Back)->Bind();
 		Stencil::Resolve(StencilMode::Off)->Bind();
@@ -53,7 +55,7 @@ void RenderQueue::Execute()
 	}
 
 	//= Main Pass (Front Culled)
-	if (Queue->_Pass1Enabled)
+	if (Queue->m_Pass1Enabled)
 	{
 		Rasterizer::Resolve(CullMode::Front)->Bind();
 		Queue->_Passes[1]->Execute();
@@ -61,7 +63,7 @@ void RenderQueue::Execute()
 
 
 	//= Main Pass (Two Sided
-	if (Queue->_Pass2Enabled)
+	if (Queue->m_Pass2Enabled)
 	{
 		Rasterizer::Resolve(CullMode::None)->Bind();
 		Queue->_Passes[2]->Execute();
@@ -70,7 +72,7 @@ void RenderQueue::Execute()
 	//Reset 
 	Rasterizer::Resolve(CullMode::Back)->Bind();
 	//= Outline Masking pass
-	if (Queue->_Pass3Enabled)
+	if (Queue->m_Pass3Enabled)
 	{
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		NullPixelShader::Resolve()->Bind(); //Stop D3D11 from using render targets
@@ -78,7 +80,7 @@ void RenderQueue::Execute()
 	}
 
 	//TODO: Editor defs
-	if (Queue->_Pass4Enabled)
+	if (Queue->m_Pass4Enabled)
 	{
 		Vector Colour = EditorLayer::GetEditorSettings()._ObjectHighlightColour;
 
@@ -91,6 +93,14 @@ void RenderQueue::Execute()
 		PXCB->Bind();
 
 		Queue->_Passes[4]->Execute();
+	}
+
+	//=  No depth pass
+	if (Queue->m_Pass5Enabled)
+	{
+		Stencil::Resolve(StencilMode::Write)->Bind();
+		Rasterizer::Resolve(CullMode::Back)->Bind();
+		Queue->_Passes[5]->Execute();
 	}
 }
 

@@ -20,11 +20,12 @@ public:
 
 	std::vector<Pass*> _Passes;
 
-	bool _Pass0Enabled = true;
-	bool _Pass1Enabled = true;
-	bool _Pass2Enabled = true;
-	bool _Pass3Enabled = true;
-	bool _Pass4Enabled = true;
+	bool m_Pass0Enabled = true;
+	bool m_Pass1Enabled = true;
+	bool m_Pass2Enabled = true;
+	bool m_Pass3Enabled = true;
+	bool m_Pass4Enabled = true;
+	bool m_Pass5Enabled = true;
 
 private:
 

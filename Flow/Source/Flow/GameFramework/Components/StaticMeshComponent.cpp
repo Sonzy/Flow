@@ -171,6 +171,24 @@ void StaticMeshComponent::SetStaticMesh(MeshAsset* NewMesh)
 	CHECK_RETURN(!NewMesh, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
 	_StaticMesh = NewMesh->GetMesh(0);
 	RefreshBinds(); //TODO: Dont call this twice? dunno
+
+	//Update physics
+	if (m_CollisionEnabled)
+	{
+		GenerateCollision();
+		if (!_RigidBody)
+		{
+			InitialisePhysics();
+			return;
+		}
+		else
+		{
+			auto* physWorld = World::GetPhysicsWorld();
+			physWorld->removeRigidBody(_RigidBody);
+			_RigidBody->setCollisionShape(m_CollisionShape);
+			//physWorld->addRigidBody(_RigidBody);
+		}
+	}
 }
 
 void StaticMeshComponent::SetMaterial(MaterialAsset* NewMaterial)
@@ -231,26 +249,51 @@ void StaticMeshComponent::RefreshBinds()
 	VertexLayout MeshLayout;
 	auto Transform = std::make_shared<TransformConstantBuffer>(this);
 
-	Technique Standard;
+	if (!m_DrawWithoutDepth)
 	{
-		Step MainStep(0);
+		Technique Standard = Technique("StaticMeshComponent_Standard");
+		{
+			Step MainStep(0);
 
-		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
-		_StaticMesh->GenerateBinds(MeshLayout);
-		_VertexBuffer = _StaticMesh->_BindableVBuffer;
-		_IndexBuffer = _StaticMesh->_IndexBuffer;
-		_Topology = _StaticMesh->_Topology;
+			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
+			_StaticMesh->GenerateBinds(MeshLayout);
+			_VertexBuffer = _StaticMesh->_BindableVBuffer;
+			_IndexBuffer = _StaticMesh->_IndexBuffer;
+			_Topology = _StaticMesh->_Topology;
 
-		if(_Material)
-			_Material->BindMaterial(&MainStep, MeshLayout);
+			if (_Material)
+				_Material->BindMaterial(&MainStep, MeshLayout);
 
-		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 
-		Standard.AddStep(std::move(MainStep));
+			Standard.AddStep(std::move(MainStep));
+		}
+		AddTechnique(Standard);
 	}
-	AddTechnique(std::move(Standard));
+	else
+	{
+		Technique StandardNoDepthPass = Technique("StaticMeshComponent_StandardNoDepthPass");
+		{
+			Step MainStep(5);
 
-	Technique Outline;
+			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
+			_StaticMesh->GenerateBinds(MeshLayout);
+			_VertexBuffer = _StaticMesh->_BindableVBuffer;
+			_IndexBuffer = _StaticMesh->_IndexBuffer;
+			_Topology = _StaticMesh->_Topology;
+
+			if (_Material)
+				_Material->BindMaterial(&MainStep, MeshLayout);
+
+			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+
+			StandardNoDepthPass.AddStep(std::move(MainStep));
+		}
+		AddTechnique(StandardNoDepthPass);
+	}
+
+
+	Technique Outline = Technique("StaticMeshComponent_Outline");
 	Outline.Deactivate();
 	{
 		Step Masking(3);
@@ -278,7 +321,7 @@ void StaticMeshComponent::RefreshBinds()
 		Outline.AddStep(DrawOutline);
 	}
 
-	AddTechnique(std::move(Outline));
+	AddTechnique(Outline);
 }
 
 DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
@@ -337,6 +380,8 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 		_MaterialIdentifier = MatNameTemp;
 		SetMaterial(FoundMat);
 	}
+
+	ImGui::Checkbox("Draw Without Depth", &m_DrawWithoutDepth);
 }
 
 void StaticMeshComponent::GenerateCollision()
@@ -349,11 +394,11 @@ void StaticMeshComponent::GenerateCollision()
 		Shape->addPoint(btv);
 	}
 
-	_CollisionShape = Shape;
-	_CollisionShape->setMargin(0.01f);
+	m_CollisionShape = Shape;
+	m_CollisionShape->setMargin(0.01f);
 
 	Transform trans = GetWorldTransform();
-	_CollisionShape->setLocalScaling(btVector3(trans._Scale.X, trans._Scale.Y, trans._Scale.Z));
+	m_CollisionShape->setLocalScaling(btVector3(trans._Scale.X, trans._Scale.Y, trans._Scale.Z));
 }
 
 
@@ -370,9 +415,9 @@ void StaticMeshComponent::InitialisePhysics()
 		World::GetPhysicsWorld()->removeRigidBody(_RigidBody);
 		delete _RigidBody;
 	}
-	if (_CollisionShape)
+	if (m_CollisionShape)
 	{
-		delete _CollisionShape;
+		delete m_CollisionShape;
 	}
 
 	GenerateCollision();

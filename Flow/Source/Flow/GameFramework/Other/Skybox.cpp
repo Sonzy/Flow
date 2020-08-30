@@ -27,7 +27,7 @@ Skybox::Skybox()
 	CHECK_RETURN(!_Mesh, "Skybox::Skybox: Failed to load mesh");
 	CHECK_RETURN(!_Material, "Skybox::Skybox: Failed to load material");
 
-	Technique Standard;
+	Technique Standard("Skybox_Standard");
 	{
 		Step MainStep(1);
 
@@ -37,7 +37,7 @@ Skybox::Skybox()
 
 		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 	}
-	AddTechnique(std::move(Standard));
+	AddTechnique(Standard);
 }
 
 DirectX::XMMATRIX Skybox::GetTransformXM() const

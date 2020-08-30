@@ -12,7 +12,7 @@ void Renderable::Bind() const
 	_Topology->Bind();
 }
 
-void Renderable::AddTechnique(Technique NewTechnique)
+void Renderable::AddTechnique(Technique& NewTechnique)
 {
 	NewTechnique.InitialiseParentReferences(*this);
 	_Techniques.push_back(std::move(NewTechnique));

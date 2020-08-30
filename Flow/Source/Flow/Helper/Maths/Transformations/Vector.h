@@ -4,6 +4,7 @@
 #include "Vector2D.h"
 #include <DirectXMath.h>
 #include "spdlog/fmt/ostr.h"
+#include "ThirdParty/Bullet/LinearMath/btVector3.h"
 
 struct Vector
 {
@@ -27,7 +28,16 @@ struct Vector
 		: X((float)Input.X), Y((float)Input.Y), Z(0)
 	{	}
 
+	Vector(btVector3 Input)
+		: X(Input.x()), Y(Input.y()), Z(Input.z())
+	{	}
+
 	DirectX::XMFLOAT3 ToDXFloat3() const
+	{
+		return { X, Y, Z };
+	}
+
+	btVector3 ToBulletVector() const
 	{
 		return { X, Y, Z };
 	}

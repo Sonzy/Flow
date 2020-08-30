@@ -34,7 +34,7 @@ Application* Application::s_Instance = nullptr;
 
 //TODO: Being naughty, need to null initialise
 Application::Application(const std::string& AppName)
-	: ApplicationName(AppName)
+	: ApplicationName(AppName), EditorLayer_(nullptr)
 {
 
 }
@@ -66,25 +66,28 @@ void Application::InitialiseApplication()
 	//TODO: Load assets somewhere
 	//= Models =
 
-	AssetSystem::LoadEditorAsset("Box", "Assets/Models/Box.obj");
-	AssetSystem::LoadEditorAsset("SelectionGizmo", "Assets/Models/SelectionGizmo.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Crate", "Assets/Models/Wabble_Crate.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Chair", "Assets/Models/Wabble_Chair.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Table", "Assets/Models/Wabble_Table.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Revolver", "Assets/Models/Wabble_Revolver.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Rifle", "Assets/Models/Wabble_Rifle.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Shotgun", "Assets/Models/Wabble_Shotgun.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss", "Assets/Models/Wabble_Blunderbuss.obj");
+	AssetSystem::LoadEditorAsset("Box",						"Assets/Models/Box.obj");
+	AssetSystem::LoadEditorAsset("Arrow",					"Assets/Models/Arrow.obj");
+	AssetSystem::LoadEditorAsset("Gizmo_Translation",		"Assets/Models/Gizmo_Translation.obj"); //TODO: we load it as a seperate asset for laziness
+	AssetSystem::LoadEditorAsset("Gizmo_Rotation",			"Assets/Models/Gizmo_Rotation.obj");
+	AssetSystem::LoadEditorAsset("Gizmo_Scale",				"Assets/Models/Gizmo_Scale.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Crate",			"Assets/Models/Wabble_Crate.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Chair",			"Assets/Models/Wabble_Chair.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Table",			"Assets/Models/Wabble_Table.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Revolver",			"Assets/Models/Wabble_Revolver.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Rifle",			"Assets/Models/Wabble_Rifle.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Shotgun",			"Assets/Models/Wabble_Shotgun.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss",		"Assets/Models/Wabble_Blunderbuss.obj");
 
 	//= Collision ======================
 
-	AssetSystem::LoadEditorAsset("Wabble_Table_Collision", "Assets/Collision/Collision_Wabble_Table.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Chair_Collision", "Assets/Collision/Collision_Wabble_Chair.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Shotgun_Collision", "Assets/Collision/Collision_Wabble_Shotgun.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Rifle_Collision", "Assets/Collision/Collision_Wabble_Rifle.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Revolver_Collision", "Assets/Collision/Collision_Wabble_Revolver.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss_Collision", "Assets/Collision/Collision_Wabble_Blunderbuss.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Crate_Collision", "Assets/Collision/Collision_Wabble_Crate.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Table_Collision",			"Assets/Collision/Collision_Wabble_Table.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Chair_Collision",			"Assets/Collision/Collision_Wabble_Chair.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Shotgun_Collision",		"Assets/Collision/Collision_Wabble_Shotgun.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Rifle_Collision",			"Assets/Collision/Collision_Wabble_Rifle.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Revolver_Collision",		"Assets/Collision/Collision_Wabble_Revolver.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss_Collision",	"Assets/Collision/Collision_Wabble_Blunderbuss.obj");
+	AssetSystem::LoadEditorAsset("Wabble_Crate_Collision",			"Assets/Collision/Collision_Wabble_Crate.obj");
 
 
 	//Assign Collisions to meshes
@@ -134,7 +137,11 @@ void Application::InitialiseApplication()
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
 	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector(1.0f, 1.0f, 1.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector(0.52f, 0.8f, 1.0f));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector(0.0f, 0.0f, 1.0f));
+	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Red");
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Red")->GetMaterial())->SetColour(Vector(1.0f, 0.0f, 0.0f));
+	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Green");
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green")->GetMaterial())->SetColour(Vector(0.0f, 1.0f, 0.0f));
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
 	Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());

@@ -63,22 +63,24 @@ void EditorCamera::Update(float DeltaTime)
 	IntVector2D MousePosition = Input::GetMousePosition();
 	Vector Translation(0.0f);
 
-	if (Input::IsKeyPressed(FLOW_KEY_W))
-		Translation.Z += _CameraSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_A))
-		Translation.X += -_CameraSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_S))
-		Translation.Z += -_CameraSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_D))
-		Translation.X += _CameraSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-		Translation.Y += _CameraSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
-		Translation.Y += -_CameraSpeed;
+
 
 	//Camera rotation
 	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 	{
+		if (Input::IsKeyPressed(FLOW_KEY_W))
+			Translation.Z += _CameraSpeed;
+		if (Input::IsKeyPressed(FLOW_KEY_A))
+			Translation.X += -_CameraSpeed;
+		if (Input::IsKeyPressed(FLOW_KEY_S))
+			Translation.Z += -_CameraSpeed;
+		if (Input::IsKeyPressed(FLOW_KEY_D))
+			Translation.X += _CameraSpeed;
+		if (Input::IsKeyPressed(FLOW_KEY_SPACE))
+			Translation.Y += _CameraSpeed;
+		if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
+
+			Translation.Y += -_CameraSpeed;
 		if (_MouseLastFrame != MousePosition)
 		{
 			Vector Direction = (_MouseLastFrame - MousePosition);

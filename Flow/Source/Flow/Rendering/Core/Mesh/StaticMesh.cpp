@@ -26,7 +26,7 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 	Mesh* m_Mesh = m_MeshAsset->GetMesh(0);
 	VertexLayout MeshLayout;
 
-	Technique Standard;
+	Technique Standard("StaticMesh_Standard");
 	{
 		Step MainStep(0);
 
@@ -42,7 +42,7 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 		Standard.AddStep(std::move(MainStep));
 	}
-	AddTechnique(std::move(Standard));
+	AddTechnique(Standard);
 }
 
 DirectX::XMMATRIX StaticMesh::GetTransformXM() const

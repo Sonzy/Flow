@@ -19,7 +19,7 @@ public:
 	//= Render Queue Framework ===========
 
 	void Bind() const;
-	void AddTechnique(Technique NewTechnique);
+	void AddTechnique(Technique& NewTechnique);
 	UINT GetIndexCount() const;
 
 protected:
