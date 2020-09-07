@@ -38,9 +38,6 @@ public:
 	SelectionGizmo();
 	virtual ~SelectionGizmo();
 
-	/* Generates the collision for all parts of the gizmo*/
-	void GenerateCollision();
-
 	void InitialisePhysics();
 
 	void UpdateSelection();
@@ -67,14 +64,11 @@ public:
 
 	Axis GetSelectedAxis() const { return m_SelectedAxis; }
 
-	StaticMeshComponent* GetArrow(Axis axis) const;;
-	btCollisionShape* GetArrowCollision(Axis axis) const;
-
 	SelectionGizmo::Transform GetTransformationMode() const				{ return m_TransformMode; }
 	void SetTransformationMode(SelectionGizmo::Transform newMode);
 
 private:
-	void GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost);
+	void GenerateCollision();
 
 private:
 
@@ -112,9 +106,9 @@ private:
 
 	//= Collision ================
 
-	btCollisionShape*				m_XCollision;
-	btCollisionShape*				m_YCollision;
-	btCollisionShape*				m_ZCollision;
+	btConvexHullShape				m_CollisionTranslation;
+	btConvexHullShape				m_CollisionRotation;
+	btConvexHullShape				m_CollisionScale;
 	btGhostObject*					m_XGhost;
 	btGhostObject*					m_YGhost;
 	btGhostObject*					m_ZGhost;

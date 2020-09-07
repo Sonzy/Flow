@@ -23,7 +23,6 @@
 SelectionTool::SelectionTool()
 {
 	m_Gizmo = new SelectionGizmo();
-	m_Gizmo->GenerateCollision();
 
 	m_InspectorWindow = EditorLayer::GetEditor()->GetInspector();
 }

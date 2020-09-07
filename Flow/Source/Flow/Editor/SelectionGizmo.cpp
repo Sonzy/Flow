@@ -19,7 +19,7 @@
 #include "Flow/Editor/EditorLayer.h"
 
 SelectionGizmo::SelectionGizmo()
-	: Actor("SelectionGizmo")
+	: Actor("SelectionGizmo") //TODO: are we keeping this an actor?
 	, m_Translation_X_Rot(Rotator(0.0f, -90.0f, 0.0f))
 	, m_Translation_Y_Rot(Rotator(0.0f, 0.0f, 0.0f))
 	, m_Translation_Z_Rot(Rotator(90.0f, 0.0f, 0.0f))
@@ -76,6 +76,14 @@ SelectionGizmo::SelectionGizmo()
 	m_ArrowX->m_DrawWithoutDepth = true;
 	m_ArrowY->m_DrawWithoutDepth = true;
 	m_ArrowZ->m_DrawWithoutDepth = true;
+
+	m_XGhost = new btGhostObject();
+	m_YGhost = new btGhostObject();
+	m_ZGhost = new btGhostObject();
+
+	_Visible = false;
+
+	GenerateCollision();
 }
 
 SelectionGizmo::~SelectionGizmo()
@@ -87,35 +95,10 @@ SelectionGizmo::~SelectionGizmo()
 	delete m_ArrowX;
 	delete m_ArrowY;
 	delete m_ArrowZ;
-
-	delete m_XCollision;
-	delete m_YCollision;
-	delete m_ZCollision;
-}
-
-
-void SelectionGizmo::GenerateCollision()
-{
-	m_XGhost = new btGhostObject();
-	m_YGhost = new btGhostObject();
-	m_ZGhost = new btGhostObject();
-
-	//Create collision data for each arrow seperately
-	GenerateCollisionData(m_ArrowX, m_XCollision, m_XGhost);
-	GenerateCollisionData(m_ArrowY, m_YCollision, m_YGhost);
-	GenerateCollisionData(m_ArrowZ, m_ZCollision, m_ZGhost);
-
-	m_XGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
-	m_YGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
-	m_ZGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
 }
 
 void SelectionGizmo::InitialisePhysics()
 {
-	//TODO: Remove
-	//m_ArrowX->InitialisePhysics();
-	//m_ArrowY->InitialisePhysics();
-	//m_ArrowZ->InitialisePhysics();
 }
 
 void SelectionGizmo::UpdateSelection()
@@ -283,9 +266,12 @@ void SelectionGizmo::SetScale(Vector Scale)
 
 	//Update this to the physics world
 	btDiscreteDynamicsWorld* physicsWorld = World::GetPhysicsWorld();
-	m_XCollision->setLocalScaling(Scale.ToBulletVector());
-	m_YCollision->setLocalScaling(Scale.ToBulletVector());
-	m_ZCollision->setLocalScaling(Scale.ToBulletVector());
+
+	//Scale all of them so we dont have to bother if we change
+	m_CollisionTranslation.setLocalScaling(Scale.ToBulletVector());
+	m_CollisionRotation.setLocalScaling(Scale.ToBulletVector());
+	m_CollisionScale.setLocalScaling(Scale.ToBulletVector());
+
 	if (physicsWorld)
 	{
 		physicsWorld->updateSingleAabb(m_XGhost);
@@ -385,44 +371,13 @@ void SelectionGizmo::OnDeselected()
 	m_SelectedAxis = Axis::None;
 }
 
-StaticMeshComponent* SelectionGizmo::GetArrow(Axis axis) const
-{
-	switch (axis)
-	{
-	case Axis::X:
-		return m_ArrowX;
-	case Axis::Y:
-		return m_ArrowY;
-	case Axis::Z:
-		return m_ArrowZ;
-	default:
-		FLOW_ENGINE_WARNING("SelectionGizmo::GetArrow: Case Error.");
-		return nullptr;
-	}
-
-	return nullptr;
-}
-
-btCollisionShape* SelectionGizmo::GetArrowCollision(Axis axis) const
-{
-	switch (axis)
-	{
-	case Axis::X:
-		return m_XCollision;
-	case Axis::Y:
-		return m_YCollision;
-	case Axis::Z:
-		return m_ZCollision;
-	default:
-		FLOW_ENGINE_WARNING("SelectionGizmo::GetArrowCollision: Case Error.");
-		return nullptr;
-	}
-
-	return nullptr;
-}
-
 void SelectionGizmo::SetTransformationMode(SelectionGizmo::Transform newMode)
 {
+	if (!_Visible)
+	{
+		return;
+	}
+
 	m_TransformMode = newMode;
 
 	switch (m_TransformMode)
@@ -442,31 +397,92 @@ void SelectionGizmo::SetTransformationMode(SelectionGizmo::Transform newMode)
 		m_ArrowY->SetStaticMesh(m_MeshScale);
 		m_ArrowZ->SetStaticMesh(m_MeshScale);
 		break;
-	default:
+	}
+
+	auto* physWorld = World::GetPhysicsWorld();
+	physWorld->removeCollisionObject(m_XGhost);
+	physWorld->removeCollisionObject(m_YGhost);
+	physWorld->removeCollisionObject(m_ZGhost);
+
+	switch (m_TransformMode)
+	{
+	case SelectionGizmo::Translation:
+		m_XGhost->setCollisionShape(&m_CollisionTranslation);
+		m_YGhost->setCollisionShape(&m_CollisionTranslation);
+		m_ZGhost->setCollisionShape(&m_CollisionTranslation);
+		break;
+	case SelectionGizmo::Rotation:
+		m_XGhost->setCollisionShape(&m_CollisionRotation);
+		m_YGhost->setCollisionShape(&m_CollisionRotation);
+		m_ZGhost->setCollisionShape(&m_CollisionRotation);
+		break;
+	case SelectionGizmo::Scale:
+		m_XGhost->setCollisionShape(&m_CollisionScale);
+		m_YGhost->setCollisionShape(&m_CollisionScale);
+		m_ZGhost->setCollisionShape(&m_CollisionScale);
 		break;
 	}
+
+	physWorld->addCollisionObject(m_XGhost);
+	physWorld->addCollisionObject(m_YGhost);
+	physWorld->addCollisionObject(m_ZGhost);
+
 }
 
-void SelectionGizmo::GenerateCollisionData(StaticMeshComponent* Component, btCollisionShape*& Collider, btGhostObject*& Ghost)
+void SelectionGizmo::GenerateCollision()
 {
 	//Generate the collision
-	btConvexHullShape* Shape = new btConvexHullShape();
-	auto Vertices = Component->GetMesh()->GetVertices();
-	for (auto Vert : Vertices)
-	{
-		btVector3 btv = btVector3(Vert._Position.X, Vert._Position.Y, Vert._Position.Z);
-		Shape->addPoint(btv);
-	}
-	Collider = Shape;
+	const std::vector<Vector>& TranslationVerts = m_MeshTranslate->GetMesh(0)->GetCollisionVertices();
+	const std::vector<Vector>& RotationVerts = m_MeshRotate->GetMesh(0)->GetCollisionVertices();
+	const std::vector<Vector>& ScaleVerts = m_MeshScale->GetMesh(0)->GetCollisionVertices();
 
-	Collider->setLocalScaling(btVector3(1, 1, 1));
+	for (const Vector& Vert : TranslationVerts)
+	{
+		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		m_CollisionTranslation.addPoint(btv);
+	}
+
+	for (const Vector& Vert : RotationVerts)
+	{
+		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		m_CollisionRotation.addPoint(btv);
+	}
+
+	for (const Vector& Vert : ScaleVerts)
+	{
+		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		m_CollisionScale.addPoint(btv);
+	}
+
+	m_CollisionTranslation.setLocalScaling(btVector3(1, 1, 1));
+	m_CollisionRotation.setLocalScaling(btVector3(1, 1, 1));
+	m_CollisionScale.setLocalScaling(btVector3(1, 1, 1));
 
 
 	//Create the ghost object
 	btTransform Transform;
-	Vector Location = Component->GetWorldPosition();
+	Vector Location;
+
+	Location = m_ArrowX->GetWorldPosition();
 	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
-	Ghost->setCollisionShape(Collider);
-	Ghost->setWorldTransform(Transform);
-	Ghost->setUserPointer(Component);
+	m_XGhost->setCollisionShape(&m_CollisionTranslation);
+	m_XGhost->setWorldTransform(Transform);
+	m_XGhost->setUserPointer(m_ArrowX);
+
+	Location = m_ArrowY->GetWorldPosition();
+	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
+	m_YGhost->setCollisionShape(&m_CollisionTranslation);
+	m_YGhost->setWorldTransform(Transform);
+	m_YGhost->setUserPointer(m_ArrowY);
+
+	Location = m_ArrowZ->GetWorldPosition();
+	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
+	m_ZGhost->setCollisionShape(&m_CollisionTranslation);
+	m_ZGhost->setWorldTransform(Transform);
+	m_ZGhost->setUserPointer(m_ArrowZ);
+
+
+	m_XGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
+	m_YGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
+	m_ZGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
 }

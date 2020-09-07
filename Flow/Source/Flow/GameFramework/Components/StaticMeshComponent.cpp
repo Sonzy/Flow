@@ -186,7 +186,7 @@ void StaticMeshComponent::SetStaticMesh(MeshAsset* NewMesh)
 			auto* physWorld = World::GetPhysicsWorld();
 			physWorld->removeRigidBody(_RigidBody);
 			_RigidBody->setCollisionShape(m_CollisionShape);
-			//physWorld->addRigidBody(_RigidBody);
+			//physWorld->addRigidBody(_RigidBody); //TODO?
 		}
 	}
 }
