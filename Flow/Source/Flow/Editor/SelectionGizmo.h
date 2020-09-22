@@ -1,10 +1,10 @@
 #pragma once
-#include "Flow\Helper\Maths.h"
-
-#include "Flow\Rendering\Core\Bindable.h"
-#include "Flow\Rendering\Core\Bindables\IndexBuffer.h"
-#include "Flow/GameFramework/Components/WorldComponent.h"
-#include "Flow/GameFramework/Actor.h"
+#include "Maths/Vector3.h"
+#include "Maths/IntVector2.h"
+#include "Rendering\Core\Bindable.h"
+#include "Rendering\Core\Bindables\IndexBuffer.h"
+#include "GameFramework/Components/WorldComponent.h"
+#include "GameFramework/Actor.h"
 
 class btCollisionShape;
 class btGhostObject;
@@ -42,13 +42,13 @@ public:
 
 	void UpdateSelection();
 
-	void UpdatePosition(Vector Position);
+	void UpdatePosition(Vector3 Position);
 	void UpdateRotation(Rotator Rotation);
-	void SetScale(Vector Scale);
+	void SetScale(Vector3 Scale);
 
 	void Render();
 
-	[[nodiscard]] Vector GetPosition()  const;
+	[[nodiscard]] Vector3 GetPosition()  const;
 
 	void SetVisibility(bool Visible);
 	bool IsVisible() const { return _Visible; }
@@ -81,12 +81,12 @@ private:
 
 	SelectionGizmo::Transform		m_TransformMode;
 	Axis							m_SelectedAxis;
-	IntVector2D						m_MouseLastUpdate;
+	IntVector2						m_MouseLastUpdate;
 	WorldComponent*					m_SelectedComponent;
-	Vector							m_SelectedComponentStartPosition;
-	Vector							m_SelectedComponentStartScale;
+	Vector3							m_SelectedComponentStartPosition;
+	Vector3							m_SelectedComponentStartScale;
 	float							m_MouseDistanceThreshold = 1.0f;
-	Vector							m_ArrowOffset;
+	Vector3							m_ArrowOffset;
 
 	//= Defaults =================
 

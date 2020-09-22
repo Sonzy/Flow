@@ -1,19 +1,19 @@
 #pragma once
 #include "ThirdParty/Bullet/LinearMath/btMotionState.h"
-#include "Flow/Helper/Maths.h"
+#include "Maths/Maths.h"
 
 class MotionState : public btMotionState
 {
 public:
 	MotionState() = delete;
-	MotionState(Vector* Position, Rotator* Rotation);
-	void UpdateTransformPointers(Vector* Position, Rotator* Rotation);
+	MotionState(Vector3* Position, Rotator* Rotation);
+	void UpdateTransformPointers(Vector3* Position, Rotator* Rotation);
 
 	virtual void getWorldTransform(btTransform& worldTrans) const override;
 	virtual void setWorldTransform(const btTransform& worldTrans) override;
 
 protected:
 
-	Vector* _ObjectPosition;
+	Vector3* _ObjectPosition;
 	Rotator* _ObjectRotation;
 };

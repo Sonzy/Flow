@@ -47,15 +47,15 @@ void LineBatcher::Initialise()
 	_VertexCB = new VertexConstantBuffer<ViewProjectionBuffer>(0);
 }
 
-void LineBatcher::AddLine(Vector From, Vector To, Vector Colour)
+void LineBatcher::AddLine(Vector3 From, Vector3 To, Vector3 Colour)
 {
 	_VertexBuffer->EmplaceBack(
-		DirectX::XMFLOAT3{ From.X, From.Y, From.Z },
-		DirectX::XMFLOAT3{ Colour.X, Colour.Y, Colour.Z });
+		DirectX::XMFLOAT3{ From.x, From.y, From.z },
+		DirectX::XMFLOAT3{ Colour.x, Colour.y, Colour.z });
 
 	_VertexBuffer->EmplaceBack(
-		DirectX::XMFLOAT3{ To.X, To.Y, To.Z },
-		DirectX::XMFLOAT3{ Colour.X, Colour.Y, Colour.Z });
+		DirectX::XMFLOAT3{ To.x, To.y, To.z },
+		DirectX::XMFLOAT3{ Colour.x, Colour.y, Colour.z });
 
 	Lines++;
 }

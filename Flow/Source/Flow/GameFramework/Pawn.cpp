@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "Pawn.h"
-#include "Flow\Helper\HelperMacros.h"
+#include "Flow\Utils\HelperMacros.h"
 
 Pawn::Pawn()
 	: Pawn("Pawn")

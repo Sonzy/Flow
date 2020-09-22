@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "Flow\Helper\Maths.h"
+#include "Maths/Maths.h"
 #include <fstream>
 
 class btRigidBody;
@@ -24,11 +24,11 @@ public:
 
 	void							AddChild(WorldComponent* Child);
 
-	Vector							GetWorldPosition() const;
-	Vector							GetRelativePosition() const;
-	void							SetWorldPosition(Vector NewPosition);
-	void							SetRelativePosition(Vector NewPosition);
-	void							AddRelativePosition(Vector Position);
+	Vector3							GetWorldPosition() const;
+	Vector3							GetRelativePosition() const;
+	void							SetWorldPosition(Vector3 NewPosition);
+	void							SetRelativePosition(Vector3 NewPosition);
+	void							AddRelativePosition(Vector3 Position);
 
 	Rotator							GetWorldRotation() const;
 	Rotator							GetRelativeRotation() const;
@@ -36,10 +36,10 @@ public:
 	void							SetRelativeRotation(Rotator NewRotation);
 	void							AddRelativeRotation(Rotator Rotation);
 
-	Vector							GetWorldScale() const;
-	Vector							GetRelativeScale() const;
-	void							SetWorldScale(Vector NewScale);
-	void							SetRelativeScale(Vector NewScale);
+	Vector3							GetWorldScale() const;
+	Vector3							GetRelativeScale() const;
+	void							SetWorldScale(Vector3 NewScale);
+	void							SetRelativeScale(Vector3 NewScale);
 
 	Transform						GetWorldTransform() const;
 	Transform						GetRelativeTransform() const;
@@ -48,9 +48,9 @@ public:
 
 	virtual void					Render();
 
-	Vector*							GetWriteablePosition();
+	Vector3*							GetWriteablePosition();
 	Rotator*						GetWriteableRotation();
-	Vector*							GetWriteableScale();
+	Vector3*							GetWriteableScale();
 
 	void							DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree = false);
 	virtual void					DrawDetailsWindow(bool bDontUpdate) override;

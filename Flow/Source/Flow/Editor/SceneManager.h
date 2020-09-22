@@ -1,5 +1,6 @@
 #pragma once
-#include "Flow/Helper/Maths.h"
+#include "Maths/Vector2.h"
+#include "Maths/IntVector2.h"
 
 class EditorCamera;
 
@@ -20,16 +21,16 @@ public:
 
 	bool IsSceneWindowFocused() const { return m_SceneFocused; }
 	bool IsMouseOverScene() const { return m_MouseOverScene; }
-	IntVector2D GetSceneWindowSize() const { return m_SceneWindowSize; }
-	IntVector2D GetSceneWindowPosition() const { return m_SceneWindowPosition; }
+	IntVector2 GetSceneWindowSize() const { return m_SceneWindowSize; }
+	IntVector2 GetSceneWindowPosition() const { return m_SceneWindowPosition; }
 
 private:
 
 	bool m_SceneFocused;	
 	bool m_MouseOverScene;
-	IntVector2D m_SceneWindowSize;
-	IntVector2D m_SceneWindowPosition;
-	Vector2D m_CachedWindowSize;
+	IntVector2 m_SceneWindowSize;
+	IntVector2 m_SceneWindowPosition;
+	Vector2 m_CachedWindowSize;
 
 	EditorCamera* m_EditorCam;
 

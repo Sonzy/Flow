@@ -1,6 +1,5 @@
 #include "Flow\GameFramework\Components\WorldComponent.h"
 #include <DirectXMath.h>
-#include "Flow\Helper\Maths.h"
 #include "Flow\Rendering\Core\Camera\Camera.h"
 
 /* Component wrapper around the camera interface. */
@@ -18,6 +17,6 @@ public:
 	// === ICamera interface ===
 
 	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const override;
-	virtual Vector GetCameraPosition() const override;
+	virtual Vector3 GetCameraPosition() const override;
 
 };

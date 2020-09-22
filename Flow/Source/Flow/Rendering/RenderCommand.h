@@ -5,7 +5,8 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
-#include "Flow/Rendering/Core/RenderQueue/Job.h"
+#include "Rendering/Core/RenderQueue/Job.h"
+#include "Maths/IntVector2.h"
 
 class CameraBase;
 class FrameBuffer;
@@ -44,11 +45,11 @@ public:
 	static void BindFrameBuffer(FrameBuffer* Buffer);
 	static void BindBackBuffer();
 
-	static IntVector2D GetWindowSize();
+	static IntVector2 GetWindowSize();
 
 	//= Helper ===============
 
-	static Vector GetScreenToWorldDirectionVector(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0,0));
+	static Vector3 GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0,0));
 
 private:
 	static RenderAPI* s_RendererAPI;

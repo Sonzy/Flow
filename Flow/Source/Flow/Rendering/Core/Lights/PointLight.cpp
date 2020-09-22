@@ -43,7 +43,7 @@ void PointLight::BindLight(DirectX::FXMMATRIX ViewMatrix)
 
 	//if (_DrawMesh)
 	//{
-	//	_Mesh.SetPosition(Vector(_ConstantBuffer.pos.x, _ConstantBuffer.pos.y, _ConstantBuffer.pos.z));
+	//	_Mesh.SetPosition(Vector3(_ConstantBuffer.pos.x, _ConstantBuffer.pos.y, _ConstantBuffer.pos.z));
 	//	Renderer::Submit(&_Mesh);
 	//}
 }

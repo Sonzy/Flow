@@ -167,7 +167,7 @@ bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 	//	_FocusedComponent = nullptr;
 	//
 	//	//TODO: implement in toool
-	//	//_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+	//	//_Selector->SetScale(Vector3(1.0f, 1.0f, 1.0f));
 	//	//_Selector->OnDeselected();
 	//	//_Selector->OnNewComponentSelected(nullptr);
 	//	//

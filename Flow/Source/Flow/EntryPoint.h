@@ -10,11 +10,12 @@ int main(int argc, char** argv)
 {
 	Log::InitialiseEngineLogger();
 	auto App = CreateApplication();
-	Log::InitialiseApplicationLogger(App->ApplicationName);
+	Log::InitialiseApplicationLogger(App->m_ApplicationName);
 
 	App->InitialiseApplication();
 
 	App->Run();
+
 	delete App;
 
 	return 0;

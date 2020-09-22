@@ -2,24 +2,19 @@
 #include "MaterialAsset.h"
 
 MaterialAsset::MaterialAsset()
-	: _Material(nullptr)
+	: m_Material(nullptr)
 {
 
 }
 
 MaterialAsset::~MaterialAsset()
 {
-	delete _Material;
-}
-
-Material* MaterialAsset::GetMaterial()
-{
-	return _Material;
+	delete m_Material;
 }
 
 void MaterialAsset::GenerateAssetSize()
 {
-	_AssetSize = sizeof(*_Material);
+	m_AssetSize = sizeof(*m_Material);
 }
 
 

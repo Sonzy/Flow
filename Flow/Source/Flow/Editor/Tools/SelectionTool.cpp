@@ -57,14 +57,14 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 		return false;
 
 	//Calculate the ray bounds
-	IntVector2D MousePosition = Input::GetMousePosition();
-	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector( 	//TODO: normalise direction
-		MousePosition.X,
-		MousePosition.Y,
+	IntVector2 MousePosition = Input::GetMousePosition();
+	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector( 	//TODO: normalise direction
+		MousePosition.x,
+		MousePosition.y,
 		EditorLayer::GetEditor()->GetSceneWindowSize(),
 		EditorLayer::GetEditor()->GetSceneWindowPosition());
-	Vector End = Start + (Direction * 1000.0f);
+	Vector3 End = Start + (Direction * 1000.0f);
 
 	if (m_DrawSelectionLines)
 	{
@@ -188,7 +188,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 		if (SelectedObjectChanged)
 		{
 			//TODO: Try keep it uniform in screen space
-			m_Gizmo->SetScale(Vector(1.5f, 1.5f, 1.5f));
+			m_Gizmo->SetScale(Vector3(1.5f, 1.5f, 1.5f));
 		}
 	}
 
@@ -211,7 +211,7 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		m_SelectedComponent = nullptr;
 
 		//TODO: implement in toool
-		//_Selector->SetScale(Vector(1.0f, 1.0f, 1.0f));
+		//_Selector->SetScale(Vector3(1.0f, 1.0f, 1.0f));
 		//_Selector->OnDeselected();
 		//_Selector->OnNewComponentSelected(nullptr);
 		//

@@ -9,7 +9,7 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
-#include "Flow/Helper/ImGuiHelper.h"
+#include "Flow/Utils/ImGuiHelper.h"
 
 #include "Flow\GameFramework\World.h"
 
@@ -257,9 +257,9 @@ void StaticMeshComponent::RefreshBinds()
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 			_StaticMesh->GenerateBinds(MeshLayout);
-			_VertexBuffer = _StaticMesh->_BindableVBuffer;
-			_IndexBuffer = _StaticMesh->_IndexBuffer;
-			_Topology = _StaticMesh->_Topology;
+			_VertexBuffer = _StaticMesh->m_BindableVBuffer;
+			_IndexBuffer = _StaticMesh->m_IndexBuffer;
+			_Topology = _StaticMesh->m_Topology;
 
 			if (_Material)
 				_Material->BindMaterial(&MainStep, MeshLayout);
@@ -278,9 +278,9 @@ void StaticMeshComponent::RefreshBinds()
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 			_StaticMesh->GenerateBinds(MeshLayout);
-			_VertexBuffer = _StaticMesh->_BindableVBuffer;
-			_IndexBuffer = _StaticMesh->_IndexBuffer;
-			_Topology = _StaticMesh->_Topology;
+			_VertexBuffer = _StaticMesh->m_BindableVBuffer;
+			_IndexBuffer = _StaticMesh->m_IndexBuffer;
+			_Topology = _StaticMesh->m_Topology;
 
 			if (_Material)
 				_Material->BindMaterial(&MainStep, MeshLayout);
@@ -327,12 +327,12 @@ void StaticMeshComponent::RefreshBinds()
 DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
 {
 	Transform WorldTransform = GetWorldTransform();
-	Rotator RadianRotation = Rotator::AsRadians(WorldTransform._Rotation);
-	Vector Scale = WorldTransform._Scale;
+	Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
+	Vector3 Scale = WorldTransform.m_Scale;
 
-	auto Trans = DirectX::XMMatrixScaling(Scale.X, Scale.Y, Scale.Z) *
+	auto Trans = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z) *
 		DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) *
-		DirectX::XMMatrixTranslation(WorldTransform._Position.X, WorldTransform._Position.Y, WorldTransform._Position.Z);
+		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
 
 	return Trans;
 }
@@ -390,15 +390,14 @@ void StaticMeshComponent::GenerateCollision()
 	auto Vertices = _StaticMesh->GetCollisionVertices();
 	for (auto Vert : Vertices)
 	{
-		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
-		Shape->addPoint(btv);
+		Shape->addPoint(Vert);
 	}
 
 	m_CollisionShape = Shape;
 	m_CollisionShape->setMargin(0.01f);
 
 	Transform trans = GetWorldTransform();
-	m_CollisionShape->setLocalScaling(btVector3(trans._Scale.X, trans._Scale.Y, trans._Scale.Z));
+	m_CollisionShape->setLocalScaling(btVector3(trans.m_Scale.x, trans.m_Scale.y, trans.m_Scale.z));
 }
 
 

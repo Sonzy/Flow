@@ -4,7 +4,6 @@
 #include "Flow/GameFramework/Components/CameraComponent.h"
 #include "Flow/GameFramework/Controllers/Controller.h"
 #include "Flow/Input/Input.h"
-#include "Flow/Helper/Maths/Transformations/Rotator.h"
 
 CameraActor::CameraActor()
 	: CameraActor("Camera Actor")
@@ -29,32 +28,32 @@ void CameraActor::Tick(float DeltaTime)
 {
 	PROFILE_FUNCTION();
 
-	IntVector2D Pos = Input::GetMousePosition();
+	IntVector2 Pos = Input::GetMousePosition();
 
-	Vector Translation(0.0f);
+	Vector3 Translation(0.0f);
 
 	if (Input::IsKeyPressed(FLOW_KEY_W))
-		Translation.Z = CameraMovementSpeed;
+		Translation.z = CameraMovementSpeed;
 	if (Input::IsKeyPressed(FLOW_KEY_A))
-		Translation.X = -CameraMovementSpeed;
+		Translation.x = -CameraMovementSpeed;
 	if (Input::IsKeyPressed(FLOW_KEY_S))
-		Translation.Z = -CameraMovementSpeed;
+		Translation.z = -CameraMovementSpeed;
 	if (Input::IsKeyPressed(FLOW_KEY_D))
-		Translation.X = CameraMovementSpeed;
+		Translation.x = CameraMovementSpeed;
 	if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-		Translation.Y = CameraMovementSpeed;
+		Translation.y = CameraMovementSpeed;
 	if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
-		Translation.Y = -CameraMovementSpeed;
+		Translation.y = -CameraMovementSpeed;
 
 	//Camera rotation
 	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 	{
 		if (_LastMousePosition != Pos)
 		{
-			Vector Direction = (_LastMousePosition - Pos);
-			Direction.X = Direction.X * CameraHorizontalRotationSpeed; //Horizontal Sensitivity
-			Direction.Y = Direction.Y * CameraVerticalRotationSpeed;  //Vertical Sensitivity
-			_RootComponent->AddRelativeRotation(Rotator(-Direction.Y, 0.0f, -Direction.X));
+			Vector3 Direction = (_LastMousePosition - Pos);
+			Direction.x = Direction.x * CameraHorizontalRotationSpeed; //Horizontal Sensitivity
+			Direction.y = Direction.y * CameraVerticalRotationSpeed;  //Vertical Sensitivity
+			_RootComponent->AddRelativeRotation(Rotator(-Direction.y, 0.0f, -Direction.x));
 		}
 	}
 

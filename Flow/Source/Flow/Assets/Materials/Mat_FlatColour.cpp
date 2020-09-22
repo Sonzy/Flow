@@ -1,30 +1,32 @@
 #include "Flowpch.h"
 #include "Mat_FlatColour.h"
 
-#include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/Shaders/VertexShader.h"
+#include "Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/Sampler.h"
+#include "Rendering/Core/Bindables/Texture.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 
-#include "Flow/Rendering/Core/Mesh/StaticMesh.h"
-#include "Flow\GameFramework\Components\RenderableComponent.h"
+#include "Assets\AssetSystem.h"
+#include "Assets\Shaders\ShaderAsset.h"
+#include "Assets\Textures\TextureAsset.h"
 
+#include "Rendering\Core\Vertex\VertexLayout.h"
 
-#include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Shaders\ShaderAsset.h"
-#include "Flow\Assets\Textures\TextureAsset.h"
-
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering/Core/RenderQueue/Step.h"
 
 Mat_FlatColour::Mat_FlatColour()
 {
-	_Colour = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	m_Color = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 
 	SetVertexShader("SolidColourVS");
 	SetPixelShader("SolidColourPS");
 }
 
-void Mat_FlatColour::SetColour(Vector NewColour)
+void Mat_FlatColour::SetColour(Vector3 NewColour)
 {
-	_Colour = { DirectX::XMFLOAT4(NewColour.X, NewColour.Y, NewColour.Z, 1.0f) };
+	m_Color = { DirectX::XMFLOAT4(NewColour.x, NewColour.y, NewColour.z, 1.0f) };
 }
 
 void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
@@ -35,15 +37,15 @@ void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& Verte
 	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
-	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(_Colour, 2u, GenerateTag()));
+	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(m_Color, 2u, GenerateTag()));
 }
 
 std::string Mat_FlatColour::GenerateTag()
 {
 	return std::string("FlatColour") +
-		std::to_string(_Colour.Colour.x) +
-		std::to_string(_Colour.Colour.y) +
-		std::to_string(_Colour.Colour.z) +
-		std::to_string(_Colour.Colour.w);
+		std::to_string(m_Color.Colour.x) +
+		std::to_string(m_Color.Colour.y) +
+		std::to_string(m_Color.Colour.z) +
+		std::to_string(m_Color.Colour.w);
 }
 

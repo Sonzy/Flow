@@ -31,9 +31,9 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 		VertexLayout MeshLayout;
 		_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
 
-		_IndexBuffer = _Mesh->GetMesh(0)->_IndexBuffer;
-		_VertexBuffer = _Mesh->GetMesh(0)->_BindableVBuffer;
-		_Topology = _Mesh->GetMesh(0)->_Topology;
+		_IndexBuffer = _Mesh->GetMesh(0)->m_IndexBuffer;
+		_VertexBuffer = _Mesh->GetMesh(0)->m_BindableVBuffer;
+		_Topology = _Mesh->GetMesh(0)->m_Topology;
 
 		_Material->BindMaterial(&MainStep, MeshLayout);
 
@@ -48,7 +48,7 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 
 DirectX::XMMATRIX SkyboxComponent::GetTransformXM() const
 {
-	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
+	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition();
 	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }

@@ -11,7 +11,7 @@ class Topology;
 class FLOW_API Renderable
 {
 public:
-	//Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector Unique ptr errors, but deleting lvalue copy constructor doesnt.
+	//Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector3 Unique ptr errors, but deleting lvalue copy constructor doesnt.
 	virtual ~Renderable();
 
 	virtual DirectX::XMMATRIX GetTransformXM() const = 0;

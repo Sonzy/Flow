@@ -64,18 +64,18 @@ WorldComponent* Actor::GetRootComponent() const
 	return _RootComponent;
 }
 
-Vector Actor::GetLocation()
+Vector3 Actor::GetLocation()
 {
 	if (!_RootComponent)
-		return Vector();
+		return Vector3();
 
 	return _RootComponent->GetRelativePosition();
 }
 
-Vector Actor::GetScale()
+Vector3 Actor::GetScale()
 {
 	if (!_RootComponent)
-		return Vector();
+		return Vector3();
 
 	return _RootComponent->GetRelativeScale();
 }

@@ -73,7 +73,7 @@ void WorldComponent::AddChild(WorldComponent* Child)
 	Child->SetParentComponent(this);
 }
 
-Vector WorldComponent::GetWorldPosition() const
+Vector3 WorldComponent::GetWorldPosition() const
 {
 	WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
 	//return Parent ? Parent->GetWorldPosition() + _RelativeTransform._Position : _RelativeTransform._Position;
@@ -82,45 +82,45 @@ Vector WorldComponent::GetWorldPosition() const
 	{
 		Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
 
-		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&_RelativeTransform._Position.ToDXFloat3());
+		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(_RelativeTransform.m_Position));
 		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
 		DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
 		DirectX::XMFLOAT3 RotatedPos;
 		DirectX::XMStoreFloat3(&RotatedPos, NewPosition);
 
-		return Parent->GetWorldPosition() + Vector(RotatedPos.x, RotatedPos.y, RotatedPos.z);
+		return Parent->GetWorldPosition() + Vector3(RotatedPos.x, RotatedPos.y, RotatedPos.z);
 	}
 	else
-		return _RelativeTransform._Position;
+		return _RelativeTransform.m_Position;
 }
 
-Vector WorldComponent::GetRelativePosition() const
+Vector3 WorldComponent::GetRelativePosition() const
 {
-	return _RelativeTransform._Position;
+	return _RelativeTransform.m_Position;
 }
 
-void WorldComponent::SetWorldPosition(Vector NewPosition)
+void WorldComponent::SetWorldPosition(Vector3 NewPosition)
 {
-	Vector CurrentParentWorld;
+	Vector3 CurrentParentWorld;
 	WorldComponent* Parent = GetParentComponent();
 	while (Parent)
 	{
-		CurrentParentWorld += Parent->_RelativeTransform._Position;
+		CurrentParentWorld += Parent->_RelativeTransform.m_Position;
 		Parent = Parent->GetParentComponent();
 	}
 
-	_RelativeTransform._Position = NewPosition - CurrentParentWorld;
+	_RelativeTransform.m_Position = NewPosition - CurrentParentWorld;
 
 	// Update the physics transform. Data isnt grabbed from the motion state at runtime unless object is kinematic
 	if (_RigidBody)
 	{
 		btTransform NewTransform;
 		//We assume that the object is the root component
-		NewTransform.setOrigin(btVector3(_RelativeTransform._Position.X, _RelativeTransform._Position.Y, _RelativeTransform._Position.Z));
+		NewTransform.setOrigin(btVector3(_RelativeTransform.m_Position));
 
 		//Convert to radians for now, need to do rotations better lul
 		btQuaternion Rotation;
-		Rotator RadiansRotation = Rotator::AsRadians(_RelativeTransform._Rotation);
+		Rotator RadiansRotation = Rotator::AsRadians(_RelativeTransform.m_Rotation);
 		Rotation.setEuler(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
 		NewTransform.setRotation(Rotation);
 
@@ -133,25 +133,25 @@ void WorldComponent::SetWorldPosition(Vector NewPosition)
 
 }
 
-void WorldComponent::SetRelativePosition(Vector NewPosition)
+void WorldComponent::SetRelativePosition(Vector3 NewPosition)
 {
-	_RelativeTransform._Position = NewPosition;
+	_RelativeTransform.m_Position = NewPosition;
 }
 
-void WorldComponent::AddRelativePosition(Vector Position)
+void WorldComponent::AddRelativePosition(Vector3 Position)
 {
-	_RelativeTransform._Position += Position;
+	_RelativeTransform.m_Position += Position;
 }
 
 Rotator WorldComponent::GetWorldRotation() const
 {
 	WorldComponent* Parent = GetParentComponent();
-	return Parent ? Parent->GetWorldRotation() + _RelativeTransform._Rotation : _RelativeTransform._Rotation;
+	return Parent ? Parent->GetWorldRotation() + _RelativeTransform.m_Rotation : _RelativeTransform.m_Rotation;
 }
 
 Rotator WorldComponent::GetRelativeRotation() const
 {
-	return _RelativeTransform._Rotation;
+	return _RelativeTransform.m_Rotation;
 }
 
 void WorldComponent::SetWorldRotation(Rotator NewRotation)
@@ -161,50 +161,50 @@ void WorldComponent::SetWorldRotation(Rotator NewRotation)
 	if (WorldComponent* Parent = GetParentComponent())
 		CurrentParentWorld = Parent->GetWorldRotation();
 
-	_RelativeTransform._Rotation = NewRotation - CurrentParentWorld;
+	_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
 	//TODO: UpdatePhysics Movement
 }
 
 void WorldComponent::SetRelativeRotation(Rotator NewRotation)
 {
-	_RelativeTransform._Rotation = NewRotation;
+	_RelativeTransform.m_Rotation = NewRotation;
 	//TODO: UpdatePhysics Movement
 }
 
 void WorldComponent::AddRelativeRotation(Rotator Rotation)
 {
-	_RelativeTransform._Rotation += Rotation;
+	_RelativeTransform.m_Rotation += Rotation;
 }
 
-Vector WorldComponent::GetWorldScale() const
+Vector3 WorldComponent::GetWorldScale() const
 {
 	WorldComponent* Parent = GetParentComponent();
-	return Parent ? Parent->GetWorldScale() * _RelativeTransform._Scale : _RelativeTransform._Scale;
+	return Parent ? Parent->GetWorldScale() * _RelativeTransform.m_Scale : _RelativeTransform.m_Scale;
 }
 
-Vector WorldComponent::GetRelativeScale() const
+Vector3 WorldComponent::GetRelativeScale() const
 {
-	return _RelativeTransform._Scale;
+	return _RelativeTransform.m_Scale;
 }
 
-void WorldComponent::SetWorldScale(Vector NewScale)
+void WorldComponent::SetWorldScale(Vector3 NewScale)
 {
-	Vector CurrentParentWorld;
+	Vector3 CurrentParentWorld;
 	WorldComponent* PointedComp = GetParentComponent();
 	while (PointedComp)
 	{
-		CurrentParentWorld *= PointedComp->_RelativeTransform._Scale;
+		CurrentParentWorld *= PointedComp->_RelativeTransform.m_Scale;
 		PointedComp = PointedComp->GetParentComponent();
 	}
 
-	_RelativeTransform._Scale = NewScale - CurrentParentWorld;
+	_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
 
 	UpdateCollisionScale();
 }
 
-void WorldComponent::SetRelativeScale(Vector NewScale)
+void WorldComponent::SetRelativeScale(Vector3 NewScale)
 {
-	_RelativeTransform._Scale = NewScale;
+	_RelativeTransform.m_Scale = NewScale;
 
 	UpdateCollisionScale();
 }
@@ -221,9 +221,9 @@ Transform WorldComponent::GetRelativeTransform() const
 
 void WorldComponent::SetWorldTransform(Transform NewTransform)
 {
-	SetWorldPosition(NewTransform._Position);
-	SetWorldRotation(NewTransform._Rotation);
-	SetWorldScale(NewTransform._Scale);
+	SetWorldPosition(NewTransform.m_Position);
+	SetWorldRotation(NewTransform.m_Rotation);
+	SetWorldScale(NewTransform.m_Scale);
 }
 
 void WorldComponent::SetRelativeTransform(Transform NewTransform)
@@ -242,17 +242,17 @@ void WorldComponent::Render()
 	}
 }
 
-Vector* WorldComponent::GetWriteablePosition()
+Vector3* WorldComponent::GetWriteablePosition()
 {
-	return &_RelativeTransform._Position;
+	return &_RelativeTransform.m_Position;
 }
 Rotator* WorldComponent::GetWriteableRotation()
 {
-	return &_RelativeTransform._Rotation;
+	return &_RelativeTransform.m_Rotation;
 }
-Vector* WorldComponent::GetWriteableScale()
+Vector3* WorldComponent::GetWriteableScale()
 {
-	return &_RelativeTransform._Scale;
+	return &_RelativeTransform.m_Scale;
 }
 void WorldComponent::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
 {
@@ -333,13 +333,10 @@ void WorldComponent::CreateRigidBody()
 	//Convert transform into BT Quaternion
 	btQuaternion Rotation;
 	Rotator Rot = Rotator::AsRadians(GetWorldRotation());
-	Vector Pos = GetWorldPosition();
 	Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
 
-	//Setup the motion state
-	btVector3 Position = btVector3(Pos.X, Pos.Y, Pos.Z);
 	//FOR NOW WE ASSUME THAT THE PHYSICS COMPONENT IS THE ROOT COMPONENT
-	MotionState* motionState = new MotionState(&_RelativeTransform._Position, &_RelativeTransform._Rotation);
+	MotionState* motionState = new MotionState(&_RelativeTransform.m_Position, &_RelativeTransform.m_Rotation);
 
 	//Initialise the mass and intertia values
 	btScalar bodyMass = _SimulatePhysics ? 20.0f : 0.0f;
@@ -399,7 +396,7 @@ void WorldComponent::UpdateCollisionScale()
 		return;
 	}
 
-	m_CollisionShape->setLocalScaling(_RelativeTransform._Scale.ToBulletVector());
+	m_CollisionShape->setLocalScaling(_RelativeTransform.m_Scale);
 	World::GetPhysicsWorld()->updateSingleAabb(_RigidBody);
 }
 

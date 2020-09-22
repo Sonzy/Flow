@@ -1,7 +1,7 @@
 #include <Flow.h>
 #include "Flow\Assets\AssetSystem.h"
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
-#include "Flow\Helper\Profiling.h"
+#include "Flow\Utils\Profiling.h"
 
 class Sandbox : public Application
 {

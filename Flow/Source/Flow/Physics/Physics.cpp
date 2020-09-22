@@ -1,27 +1,25 @@
 #include "Flowpch.h"
+
+//= Includes ================
+
+#include "Application.h"
 #include "Physics.h"
+#include "GameFramework/World.h"
 
-#include "Flow\Application.h"
-#include "Flow/GameFramework/World.h"
+//= Function Definitions =======================
 
-Physics::TraceResult Physics::RayTrace(Vector Start, Vector End)
+Physics::TraceResult Physics::RayTrace(Vector3 Start, Vector3 End)
 {
-	btVector3 InternalStart = btVector3(Start.X, Start.Y, Start.Z);
-	btVector3 InternaEnd = btVector3(End.X, End.Y, End.Z);
-
-	btCollisionWorld::ClosestRayResultCallback Result(InternalStart, InternaEnd);
-	Application::GetWorld()->GetPhysicsWorld()->rayTest(InternalStart, InternaEnd, Result);
+	btCollisionWorld::ClosestRayResultCallback Result(Start, End);
+	Application::GetWorld()->GetPhysicsWorld()->rayTest(Start, End, Result);
 
 	return Result;
 }
 
-Physics::TraceResultMulti Physics::RayTraceMulti(Vector Start, Vector End)
+Physics::TraceResultMulti Physics::RayTraceMulti(Vector3 Start, Vector3 End)
 {
-	btVector3 InternalStart = btVector3(Start.X, Start.Y, Start.Z);
-	btVector3 InternaEnd = btVector3(End.X, End.Y, End.Z);
-
-	btCollisionWorld::AllHitsRayResultCallback Result(InternalStart, InternaEnd);
-	Application::GetWorld()->GetPhysicsWorld()->rayTest(InternalStart, InternaEnd, Result);
+	btCollisionWorld::AllHitsRayResultCallback Result(Start, End);
+	Application::GetWorld()->GetPhysicsWorld()->rayTest(Start, End, Result);
 
 	return Result;
 }

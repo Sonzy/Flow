@@ -13,7 +13,7 @@ public:
 	Line();
 
 	static void Initialise();
-	static void DrawLine(Vector From, Vector To, Vector Colour);
+	static void DrawLine(Vector3 From, Vector3 To, Vector3 Colour);
 
 	virtual DirectX::XMMATRIX GetTransformXM() const override;
 

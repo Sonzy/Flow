@@ -51,13 +51,8 @@ ImVec2 MenuBar::Draw()
 
 			if (ImGui::MenuItem("Toggle Editor"))
 			{
-				Application& App = Application::GetApplication();
-				App._DrawEditor = !App._DrawEditor;
-			}
-
-			if (ImGui::MenuItem("Create Test Window (UNSTABLE)"))
-			{
-				Application::CreateNewWindow("Test Window");
+				Application& App = Application::Get();
+				App.m_RenderEditor = !App.m_RenderEditor;
 			}
 
 			ImGui::EndMenu();

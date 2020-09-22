@@ -31,7 +31,7 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 	MaterialAsset* Material = AssetSystem::GetAsset<MaterialAsset>("Mat_HatFancyMan");
 	TestMesh->SetMeshAndMaterial(Mesh2, Material);
 	TestMesh2->SetMeshAndMaterial(Mesh, Material);
-	TestMesh2->SetRelativePosition(Vector(100.0f, 10.0f, 10.0f));
+	TestMesh2->SetRelativePosition(Vector3(100.0f, 10.0f, 10.0f));
 	//TestMesh2->SetWorldRotation(Rotator(90.0f, 0.0f, 0.0f));
 
 	TestMesh->SetSimulatePhysics(true);

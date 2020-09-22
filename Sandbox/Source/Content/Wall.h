@@ -1,6 +1,5 @@
 #pragma once
 #include "Flow\GameFramework\Actor.h"
-#include "Flow\Helper\Maths.h"
 
 class StaticMeshComponent;
 
@@ -15,7 +14,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	void UpdateScale(Vector Scale);
+	void UpdateScale(Vector3 Scale);
 
 protected:
 

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Flow/Core.h"
-#include "Flow/Helper/Maths.h"
 #include <functional>
+#include "Core.h"
 
 #define CONSUMES_INPUT(DispatchInputFunction, InputFunction) if(DispatchInputFunction){ bool Consumes = InputFunction; if(Consumes) return Consumes;}
 
@@ -30,11 +29,11 @@ enum class EventType
 enum EventCategory
 {
 	None = 0,
-	App = BITMASK(0),
-	UserInput = BITMASK(1),
-	Keyboard = BITMASK(2),
-	Mouse = BITMASK(3),
-	MouseButton = BITMASK(4),
+	App = 1,
+	UserInput = 2,
+	Keyboard = 4,
+	Mouse = 8,
+	MouseButton = 16,
 };
 
 //Lazy method of defining these repeated function

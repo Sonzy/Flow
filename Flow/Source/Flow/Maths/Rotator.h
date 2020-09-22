@@ -1,12 +1,16 @@
 #pragma once
-#include <DirectXMath.h>
 
-//TODO: Simplify wrapping, was lazy
-struct Rotator
+//= Includes ===========================================
+
+#include <DirectXMath.h>
+#include "Vector3.h"
+
+//= Class Definition ===================================
+
+class FLOW_API Rotator
 {
-	float Pitch;
-	float Roll;
-	float Yaw;
+public:
+	//= Constructors ===================================
 
 	Rotator()
 		: Pitch(0), Roll(0), Yaw(0)
@@ -26,6 +30,8 @@ struct Rotator
 
 	}
 
+	//= Operators ======================================
+
 	void operator+=(const Rotator& Other)
 	{
 		Pitch += Other.Pitch;
@@ -33,14 +39,9 @@ struct Rotator
 		Yaw += Other.Yaw;
 	}
 
-	Rotator operator+(const Rotator& Other)
+	Rotator operator+(const Rotator& Other) const
 	{
-		Rotator New = Rotator(Pitch, Roll, Yaw);
-		New.Pitch += Other.Pitch;
-		New.Roll += Other.Roll;
-		New.Yaw += Other.Yaw;
-
-		return New;
+		return Rotator(Pitch + Other.Pitch, Roll + Other.Roll, Yaw + Other.Yaw);
 	}
 
 	void operator-=(const Rotator& Other)
@@ -50,14 +51,9 @@ struct Rotator
 		Yaw -= Other.Yaw;
 	}
 
-	Rotator operator-(const Rotator& Other)
+	Rotator operator-(const Rotator& Other) const
 	{
-		Rotator New = Rotator(Pitch, Roll, Yaw);
-		New.Pitch -= Other.Pitch;
-		New.Roll -= Other.Roll;
-		New.Yaw -= Other.Yaw;
-
-		return New;
+		return Rotator(Pitch - Other.Pitch, Roll - Other.Roll, Yaw - Other.Yaw);
 	}
 
 	void operator*=(const float& Other)
@@ -67,30 +63,40 @@ struct Rotator
 		Yaw *= Other;
 	}
 
-	//TODO: Do operator that takes mod into account
+	Rotator operator*(const float& Other) const
+	{
+		return Rotator(Pitch * Other, Roll * Other, Yaw * Other);
+	}
+
 	bool operator==(const Rotator& Other)
 	{
-		return Pitch == Other.Pitch &&
+		return 
+			Pitch == Other.Pitch &&
 			Roll == Other.Roll &&
 			Yaw == Other.Yaw;
 	}
 
-	Vector ToVector() const
+	operator Vector3() const
+	{
+		return Vector3(Pitch, Roll, Yaw);
+	}
+
+	Vector3 GetForwardVector() const
 	{
 		Rotator Radians = Rotator::AsRadians(*this);
 		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
 		DirectX::XMFLOAT3 Rotated;
 		DirectX::XMStoreFloat3(&Rotated, UpdatedVector);
-		return Vector(Rotated.x, Rotated.y, Rotated.z);
+		return Vector3(Rotated.x, Rotated.y, Rotated.z);
 	}
 
-	Vector RotateVector(Vector Other)
+	Vector3 RotateVector(Vector3 Other)
 	{
 		Rotator Radians = Rotator::AsRadians(*this);
-		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(Other.X, Other.Y, Other.Z, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
+		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(Other.x, Other.y, Other.z, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
 		DirectX::XMFLOAT3 Rotated;
 		DirectX::XMStoreFloat3(&Rotated, UpdatedVector);
-		return Vector(Rotated.x, Rotated.y, Rotated.z);
+		return Vector3(Rotated.x, Rotated.y, Rotated.z);
 	}
 
 	//TODO: Need to figure out this logic
@@ -117,9 +123,10 @@ struct Rotator
 
 		Rotator NewRotation = Rotator(fAngX, fAngZ, fAngY);
 
-		//FLOW_ENGINE_LOG("Rotating {0} by {1} to get {2}", Other, *this, Rotator::AsDegrees(NewRotation));
 		return Rotator::AsDegrees(NewRotation);
 	}
+
+	//= Static Functions ================================
 
 	static Rotator AsRadians(const Rotator& Rotation)
 	{
@@ -153,7 +160,9 @@ struct Rotator
 			modded;
 	}
 
-private:
+	//= Public Variables ===================================
 
-
+	float Pitch;
+	float Roll;
+	float Yaw;
 };

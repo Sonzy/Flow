@@ -9,7 +9,7 @@ public:
 	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const override;
 	virtual void MoveCamera(const Transform& NewTransform) override;
 	virtual Transform GetCameraTransform() const override;
-	virtual Vector GetCameraPosition() const override;
+	virtual Vector3 GetCameraPosition() const override;
 
 	virtual void Update(float DeltaTime) override;
 
@@ -18,9 +18,9 @@ protected:
 	friend class SceneManager;
 
 	bool _CanUpdate;
-	IntVector2D _MouseLastFrame;
+	IntVector2 _MouseLastFrame;
 
-	Vector _Position;
+	Vector3 _Position;
 	Rotator _Rotation;
 
 

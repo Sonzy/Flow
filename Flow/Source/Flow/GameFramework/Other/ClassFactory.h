@@ -5,7 +5,7 @@
 #include <vector>
 #include <utility>
 #include "Flow/Logging/Log.h"
-#include "Flow/Helper/Profiling.h"
+#include "Flow/Utils/Profiling.h"
 
 class ClassFactory
 {

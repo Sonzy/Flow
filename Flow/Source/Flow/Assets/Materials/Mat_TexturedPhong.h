@@ -1,16 +1,23 @@
 #pragma once
-#include "Flow\Core.h"
-#include "Flow\Rendering\Core\Materials\Material.h"
-#include <DirectXMath.h>
+#include "Core.h"
+#include "Rendering\Core\Materials\Material.h"
+#include "Rendering/Core/RenderQueue/Step.h"
 
 /* Material with lighting and a single texture. */
 class FLOW_API Mat_TexturedPhong : public Material
 {
 public:
 
-	Mat_TexturedPhong();
+	//= Public Functions ==============================
 
-	virtual void BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
+								Mat_TexturedPhong();
 
-	ObjectLightBuffer _LightCBuffer;
+	virtual void				BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
+
+
+public:
+
+	//= Public Varaibles ===============================
+
+	ObjectLightBuffer			m_LightCBuffer;
 };

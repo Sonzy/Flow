@@ -1305,7 +1305,7 @@ static void ShowDemoWindowWidgets()
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
-                        memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 3);
+                      memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 3);
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F))
                         memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 4);
                     ImGui::EndDragDropTarget();

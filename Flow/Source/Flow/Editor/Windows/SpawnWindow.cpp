@@ -51,8 +51,8 @@ void SpawnWindow::Draw()
 		if (SpawnedActor)
 		{
 			Transform CameraTrans = RenderCommand::GetMainCamera()->GetCameraTransform();
-			Vector ForwardVector = CameraTrans._Rotation.ToVector().Normalize();
-			SpawnedActor->GetRootComponent()->SetWorldPosition(CameraTrans._Position +
+			Vector3 ForwardVector = static_cast<Vector3>(CameraTrans.m_Rotation).Normalize();
+			SpawnedActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position +
 				(ForwardVector * _SpawnDistance));
 
 			switch (_WorldReference->GetWorldState())

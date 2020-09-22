@@ -48,7 +48,7 @@ void ImGuiLayer::OnAttach()
 	//	Style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	//}
 
-	Application& app = Application::GetApplication();
+	Application& app = Application::Get();
 	WinWindow* Window = static_cast<WinWindow*>(&app.GetWindow());
 
 #ifdef  FLOW_PLATFORM_WINDOWS
@@ -85,7 +85,7 @@ void ImGuiLayer::Begin()
 
 void ImGuiLayer::End()
 {
-	//Application& app = Application::GetApplication();
+	//Application& app = Application::Get();
 	//ImGuiIO& io = ImGui::GetIO();
 	//io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
@@ -122,7 +122,7 @@ void ImGuiLayer::OnEvent(Event& e)
 bool ImGuiLayer::OnMouseButtonPressed(MouseButtonEvent& e)
 {
 	//TODO: Add a window reference to the input so we know which window it was
-	Application& App = Application::GetApplication();
+	Application& App = Application::Get();
 	WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
 
 	if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
@@ -144,7 +144,7 @@ bool ImGuiLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 	IO.MouseDown[e.GetMouseButton()] = false;
 
 	//TODO: Add a window reference to the input so we know which window it was
-	Application& App = Application::GetApplication();
+	Application& App = Application::Get();
 	WinWindow* Window = static_cast<WinWindow*>(&App.GetWindow());
 
 	if (!ImGui::IsAnyMouseDown() && ::GetCapture() == Window->GetWindowHandle())

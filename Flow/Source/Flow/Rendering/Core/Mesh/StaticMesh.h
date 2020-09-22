@@ -18,7 +18,7 @@ public:
 
 protected:
 
-	Vector _Position;
+	Vector3 _Position;
 	Rotator _Rotation;
-	Vector _Scale;
+	Vector3 _Scale;
 };

@@ -29,7 +29,7 @@ public:
 
 	void Resize(int Width, int Height) override;
 
-	static IntVector2D GetAdjustedWindowSize();
+	static IntVector2 GetAdjustedWindowSize();
 
 private:
 	friend class WindowClass;

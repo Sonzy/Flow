@@ -26,7 +26,7 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 {
 	_NearPlane = 0.5f;
 	_FarPlane = 2000.0f;
-	_ViewportSize = IntVector2D(ViewportWidth, ViewportHeight);
+	_ViewportSize = IntVector2(ViewportWidth, ViewportHeight);
 
 	HRESULT ResultHandle;
 
@@ -113,7 +113,7 @@ void DX11RenderAPI::BeginFrame()
 {
 	Clear();
 
-	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.x / (float)_ViewportSize.y, _NearPlane, _FarPlane));
 }
 
 void DX11RenderAPI::EndFrame()
@@ -140,7 +140,7 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	//TODO: Shouldnt have to do anything different for editor since the windows messages should be processed befoer the scene is rendered
 	HRESULT ResultHandle;
 
-	_ViewportSize = IntVector2D(Width, Height);
+	_ViewportSize = IntVector2(Width, Height);
 
 	_Context->OMSetRenderTargets(0, 0, 0);
 	_RenderTarget->Release();
@@ -185,12 +185,12 @@ void DX11RenderAPI::Resize(int Width, int Height)
 
 	_Context->RSSetViewports(1u, &Viewport);
 
-	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.x / (float)_ViewportSize.y, _NearPlane, _FarPlane));
 
 	//Note: See ScreenToWorldVec, will fix properly another time
 #if WITH_EDITOR
 	if (CurrentBuffer == _EditorBuffer)
-		_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+		_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.x / (float)_ViewportSize.y, _NearPlane, _FarPlane));
 #endif
 }
 
@@ -218,21 +218,21 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 	CATCH_ERROR_DX(_Device->CreateDepthStencilView(_DepthTexture.Get(), &DepthStencilViewDescription, &_DepthTextureView));
 }
 
-Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin)
+Vector3 DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	//TODO: need to pass in the window size instead incase im checking from any other window
 #if WITH_EDITOR
-	IntVector2D WinSize = EditorLayer::GetEditor()->GetSceneWindowSize();
+	IntVector2 WinSize = EditorLayer::GetEditor()->GetSceneWindowSize();
 #else
-	IntVector2D WinSize = WinWindow::GetAdjustedWindowSize();
+	IntVector2 WinSize = WinWindow::GetAdjustedWindowSize();
 #endif
 
-	float Width = (float)WindowSize.X;
-	float Height = (float)WindowSize.Y;
+	float Width = (float)WindowSize.x;
+	float Height = (float)WindowSize.y;
 
 	//Normalise into +1 to -1
-	float MouseX = ((2 * (X - Origin.X)) / Width) - 1;
-	float MouseY = -(((2 * (Y - Origin.Y)) / Height) - 1);
+	float MouseX = ((2 * (X - Origin.x)) / Width) - 1;
+	float MouseY = -(((2 * (Y - Origin.y)) / Height) - 1);
 
 	//FLOW_ENGINE_ERROR("X: {0}, Y: {1}", MouseX, MouseY);
 
@@ -256,10 +256,10 @@ Vector DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2D Window
 	DirectX::XMStoreFloat4x4(&Inverse, InverseMatrix);
 
 	// Calculate the direction of the picking ray in view space.
-	Vector Direction;
-	Direction.X = (MouseX * Inverse._11) + (MouseY * Inverse._21) + Inverse._31;
-	Direction.Y = (MouseX * Inverse._12) + (MouseY * Inverse._22) + Inverse._32;
-	Direction.Z = (MouseX * Inverse._13) + (MouseY * Inverse._23) + Inverse._33;
+	Vector3 Direction;
+	Direction.x = (MouseX * Inverse._11) + (MouseY * Inverse._21) + Inverse._31;
+	Direction.y = (MouseX * Inverse._12) + (MouseY * Inverse._22) + Inverse._32;
+	Direction.z = (MouseX * Inverse._13) + (MouseY * Inverse._23) + Inverse._33;
 
 	//TODO: Normalise direction
 	//FLOW_ENGINE_LOG("Direction: {0}", Direction);
@@ -286,17 +286,17 @@ void DX11RenderAPI::BindBackBuffer()
 	CATCH_ERROR_DX(_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
 	CATCH_ERROR_DX(_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &_RenderTarget));
 
-	Window& Win = Application::GetApplication().GetWindow();
-	IntVector2D AdjWindowSize = dynamic_cast<WinWindow&>(Win).GetAdjustedWindowSize();
-	_ViewportSize = { AdjWindowSize.X, AdjWindowSize.Y };
+	Window& Win = Application::Get().GetWindow();
+	IntVector2 AdjWindowSize = dynamic_cast<WinWindow&>(Win).GetAdjustedWindowSize();
+	_ViewportSize = { AdjWindowSize.x, AdjWindowSize.y };
 
 	//ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
 
 	_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
 
 	D3D11_VIEWPORT Viewport;
-	Viewport.Width = (FLOAT)_ViewportSize.X;
-	Viewport.Height = (FLOAT)_ViewportSize.Y;
+	Viewport.Width = (FLOAT)_ViewportSize.x;
+	Viewport.Height = (FLOAT)_ViewportSize.y;
 	Viewport.MinDepth = 0.0f;
 	Viewport.MaxDepth = 1.0f;
 	Viewport.TopLeftX = 0.0f;
@@ -319,7 +319,7 @@ void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer)
 	_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight()};
 	if (!Buffer->HasDepthBuffer())
 	{
-		ResizeDepthBuffer(_ViewportSize.X, _ViewportSize.Y);
+		ResizeDepthBuffer(_ViewportSize.x, _ViewportSize.y);
 		_Context->OMSetRenderTargets(1u, _RenderTarget.GetAddressOf(), _DepthTextureView.Get());
 	}
 	else
@@ -353,8 +353,8 @@ void DX11RenderAPI::BindEditorFrameBuffer()
 	_EditorBufferBound = true;
 
 	//Update the window rendering properties
-	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
-	_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Math::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.X / (float)_ViewportSize.Y, _NearPlane, _FarPlane));
+	_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.x / (float)_ViewportSize.y, _NearPlane, _FarPlane));
+	_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(_MainCamera->GetFOV()), (float)_ViewportSize.x / (float)_ViewportSize.y, _NearPlane, _FarPlane));
 }
 
 FrameBuffer* DX11RenderAPI::GetEditorBuffer() const

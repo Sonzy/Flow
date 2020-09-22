@@ -14,9 +14,11 @@
 
 #include "Flow/Input/Input.h"
 
-#include "Flow/Helper/Maths.h"
+#include "Maths/Vector3.h"
 
 #include "Flow/Editor/EditorLayer.h"
+
+#include "Physics/Physics.h"
 
 SelectionGizmo::SelectionGizmo()
 	: Actor("SelectionGizmo") //TODO: are we keeping this an actor?
@@ -111,30 +113,30 @@ void SelectionGizmo::UpdateSelection()
 		return;
 	}
 
-	IntVector2D MousePosition = Input::GetMousePosition();
-	IntVector2D MouseDifference = MousePosition - m_MouseLastUpdate;
-	bool Add = MouseDifference.X > 0;
+	IntVector2 MousePosition = Input::GetMousePosition();
+	IntVector2 MouseDifference = MousePosition - m_MouseLastUpdate;
+	bool Add = MouseDifference.x > 0;
 
 	if (MousePosition.Distance(m_MouseLastUpdate) < m_MouseDistanceThreshold)
 		return;
 
-	Vector AxisDirection;
+	Vector3 AxisDirection;
 	switch (m_SelectedAxis)
 	{
 	case Axis::X:
-		AxisDirection = Vector(1.0f, 0.0f, 0.0f);
+		AxisDirection = Vector3(1.0f, 0.0f, 0.0f);
 		break;
 	case Axis::Y:
-		AxisDirection = Vector(0.0f, 1.0f, 0.0f);
+		AxisDirection = Vector3(0.0f, 1.0f, 0.0f);
 		break;
 	case Axis::Z:
-		AxisDirection = Vector(0.0f, 0.0f, 1.0f);
+		AxisDirection = Vector3(0.0f, 0.0f, 1.0f);
 		break;
 	}
 
 	//Fire a ray from the current mouse position.
-	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.X, MousePosition.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
+	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.x, MousePosition.y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
 
 	switch (m_TransformMode)
 	{
@@ -143,9 +145,9 @@ void SelectionGizmo::UpdateSelection()
 		//Get the closest point on the axis line to the ray
 		float AxisClosestScale;
 		float RayClosestScale;
-		Math::GetClosestDistanceBetweenLines(Ray(m_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Ray(Start, Direction), AxisClosestScale, RayClosestScale);
+		Maths::GetClosestDistanceBetweenLines(Physics::Ray(m_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Physics::Ray(Start, Direction), AxisClosestScale, RayClosestScale);
 
-		Vector NewPosition = m_SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale) + m_ArrowOffset;
+		Vector3 NewPosition = m_SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale) + m_ArrowOffset;
 
 		//Original Position + Closest point on x axis to mouse + Offset from object to arrow
 		m_SelectedComponent->SetWorldPosition(NewPosition);
@@ -167,26 +169,26 @@ void SelectionGizmo::UpdateSelection()
 		//Get the closest point on the axis line to the ray
 		float AxisClosestScale;
 		float RayClosestScale;
-		Math::GetClosestDistanceBetweenLines(Ray(m_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Ray(Start, Direction), AxisClosestScale, RayClosestScale);
+		Maths::GetClosestDistanceBetweenLines(Physics::Ray(m_SelectedComponentStartPosition /*TODO: + the distance in axis where mouse originally clicked */, AxisDirection), Physics::Ray(Start, Direction), AxisClosestScale, RayClosestScale);
 
-		Vector NewPosition = m_SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale) + m_ArrowOffset;
+		Vector3 NewPosition = m_SelectedComponentStartPosition + (-AxisDirection * AxisClosestScale) + m_ArrowOffset;
 
 		//TODO:  Update
 		const float scaleSensitivity = 1.0f;
 		float diffInAxis = 0;
 		switch (m_SelectedAxis)
 		{
-		case Axis::X: diffInAxis = NewPosition.X - m_SelectedComponentStartPosition.X;	break;
-		case Axis::Y: diffInAxis = NewPosition.Y - m_SelectedComponentStartPosition.Y;	break;
-		case Axis::Z: diffInAxis = NewPosition.Z - m_SelectedComponentStartPosition.Z;	break;
+		case Axis::X: diffInAxis = NewPosition.x - m_SelectedComponentStartPosition.x;	break;
+		case Axis::Y: diffInAxis = NewPosition.y - m_SelectedComponentStartPosition.y;	break;
+		case Axis::Z: diffInAxis = NewPosition.z - m_SelectedComponentStartPosition.z;	break;
 		}
 
-		Vector prevScale = m_SelectedComponent->GetWorldScale();
+		Vector3 prevScale = m_SelectedComponent->GetWorldScale();
 		switch (m_SelectedAxis)
 		{
-		case Axis::X: m_SelectedComponent->SetWorldScale(Vector(m_SelectedComponentStartScale.X + (diffInAxis * scaleSensitivity), prevScale.Y, prevScale.Z));	break;
-		case Axis::Y: m_SelectedComponent->SetWorldScale(Vector(prevScale.X, m_SelectedComponentStartScale.Y + (diffInAxis * scaleSensitivity), prevScale.Z));	break;
-		case Axis::Z: m_SelectedComponent->SetWorldScale(Vector(prevScale.X, prevScale.Y, m_SelectedComponentStartScale.Z + (diffInAxis * scaleSensitivity)));	break;
+		case Axis::X: m_SelectedComponent->SetWorldScale(Vector3(m_SelectedComponentStartScale.x + (diffInAxis * scaleSensitivity), prevScale.y, prevScale.z));	break;
+		case Axis::Y: m_SelectedComponent->SetWorldScale(Vector3(prevScale.x, m_SelectedComponentStartScale.y + (diffInAxis * scaleSensitivity), prevScale.z));	break;
+		case Axis::Z: m_SelectedComponent->SetWorldScale(Vector3(prevScale.x, prevScale.y, m_SelectedComponentStartScale.z + (diffInAxis * scaleSensitivity)));	break;
 		}
 
 		m_MouseLastUpdate = MousePosition;
@@ -195,16 +197,16 @@ void SelectionGizmo::UpdateSelection()
 	}
 }
 
-void SelectionGizmo::UpdatePosition(Vector Position)
+void SelectionGizmo::UpdatePosition(Vector3 Position)
 {
 	m_ArrowX->SetWorldPosition(Position);
 	m_ArrowY->SetWorldPosition(Position);
 	m_ArrowZ->SetWorldPosition(Position);
 
-	float degToRad = (Math::PI / 180.0f);
+	float degToRad = (Maths::PI / 180.0f);
 
 	btTransform Transform;
-	Transform.setOrigin(btVector3(Position.X, Position.Y, Position.Z));
+	Transform.setOrigin(btVector3(Position.x, Position.y, Position.z));
 
 	switch (m_TransformMode)
 	{
@@ -258,7 +260,7 @@ void SelectionGizmo::UpdateRotation(Rotator Rotation)
 {
 }
 
-void SelectionGizmo::SetScale(Vector Scale)
+void SelectionGizmo::SetScale(Vector3 Scale)
 {
 	m_ArrowX->SetRelativeScale(Scale);
 	m_ArrowY->SetRelativeScale(Scale);
@@ -268,9 +270,9 @@ void SelectionGizmo::SetScale(Vector Scale)
 	btDiscreteDynamicsWorld* physicsWorld = World::GetPhysicsWorld();
 
 	//Scale all of them so we dont have to bother if we change
-	m_CollisionTranslation.setLocalScaling(Scale.ToBulletVector());
-	m_CollisionRotation.setLocalScaling(Scale.ToBulletVector());
-	m_CollisionScale.setLocalScaling(Scale.ToBulletVector());
+	m_CollisionTranslation.setLocalScaling(Scale);
+	m_CollisionRotation.setLocalScaling(Scale);
+	m_CollisionScale.setLocalScaling(Scale);
 
 	if (physicsWorld)
 	{
@@ -291,10 +293,10 @@ void SelectionGizmo::Render()
 	Renderer::Submit(m_ArrowZ);
 }
 
-Vector SelectionGizmo::GetPosition() const
+Vector3 SelectionGizmo::GetPosition() const
 {
 	btVector3 T = m_XGhost->getWorldTransform().getOrigin();
-	return Vector(T.x(), T.y(), T.z());
+	return Vector3(T.x(), T.y(), T.z());
 }
 
 void SelectionGizmo::SetVisibility(bool Visible)
@@ -331,29 +333,29 @@ void SelectionGizmo::OnSelected(Axis Axis, WorldComponent* Object)
 	m_SelectedComponentStartScale = Object->GetWorldScale();
 	m_MouseLastUpdate = Input::GetMousePosition();
 
-	Vector AxisDirection;
+	Vector3 AxisDirection;
 	switch (m_SelectedAxis)
 	{
 	case Axis::X:
-		AxisDirection = Vector(1.0f, 0.0f, 0.0f);
+		AxisDirection = Vector3(1.0f, 0.0f, 0.0f);
 		break;
 	case Axis::Y:
-		AxisDirection = Vector(0.0f, 1.0f, 0.0f);
+		AxisDirection = Vector3(0.0f, 1.0f, 0.0f);
 		break;
 	case Axis::Z:
-		AxisDirection = Vector(0.0f, 0.0f, 1.0f);
+		AxisDirection = Vector3(0.0f, 0.0f, 1.0f);
 		break;
 	}
 
 
 
-	Vector Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.X, m_MouseLastUpdate.Y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
+	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.x, m_MouseLastUpdate.y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
 
 	float SelectionAxisClosestScale;
 	float RayClosestScale;
 	//Get the closest point on the selection gizmo axis to the mouse click
-	Math::GetClosestDistanceBetweenLines(Ray(m_ArrowX->GetWorldPosition(), AxisDirection), Ray(Start, Direction), SelectionAxisClosestScale, RayClosestScale);
+	Maths::GetClosestDistanceBetweenLines(Physics::Ray(m_ArrowX->GetWorldPosition(), AxisDirection), Physics::Ray(Start, Direction), SelectionAxisClosestScale, RayClosestScale);
 	m_ArrowOffset = AxisDirection * SelectionAxisClosestScale;
 }
 
@@ -432,25 +434,25 @@ void SelectionGizmo::SetTransformationMode(SelectionGizmo::Transform newMode)
 void SelectionGizmo::GenerateCollision()
 {
 	//Generate the collision
-	const std::vector<Vector>& TranslationVerts = m_MeshTranslate->GetMesh(0)->GetCollisionVertices();
-	const std::vector<Vector>& RotationVerts = m_MeshRotate->GetMesh(0)->GetCollisionVertices();
-	const std::vector<Vector>& ScaleVerts = m_MeshScale->GetMesh(0)->GetCollisionVertices();
+	const std::vector<Vector3>& TranslationVerts = m_MeshTranslate->GetMesh(0)->GetCollisionVertices();
+	const std::vector<Vector3>& RotationVerts = m_MeshRotate->GetMesh(0)->GetCollisionVertices();
+	const std::vector<Vector3>& ScaleVerts = m_MeshScale->GetMesh(0)->GetCollisionVertices();
 
-	for (const Vector& Vert : TranslationVerts)
+	for (const Vector3& Vert : TranslationVerts)
 	{
-		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		btVector3 btv = btVector3(Vert.x, Vert.y, Vert.z);
 		m_CollisionTranslation.addPoint(btv);
 	}
 
-	for (const Vector& Vert : RotationVerts)
+	for (const Vector3& Vert : RotationVerts)
 	{
-		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		btVector3 btv = btVector3(Vert.x, Vert.y, Vert.z);
 		m_CollisionRotation.addPoint(btv);
 	}
 
-	for (const Vector& Vert : ScaleVerts)
+	for (const Vector3& Vert : ScaleVerts)
 	{
-		btVector3 btv = btVector3(Vert.X, Vert.Y, Vert.Z);
+		btVector3 btv = btVector3(Vert.x, Vert.y, Vert.z);
 		m_CollisionScale.addPoint(btv);
 	}
 
@@ -461,22 +463,22 @@ void SelectionGizmo::GenerateCollision()
 
 	//Create the ghost object
 	btTransform Transform;
-	Vector Location;
+	Vector3 Location;
 
 	Location = m_ArrowX->GetWorldPosition();
-	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
+	Transform.setOrigin(btVector3(Location.x, Location.y, Location.z));
 	m_XGhost->setCollisionShape(&m_CollisionTranslation);
 	m_XGhost->setWorldTransform(Transform);
 	m_XGhost->setUserPointer(m_ArrowX);
 
 	Location = m_ArrowY->GetWorldPosition();
-	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
+	Transform.setOrigin(btVector3(Location.x, Location.y, Location.z));
 	m_YGhost->setCollisionShape(&m_CollisionTranslation);
 	m_YGhost->setWorldTransform(Transform);
 	m_YGhost->setUserPointer(m_ArrowY);
 
 	Location = m_ArrowZ->GetWorldPosition();
-	Transform.setOrigin(btVector3(Location.X, Location.Y, Location.Z));
+	Transform.setOrigin(btVector3(Location.x, Location.y, Location.z));
 	m_ZGhost->setCollisionShape(&m_CollisionTranslation);
 	m_ZGhost->setWorldTransform(Transform);
 	m_ZGhost->setUserPointer(m_ArrowZ);

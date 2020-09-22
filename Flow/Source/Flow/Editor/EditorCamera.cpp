@@ -15,9 +15,9 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	Rotator WorldRotation = Rotator::AsRadians(_Rotation);
-	Vector WorldPosition = _Position;
+	Vector3 WorldPosition = _Position;
 
-	//Get Camera Look Vector
+	//Get Camera Look Vector3
 	const auto lookVector = DirectX::XMVector3Transform(Forward,
 		DirectX::XMMatrixRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll)
 	);
@@ -27,13 +27,13 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 	DirectX::XMFLOAT3 camTarget;
 
 	DirectX::XMStoreFloat3(&fLookVector, lookVector);
-	camTarget.x = WorldPosition.X + fLookVector.x;
-	camTarget.y = WorldPosition.Y + fLookVector.y;
-	camTarget.z = WorldPosition.Z + fLookVector.z;
+	camTarget.x = WorldPosition.x + fLookVector.x;
+	camTarget.y = WorldPosition.y + fLookVector.y;
+	camTarget.z = WorldPosition.z + fLookVector.z;
 
 	//Return transformed Matrix with camera looking at a target
 	DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
-	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition.ToDXFloat3());
+	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(WorldPosition));
 
 	//Rotate the up vector
 	return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
@@ -41,16 +41,16 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 void EditorCamera::MoveCamera(const Transform& NewTransform)
 {
-	_Position = NewTransform._Position;
-	_Rotation = NewTransform._Rotation;
+	_Position = NewTransform.m_Position;
+	_Rotation = NewTransform.m_Rotation;
 }
 
 Transform EditorCamera::GetCameraTransform() const
 {
-	return Transform(_Position, _Rotation, Vector(1));
+	return Transform(_Position, _Rotation, Vector3(1));
 }
 
-Vector EditorCamera::GetCameraPosition() const
+Vector3 EditorCamera::GetCameraPosition() const
 {
 	return _Position;
 }
@@ -60,8 +60,8 @@ void EditorCamera::Update(float DeltaTime)
 	if (!_CanUpdate)
 		return;
 
-	IntVector2D MousePosition = Input::GetMousePosition();
-	Vector Translation(0.0f);
+	IntVector2 MousePosition = Input::GetMousePosition();
+	Vector3 Translation(0.0f);
 
 
 
@@ -69,23 +69,23 @@ void EditorCamera::Update(float DeltaTime)
 	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
 	{
 		if (Input::IsKeyPressed(FLOW_KEY_W))
-			Translation.Z += _CameraSpeed;
+			Translation.z += _CameraSpeed;
 		if (Input::IsKeyPressed(FLOW_KEY_A))
-			Translation.X += -_CameraSpeed;
+			Translation.x += -_CameraSpeed;
 		if (Input::IsKeyPressed(FLOW_KEY_S))
-			Translation.Z += -_CameraSpeed;
+			Translation.z += -_CameraSpeed;
 		if (Input::IsKeyPressed(FLOW_KEY_D))
-			Translation.X += _CameraSpeed;
+			Translation.x += _CameraSpeed;
 		if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-			Translation.Y += _CameraSpeed;
+			Translation.y += _CameraSpeed;
 		if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
 
-			Translation.Y += -_CameraSpeed;
+			Translation.y += -_CameraSpeed;
 		if (_MouseLastFrame != MousePosition)
 		{
-			Vector Direction = (_MouseLastFrame - MousePosition);
-			_Rotation.Yaw -= Direction.X * 0.25f; //Horizontal Sensitivity
-			_Rotation.Pitch -= Direction.Y * 0.15f;  //Vertical Sensitivity
+			Vector3 Direction = _MouseLastFrame - MousePosition;
+			_Rotation.Yaw -= Direction.x * 0.25f; //Horizontal Sensitivity
+			_Rotation.Pitch -= Direction.y * 0.15f;  //Vertical Sensitivity
 		}
 	}
 

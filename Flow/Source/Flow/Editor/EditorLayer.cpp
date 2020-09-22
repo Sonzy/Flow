@@ -69,7 +69,7 @@ void EditorLayer::BeginPlay()
 
 void EditorLayer::OnAttach()
 {
-	m_ApplicationPointer = &Application::GetApplication();
+	m_ApplicationPointer = &Application::Get();
 	m_Inspector->SetCurrentWorld(World::Get());
 }
 
@@ -180,7 +180,7 @@ void EditorLayer::RegisterTool(Tool* newTool)
 
 EditorLayer* EditorLayer::GetEditor()
 {
-	return Application::GetApplication().GetEditor();
+	return Application::Get().GetEditor();
 }
 
 EditorSettings& EditorLayer::GetEditorSettings()
@@ -228,12 +228,12 @@ bool EditorLayer::IsMouseOverScene() const
 	return m_SceneManager.IsMouseOverScene();
 }
 
-IntVector2D EditorLayer::GetSceneWindowSize() const
+IntVector2 EditorLayer::GetSceneWindowSize() const
 {
 	return m_SceneManager.GetSceneWindowSize();
 }
 
-IntVector2D EditorLayer::GetSceneWindowPosition() const
+IntVector2 EditorLayer::GetSceneWindowPosition() const
 {
 	return m_SceneManager.GetSceneWindowPosition();
 }
@@ -359,8 +359,8 @@ void EditorLayer::RenderApplicationDebug(float DeltaTime)
 
 	if (ImGui::Begin("Application Statistics"))
 	{
-		ImGui::Checkbox("Pause Game", &m_ApplicationPointer->Paused_);
-		ImGui::Checkbox("Draw Collision", &m_ApplicationPointer->DrawCollision_);
+		ImGui::Checkbox("Pause Game", &m_ApplicationPointer->m_GamePaused);
+		ImGui::Checkbox("Draw Collision", &m_ApplicationPointer->m_DrawCollision);
 
 		ImGui::Text("Framerate: %.1f", 1 / FrameTimer);
 		ImGui::Text("FrameTime: %.1f ms", LastFrameTime);

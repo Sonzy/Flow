@@ -24,7 +24,7 @@ PointLightComponent::PointLightComponent(const std::string& ComponentName)
 void PointLightComponent::Render()
 {
 	//Update from component position
-	_CB._Position = GetWorldPosition().ToDXFloat3();
+	_CB._Position = GetWorldPosition();
 
 	//Create a copy and transform the copied position with the view matrix
 	auto Copy = _CB;

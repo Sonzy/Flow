@@ -2,11 +2,11 @@
 #include "Flow\Core.h"
 #include <vector>
 #include <memory>
-#include "Flow\Helper\Maths.h"
+#include "Maths/Vector3.h"
 
 #include "btBulletDynamicsCommon.h"
 
-#include "Flow\Helper\BulletDebugDrawing.h"
+#include "Flow\Utils\BulletDebugDrawing.h"
 #include "Flow/GameFramework/Level.h"
 #include "Flow/Rendering/Core/DebugDrawing/LineBatcher.h"
 
@@ -67,7 +67,7 @@ public:
 
 	const std::string& GetName();
 
-	static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector Start, Vector End);
+	static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector3 Start, Vector3 End);
 
 	static btDiscreteDynamicsWorld* GetPhysicsWorld();
 	static World* Get();

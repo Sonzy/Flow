@@ -1,5 +1,6 @@
 #pragma once
-#include "Flow/Rendering/Core/Camera/Camera.h"
+#include "Rendering/Core/Camera/Camera.h"
+#include "Maths/IntVector2.h"
 
 class FrameBuffer;
 
@@ -32,7 +33,7 @@ public:
 	virtual void Resize(int Width, int Height) = 0;
 	virtual void ResizeDepthBuffer(int Width, int Height) = 0;
 
-	virtual Vector GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0)) = 0;
+	virtual Vector3 GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0)) = 0;
 
 	static API GetAPI() { return s_API; };
 
@@ -44,7 +45,7 @@ public:
 
 public:
 
-	IntVector2D GetWindowSize() { return _ViewportSize; }
+	IntVector2 GetWindowSize() { return _ViewportSize; }
 
 private:
 	static API s_API;
@@ -54,8 +55,8 @@ protected:
 	float _BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
 	std::shared_ptr<CameraBase> _MainCamera;
 
-	IntVector2D _ViewportSize;
-	IntVector2D _AdjustedViewportSize;
+	IntVector2 _ViewportSize;
+	IntVector2 _AdjustedViewportSize;
 
 	float _NearPlane;
 	float _FarPlane;

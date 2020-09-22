@@ -288,13 +288,10 @@ const std::string& World::GetName()
 	return _WorldName;
 }
 
-btCollisionWorld::ClosestRayResultCallback World::WorldTrace(Vector Start, Vector End)
+btCollisionWorld::ClosestRayResultCallback World::WorldTrace(Vector3 Start, Vector3 End)
 {
-	btVector3 InternalStart = btVector3(Start.X, Start.Y, Start.Z);
-	btVector3 InternaEnd = btVector3(End.X, End.Y, End.Z);
-
-	btCollisionWorld::ClosestRayResultCallback Result(InternalStart, InternaEnd);
-	Application::GetWorld()->_PhysicsWorld->rayTest(InternalStart, InternaEnd, Result);
+	btCollisionWorld::ClosestRayResultCallback Result(Start, End);
+	Application::GetWorld()->_PhysicsWorld->rayTest(Start, End, Result);
 
 	return Result;
 }

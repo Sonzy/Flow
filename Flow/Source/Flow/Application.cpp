@@ -1,67 +1,82 @@
 #include "Flowpch.h"
 #include "Application.h"
-#include "Logging/Log.h"
-#include "Events/ApplicationEvent.h"
 
+//= Misc Includes =
+#include "Logging/Log.h"
+
+
+//= Input Includes =
+#include "Events/ApplicationEvent.h"
 #include "Flow/Input/Input.h"
 #include "ThirdParty\ImGui\imgui.h"
 
-#include "Flow\Assets\AssetSystem.h"
-
-#include "Flow\GameFramework\World.h"
-
-#include "Flow/Layers/GameLayer.h"
+//= Editor Includes =
 #if WITH_EDITOR
-
 #include "Flow\Editor\Inspector.h"
 #include "Flow/Editor/EditorLayer.h"
-
 #endif
 
-//TODO: Load somewhere else
+//= Asset Includes =
+#include "Flow\Assets\AssetSystem.h"
 #include "Flow\Assets\Materials\Mat_FlatColour.h"
 #include "Flow\Assets\Materials\Mat_TexturedPhong.h"
 #include "Flow\Assets\Meshes\MeshAsset.h"
 
-#include "Flow\Helper\Profiling.h"
-
+//= Helper Inclues =
+#include "Flow\Utils\Profiling.h"
 #include "Flow/GameFramework/Other/ClassFactory.h"
 
+//= Game Framework includes =
+#include "Flow\GameFramework\World.h"
+#include "Flow/Layers/GameLayer.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
-Application* Application::s_Instance = nullptr;
+
+//= Static Variable Definitions ======================================
+Application* Application::sm_Application = nullptr;
 
 //TODO: Being naughty, need to null initialise
 Application::Application(const std::string& AppName)
-	: ApplicationName(AppName), EditorLayer_(nullptr)
-{
+	: m_ApplicationName(AppName)
+	, m_MainWindow(nullptr)
+	, m_Layer_ImGui(nullptr)
+	, m_Layer_Game(nullptr)
+	, m_Running(true)
+	, m_GamePaused(false)
+	, m_DrawCollision(false)
+	, m_GameWorld(nullptr)
+	, m_ClassFactory(nullptr)
+	, m_ApplicationPath()
 
+#if WITH_EDITOR
+	, m_RenderEditor(true)
+	, m_Layer_Editor(nullptr)
+#endif
+
+{
 }
 
 void Application::InitialiseApplication()
 {
 	Instrumentor::Get().BeginSession("Application Startup", "Saved/Profiling-Startup.json");
+
 	PROFILE_FUNCTION();
 
-	s_Instance = this;
+	sm_Application = this;
+	m_ApplicationPath = std::filesystem::current_path();
 
-	_MainWindow = std::unique_ptr<Window>(Window::Create(WindowProperties(ApplicationName, 1280u, 720u)));
-	_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+	//Create the main window
+	m_MainWindow = Window::Create(WindowProperties(m_ApplicationName, 1280u, 720u));
+	m_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
-	ImGuiLayer_ = new ImGuiLayer();
-	PushOverlay(ImGuiLayer_);
-
-	//Get Local File Path
-	//char Path[128];
-	//GetModuleFileName(nullptr, Path, sizeof(Path));
-	//std::string ExeDir = std::string(Path);
-	//LocalPath_ = ExeDir.substr(0, ExeDir.find("bin"));
-	_ApplicationPath = std::filesystem::current_path();
+	//Initialise the debug UI Layer
+	m_Layer_ImGui = new ImGuiLayer();
+	PushOverlay(m_Layer_ImGui);
 
 	//= Build class factory map before the application starts
-	_ClassFactory = new ClassFactory();
-	_ClassFactory->RegisterClassUIDs();
+	m_ClassFactory = new ClassFactory();
+	m_ClassFactory->RegisterClassUIDs();
 
 	//TODO: Load assets somewhere
 	//= Models =
@@ -92,13 +107,13 @@ void Application::InitialiseApplication()
 
 	//Assign Collisions to meshes
 
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Table")->GetMesh(0)->_CollisionName = "Wabble_Table_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Chair")->GetMesh(0)->_CollisionName = "Wabble_Chair_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun")->GetMesh(0)->_CollisionName = "Wabble_Shotgun_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Rifle")->GetMesh(0)->_CollisionName = "Wabble_Rifle_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Revolver")->GetMesh(0)->_CollisionName = "Wabble_Revolver_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Blunderbuss")->GetMesh(0)->_CollisionName = "Wabble_Blunderbuss_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Crate")->GetMesh(0)->_CollisionName = "Wabble_Crate_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Table")->GetMesh(0)->m_CollisionName = "Wabble_Table_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Chair")->GetMesh(0)->m_CollisionName = "Wabble_Chair_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun")->GetMesh(0)->m_CollisionName = "Wabble_Shotgun_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Rifle")->GetMesh(0)->m_CollisionName = "Wabble_Rifle_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Revolver")->GetMesh(0)->m_CollisionName = "Wabble_Revolver_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Blunderbuss")->GetMesh(0)->m_CollisionName = "Wabble_Blunderbuss_Collision";
+	AssetSystem::GetAsset<MeshAsset>("Wabble_Crate")->GetMesh(0)->m_CollisionName = "Wabble_Crate_Collision";
 
 	//= Textures =
 
@@ -133,15 +148,15 @@ void Application::InitialiseApplication()
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Brown");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector(0.31, 0.08, 0));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector3(0.31, 0.08, 0));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector(1.0f, 1.0f, 1.0f));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector(0.0f, 0.0f, 1.0f));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector3(0.0f, 0.0f, 1.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Red");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Red")->GetMaterial())->SetColour(Vector(1.0f, 0.0f, 0.0f));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Red")->GetMaterial())->SetColour(Vector3(1.0f, 0.0f, 0.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Green");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green")->GetMaterial())->SetColour(Vector(0.0f, 1.0f, 0.0f));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green")->GetMaterial())->SetColour(Vector3(0.0f, 1.0f, 0.0f));
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
 	Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
@@ -173,21 +188,21 @@ void Application::InitialiseApplication()
 	SkyMat->SetPixelShader("TexturedPS");
 	SkyMat->SetVertexShader("TexturedVS");
 
-	_GameLayer = new GameLayer();
+	m_Layer_Game = new GameLayer();
 
 	//Create the game world
-	GameWorld_ = new World("Game World");
+	m_GameWorld = new World("Game World");
 
-#if WITH_EDITOR
 	//Create the editor
-	EditorLayer_ = new EditorLayer();
-	EditorLayer_->Initialise();
+#if WITH_EDITOR
+	m_Layer_Editor = new EditorLayer();
+	m_Layer_Editor->Initialise();
 #endif
 
-	
-	PushLayer(_GameLayer);
+	PushLayer(m_Layer_Game);
+
 #if WITH_EDITOR
-	PushLayer(EditorLayer_);
+	PushLayer(m_Layer_Editor);
 #endif
 }
 
@@ -204,33 +219,33 @@ void Application::Run()
 	{
 		PROFILE_CURRENT_SCOPE("Run Initialisation");
 
-		GameWorld_->InitialiseWorld();
+		m_GameWorld->InitialiseWorld();
 
 #if WITH_EDITOR
-		GameWorld_->StartEditor();
+		m_GameWorld->StartEditor();
 #else
 		StartGame();
 #endif // WITH_EDITOR
 
 
 
-		Timer_.Mark(); // Reset timer to avoid a long initial deltatime
+		m_Timer.Mark(); // Reset timer to avoid a long initial deltatime
 	}
 
 	Instrumentor::Get().EndSession();
 	Instrumentor::Get().BeginSession("Game Running", "Saved\\Profiling-GameLoop.json");
 
-	while (_Running)
+	while (m_Running)
 	{
 		PROFILE_CURRENT_SCOPE("Game Loop");
 
-		float DeltaTime = Timer_.Mark();
+		float DeltaTime = m_Timer.Mark();
 
-		_MainWindow->PreUpdate();
-		_MainWindow->OnUpdate();
+		m_MainWindow->PreUpdate();
+		m_MainWindow->OnUpdate();
 
 		//If the window has sent a shutdown message return immediately
-		if (!_Running)
+		if (!m_Running)
 		{
 			//Finish the profiling first
 			Instrumentor::Get().EndSession();
@@ -239,19 +254,19 @@ void Application::Run()
 
 		Renderer::BeginScene();
 
-		if (!Paused_)
+		if (!m_GamePaused)
 		{
 			PROFILE_CURRENT_SCOPE("Game - Tick");
 
 			//TODO: Check where to move the world since I'm using layers
-			GameWorld_->Tick(DeltaTime);
+			m_GameWorld->Tick(DeltaTime);
 		}
 
 		{
 			PROFILE_CURRENT_SCOPE("Game - Render World");
 
 			//TODO: Check where to move the world since I'm using layers
-			GameWorld_->Render();
+			m_GameWorld->Render();
 		}
 
 
@@ -259,7 +274,7 @@ void Application::Run()
 		{
 			PROFILE_CURRENT_SCOPE("Game - Layer Updates");
 
-			for (Layer* layer : LayerStack_)
+			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate(DeltaTime);
 			}
@@ -270,10 +285,10 @@ void Application::Run()
 		{
 			PROFILE_CURRENT_SCOPE("Game - Draw Debug Physics");
 
-			if (DrawCollision_)
-				GameWorld_->GetPhysicsWorld()->debugDrawWorld();
+			if (m_DrawCollision)
+				m_GameWorld->GetPhysicsWorld()->debugDrawWorld();
 
-			GameWorld_->GetLineBatcher().DrawLines();
+			m_GameWorld->GetLineBatcher().DrawLines();
 		}
 
 		Renderer::EndScene();
@@ -281,33 +296,21 @@ void Application::Run()
 		//= UI Rendering =
 		{
 			PROFILE_CURRENT_SCOPE("Game - ImGui Rendering");
-			ImGuiLayer_->Begin();
-			for (Layer* layer : LayerStack_)
+			m_Layer_ImGui->Begin();
+			for (Layer* layer : m_LayerStack)
 			{
 #if WITH_EDITOR
-				layer->OnImGuiRender(_DrawEditor);
+				layer->OnImGuiRender(m_RenderEditor);
 #else
 				layer->OnImGuiRender(false);
 #endif
 			}
-			ImGuiLayer_->End();
+			m_Layer_ImGui->End();
 		}
 
 		//= Post Update =
 
-		_MainWindow->PostUpdate();
-
-		//Bad way of delaying window destruction, can fix to do it better another time
-		_UpdatingChildWindows = true;
-		//Update other windows
-		for (auto& Window : _Windows)
-		{
-			Window->PreUpdate();
-			Window->OnUpdate();
-			Window->PostUpdate();
-		}
-		_UpdatingChildWindows = false;
-		UpdateWindowDestruction();
+		m_MainWindow->PostUpdate();
 	}
 
 	Instrumentor::Get().EndSession();
@@ -319,7 +322,7 @@ void Application::OnEvent(Event& e)
 	Dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowClosed));
 	Dispatcher.Dispatch<WindowResizedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowResized));
 
-	for (auto iterator = LayerStack_.end(); iterator != LayerStack_.begin();)
+	for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
 	{
 		(*--iterator)->OnEvent(e);
 		if (e._Handled)
@@ -329,19 +332,19 @@ void Application::OnEvent(Event& e)
 
 void Application::PushLayer(Layer* layer)
 {
-	LayerStack_.PushLayer(layer);
+	m_LayerStack.PushLayer(layer);
 	layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer* layer)
 {
-	LayerStack_.PushOverlay(layer);
+	m_LayerStack.PushOverlay(layer);
 	layer->OnAttach();
 }
 
 bool Application::OnWindowClosed(WindowClosedEvent& e)
 {
-	_Running = false;
+	m_Running = false;
 	FLOW_ENGINE_LOG("Window Closed");
 	return true;
 }
@@ -352,19 +355,19 @@ bool Application::OnWindowResized(WindowResizedEvent& e)
 	return false;
 }
 
-Application& Application::GetApplication()
+Application& Application::Get()
 {
-	return *s_Instance;
+	return *sm_Application;
 }
 
 World* Application::GetWorld()
 {
-	return s_Instance->GameWorld_;
+	return sm_Application->m_GameWorld;
 }
 
 void Application::Shutdown()
 {
-	Application::GetApplication()._Running = false;
+	Application::Get().m_Running = false;
 }
 
 void Application::SaveLevel()
@@ -391,113 +394,44 @@ void Application::LoadPlayState()
 	Application::GetWorld()->LoadPlayState();
 }
 
-//std::string Application::GetLocalFilePath()
-//{
-//	return LocalPath_;
-//}
-//
-//std::wstring Application::GetLocalFilePathWide()
-//{
-//	return std::wstring(LocalPath_.begin(), LocalPath_.end());
-//}
-
-Window* Application::CreateNewWindow(const std::string& WindowName)
-{
-	Application& App = Application::GetApplication();
-
-	Window* Win = Window::Create(WindowProperties(WindowName, 1280u, 720u), false);
-	App._Windows.push_back(Win);
-	return Win;
-}
-
-bool Application::RegisterWindow(Window* NewWindow)
-{
-	Application& App = Application::GetApplication();
-	App._Windows.push_back(NewWindow);
-	return true;
-}
-
-bool Application::DeRegisterWindow(Window* Win)
-{
-	Application& App = Application::GetApplication();
-	if (App._UpdatingChildWindows)
-	{
-		App._WindowsToDestroy.push_back(Win);
-		return false;
-	}
-
-	auto FindIt = std::find(App._Windows.begin(), App._Windows.end(), Win);
-
-	if (FindIt == App._Windows.end())
-	{
-		FLOW_ENGINE_WARNING("Application::DeRegisterWindow: Tried to get rid of window but failed to find it");
-		return false;
-	}
-	
-	//Remove and delete it
-	Window* FoundWin = *FindIt;
-	App._Windows.erase(FindIt);
-	delete FoundWin;
-
-	return true;
-}
-
 Window& Application::GetWindow()
 {
-	return *_MainWindow;
+	return *m_MainWindow;
 }
 
 bool Application::StartGame()
 {
-	Application& App = Application::GetApplication();
+	Application& App = Application::Get();
 
-	if (App.GameWorld_->GetWorldState() == WorldState::InGame)
+	if (App.m_GameWorld->GetWorldState() == WorldState::InGame)
 		return false;
 
-	for (Layer* layer : App.LayerStack_)
+	for (Layer* layer : App.m_LayerStack)
 	{
 		layer->BeginPlay();
 	}
-	App.GameWorld_->StartGame();
+	App.m_GameWorld->StartGame();
 	return true;
 }
 
 bool Application::PauseGame()
 {
-	Application& App = Application::GetApplication();
+	Application& App = Application::Get();
 
-	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
+	if (App.m_GameWorld->GetWorldState() != WorldState::InGame)
 		return false;
 
-	App.GameWorld_->PauseGame();
+	App.m_GameWorld->PauseGame();
 	return true;
 }
 
 bool Application::StopGame()
 {
-	Application& App = Application::GetApplication();
+	Application& App = Application::Get();
 
-	if (App.GameWorld_->GetWorldState() != WorldState::InGame)
+	if (App.m_GameWorld->GetWorldState() != WorldState::InGame)
 		return false;
 
-	App.GameWorld_->StopGame();
+	App.m_GameWorld->StopGame();
 	return true;
 }
-
-void Application::UpdateWindowDestruction()
-{
-	std::vector<Window*> WindowsRemoved;
-	for (auto& Wind : _WindowsToDestroy)
-	{
-		if (DeRegisterWindow(Wind))
-			WindowsRemoved.push_back(Wind);
-	}
-
-	//Lazy way
-	for (auto& Wind : WindowsRemoved)
-	{
-		_WindowsToDestroy.erase(std::find(_WindowsToDestroy.begin(), _WindowsToDestroy.end(), Wind));
-	}
-}
-
-

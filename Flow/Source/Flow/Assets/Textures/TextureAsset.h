@@ -1,44 +1,32 @@
 #pragma once
-#include "Flow\Assets\AssetBase.h"
 #include <string>
+#include "Flow\Assets\Asset.h"
 #include "DXTex\DirectXTex.h"
 
-class TexColor
-{
-public:
-	unsigned int _Data;
-
-	constexpr TexColor()
-		: _Data()
-	{}
-
-	constexpr TexColor(unsigned int DWord)
-		: _Data(DWord)
-	{}
-};
-
-class FLOW_API TextureAsset : public AssetBase
+class FLOW_API TextureAsset : public Asset
 {
 
 public:
-	TextureAsset() {};
-	~TextureAsset();
 
-	virtual bool LoadAsset(const std::string& FilePath) override;
+	//= Public Functions =======================================
 
-	unsigned int GetWidth() const { return (unsigned int)_Image.GetMetadata().width; }
-	unsigned int GetHeight() const { return (unsigned int)_Image.GetMetadata().height; }
+									TextureAsset() {};
+									~TextureAsset();
 
-	unsigned int GetPitch() const { return (unsigned int)_Image.GetImage(0, 0, 0)->rowPitch; }
+	virtual bool					LoadAsset(const std::string& FilePath) override;
 
-	uint8_t* GetBufferPtr() const { return _Image.GetPixels(); }
+	unsigned int					GetWidth() const { return static_cast<unsigned int>(m_Image.GetMetadata().width); }
+	unsigned int					GetHeight() const { return static_cast<unsigned int>(m_Image.GetMetadata().height); }
+	unsigned int					GetPitch() const { return static_cast<unsigned int>(m_Image.GetImage(0, 0, 0)->rowPitch); }
 
-	const std::string& GetAssetPath() const { return _AssetPath; }
+	uint8_t*						GetBufferPtr() const { return m_Image.GetPixels(); }
+	const std::string&				GetAssetPath() const { return m_AssetPath; }
 
 protected:
 
-	DirectX::ScratchImage _Image;
+	//= Protected Variables ===================================
 
-	static constexpr DXGI_FORMAT _Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
-	std::string _AssetPath;
+	DirectX::ScratchImage			m_Image;
+	static constexpr DXGI_FORMAT	m_Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM; //Windows default format
+	std::string						m_AssetPath;
 };

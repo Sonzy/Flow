@@ -1,6 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Flow/Helper/Maths.h"
+#include "Maths/Maths.h"
 
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
@@ -43,7 +43,7 @@ public:
 
 	DirectX::XMMATRIX GetProjectionMatrix() const;
 
-	virtual Vector GetCameraPosition() const = 0;
+	virtual Vector3 GetCameraPosition() const = 0;
 
 	virtual void SetFOV(float NewFOV) { _FieldOfView = NewFOV; }
 	virtual float GetFOV() const { return _FieldOfView; };
@@ -62,7 +62,7 @@ protected:
 #endif
 
 	bool _CacheDirty = false;
-	Vector _LastKnownCameraPos;
+	Vector3 _LastKnownCameraPos;
 
 	float _FieldOfView = 90;
 };

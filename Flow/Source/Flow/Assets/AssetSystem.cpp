@@ -7,35 +7,33 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 
-AssetSystem* AssetSystem::AssetSystem_s = new AssetSystem();
+AssetSystem* AssetSystem::sm_AssetSystem = new AssetSystem();
 
 AssetSystem::AssetSystem()
+	: m_LoadedAssets()
+	, m_MemoryUsage(0)
 {
-}
-
-void AssetSystem::Shutdown()
-{
-	delete AssetSystem_s;
 }
 
 AssetSystem::~AssetSystem()
 {
-	//Unload all assets
-	for (auto& Asset : LoadedAssets_)
-	{
-		delete Asset.second;
-	}
+
 }
 
-void AssetSystem::InitialiseAssetSystem()
+void AssetSystem::Shutdown()
 {
+	if (sm_AssetSystem)
+	{
+		sm_AssetSystem->m_LoadedAssets.clear();
 
+		delete sm_AssetSystem;
+	}
 }
 
 bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& AssetPath, bool EditorAsset, bool AbsolutePath)
 {
 	//Create a new asset
-	AssetBase* NewAsset = CreateAsset(AssetSystem::GetAssetTypeFromFileExtension(AssetPath));
+	Asset* NewAsset = CreateAsset(AssetSystem::GetAssetTypeFromFileExtension(AssetPath));
 	CHECK_RETURN_FALSE(!NewAsset, "AssetSystem::LoadAsset: Failed to create asset for file type.");
 
 	std::string UpdatedPath = AbsolutePath ? AssetPath : GetAssetDirectoryString(EditorAsset) + AssetPath;
@@ -50,10 +48,10 @@ bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& Ass
 	//Add the asset to the stored assets
 	NewAsset->SetAssetName(AssetName);
 	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str());//Use the c_str otherwise the null char is hashed too
-	AssetSystem_s->LoadedAssets_.insert({ HashedName, NewAsset });
+	sm_AssetSystem->m_LoadedAssets.insert({ HashedName, NewAsset });
 
 	//Update tracked data size
-	AssetSystem_s->LoadedAssetSize_ += NewAsset->GetAssetSize();
+	sm_AssetSystem->m_MemoryUsage += NewAsset->GetAssetSize();
 
 	return true;
 }
@@ -64,53 +62,53 @@ bool AssetSystem::LoadEditorAsset(const std::string& AssetName, const std::strin
 }
 
 
-AssetBase* AssetSystem::GetAsset(const std::string& AssetName)
+Asset* AssetSystem::GetAsset(const std::string& AssetName)
 {
 	//Hash the string
 	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str()); //Use the c_str otherwise the null char is hashed too
 
 	//Error if the path doesnt exist in the system
-	if (AssetSystem_s->LoadedAssets_.find(HashedName) == AssetSystem_s->LoadedAssets_.end())
+	if (sm_AssetSystem->m_LoadedAssets.find(HashedName) == sm_AssetSystem->m_LoadedAssets.end())
 	{
 		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName.c_str());
 		return nullptr;
 	}
 
-	return AssetSystem_s->LoadedAssets_[HashedName];
+	return sm_AssetSystem->m_LoadedAssets[HashedName];
 }
 
 //TODO: Come up wiht a better version of this
-EAssetType AssetSystem::GetAssetTypeFromFileExtension(const std::string& AssetPath)
+Asset::Type AssetSystem::GetAssetTypeFromFileExtension(const std::string& AssetPath)
 {
 	std::string Extension = AssetPath.substr(AssetPath.find_last_of('.') + 1);
 
 	if (Extension._Equal("jpg") || Extension._Equal("png"))
-		return EAssetType::Texture;
+		return Asset::Type::Texture;
 
 	if (Extension._Equal("obj") || Extension._Equal("fbx"))
-		return EAssetType::Mesh;
+		return Asset::Type::Mesh;
 
 	if (Extension._Equal("cso"))
-		return EAssetType::Shader;
+		return Asset::Type::Shader;
 
-	return EAssetType::None;
+	return Asset::Type::None;
 }
 
-AssetBase* AssetSystem::CreateAsset(EAssetType Type)
+Asset* AssetSystem::CreateAsset(Asset::Type Type)
 {
 	switch (Type)
 	{
-	case EAssetType::Mesh:
+	case Asset::Type::Mesh:
 	{
 		MeshAsset* NewMesh = new MeshAsset();
 		return NewMesh;
 	}
-	case EAssetType::Texture:
+	case Asset::Type::Texture:
 	{
 		TextureAsset* Texture = new TextureAsset();
 		return Texture;
 	}
-	case EAssetType::Shader:
+	case Asset::Type::Shader:
 	{
 		ShaderAsset* Shader = new ShaderAsset();
 		return Shader;
@@ -125,14 +123,14 @@ void AssetSystem::RenderDebugWindow(bool Render)
 {
 	if (ImGui::Begin("Asset System"))
 	{
-		ImGui::Text("Asset Memory usage: %.1f MB", (float)AssetSystem_s->LoadedAssetSize_ / 1048576);
+		ImGui::Text("Asset Memory usage: %.1f MB", static_cast<float>(sm_AssetSystem->m_MemoryUsage) / 1048576.0f);
 
 		if (ImGui::TreeNode("Meshes"))
 		{
-			for (auto Asset : AssetSystem_s->LoadedAssets_)
+			for (auto Asset : sm_AssetSystem->m_LoadedAssets)
 			{
 				//First: Name, Second: AssetPtr
-				if (Asset.second->GetAssetType() != EAssetType::Mesh)
+				if (Asset.second->GetAssetType() != Asset::Type::Mesh)
 					continue;
 
 				ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());
@@ -142,10 +140,10 @@ void AssetSystem::RenderDebugWindow(bool Render)
 
 		if (ImGui::TreeNode("Textures"))
 		{
-			for (auto Asset : AssetSystem_s->LoadedAssets_)
+			for (auto Asset : sm_AssetSystem->m_LoadedAssets)
 			{
 				//First: Name, Second: AssetPtr
-				if (Asset.second->GetAssetType() != EAssetType::Texture)
+				if (Asset.second->GetAssetType() != Asset::Type::Texture)
 					continue;
 
 				ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());
@@ -155,10 +153,10 @@ void AssetSystem::RenderDebugWindow(bool Render)
 
 		if (ImGui::TreeNode("Shaders"))
 		{
-			for (auto Asset : AssetSystem_s->LoadedAssets_)
+			for (auto Asset : sm_AssetSystem->m_LoadedAssets)
 			{
 				//First: Name, Second: AssetPtr
-				if (Asset.second->GetAssetType() != EAssetType::Shader)
+				if (Asset.second->GetAssetType() != Asset::Type::Shader)
 					continue;
 
 				ImGui::Text("%s: %s", Asset.second->GetAssetName().c_str(), Asset.second->GetFormattedSize().c_str());

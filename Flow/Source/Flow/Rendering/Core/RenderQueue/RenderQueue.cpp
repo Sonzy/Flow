@@ -82,12 +82,12 @@ void RenderQueue::Execute()
 	//TODO: Editor defs
 	if (Queue->m_Pass4Enabled)
 	{
-		Vector Colour = EditorLayer::GetEditorSettings()._ObjectHighlightColour;
+		Vector3 Colour = EditorLayer::GetEditorSettings()._ObjectHighlightColour;
 
 		//= Outline Drawing Pass.
 		Stencil::Resolve(StencilMode::Mask)->Bind();
 
-		CBT_Colour ColourBuffer = CBT_Colour(Colour.X, Colour.Y, Colour.Z, 1.0f);
+		CBT_Colour ColourBuffer = CBT_Colour(Colour.x, Colour.y, Colour.z, 1.0f);
 		auto PXCB = std::static_pointer_cast<PixelConstantBuffer<CBT_Colour>>(PixelConstantBuffer<CBT_Colour>::Resolve(ColourBuffer, 2u));
 		PXCB->Update(ColourBuffer);
 		PXCB->Bind();

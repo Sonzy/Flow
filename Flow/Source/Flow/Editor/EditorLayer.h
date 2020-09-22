@@ -34,7 +34,7 @@ struct EditorSettings
 	}
 
 
-	Vector _ObjectHighlightColour;
+	Vector3 _ObjectHighlightColour;
 };
 
 class EditorLayer : public Layer
@@ -68,12 +68,11 @@ public:
 	bool IsSceneWindowFocused() const;
 	bool IsMouseOverScene() const;
 
-	IntVector2D GetSceneWindowSize() const;
-	IntVector2D GetSceneWindowPosition() const;
+	IntVector2 GetSceneWindowSize() const;
+	IntVector2 GetSceneWindowPosition() const;
 
 	//Open Windows
 	void Open_NewLevelWindow();
-	void OpenCollisionEditor();
 
 	Console& GetConsole();
 
@@ -141,5 +140,5 @@ protected:
 	const float UpdateInterval = 1.0f;
 
 	//Editor Window
-	Vector2D _EditorViewportSize;
+	Vector2 _EditorViewportSize;
 };

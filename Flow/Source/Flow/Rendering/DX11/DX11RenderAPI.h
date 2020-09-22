@@ -4,7 +4,6 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <DirectXMath.h>
-
 #include <dxgidebug.h>
 
 class DX11RenderAPI : public RenderAPI
@@ -26,7 +25,7 @@ public:
 	virtual void Resize(int Width, int Height) override;
 	virtual void ResizeDepthBuffer(int Width, int Height) override;
 
-	virtual Vector GetScreenToWorldDirection(int X, int Y, IntVector2D WindowSize, IntVector2D Origin = IntVector2D(0));
+	virtual Vector3 GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0));
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetContext();

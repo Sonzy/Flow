@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <fstream>
 
-#include "Flow\Helper\Maths.h"
+#include "Maths/Maths.h"
 #include "btBulletCollisionCommon.h"
 
 class WorldComponent;
@@ -30,8 +30,8 @@ public:
 
 	WorldComponent* GetRootComponent() const;
 
-	Vector GetLocation();
-	Vector GetScale();
+	Vector3 GetLocation();
+	Vector3 GetScale();
 	Rotator GetRotation();
 
 	void Render();

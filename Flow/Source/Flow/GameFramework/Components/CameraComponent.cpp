@@ -36,9 +36,9 @@ DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
 
 	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	Rotator WorldRotation = Rotator::AsRadians(GetWorldRotation());
-	Vector WorldPosition = GetWorldPosition();
+	Vector3 WorldPosition = GetWorldPosition();
 
-	//Get Camera Look Vector
+	//Get Camera Look Vector3
 	const auto lookVector = DirectX::XMVector3Transform(Forward,
 		DirectX::XMMatrixRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll)
 	);
@@ -48,13 +48,13 @@ DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
 	DirectX::XMFLOAT3 camTarget;
 
 	DirectX::XMStoreFloat3(&fLookVector, lookVector);
-	camTarget.x = WorldPosition.X + fLookVector.x;
-	camTarget.y = WorldPosition.Y + fLookVector.y;
-	camTarget.z = WorldPosition.Z + fLookVector.z;
+	camTarget.x = WorldPosition.x + fLookVector.x;
+	camTarget.y = WorldPosition.y + fLookVector.y;
+	camTarget.z = WorldPosition.z + fLookVector.z;
 
 	//Return transformed Matrix with camera looking at a target
 	DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
-	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition.ToDXFloat3());
+	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(WorldPosition));
 
 	//Rotate the up vector
 	DirectX::XMVECTOR Position = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -64,7 +64,7 @@ DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
 	return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, Rotated);
 }
 
-Vector CameraComponent::GetCameraPosition() const
+Vector3 CameraComponent::GetCameraPosition() const
 {
 	return GetWorldPosition();
 }

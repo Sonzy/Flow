@@ -1,110 +1,112 @@
 #pragma once
-#include "Flow\Assets\AssetBase.h"
+
+//= Includes ==============================
 #include <string>
-#include "Flow\Helper\Maths.h"
 
+#include "Maths/Vector3.h"
 
-#include "Flow\Rendering\Core\Bindable.h"
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
-#include "Flow\Rendering\Core\Renderable.h"
+#include "Rendering\Core\Bindable.h"
+#include "Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering\Core\Renderable.h"
 
+#include "Assets\Asset.h"
+
+//= Forward Declarations ==================
 class IndexBuffer;
 class VertexLayout;
 class Material;
 class MeshAsset;
 
-/* Stores the properties for each mesh face. Includes indices */
-struct MeshFace
-{
-	unsigned int _NumIndices;
-	std::vector<int> _Indices;
-
-	MeshFace(int NumIndices, unsigned int* Indices)
-		: _NumIndices(NumIndices)
-	{
-		_Indices.reserve(_NumIndices);
-		for (unsigned int i = 0; i < _NumIndices; i++)
-		{
-			_Indices.push_back(Indices[i]);
-		}
-	}
-
-	~MeshFace()
-	{
-		_Indices.clear();
-	}
-};
-
-/* Stores all properties of a vertex */
-struct MeshVertex
-{
-	MeshVertex(Vector Pos, Vector Norm, Vector Tex)
-		: _Position(Pos), _Normal(Norm), _TexCoord(Tex)
-	{}
-
-	Vector _Position;
-	Vector _Normal;
-	Vector _TexCoord;
-};
-
 /* Class for a single mesh. A mesh asset can contain multiple of these */
 class Mesh
 {
 public:
-	Mesh(MeshAsset* Parent, int MeshIndex);
-	~Mesh();
+
+	//= Public Struct Definitions ====================
+
+	/* Stores the properties for each mesh face. Includes indices */
+	struct Face
+	{
+							Face(int NumIndices, unsigned int* Indices);
+							~Face();
+
+		unsigned int		m_NumIndices;
+		std::vector<int>	m_Indices;
+	};
+
+	/* Stores all properties of a vertex */
+	struct Vertex
+	{
+		Vertex(Vector3 Pos, Vector3 Norm, Vector3 Tex)
+			: m_Position(Pos), m_Normal(Norm), m_TexCoord(Tex)
+		{}
+
+		Vector3 m_Position;
+		Vector3 m_Normal;
+		Vector3 m_TexCoord;
+	};
+
+public:
+
+	//= Public Functions =================================
+
+												Mesh(MeshAsset* Parent, int MeshIndex);
+												~Mesh();
 
 	/* Returns a collision mesh if specified, otherwise returns the current mesh. */
-	[[nodiscard]] const std::vector<Vector>& GetCollisionVertices() const;
+	const std::vector<Vector3>&					GetCollisionVertices() const;
+
+	//= Public Variables =================================
+
 	// Optional variable, allows for a mesh to be specified to be used for collision
-	std::string _CollisionName;
+	std::string									m_CollisionName;
 
 	//= MeshValues =
 
-	std::vector<Vector> _Vertices;
-	std::vector<Vector> _Normals;
-	std::vector<Vector> _TexCoords;
-	std::vector<MeshFace> _Faces;
+	std::vector<Vector3>							m_Vertices;
+	std::vector<Vector3>							m_Normals;
+	std::vector<Vector3>							m_TexCoords;
+	std::vector<Mesh::Face>						m_Faces;
 
 	//const IndexBuffer* _IndexBuffer;
-	std::vector<std::shared_ptr<Bindable>> _Binds;
+	std::vector<std::shared_ptr<Bindable>>		m_Binds;
 
 	//TODO: Clean up, these are the necessary binds for the mesh specifically
-	std::shared_ptr<BindableVertexBuffer> _BindableVBuffer;
-	std::shared_ptr<IndexBuffer> _IndexBuffer;
-	std::shared_ptr<Topology> _Topology;
-	VertexLayout _VertexLayout;
+	std::shared_ptr<BindableVertexBuffer>		m_BindableVBuffer;
+	std::shared_ptr<IndexBuffer>				m_IndexBuffer;
+	std::shared_ptr<Topology>					m_Topology;
+	VertexLayout								m_VertexLayout;
 
 public:
 
-	[[nodiscard]] const std::vector<MeshFace>& GetFaces() const { return _Faces; };
-	[[nodiscard]] const size_t GetNumFaces() const { return _Faces.size(); };
-	[[nodiscard]] std::vector<MeshVertex> GetVertices() const;
-	[[nodiscard]] std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
+	const std::vector<Mesh::Face>&				GetFaces() const { return m_Faces; };
+	const size_t								GetNumFaces() const { return m_Faces.size(); };
+	std::vector<Mesh::Vertex>					GetVertices() const;
+	std::shared_ptr<IndexBuffer>				GetIndexBuffer() const;
 
 	/* Creates and returns a vector of all binds required from this mesh */
-	std::vector<std::shared_ptr<Bindable>> GenerateBinds(VertexLayout& OutVertexLayout);
+	std::vector<std::shared_ptr<Bindable>>		GenerateBinds(VertexLayout& OutVertexLayout);
 
 	// Asset this mesh belongs to
-	MeshAsset* _Parent;
+	MeshAsset*									m_Parent;
 	// The index of this mesh in the asset
-	int _MeshIndex;
+	int											m_MeshIndex;
 };
 
 /* Asset class containing multiple meshes, used for static and skeletal meshes */
-class FLOW_API MeshAsset : public AssetBase
+class FLOW_API MeshAsset : public Asset
 {
 public:
-	MeshAsset();
-	virtual ~MeshAsset();
+												MeshAsset();
+	virtual										~MeshAsset();
 
-	virtual bool LoadAsset(const std::string& LocalPath) override;
+	virtual bool								LoadAsset(const std::string& LocalPath) override;
 
-	[[nodiscard]] Mesh* GetMesh(int Index) const;
-	[[nodiscard]] std::vector<Mesh*> GetAllMeshes() const;
+	Mesh*										GetMesh(int Index) const;
+	std::vector<Mesh*>							GetAllMeshes() const;
 
 private:
-	void GenerateAssetSize();
+	void										GenerateAssetSize();
 
-	std::vector<Mesh*> _Meshes;
+	std::vector<Mesh*>							m_Meshes;
 };

@@ -1,28 +1,36 @@
 #pragma once
-#include "Flow\Assets\AssetBase.h"
-#include <memory>
-#include "Flow\Rendering\Core\Materials\Material.h"
+#include "Assets\Asset.h"
+#include "Rendering\Core\Materials\Material.h"
 
-class FLOW_API MaterialAsset : public AssetBase
+class FLOW_API MaterialAsset : public Asset
 {
 public:
 
-	MaterialAsset();
-	~MaterialAsset();
+	//= Public Template Functions ============
 
 	template<typename T>
 	T* CreateMaterial()
 	{
 		T* NewMaterial = new T();
-		_Material = NewMaterial;
+		m_Material = NewMaterial;
 		return NewMaterial;
 	}
 
-	Material* GetMaterial();
+	//= Public Fucntions =====================
+
+	MaterialAsset();
+	~MaterialAsset();
+
+	Material* GetMaterial() { return m_Material; };
 
 protected:
+	//= Protected Functions ==================
 
 	void GenerateAssetSize();
 
-	Material* _Material;
+protected:
+
+	//= Protected Variables ==================
+
+	Material* m_Material;
 };

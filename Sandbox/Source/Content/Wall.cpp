@@ -42,7 +42,7 @@ void Wall::Tick(float DeltaTime)
 //	//WallMesh->MovePhysicsBody(WallMesh->GetRelativeTransform());
 //}
 
-void Wall::UpdateScale(Vector Scale)
+void Wall::UpdateScale(Vector3 Scale)
 {
 	Transform WallTrans = WallMesh->GetRelativeTransform();
 	//WallMesh->MovePhysicsBody(WallTrans);

@@ -1,25 +1,32 @@
 #pragma once
-#include "Flow\Rendering\Core\Materials\Material.h"
-
-#include "Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h"
+#include "Rendering\Core\Materials\Material.h"
+#include "Maths/Vector3.h"
 
 class FLOW_API Mat_FlatColour : public Material
 {
 public:
+	
+	//= Public Functions =============================
 
-	Mat_FlatColour();
+							Mat_FlatColour();
 
-	/* Make sure to call refresh binds after, only use this with a new instance of flat colour otherwise it will change them all */
-	void SetColour(Vector NewColour);
+	/* Make sure to call refresh binds after, only use this with a new instance of flat
+	colour otherwise it will change them all */
+	void					SetColour(Vector3 NewColour);
 
-	virtual void BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
+	virtual void			BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
 
 protected:
 
+	//= Protected Functions =========================
+
+	std::string				GenerateTag();
+
+protected:
+
+	//= Protected Variables =========================
 	struct ColorBuffer
 	{
 		DirectX::XMFLOAT4 Colour;
-	} _Colour;
-
-	std::string GenerateTag();
+	} m_Color;
 };

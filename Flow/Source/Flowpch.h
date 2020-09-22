@@ -21,9 +21,9 @@
 
 #include "Flow/Logging/Log.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
-#include "Flow/Helper/HelperMacros.h"
+#include "Flow/Utils/HelperMacros.h"
 
-#include "Flow/Helper/Profiling.h"
+#include "Flow/Utils/Profiling.h"
 
 //Saving and loading
 #include "Flow/GameFramework/Other/ClassFactory.h"

@@ -64,7 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -110,7 +110,7 @@
     <ClInclude Include="Source\FlowEngine\Core.h" />
     <ClInclude Include="Source\FlowEngine\EntryPoint.h" />
     <ClInclude Include="Source\Flow\Application.h" />
-    <ClInclude Include="Source\Flow\Assets\AssetBase.h" />
+    <ClInclude Include="Source\Flow\Assets\Asset.h" />
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
@@ -160,17 +160,20 @@
     <ClInclude Include="Source\Flow\GameFramework\Other\Skybox.h" />
     <ClInclude Include="Source\Flow\GameFramework\World.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actor.h" />
-    <ClInclude Include="Source\Flow\Helper\Archive.h" />
-    <ClInclude Include="Source\Flow\Helper\BulletDebugDrawing.h" />
-    <ClInclude Include="Source\Flow\Helper\HelperMacros.h" />
-    <ClInclude Include="Source\Flow\Helper\ImGuiHelper.h" />
-    <ClInclude Include="Source\Flow\Helper\Maths.h" />
-    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Rotator.h" />
-    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Transform.h" />
-    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector.h" />
-    <ClInclude Include="Source\Flow\Helper\Maths\Transformations\Vector2D.h" />
-    <ClInclude Include="Source\Flow\Helper\Profiling.h" />
-    <ClInclude Include="Source\Flow\Helper\Timer.h" />
+    <ClInclude Include="Source\Flow\Maths\IntVector2.h" />
+    <ClInclude Include="Source\Flow\Maths\IntVector3.h" />
+    <ClInclude Include="Source\Flow\Maths\IntVector4.h" />
+    <ClInclude Include="Source\Flow\Maths\Maths.h" />
+    <ClInclude Include="Source\Flow\Maths\Vector4.h" />
+    <ClInclude Include="Source\Flow\Utils\BulletDebugDrawing.h" />
+    <ClInclude Include="Source\Flow\Utils\HelperMacros.h" />
+    <ClInclude Include="Source\Flow\Utils\ImGuiHelper.h" />
+    <ClInclude Include="Source\Flow\Maths\Rotator.h" />
+    <ClInclude Include="Source\Flow\Maths\Transform.h" />
+    <ClInclude Include="Source\Flow\Maths\Vector2.h" />
+    <ClInclude Include="Source\Flow\Maths\Vector3.h" />
+    <ClInclude Include="Source\Flow\Utils\Profiling.h" />
+    <ClInclude Include="Source\Flow\Utils\Timer.h" />
     <ClInclude Include="Source\Flow\Input\Input.h" />
     <ClInclude Include="Source\Flow\Input\KeyCodes.h" />
     <ClInclude Include="Source\Flow\Input\WindowsInput.h" />
@@ -320,7 +323,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
-    <ClCompile Include="Source\Flow\Assets\AssetBase.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Asset.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
@@ -369,10 +372,10 @@
     <ClCompile Include="Source\Flow\GameFramework\Other\Skybox.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actor.cpp" />
-    <ClCompile Include="Source\Flow\Helper\Archive.cpp" />
-    <ClCompile Include="Source\Flow\Helper\BulletDebugDrawing.cpp" />
-    <ClCompile Include="Source\Flow\Helper\Profiling.cpp" />
-    <ClCompile Include="Source\Flow\Helper\Timer.cpp" />
+    <ClCompile Include="Source\Flow\Maths\Maths.cpp" />
+    <ClCompile Include="Source\Flow\Utils\BulletDebugDrawing.cpp" />
+    <ClCompile Include="Source\Flow\Utils\Profiling.cpp" />
+    <ClCompile Include="Source\Flow\Utils\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorLayer.cpp" />
     <ClCompile Include="Source\Flow\Layers\GameLayer.cpp" />

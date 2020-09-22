@@ -60,17 +60,17 @@ void SceneManager::DrawWindow_Scene()
 		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
 
 		//Note: We assume that the scene image has no padding and is flush to the window x. 
-		m_SceneWindowPosition = IntVector2D(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
-		m_SceneWindowSize = IntVector2D(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+		m_SceneWindowPosition = IntVector2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
+		m_SceneWindowSize = IntVector2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
 		m_MouseOverScene = ImGui::IsWindowHovered();
 
-		m_SceneWindowSize.X = std::clamp(m_SceneWindowSize.X, 1, 1920); //TODO: Make max texture size not fixed
-		m_SceneWindowSize.Y = std::clamp(m_SceneWindowSize.Y, 1, 1080); //TODO: Make max texture size not fixed
+		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, 1920); //TODO: Make max texture size not fixed
+		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, 1080); //TODO: Make max texture size not fixed
 
-		if (*reinterpret_cast<Vector2D*>(&m_SceneWindowSize) != m_CachedWindowSize)//TODO: Stop being naughty
+		if (*reinterpret_cast<Vector2*>(&m_SceneWindowSize) != m_CachedWindowSize)//TODO: Stop being naughty
 		{
-			Buff->Resize(m_SceneWindowSize.X, m_SceneWindowSize.Y);
-			m_CachedWindowSize = *reinterpret_cast<Vector2D*>(&m_SceneWindowSize);
+			Buff->Resize(m_SceneWindowSize.x, m_SceneWindowSize.y);
+			m_CachedWindowSize = *reinterpret_cast<Vector2*>(&m_SceneWindowSize);
 		}
 
 		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()));

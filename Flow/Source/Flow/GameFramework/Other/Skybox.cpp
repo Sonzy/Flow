@@ -1,7 +1,7 @@
 #include "Flowpch.h"
 #include "Skybox.h"
 
-#include "Flow\Helper\HelperMacros.h"
+#include "Flow\Utils\HelperMacros.h"
 #include "Flow\Logging\Log.h"
 
 #include "Flow\Assets\AssetSystem.h"
@@ -42,7 +42,7 @@ Skybox::Skybox()
 
 DirectX::XMMATRIX Skybox::GetTransformXM() const
 {
-	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition().ToDXFloat3();
+	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition();
 	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }

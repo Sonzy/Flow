@@ -43,7 +43,7 @@ public:
 	virtual int getDebugMode() const;
 
 	virtual btIDebugDraw::DefaultColors getDefaultColors() const override;
-	void SetDebugColour(BulletDebugColour Option, Vector Colour);
+	void SetDebugColour(BulletDebugColour Option, Vector3 Colour);
 	btIDebugDraw::DefaultColors& GetDebugColours();
 
 	int _DebugMode;

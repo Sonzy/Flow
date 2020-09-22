@@ -1,7 +1,7 @@
 #pragma once
 #include "Tool.h"
 
-#include "Flow/Helper/Maths.h"
+#include "Maths/Vector3.h"
 
 class WorldComponent;
 class Actor;
@@ -40,7 +40,7 @@ private:
 	//= Settings =
 
 	bool										m_DrawSelectionLines;
-	std::vector<std::pair<Vector, Vector>>		m_PreviousLines;
-	Vector										m_DebugLineColor;
+	std::vector<std::pair<Vector3, Vector3>>		m_PreviousLines;
+	Vector3										m_DebugLineColor;
 
 };

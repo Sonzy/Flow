@@ -32,9 +32,9 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 		m_Mesh->GenerateBinds(MeshLayout);
-		_VertexBuffer = m_Mesh->_BindableVBuffer;
-		_IndexBuffer = m_Mesh->_IndexBuffer;
-		_Topology = m_Mesh->_Topology;
+		_VertexBuffer = m_Mesh->m_BindableVBuffer;
+		_IndexBuffer = m_Mesh->m_IndexBuffer;
+		_Topology = m_Mesh->m_Topology;
 
 		MaterialOverride->BindMaterial(&MainStep, MeshLayout);
 
@@ -47,7 +47,7 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 DirectX::XMMATRIX StaticMesh::GetTransformXM() const
 {
-	return DirectX::XMMatrixScaling(_Scale.X, _Scale.Y, _Scale.Z) *
+	return DirectX::XMMatrixScaling(_Scale.x, _Scale.y, _Scale.z) *
 		DirectX::XMMatrixRotationRollPitchYaw(_Rotation.Pitch, _Rotation.Yaw, _Rotation.Roll) * //Rotate around box centre
-		DirectX::XMMatrixTranslation(_Position.X, _Position.Y, _Position.Z);// * //Move relative to origin
+		DirectX::XMMatrixTranslation(_Position.x, _Position.y, _Position.z);// * //Move relative to origin
 }

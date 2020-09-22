@@ -22,10 +22,10 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 	PROFILE_FUNCTION();
 
 	Transform WorldTransform = GetWorldTransform();
-	Rotator RadianRotation = Rotator::AsRadians(WorldTransform._Rotation);
-	return 	DirectX::XMMatrixScaling(WorldTransform._Scale.X, WorldTransform._Scale.Y, WorldTransform._Scale.Z) *
+	Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
+	return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z) *
 		DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) *
-		DirectX::XMMatrixTranslation(WorldTransform._Position.X, WorldTransform._Position.Y, WorldTransform._Position.Z);
+		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
 }
 
 void RenderableComponent::RefreshBinds()

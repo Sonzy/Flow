@@ -1,15 +1,24 @@
 #pragma once
 #include "Core.h"
+
+//= Standard Includes =
 #include "Flow/Window/Window.h"
 #include "Layers/LayerStack.h"
-#include "Flow\Helper\Timer.h"
 
+//= Event Includes =
 #include "Events/ApplicationEvent.h"
 
-#include "UserInterface/imgui/ImGuiLayer.h"
 
+//= Helper Includes =
+#include "UserInterface/imgui/ImGuiLayer.h"
+#include "Flow\Utils\Timer.h"
+
+//= STL Includes =
 #include <filesystem>
 
+//= Forward Declarations ===============================
+
+class Application;
 class World;
 class Inspector;
 class EditorLayer;
@@ -17,91 +26,93 @@ class ClassFactory;
 class GameLayer;
 class Layer;
 
+//= External Functions =================================
+
+Application* CreateApplication();
+
 class FLOW_API Application
 {
 public:
 
-	Application(const std::string& AppName);
-	virtual void InitialiseApplication();
-	virtual ~Application();
+	//= Public Static Functions ================================
 
-	void Run();
+	static Application&					Get();
+	static World*						GetWorld();
+	static void							Shutdown();
 
-	void OnEvent(Event& e);
+	static void							SaveLevel();
+	static void							LoadLevel();
+	static void							NewLevel();
+	static void							SavePlayState();
+	static void							LoadPlayState();
 
-	void PushLayer(Layer* layer);
-	void PushOverlay(Layer* layer);
+	//= Public Functions =======================================
 
-	bool OnWindowClosed(WindowClosedEvent& e);
-	bool OnWindowResized(WindowResizedEvent& e);
+										Application(const std::string& AppName);
+	virtual void						InitialiseApplication();
+	virtual								~Application();
 
-	static Application& GetApplication();
-	static World* GetWorld();
-	static void Shutdown();
+	void								Run();
 
-	static void SaveLevel();
-	static void LoadLevel();
-	static void NewLevel();
-	static void SavePlayState();
-	static void LoadPlayState();
+	void								OnEvent(Event& e);
 
-	/* Returns path to Flow solution directory */
-	//std::string GetLocalFilePath();
-	//std::wstring GetLocalFilePathWide();
+	void								PushLayer(Layer* layer);
+	void								PushOverlay(Layer* layer);
 
-	static Window* CreateNewWindow(const std::string& WindowName);
-	static bool RegisterWindow(Window* NewWindow);
-	static bool DeRegisterWindow(Window* Window);
+	bool								OnWindowClosed(WindowClosedEvent& e);
+	bool								OnWindowResized(WindowResizedEvent& e);
 
-	Window& GetWindow();
+	Window&								GetWindow();
 
 #if WITH_EDITOR
-	EditorLayer* GetEditor() { return EditorLayer_; };
-	bool _DrawEditor = true;
-#else
-	EditorLayer* GetEditor() { return nullptr; };
+	EditorLayer*						GetEditor()				{ return m_Layer_Editor; };
 #endif
 
 	static bool StartGame();
 	static bool PauseGame();
 	static bool StopGame();
 
-	ClassFactory& GetClassFactory() { return *_ClassFactory; }
+	ClassFactory&						GetClassFactory()		{ return *m_ClassFactory; }
 
 public:
-	std::string ApplicationName;
 
-private:
+	//= Public Variables =======================================
 
+	std::string							m_ApplicationName;
 
-	void UpdateWindowDestruction();
-
-
-private:
-	friend class EditorLayer;
-	//= Application =============
-
-	static Application* s_Instance;
-
-	std::unique_ptr<Window> _MainWindow;
-
-	std::vector<Window*> _Windows;
-	std::vector<Window*> _WindowsToDestroy;
-
-	ImGuiLayer* ImGuiLayer_;
+	//= Public Editor Variables  ===============================
 #if WITH_EDITOR
-	EditorLayer* EditorLayer_;
+	bool								m_RenderEditor = true;
 #endif
-	GameLayer* _GameLayer;
 
-	bool _Running = true;
-	bool Paused_ = false;
-	bool DrawCollision_ = false;
-	bool _UpdatingChildWindows = false;
+
+private:
+	//Allow editor to control local variables
+	friend class EditorLayer;
+
+	//= Private Static Variables ================================
+
+	static Application*					sm_Application;
+
+	//= Private Variables ================================
+
+	Window*								m_MainWindow;
+
+	//= Layers =
+
+	ImGuiLayer*							m_Layer_ImGui;
+	GameLayer*							m_Layer_Game;
+#if WITH_EDITOR
+	EditorLayer*						m_Layer_Editor;
+#endif
+
+	bool								m_Running;
+	bool								m_GamePaused;
+	bool								m_DrawCollision;
 
 	//= Game ====================
 
-	World* GameWorld_;
+	World*								m_GameWorld;
 
 	//= Debug ===================
 
@@ -109,17 +120,12 @@ private:
 
 	//= Helper ===============
 
-	LayerStack LayerStack_;
-	Timer Timer_;
-	ClassFactory* _ClassFactory;
+	LayerStack							m_LayerStack;
+	Timer								m_Timer;
+	ClassFactory*						m_ClassFactory;
 
 	//= Paths =================
 
-	//std::string LocalPath_;
-
-
-	std::filesystem::path _ApplicationPath;
+	std::filesystem::path				m_ApplicationPath;
 };
 
-//Is defined externally
-Application* CreateApplication();

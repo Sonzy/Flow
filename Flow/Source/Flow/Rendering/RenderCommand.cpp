@@ -94,12 +94,12 @@ void RenderCommand::BindBackBuffer()
 	s_RendererAPI->BindBackBuffer();
 }
 
-IntVector2D RenderCommand::GetWindowSize()
+IntVector2 RenderCommand::GetWindowSize()
 {
 	return s_RendererAPI->GetWindowSize();
 }
 
-Vector RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2D WindowSize, IntVector2D Origin)
+Vector3 RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	return s_RendererAPI->GetScreenToWorldDirection(X, Y, WindowSize, Origin);
 }

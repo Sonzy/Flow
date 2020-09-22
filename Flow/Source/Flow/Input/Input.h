@@ -2,7 +2,7 @@
 #include "Flow/Core.h"
 #include <bitset>
 #include "KeyCodes.h"
-#include "Flow\Helper\Maths.h"
+#include "Maths\IntVector2.h"
 
 class FLOW_API Input
 {
@@ -44,9 +44,9 @@ public:
 		return s_Instance->_MouseY;
 	}
 
-	static IntVector2D GetMousePosition()
+	static IntVector2 GetMousePosition()
 	{
-		return IntVector2D(s_Instance->_MouseX, s_Instance->_MouseY);
+		return IntVector2(s_Instance->_MouseX, s_Instance->_MouseY);
 	}
 
 

@@ -18,14 +18,14 @@ MeshAsset::MeshAsset()
 
 MeshAsset::~MeshAsset()
 {
-	_Meshes.clear();
+	m_Meshes.clear();
 }
 
 bool MeshAsset::LoadAsset(const std::string& LocalPath)
 {
 	Assimp::Importer Importer;
 	const aiScene* Scene = Importer.ReadFile(LocalPath,
-		aiProcess_Triangulate |  //Force Tris
+		aiProcess_Triangulate | 
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded);
 
@@ -33,93 +33,97 @@ bool MeshAsset::LoadAsset(const std::string& LocalPath)
 
 	//TODO: FBX doesnt load right
 	aiNode* Root = Scene->mRootNode;
-	for (int i = 0; i < Scene->mRootNode->mNumChildren; i++)
+	for (unsigned int i = 0; i < Scene->mRootNode->mNumChildren; i++)
 	{
-		for (int j = 0; j < Scene->mRootNode->mChildren[i]->mNumMeshes; j++)
+		for (unsigned int j = 0; j < Scene->mRootNode->mChildren[i]->mNumMeshes; j++)
 		{
-			Mesh* NewMesh = new Mesh(this, _Meshes.size());
+			Mesh* NewMesh = new Mesh(this, static_cast<int>(m_Meshes.size()));
 
 			//Load the vertices
 			const aiMesh* AIMesh = Scene->mMeshes[Scene->mRootNode->mChildren[i]->mMeshes[0]];
+
+			NewMesh->m_Vertices.reserve(AIMesh->mNumVertices);
+			NewMesh->m_Normals.reserve(AIMesh->mNumVertices);
+			NewMesh->m_TexCoords.reserve(AIMesh->mNumVertices);
 			for (unsigned int i = 0; i < AIMesh->mNumVertices; i++)
 			{
-				NewMesh->_Vertices.emplace_back(Vector(AIMesh->mVertices[i].x, AIMesh->mVertices[i].y, AIMesh->mVertices[i].z));
-				NewMesh->_Normals.emplace_back(Vector(AIMesh->mNormals[i].x, AIMesh->mNormals[i].y, AIMesh->mNormals[i].z));
-				NewMesh->_TexCoords.emplace_back(Vector(AIMesh->mTextureCoords[0][i].x, AIMesh->mTextureCoords[0][i].y, AIMesh->mTextureCoords[0][i].z));
+				NewMesh->m_Vertices.emplace_back(Vector3(AIMesh->mVertices[i].x, AIMesh->mVertices[i].y, AIMesh->mVertices[i].z));
+				NewMesh->m_Normals.emplace_back(Vector3(AIMesh->mNormals[i].x, AIMesh->mNormals[i].y, AIMesh->mNormals[i].z));
+				NewMesh->m_TexCoords.emplace_back(Vector3(AIMesh->mTextureCoords[0][i].x, AIMesh->mTextureCoords[0][i].y, AIMesh->mTextureCoords[0][i].z));
 			}
 
 			//Load the faces
-			NewMesh->_Faces.reserve(AIMesh->mNumFaces);
+			NewMesh->m_Faces.reserve(AIMesh->mNumFaces);
 			for (unsigned int i = 0; i < AIMesh->mNumFaces; i++)
 			{
 				const auto& face = AIMesh->mFaces[i];
-				NewMesh->_Faces.emplace_back(face.mNumIndices, face.mIndices);
+				NewMesh->m_Faces.emplace_back(face.mNumIndices, face.mIndices);
 			}
 
-			_Meshes.push_back(NewMesh);
+			m_Meshes.push_back(NewMesh);
 		}
 	}
 
 	GenerateAssetSize();
-	_AssetType = EAssetType::Mesh;
+	m_AssetType = Asset::Type::Mesh;
 
 	return true;
 }
 
 std::vector<Mesh*> MeshAsset::GetAllMeshes() const
 {
-	return _Meshes;
+	return m_Meshes;
 }
 
 Mesh* MeshAsset::GetMesh(int Index) const
 {
-	return (_Meshes.size() > 0) ? _Meshes[Index] : nullptr;
+	return (m_Meshes.size() > 0) ? m_Meshes[Index] : nullptr;
 }
 
 void MeshAsset::GenerateAssetSize()
 {
-	_AssetSize = 0;
-	for (auto& Mesh : _Meshes)
+	m_AssetSize = 0;
+	for (auto& Mesh : m_Meshes)
 	{
-		size_t VecSize = sizeof(Vector);
-		_AssetSize +=
-			(VecSize * Mesh->_Vertices.size()) +
-			(VecSize * Mesh->_Normals.size()) +
-			(VecSize * Mesh->_TexCoords.size()) +
-			(sizeof(MeshFace) * Mesh->_Faces.size());
+		size_t VecSize = sizeof(Vector3);
+		m_AssetSize +=
+			(VecSize * Mesh->m_Vertices.size()) +
+			(VecSize * Mesh->m_Normals.size()) +
+			(VecSize * Mesh->m_TexCoords.size()) +
+			(sizeof(Mesh::Face) * Mesh->m_Faces.size());
 	}
 }
 
 //= Mesh ======================
 
 Mesh::Mesh(MeshAsset* Parent, int MeshIndex)
-	: _Parent(Parent), _MeshIndex(MeshIndex), _CollisionName("")
+	: m_Parent(Parent), m_MeshIndex(MeshIndex), m_CollisionName("")
 {
 }
 
 Mesh::~Mesh()
 {
-	_Vertices.clear();
-	_Normals.clear();
-	_TexCoords.clear();
-	_Faces.clear();
-	_Binds.clear();
+	m_Vertices.clear();
+	m_Normals.clear();
+	m_TexCoords.clear();
+	m_Faces.clear();
+	m_Binds.clear();
 }
 
-const std::vector<Vector>& Mesh::GetCollisionVertices() const
+const std::vector<Vector3>& Mesh::GetCollisionVertices() const
 {
-	return !_CollisionName.empty() ? AssetSystem::GetAsset<MeshAsset>(_CollisionName)->GetMesh(0)->_Vertices : _Vertices;
+	return !m_CollisionName.empty() ? AssetSystem::GetAsset<MeshAsset>(m_CollisionName)->GetMesh(0)->m_Vertices : m_Vertices;
 }
 
-std::vector<MeshVertex> Mesh::GetVertices() const
+std::vector<Mesh::Vertex> Mesh::GetVertices() const
 {
-	CHECK_ASSERT(_Vertices.size() == _Normals.size() && _Normals.size() == _TexCoords.size(),
+	CHECK_ASSERT(m_Vertices.size() == m_Normals.size() && m_Normals.size() == m_TexCoords.size(),
 		"MeshAsset::GetVertices: Property arrays are mismatched");
 
-	std::vector<MeshVertex> Vertices;
-	for (int i = 0; i < _Vertices.size(); i++)
+	std::vector<Mesh::Vertex> Vertices;
+	for (int i = 0; i < m_Vertices.size(); i++)
 	{
-		Vertices.emplace_back(_Vertices[i], _Normals[i], _TexCoords[i]);
+		Vertices.emplace_back(m_Vertices[i], m_Normals[i], m_TexCoords[i]);
 	}
 
 	return Vertices;
@@ -128,29 +132,29 @@ std::vector<MeshVertex> Mesh::GetVertices() const
 std::vector<std::shared_ptr<Bindable>> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
 {
 	//Dont regenerate if already done
-	if (_Binds.size() != 0)
+	if (m_Binds.size() != 0)
 	{
-		OutVertexLayout = _VertexLayout;
-		return _Binds;
+		OutVertexLayout = m_VertexLayout;
+		return m_Binds;
 	}
 
-	_Topology = std::dynamic_pointer_cast<Topology>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	_Binds.push_back(_Topology);
+	m_Topology = std::dynamic_pointer_cast<Topology>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	m_Binds.push_back(m_Topology);
 
 	// Define Vertex Layout
-	_VertexLayout.Append(ElementType::Position3D);
-	_VertexLayout.Append(ElementType::Normal);
-	_VertexLayout.Append(ElementType::Texture2D);
+	m_VertexLayout.Append(ElementType::Position3D);
+	m_VertexLayout.Append(ElementType::Normal);
+	m_VertexLayout.Append(ElementType::Texture2D);
 
 	// Define Vertex Buffer information
-	VertexBuffer VBuffer(_VertexLayout);
+	VertexBuffer VBuffer(m_VertexLayout);
 
 	for (auto& Vertex : GetVertices())
 	{
 		VBuffer.EmplaceBack( //TODO: Dont actually need to know whats in here, just need to know the stride and offsets
-			DirectX::XMFLOAT3{ Vertex._Position.X ,  Vertex._Position.Y,  Vertex._Position.Z },
-			DirectX::XMFLOAT3{ Vertex._Normal.X ,  Vertex._Normal.Y,  Vertex._Normal.Z },
-			DirectX::XMFLOAT2{ Vertex._TexCoord.X,  Vertex._TexCoord.Y }
+			DirectX::XMFLOAT3{ Vertex.m_Position.x ,  Vertex.m_Position.y,  Vertex.m_Position.z },
+			DirectX::XMFLOAT3{ Vertex.m_Normal.x,  Vertex.m_Normal.y,  Vertex.m_Normal.z },
+			DirectX::XMFLOAT2{ Vertex.m_TexCoord.x,  Vertex.m_TexCoord.y }
 		);
 	}
 
@@ -158,27 +162,39 @@ std::vector<std::shared_ptr<Bindable>> Mesh::GenerateBinds(VertexLayout& OutVert
 	indices.reserve(GetNumFaces() * 3); //Using triangles, change for quads
 	for (auto& Face : GetFaces())
 	{
-		assert(Face._NumIndices == 3);
-		indices.push_back(Face._Indices[0]);
-		indices.push_back(Face._Indices[1]);
-		indices.push_back(Face._Indices[2]);
+		assert(Face.m_NumIndices == 3);
+		indices.push_back(Face.m_Indices[0]);
+		indices.push_back(Face.m_Indices[1]);
+		indices.push_back(Face.m_Indices[2]);
 	}
 
 	//Add Vertex Buffer Bind
-	_BindableVBuffer = std::dynamic_pointer_cast<BindableVertexBuffer>(BindableVertexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), VBuffer));
-	_Binds.push_back(_BindableVBuffer);
+	m_BindableVBuffer = std::dynamic_pointer_cast<BindableVertexBuffer>(BindableVertexBuffer::Resolve(m_Parent->GetAssetName() + std::to_string(m_MeshIndex), VBuffer));
+	m_Binds.push_back(m_BindableVBuffer);
 
 	//Bind Index Buffer
-	assert("MeshAsset::GenerateBinds: Cannot bind multiple index buffers." && _IndexBuffer == nullptr);
-	_IndexBuffer = std::dynamic_pointer_cast<IndexBuffer>(IndexBuffer::Resolve(_Parent->GetAssetName() + std::to_string(_MeshIndex), indices));
-	_Binds.push_back(_IndexBuffer);
+	assert("MeshAsset::GenerateBinds: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
+	m_IndexBuffer = std::dynamic_pointer_cast<IndexBuffer>(IndexBuffer::Resolve(m_Parent->GetAssetName() + std::to_string(m_MeshIndex), indices));
+	m_Binds.push_back(m_IndexBuffer);
 
-	OutVertexLayout = _VertexLayout;
+	OutVertexLayout = m_VertexLayout;
 
-	return _Binds;
+	return m_Binds;
 }
 
 std::shared_ptr<IndexBuffer> Mesh::GetIndexBuffer() const
 {
-	return _IndexBuffer;
+	return m_IndexBuffer;
+}
+
+//= Struct Definitions =========================================
+
+Mesh::Face::Face(int NumIndices, unsigned int* Indices)
+	: m_NumIndices(NumIndices), m_Indices(Indices, Indices + static_cast<int>(NumIndices))
+{
+}
+
+Mesh::Face::~Face()
+{
+	m_Indices.clear();
 }

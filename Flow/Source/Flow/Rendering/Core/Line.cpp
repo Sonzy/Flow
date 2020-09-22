@@ -39,14 +39,14 @@ void Line::Initialise()
 	LineObj->AddBind(InputLayout::Resolve(VertexLayout_, vShaderByteCode));
 }
 
-void Line::DrawLine(Vector From, Vector To, Vector Colour)
+void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 {
 	Line NewLine = Line();
 
 	// Define Vertex Layout
 	VertexBuffer VBuffer(VertexLayout_);
-	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ From.X ,  From.Y,  From.Z });
-	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ To.X ,  To.Y,  To.Z });
+	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ From.x ,  From.y,  From.z });
+	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ To.x ,  To.y,  To.z });
 
 	//Add Vertex Buffer Bind
 	BindableVertexBuffer BVB = BindableVertexBuffer("", VBuffer);
@@ -55,7 +55,7 @@ void Line::DrawLine(Vector From, Vector To, Vector Colour)
 	{
 		DirectX::XMFLOAT4 Colour;
 	} LineColourCBuffer;
-	LineColourCBuffer = { { Colour.X, Colour.Y, Colour.Z, 1.0f } };
+	LineColourCBuffer = { { Colour.x, Colour.y, Colour.z, 1.0f } };
 	auto ColourBuffer = PixelConstantBuffer<LineColour>(LineColourCBuffer, 3u);
 
 

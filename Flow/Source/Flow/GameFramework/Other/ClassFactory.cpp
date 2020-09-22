@@ -32,5 +32,5 @@ void ClassFactory::RegisterClassUIDs()
 
 ClassFactory& ClassFactory::Get()
 {
-	return Application::GetApplication().GetClassFactory();
+	return Application::Get().GetClassFactory();
 }

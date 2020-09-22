@@ -24,10 +24,10 @@ WinWindow::WinWindow(const WindowProperties& Properties, bool MainWindow)
 	//TODO: Clean this up, we pass in the adjusted window rect value
 	RECT rect;
 	::GetClientRect(WindowHandle, &rect);
-	IntVector2D Adj = IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
+	IntVector2 Adj = IntVector2(float(rect.right - rect.left), float(rect.bottom - rect.top));
 
 	if(_MainWindow)
-		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.X, Adj.Y);
+		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.x, Adj.y);
 }
 
 WinWindow::~WinWindow()
@@ -79,7 +79,6 @@ void WinWindow::Initialise(const WindowProperties& Properties)
 void WinWindow::Shutdown()
 {
 	DestroyWindow(WindowHandle);
-	Application::DeRegisterWindow(this);
 }
 
 void WinWindow::PreUpdate()
@@ -290,12 +289,12 @@ void WinWindow::Resize(int Width, int Height)
 
 }
 
-IntVector2D WinWindow::GetAdjustedWindowSize()
+IntVector2 WinWindow::GetAdjustedWindowSize()
 {
-	WinWindow* Win = static_cast<WinWindow*>(&Application::GetApplication().GetWindow());
+	WinWindow* Win = static_cast<WinWindow*>(&Application::Get().GetWindow());
 	RECT rect;
 	::GetClientRect(Win->GetWindowHandle(), &rect);
-	return IntVector2D(float(rect.right - rect.left), float(rect.bottom - rect.top));
+	return IntVector2(float(rect.right - rect.left), float(rect.bottom - rect.top));
 }
 
 //= Window Class ===========================
