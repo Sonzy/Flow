@@ -1,32 +1,43 @@
 #pragma once
+
+//= Includes ===============================
+
 #include <wrl.h>
 #include <d3d11.h>
 
+//= Forward Declarations ===================
+
 class DepthBuffer;
+
+//= Class Definitions ======================
 
 class FrameBuffer
 {
 public:
 
-	FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer);
-	~FrameBuffer();
-	void Resize(unsigned int Width, unsigned int Height);
+	//= Public Functions =======================================
+
+										FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer);
+										~FrameBuffer();
+	void								Resize(unsigned int Width, unsigned int Height);
 	
-	ID3D11Texture2D* GetTexture() const;
-	ID3D11ShaderResourceView* GetTextureView() const;
-	std::shared_ptr<DepthBuffer> GetDepthBuffer() const;
-	unsigned int GetWidth() const;
-	unsigned int GetHeight() const;
-	bool HasDepthBuffer() const;
+	ID3D11Texture2D*					GetTexture() const;
+	ID3D11ShaderResourceView*			GetTextureView() const;
+	std::shared_ptr<DepthBuffer>		GetDepthBuffer() const;
+	unsigned int						GetWidth() const;
+	unsigned int						GetHeight() const;
+	bool								HasDepthBuffer() const;
 
-protected:
+private:
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> _Texture = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _TextureView = nullptr;
+	//= Private Variables ======================================
 
-	bool _HasDepthBuffer;
-	std::shared_ptr<DepthBuffer> _DepthBuffer;
-
-	unsigned int _Width;
-	unsigned int _Height;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				m_Texture = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	m_TextureView = nullptr;
+														
+	bool												m_HasDepthBuffer;
+	std::shared_ptr<DepthBuffer>						m_DepthBuffer;
+														
+	unsigned int										m_Width;
+	unsigned int										m_Height;
 };

@@ -31,10 +31,10 @@ void Mat_FlatColour::SetColour(Vector3 NewColour)
 
 void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
-	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
+	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	RenderingStep->AddBindable(std::move(vShader));
-	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
+	RenderingStep->AddBindable(PixelShader::Resolve(m_PixelShader->GetPath()));
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
 	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(m_Color, 2u, GenerateTag()));

@@ -1,17 +1,34 @@
 #pragma once
-#include "ConstantBuffers\DynamicConstantBuffer.h"
+
+//= Includes ================================================
+
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include "ConstantBuffers\DynamicConstantBuffer.h"
+
+//= Class Definition ========================================
 
 namespace DynamicCB
 {
 	class LayoutCodex
 	{
 	public:
-		static CookedLayout Resolve(DynamicCB::RawLayout&& Layout);
+		
+		//= Public Static Functions =============================================
+
+		static CookedLayout				Resolve(DynamicCB::RawLayout&& Layout);
+
 	private:
+
+		//= Private Functions ===================================================
+
 		static LayoutCodex& Get();
-		std::unordered_map<std::string, std::shared_ptr<DynamicCB::LayoutElement>> Map_;
+
+	private:
+
+		//= Private Variables ===================================================
+
+		std::unordered_map<std::string, std::shared_ptr<DynamicCB::LayoutElement>>			m_Map;
 	};
 }

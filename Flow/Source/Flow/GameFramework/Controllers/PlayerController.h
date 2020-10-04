@@ -1,19 +1,30 @@
 #pragma once
+
+//= Includes ===========================================
+
 #include "Controller.h"
+
+//= Forward Declarations ===============================
 
 class CameraBase;
 class WorldObject;
 
+//= Class Declarations =================================
+
 class PlayerController : public Controller
 {
 public:
-	PlayerController();
-	PlayerController(const std::string& Name);
 
-	void SetCamera(std::shared_ptr<CameraBase> NewCamera);
+	//= Public Function Definitions =============
+
+									PlayerController();
+									PlayerController(const std::string& Name);
+	void							SetCamera(std::shared_ptr<CameraBase> NewCamera);
 
 protected:
 
-	std::shared_ptr<CameraBase> _Camera;
-	std::shared_ptr<WorldObject> _Pawn;
+	//= Protected Variables =====================
+
+	std::shared_ptr<CameraBase>		m_Camera;
+	std::shared_ptr<WorldObject>	m_Pawn;
 };

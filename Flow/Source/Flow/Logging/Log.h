@@ -1,26 +1,38 @@
 #pragma once
+
+//= Includes ===================================
+
 #include "Flow/Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-
 #if WITH_EDITOR
 	#include "Flow/Editor/Windows/Console.h"
 #endif
 
+//= Class Definition ===========================
+
 class FLOW_API Log
 {
 public:
-	static void InitialiseEngineLogger();
-	static void InitialiseApplicationLogger(const std::string& ApplicationName);
-	static std::shared_ptr<spdlog::logger> InitialiseLogger(const std::string& LoggerName);
 
-	inline static std::shared_ptr<spdlog::logger>& GetEngineLogger() { return sm_EngineLogger; };
-	inline static std::shared_ptr<spdlog::logger>& GetApplicationLogger() { return sm_AppLogger; };
+	//= Public Static Functions ================
+
+	static void										InitialiseEngineLogger();
+	static void										InitialiseApplicationLogger(const std::string& ApplicationName);
+	static std::shared_ptr<spdlog::logger>			InitialiseLogger(const std::string& LoggerName);
+
+	inline static std::shared_ptr<spdlog::logger>&	GetEngineLogger() { return sm_EngineLogger; };
+	inline static std::shared_ptr<spdlog::logger>&	GetApplicationLogger() { return sm_AppLogger; };
 
 private:
-	static std::shared_ptr<spdlog::logger> sm_EngineLogger;
-	static std::shared_ptr<spdlog::logger> sm_AppLogger;
+
+	//= Private Variables ======================
+
+	static std::shared_ptr<spdlog::logger>			sm_EngineLogger;
+	static std::shared_ptr<spdlog::logger>			sm_AppLogger;
 };
+
+//= Macro Definitions ==============================
 
 //#if WITH_EDITOR
 #define LOGGING_ENABLED 1

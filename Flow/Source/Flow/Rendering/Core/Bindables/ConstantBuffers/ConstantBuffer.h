@@ -1,12 +1,19 @@
 #pragma once
-#include "Flow/Rendering/Core/Bindable.h"
-#include "Flow\Rendering\Core\Bindables\BindableCodex.h"
-#include "Flow/Logging/Log.h"
+
+//= Includes =====================================================
+
+#include "Logging/Log.h"
+#include "Rendering/Core/Bindable.h"
+#include "Rendering/Core/Bindables/BindableCodex.h"
+
+//= Class Definitions =============================================
 
 template<typename C>
 class ConstantBuffer : public Bindable
 {
 public:
+
+	//= Public Functions ==============================================================
 
 	ConstantBuffer(const C& consts, UINT slot)
 		: ConstantBuffer(consts, slot, "")
@@ -15,7 +22,8 @@ public:
 	}
 
 	ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
-		: _Slot(slot), _Tag(Tag)
+		: m_Slot(slot)
+		, m_Tag(Tag)
 	{
 		HRESULT ResultHandle;
 
@@ -29,11 +37,11 @@ public:
 
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &consts;
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &_ConstantBuffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 	}
 
 	ConstantBuffer(UINT slot)
-		: _Slot(slot)
+		: m_Slot(slot)
 	{
 		HRESULT ResultHandle;
 
@@ -45,7 +53,7 @@ public:
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &_ConstantBuffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 	}
 
 	void Update(const C& consts)
@@ -54,15 +62,17 @@ public:
 		D3D11_MAPPED_SUBRESOURCE MSR;
 
 		CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
-			_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+			m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 		memcpy(MSR.pData, &consts, sizeof(consts));
 
-		RenderCommand::DX11GetContext()->Unmap(_ConstantBuffer.Get(), 0u);
+		RenderCommand::DX11GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
 	}
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> _ConstantBuffer;
-	UINT _Slot;
-	std::string _Tag;
+
+	//= Protected Variables ===========================================================
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ConstantBuffer;
+	UINT									m_Slot;
+	std::string								m_Tag;
 };

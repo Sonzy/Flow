@@ -7,15 +7,14 @@
 #include "Flow\GameFramework\Actor.h"
 #include "Flow\Editor\SelectionGizmo.h"
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include "Bullet/btBulletCollisionCommon.h"
+#include "Bullet/btBulletDynamicsCommon.h"
 
 #include "Flow\Rendering\RenderCommand.h"
 #include "Flow\Input\Input.h"
 
 #include "Flow\Application.h"
 #include "Flow\GameFramework\World.h"
-#include "btBulletDynamicsCommon.h"
 
 #include "Flow\GameFramework\Components\WorldComponent.h"
 #include "Flow\GameFramework\Components\StaticMeshComponent.h"
@@ -23,11 +22,11 @@
 
 #include "Flow/Events/KeyEvent.h"
 
-#include "Flow/Editor/EditorLayer.h"
+#include "Flow/Editor/Editor.h"
 
 
 Inspector::Inspector()
-	: _CurrentWorld(nullptr)
+	: m_CurrentWorld(nullptr)
 	, m_FocusedComponent(nullptr)
 {
 }
@@ -54,12 +53,12 @@ void Inspector::RenderInspector()
 
 		ImGui::Separator();
 
-		if (!_HideTree && ParentActor->GetRootComponent())
+		if (!m_HideTree && ParentActor->GetRootComponent())
 			ParentActor->GetRootComponent()->DrawInspectionTree(m_FocusedComponent);
 
-		if (ImGui::Button(_HideTree ? "Show Tree" : "Collapse Tree"))
+		if (ImGui::Button(m_HideTree ? "Show Tree" : "Collapse Tree"))
 		{
-			_HideTree = !_HideTree;
+			m_HideTree = !m_HideTree;
 		}
 
 		ImGui::Separator(); //==========================================
@@ -94,11 +93,11 @@ void Inspector::RenderHeirarchy()
 {
 	if (ImGui::Begin("Scene Heirarchy"))
 	{
-		ImGui::Text(std::string("Level: " + _CurrentWorld->GetName()).c_str());
+		ImGui::Text(std::string("Level: " + m_CurrentWorld->GetName()).c_str());
 
 		ImGui::Separator();
 
-		for (auto Object : _CurrentWorld->GetActors())
+		for (auto Object : m_CurrentWorld->GetActors())
 		{
 			bool NodeOpen = ImGui::TreeNode(Object->GetName().c_str());
 
@@ -131,7 +130,7 @@ void Inspector::RenderHeirarchy()
 
 void Inspector::SetCurrentWorld(World* WorldReference)
 {
-	_CurrentWorld = WorldReference;
+	m_CurrentWorld = WorldReference;
 }
 
 bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
@@ -184,12 +183,12 @@ bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 
 void Inspector::UpdateSelectedComponent(WorldComponent* NewComp)
 {
-	//EditorLayer::GetEditor()->GetInspector()->_FocusedComponent = NewComp;
+	//Editor::GetEditor()->GetInspector()->_FocusedComponent = NewComp;
 }
 
 WorldComponent* Inspector::GetSelectedComponent()
 {
-	//return EditorLayer::GetEditor()->GetInspector()->_FocusedComponent;
+	//return Editor::GetEditor()->GetInspector()->_FocusedComponent;
 	return nullptr;
 }
 

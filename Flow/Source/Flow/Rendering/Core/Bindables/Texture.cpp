@@ -1,16 +1,20 @@
+//= Includes =============================================
+
 #include "Flowpch.h"
 #include "Texture.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
 #include "BindableCodex.h"
 #include "Flow\Assets\AssetSystem.h"
 
+//= Class (Texture) Definition ===========================
+
 Texture::Texture(TextureAsset* Asset, UINT Slot)
 {
 	HRESULT ResultHandle;
 
 	// Bindable context stuff
-	_AssetName = Asset->GetAssetName();
-	_Slot = Slot;
+	m_AssetName = Asset->GetAssetName();
+	m_Slot = Slot;
 
 	//Create the texture resource
 	D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -43,14 +47,14 @@ Texture::Texture(TextureAsset* Asset, UINT Slot)
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &_TextureView));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
 
-	RenderCommand::DX11GetContext()->GenerateMips(_TextureView.Get());
+	RenderCommand::DX11GetContext()->GenerateMips(m_TextureView.Get());
 }
 
 void Texture::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetShaderResources(_Slot, 1u, _TextureView.GetAddressOf());
+	RenderCommand::DX11GetContext()->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
 }
 std::shared_ptr<Bindable> Texture::Resolve(TextureAsset* Asset, UINT Slot)
 {
@@ -63,5 +67,5 @@ std::string Texture::GenerateUID(TextureAsset* Asset, UINT Slot)
 }
 std::string Texture::GetUID() const
 {
-	return GenerateUID(AssetSystem::GetAsset<TextureAsset>(_AssetName), _Slot);
+	return GenerateUID(AssetSystem::GetAsset<TextureAsset>(m_AssetName), m_Slot);
 }

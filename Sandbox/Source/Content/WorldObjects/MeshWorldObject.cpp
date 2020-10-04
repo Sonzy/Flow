@@ -21,7 +21,7 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName)
 
 	//Initialise Components
 	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
-	_RootComponent = MeshComponent.get();
+	m_RootComponent = MeshComponent.get();
 
 	//Initialise Mesh Component
 	// Flow::MeshAsset* Mesh = Flow::AssetSystem::GetAsset<Flow::MeshAsset>(MeshName);
@@ -39,7 +39,7 @@ MeshWorldObject::MeshWorldObject(const std::string& NewName, const std::string& 
 
 	//Initialise Components
 	MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
-	_RootComponent = MeshComponent.get();
+	m_RootComponent = MeshComponent.get();
 
 	//Initialise Mesh Component
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>(MeshName);

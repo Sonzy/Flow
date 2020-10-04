@@ -7,23 +7,23 @@
 
 void Renderable::Bind() const
 {
-	_IndexBuffer->Bind();
-	_VertexBuffer->Bind();
-	_Topology->Bind();
+	m_IndexBuffer->Bind();
+	m_VertexBuffer->Bind();
+	m_Topology->Bind();
 }
 
 void Renderable::AddTechnique(Technique& NewTechnique)
 {
 	NewTechnique.InitialiseParentReferences(*this);
-	_Techniques.push_back(std::move(NewTechnique));
+	m_Techniques.push_back(std::move(NewTechnique));
 }
 
 UINT Renderable::GetIndexCount() const
 {
-	return _IndexBuffer->GetCount();
+	return m_IndexBuffer->GetCount();
 }
 
 Renderable::~Renderable()
 {
-	_Techniques.clear();
+	m_Techniques.clear();
 }

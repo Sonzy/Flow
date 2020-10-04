@@ -9,13 +9,14 @@
 //#include "Flow/GameFramework/Other/ClassFactory.h"
 
 Actor::Actor()
-	: _RootComponent(nullptr)
+	: m_RootComponent(nullptr)
 {
 
 }
 
 Actor::Actor(const std::string& Name)
-	: GameObject(Name), _RootComponent(nullptr)
+	: GameObject(Name)
+	, m_RootComponent(nullptr)
 {
 }
 
@@ -26,22 +27,22 @@ Actor::~Actor()
 
 void Actor::BeginPlay()
 {
-	if (!_RootComponent)
+	if (!m_RootComponent)
 	{
 		FLOW_ENGINE_WARNING("Actor::BeginPlay: Actor ' {0} ' has no root component", GetName());
 		return;
 	}
-	_RootComponent->BeginPlay();
+	m_RootComponent->BeginPlay();
 }
 
 void Actor::EditorBeginPlay()
 {
-	if (!_RootComponent)
+	if (!m_RootComponent)
 	{
 		FLOW_ENGINE_WARNING("Actor::EditorBeginPlay: Actor ' {0} ' has no root component", GetName());
 		return;
 	}
-	_RootComponent->EditorBeginPlay();
+	m_RootComponent->EditorBeginPlay();
 }
 
 void Actor::OnViewportSelected()
@@ -56,64 +57,64 @@ void Actor::Tick(float DeltaTime)
 {
 	GameObject::Tick(DeltaTime);
 
-	if (_RootComponent)
-		_RootComponent->Tick(DeltaTime);
+	if (m_RootComponent)
+		m_RootComponent->Tick(DeltaTime);
 }
 WorldComponent* Actor::GetRootComponent() const
 {
-	return _RootComponent;
+	return m_RootComponent;
 }
 
 Vector3 Actor::GetLocation()
 {
-	if (!_RootComponent)
+	if (!m_RootComponent)
 		return Vector3();
 
-	return _RootComponent->GetRelativePosition();
+	return m_RootComponent->GetRelativePosition();
 }
 
 Vector3 Actor::GetScale()
 {
-	if (!_RootComponent)
+	if (!m_RootComponent)
 		return Vector3();
 
-	return _RootComponent->GetRelativeScale();
+	return m_RootComponent->GetRelativeScale();
 }
 
 Rotator Actor::GetRotation()
 {
-	if (!_RootComponent)
+	if (!m_RootComponent)
 		return Rotator();
 
-	return _RootComponent->GetRelativeRotation();
+	return m_RootComponent->GetRelativeRotation();
 }
 
 void Actor::Render()
 {
 	PROFILE_FUNCTION();
 
-	if (_RootComponent && _Visible)
-		_RootComponent->Render();
+	if (m_RootComponent && m_Visible)
+		m_RootComponent->Render();
 }
 
 bool Actor::IsSimulatingPhysics()
 {
-	return _RootComponent ? _RootComponent->IsSimulatingPhysics() : false;
+	return m_RootComponent ? m_RootComponent->IsSimulatingPhysics() : false;
 }
 
 bool Actor::CollisionEnabled()
 {
-	return _RootComponent ? _RootComponent->HasCollision() : false;
+	return m_RootComponent ? m_RootComponent->HasCollision() : false;
 }
 
 void Actor::DrawDetailsWindow(bool bDontUpdate)
 {
-	ImGui::Checkbox("Is Visible", &_Visible);
+	ImGui::Checkbox("Is Visible", &m_Visible);
 }
 
 void Actor::SetVisibility(bool Visible)
 {
-	_Visible = Visible;
+	m_Visible = Visible;
 }
 
 Component* Actor::GetComponentByName(const std::string& Name) const
@@ -136,7 +137,7 @@ void Actor::Serialize(std::ofstream* Archive)
 	Archive->write(GetName().c_str(), sizeof(char) * 32);
 
 	//Save whether to load components
-	bool HasRoot = _RootComponent;
+	bool HasRoot = m_RootComponent;
 	Archive->write(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
 
 	SerializeComponents(Archive);
@@ -179,7 +180,7 @@ void Actor::DeserializeComponents(std::ifstream* Archive)
 		return;
 	}
 
-	_RootComponent = NewRoot;
+	m_RootComponent = NewRoot;
 	NewRoot->Deserialize(Archive, this);
 	NewRoot->DeserializeChildren(Archive, this);
 }

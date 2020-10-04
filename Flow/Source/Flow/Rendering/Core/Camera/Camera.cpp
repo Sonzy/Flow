@@ -1,35 +1,39 @@
+//= Includes =======================================================
+
 #include "Flowpch.h"
 #include "Camera.h"
 
+//= Class (Camera Base) Definition =================================
+
 void CameraBase::SetProjectionMatrix(DirectX::XMMATRIX Projection)
 {
-	_Projection = Projection;
+	m_Projection = Projection;
 }
 
 #if WITH_EDITOR
 void CameraBase::SetSceneProjection(DirectX::XMMATRIX NewProjection)
 {
-	_SceneProjection = NewProjection;
+	m_SceneProjection = NewProjection;
 }
 
 DirectX::XMMATRIX CameraBase::GetSceneProjectionMatrix() const
 {
-	return _SceneProjection;
+	return m_SceneProjection;
 }
 #endif
 
 DirectX::XMMATRIX CameraBase::GetProjectionMatrix() const
 {
-	return _Projection;
+	return m_Projection;
 }
 
 void CameraBase::CacheMatrices()
 {
-	_CachedView = GetViewMatrix();
-	_CachedViewProj = _CachedView * GetProjectionMatrix();
-	_CachedTransposedViewProj = DirectX::XMMatrixTranspose(_CachedViewProj);
+	m_CachedView = GetViewMatrix();
+	m_CachedViewProj = m_CachedView * GetProjectionMatrix();
+	m_CachedTransposedViewProj = DirectX::XMMatrixTranspose(m_CachedViewProj);
 	
-	_CacheDirty = false;
+	m_CacheDirty = false;
 }
 
 void CameraBase::Update(float DeltaTime)
@@ -38,29 +42,29 @@ void CameraBase::Update(float DeltaTime)
 
 DirectX::XMMATRIX CameraBase::GetCachedViewProjection()
 {
-	if (_CacheDirty)
-		return _CachedViewProj;
+	if (m_CacheDirty)
+		return m_CachedViewProj;
 
 	CacheMatrices();
-	return _CachedViewProj;
+	return m_CachedViewProj;
 }
 
 DirectX::XMMATRIX CameraBase::GetTransposedCachedViewProjection()
 {
-	if (_CacheDirty)
-		return _CachedTransposedViewProj;
+	if (m_CacheDirty)
+		return m_CachedTransposedViewProj;
 
 	CacheMatrices();
-	return _CachedTransposedViewProj;
+	return m_CachedTransposedViewProj;
 }
 
 DirectX::XMMATRIX CameraBase::GetCachedView()
 {
-	if (_CacheDirty)
-		return _CachedView;
+	if (m_CacheDirty)
+		return m_CachedView;
 
 	CacheMatrices();
-	return _CachedView;
+	return m_CachedView;
 }
 
 bool CameraBase::OnMouseButtonPressed(MouseButtonPressedEvent& e)

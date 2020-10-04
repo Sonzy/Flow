@@ -4,24 +4,24 @@
 //= Window Events =========================
 
 WindowResizedEvent::WindowResizedEvent(unsigned int width, unsigned int height)
-	: _Width(width), _Height(height)
+	: m_Width(width), m_Height(height)
 {
 }
 
 int WindowResizedEvent::GetWidth() const
 {
-	return _Width;
+	return m_Width;
 }
 
 int WindowResizedEvent::GetHeight() const
 {
-	return _Height;
+	return m_Height;
 }
 
 std::string WindowResizedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "WindowResizedEvent: " << _Width << ", " << _Height;
+	ss << "WindowResizedEvent: " << m_Width << ", " << m_Height;
 	return ss.str();
 }
 

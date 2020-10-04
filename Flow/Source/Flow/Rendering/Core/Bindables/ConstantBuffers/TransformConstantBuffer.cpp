@@ -2,23 +2,22 @@
 #include "TransformConstantBuffer.h"
 #include "Flow/Rendering/Core/Camera/Camera.h"
 #include "Flow\GameFramework\Components\RenderableComponent.h"
-
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
-std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::_VertexConstBuffer;
+std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::m_VertexConstBuffer;
 
 TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
-	: _ParentObject(Parent)
+	: m_ParentObject(Parent)
 {
-	if (!_VertexConstBuffer)
-		_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+	if (!m_VertexConstBuffer)
+		m_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
 }
 
 void TransformConstantBuffer::Bind()
 {
 	DirectX::XMMATRIX ParentMatrix;
-	if (_ParentObject)
-		ParentMatrix = _ParentObject->GetTransformXM();
+	if (m_ParentObject)
+		ParentMatrix = m_ParentObject->GetTransformXM();
 	else
 		FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
@@ -33,6 +32,6 @@ void TransformConstantBuffer::Bind()
 	};
 
 	//Update and bind the constant buffers
-	_VertexConstBuffer->Update(transform);
-	_VertexConstBuffer->Bind();
+	m_VertexConstBuffer->Update(transform);
+	m_VertexConstBuffer->Bind();
 }

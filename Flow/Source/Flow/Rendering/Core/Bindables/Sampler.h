@@ -1,19 +1,29 @@
 #pragma once
+
+//= Includes =======================================
+
 #include "Flow/Rendering/Core/Bindable.h"
+
+//= Class Definition ===============================
 
 class Sampler : public Bindable
 {
 public:
-	Sampler();
-	void Bind() override;
 
+	//= Public Static Functions ======================================
 
-	//= Bindable Interface =
+	static std::shared_ptr<Bindable>		Resolve();
+	static std::string						GenerateUID();
+public:
 
-	static std::shared_ptr<Bindable> Resolve();
-	static std::string GenerateUID();
-	std::string GetUID() const override;
+	//= Public Functions =============================================
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> _Sampler;
+											Sampler();
+	void									Bind() override;
+	std::string								GetUID() const override;
+private:
+
+	//= Private Variables ============================================
+
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>		m_Sampler;
 };

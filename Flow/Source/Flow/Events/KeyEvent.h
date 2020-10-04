@@ -1,53 +1,70 @@
 #pragma once
+
+//= Includes =================================================
+
 #include "Event.h"
+
+//= Class Declaration ========================================
 
 class FLOW_API KeyEvent : public Event
 {
 public:
-	[[nodiscard]] int GetKeyCode() const;
 
-	EVENT_CLASS_CATEGORY(EventCategory::Keyboard | EventCategory::UserInput)
-protected:
-	KeyEvent(int KeyCode);
+	//= Public Functions =========================
+
+	int				GetKeyCode() const;
+	EVENT_CLASS_CATEGORY(Event::Category::Keyboard | Event::Category::UserInput)
 
 protected:
-	int _KeyCode;
+
+	//= Protected Functions ======================
+
+					KeyEvent(int KeyCode);
+protected:
+
+	//= Protected Variables ======================
+
+	int				m_KeyCode;
 };
 
 
 class FLOW_API KeyPressedEvent : public KeyEvent
 {
 public:
-	KeyPressedEvent(int KeyCode, int RepeatCount);
+	//= Public Functions =========================
 
-
-	int GetRepeatCount() const;
-	[[nodiscard]] std::string ToString() const override;
-
+						KeyPressedEvent(int KeyCode, int RepeatCount);
+	int					GetRepeatCount() const;
+	N_DISC std::string	ToString() const override;
 	EVENT_CLASS_TYPE(KeyPressed)
+
+
 private:
-	int _RepeatCount;
+	//= Private Variables ======================
+
+	int m_RepeatCount;
 };
 
 class FLOW_API KeyReleasedEvent : public KeyEvent
 {
 public:
-	KeyReleasedEvent(int KeyCode);
 
+	//= Public Functions =========================
 
-	[[nodiscard]] std::string ToString() const override;
-
+						KeyReleasedEvent(int KeyCode);
+	N_DISC std::string	ToString() const override;
 	EVENT_CLASS_TYPE(KeyReleased)
 };
 
 class FLOW_API KeyTypedEvent : public KeyEvent
 {
 public:
+
+	//= Public Functions =========================
+
 	KeyTypedEvent(int KeyCode)
 		: KeyEvent(KeyCode)
 	{}
-
-	[[nodiscard]] std::string ToString() const override;
-
+	N_DISC std::string	ToString() const override;
 	EVENT_CLASS_TYPE(KeyTyped)
 };

@@ -1,23 +1,32 @@
 #pragma once
-#include "Flow/Rendering/Core/Bindable.h"
+
+//= Includes =====================================
+
+#include "Rendering/Core/Bindable.h"
+
+//= Class Definition =============================
 
 class VertexShader : public Bindable
 {
 public:
-	VertexShader(const std::string& LocalPath);
 
-	void Bind() override;
+	//= PubliC Static Functions ====================================
 
-	ID3DBlob* GetByteCode() const;
+	static std::shared_ptr<Bindable>		Resolve(const std::string& LocalPath);
+	static std::string						GenerateUID(const std::string& LocalPath);
 
-	//= Bindable Interface =
+	//= Public Functions ===========================================
 
-	static std::shared_ptr<Bindable> Resolve(const std::string& LocalPath);
-	static std::string GenerateUID(const std::string& LocalPath);
-	std::string GetUID() const override;
+											VertexShader(const std::string& LocalPath);
+	void									Bind() override;
+	ID3DBlob*								GetByteCode() const;
+	std::string								GetUID() const override;
 
 protected:
-	std::string _ShaderPath;
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> _VertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> _Blob;
+	
+	//= Protected Variables ========================================
+
+	std::string									m_ShaderPath;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	m_VertexShader;
+	Microsoft::WRL::ComPtr<ID3DBlob>			m_Blob;
 };

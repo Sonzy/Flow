@@ -14,7 +14,7 @@ RenderableComponent::RenderableComponent(const std::string& Name)
 
 const IndexBuffer& RenderableComponent::GetIndexBuffer() const
 {
-	return *_IndexBuffer;
+	return *m_IndexBuffer;
 }
 
 DirectX::XMMATRIX RenderableComponent::GetTransformXM() const

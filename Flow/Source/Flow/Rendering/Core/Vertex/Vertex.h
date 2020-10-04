@@ -1,10 +1,17 @@
 #pragma once
+
+//= Includes =========================================
+
 #include "VertexLayout.h"
+
+//= Class Definition =================================
 
 class Vertex
 {
 	friend class VertexBuffer;
 public:
+
+	//= Public Template Functions ===========================================
 
 	/* Used to get a reference to an attribute (e.g Position, Texcoord) */
 	template<ElementType Type>
@@ -52,6 +59,9 @@ public:
 
 protected:
 
+
+	//= Protected Functions ==================================
+
 	Vertex(char* NewData, const VertexLayout& Layout)
 		: Data(NewData), m_LayoutRef(Layout)
 	{
@@ -59,6 +69,8 @@ protected:
 	}
 
 private:
+
+	//= Private Template Functions ============================
 
 	template<typename First, typename ...Rest>
 	void SetAttributeByIndex(size_t i, First&& first, Rest&&... rest)
@@ -78,6 +90,9 @@ private:
 	}
 
 private:
+
+	//= Private Variables =====================================
+
 	char* Data = nullptr;
 	const VertexLayout& m_LayoutRef;
 };

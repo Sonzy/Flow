@@ -8,15 +8,17 @@ Controller::Controller()
 }
 
 Controller::Controller(const std::string& Name)
-	: Actor(Name), _ControlledObject(nullptr), _Camera(nullptr)
+	: Actor(Name)
+	, m_ControlledObject(nullptr)
+	, m_Camera(nullptr)
 {
 }
 
 void Controller::ControlObject(Pawn* Obj)
 {
-	if (_ControlledObject)
+	if (m_ControlledObject)
 	{
-		RemoveControl(_ControlledObject);
+		RemoveControl(m_ControlledObject);
 	}
 
 	Obj->Control(this);
@@ -24,28 +26,28 @@ void Controller::ControlObject(Pawn* Obj)
 
 void Controller::RemoveControl(Pawn* Obj)
 {
-	CHECK_RETURN(!_ControlledObject, "Controller::RemoveControl: Tried to remove control when no object is being controlled");
+	CHECK_RETURN(!m_ControlledObject, "Controller::RemoveControl: Tried to remove control when no object is being controlled");
 
-	_ControlledObject->RemoveControl();
+	m_ControlledObject->RemoveControl();
 }
 
 void Controller::SetCamera(std::shared_ptr<CameraBase> NewCamera)
 {
 	CHECK_RETURN(!NewCamera, "Controller::SetCamera: Tried to remove control when no object is being controlled");
-	_Camera = NewCamera;
+	m_Camera = NewCamera;
 }
 
 std::shared_ptr<CameraBase> Controller::GetCamera() const
 {
-	return _Camera;
+	return m_Camera;
 }
 
 bool Controller::IsLocalController() const
 {
-	return _LocalController;
+	return m_LocalController;
 }
 
 unsigned int Controller::GetControllerIndex() const
 {
-	return _ControllerIndex;
+	return m_ControllerIndex;
 }

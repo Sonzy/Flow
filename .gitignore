@@ -11,6 +11,7 @@
 
 # Compiled Shaders
 *.cso
+.cso
 
 # Precompiled Headers
 *.gch

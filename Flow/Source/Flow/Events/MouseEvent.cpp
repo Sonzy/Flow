@@ -5,25 +5,25 @@
 //= Mouse Moved ======================================================
 
 MouseMovedEvent::MouseMovedEvent(int X, int Y)
-	: _MouseX(X), _MouseY(Y)
+	: m_MouseX(X), m_MouseY(Y)
 {
 	Input::OnMouseMoved(X, Y);
 }
 
 int MouseMovedEvent::GetX() const
 {
-	return _MouseX;
+	return m_MouseX;
 }
 
 int MouseMovedEvent::GetY() const
 {
-	return _MouseY;
+	return m_MouseY;
 }
 
 std::string MouseMovedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseMovedEvent: " << _MouseX << ", " << _MouseY;
+	ss << "MouseMovedEvent: " << m_MouseX << ", " << m_MouseY;
 	return ss.str();
 }
 
@@ -31,25 +31,25 @@ std::string MouseMovedEvent::ToString() const
 
 
 MouseScrolledEvent::MouseScrolledEvent(float XOffset, float YOffset)
-	: _XOffset(XOffset), _YOffset(YOffset)
+	: m_XOffset(XOffset), m_YOffset(YOffset)
 {
 
 }
 
 float MouseScrolledEvent::GetXOffset() const
 {
-	return _XOffset;
+	return m_XOffset;
 }
 
 float MouseScrolledEvent::GetYOffset() const
 {
-	return _YOffset;
+	return m_YOffset;
 }
 
 std::string MouseScrolledEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseScrolledEvent: " << _XOffset << ", " << _YOffset;
+	ss << "MouseScrolledEvent: " << m_XOffset << ", " << m_YOffset;
 	return ss.str();
 }
 
@@ -59,11 +59,11 @@ std::string MouseScrolledEvent::ToString() const
 
 int MouseButtonEvent::GetMouseButton() const
 {
-	return _Button;
+	return m_Button;
 }
 
 MouseButtonEvent::MouseButtonEvent(int Button)
-	: _Button(Button)
+	: m_Button(Button)
 {
 }
 
@@ -74,13 +74,13 @@ MouseButtonPressedEvent::MouseButtonPressedEvent(int Button)
 	switch (Button)
 	{
 	case 0:
-		Input::OnKeyPressed(FLOW_MOUSE_LEFT);
+		Input::OnKeyPressed(MOUSE_LEFT);
 		break;
 	case 1:
-		Input::OnKeyPressed(FLOW_MOUSE_RIGHT);
+		Input::OnKeyPressed(MOUSE_RIGHT);
 		break;
 	case 2:
-		Input::OnKeyPressed(FLOW_MOUSE_MIDDLE);
+		Input::OnKeyPressed(MOUSE_MIDDLE);
 		break;
 	}
 }
@@ -88,7 +88,7 @@ MouseButtonPressedEvent::MouseButtonPressedEvent(int Button)
 std::string MouseButtonPressedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseButtonPressedEvent: " << _Button;
+	ss << "MouseButtonPressedEvent: " << m_Button;
 	return ss.str();
 }
 
@@ -98,13 +98,13 @@ MouseButtonReleasedEvent::MouseButtonReleasedEvent(int Button)
 	switch (Button)
 	{
 	case 0:
-		Input::OnKeyReleased(FLOW_MOUSE_LEFT);
+		Input::OnKeyReleased(MOUSE_LEFT);
 		break;
 	case 1:
-		Input::OnKeyReleased(FLOW_MOUSE_RIGHT);
+		Input::OnKeyReleased(MOUSE_RIGHT);
 		break;
 	case 2:
-		Input::OnKeyReleased(FLOW_MOUSE_MIDDLE);
+		Input::OnKeyReleased(MOUSE_MIDDLE);
 		break;
 	}
 }
@@ -112,6 +112,6 @@ MouseButtonReleasedEvent::MouseButtonReleasedEvent(int Button)
 std::string MouseButtonReleasedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseButtonReleasedEvent: " << _Button;
+	ss << "MouseButtonReleasedEvent: " << m_Button;
 	return ss.str();
 }

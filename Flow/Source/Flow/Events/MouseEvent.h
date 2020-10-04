@@ -1,60 +1,79 @@
 #pragma once
+
+//= Includes ==============================================
+
 #include "Event.h"
+
+//= Class Definitions ====================================
 
 class FLOW_API MouseMovedEvent : public Event
 {
 public:
-	MouseMovedEvent(int X, int Y);
+	//= Public Functions ===================
 
-	int GetX() const;
-	int GetY() const;
+					MouseMovedEvent(int X, int Y);
 
-	std::string ToString() const override;
+	int				GetX() const;
+	int				GetY() const;
+	std::string		ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseMoved)
-		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput)
+	EVENT_CLASS_CATEGORY(Event::Category::Mouse | Event::Category::UserInput)
+
 private:
-	int _MouseX;
-	int _MouseY;
+	//= Private Variables ===================
+
+	int				m_MouseX;
+	int				m_MouseY;
 };
 
 class FLOW_API MouseScrolledEvent : public Event
 {
 public:
-	MouseScrolledEvent(float XOffset, float YOffset);
+	//= Public Functions ===================
 
-	float GetXOffset() const;
-	float GetYOffset() const;
-
-	std::string ToString() const override;
+					MouseScrolledEvent(float XOffset, float YOffset);
+	float			GetXOffset() const;
+	float			GetYOffset() const;
+	std::string		ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseScrolled)
-		EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput)
+	EVENT_CLASS_CATEGORY(Event::Category::Mouse | Event::Category::UserInput)
 
 private:
-	float _XOffset;
-	float _YOffset;
+	//= Protected Variables ===================
+
+	float			m_XOffset;
+	float			m_YOffset;
 };
 
 class FLOW_API MouseButtonEvent : public Event
 {
 public:
-	int GetMouseButton() const;
+	//= Public Functions ===================
 
-	EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::UserInput | EventCategory::MouseButton)
+	int				GetMouseButton() const;
+
+	EVENT_CLASS_CATEGORY(Event::Category::Mouse | Event::Category::UserInput | Event::Category::MouseButton)
 protected:
-	MouseButtonEvent(int Button);
+	//= Protected Functions ===================
 
-	int _Button;
+					MouseButtonEvent(int Button);
+
+protected:
+	//= Protected Variables ===================
+
+	int				m_Button;
 };
 
 /* Mouse button event, 0 = Left, 1 = Right, 2 = Middle */
 class FLOW_API MouseButtonPressedEvent : public MouseButtonEvent
 {
 public:
-	MouseButtonPressedEvent(int Button);
+	//= Public Functions ===================
 
-	std::string ToString() const override;
+					MouseButtonPressedEvent(int Button);
+	std::string		ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseButtonPressed)
 };
@@ -62,9 +81,11 @@ public:
 class FLOW_API MouseButtonReleasedEvent : public MouseButtonEvent
 {
 public:
-	MouseButtonReleasedEvent(int Button);
 
-	std::string ToString() const override;
+	//= Public Functions ===================
+
+					MouseButtonReleasedEvent(int Button);
+	std::string		ToString() const override;
 
 	EVENT_CLASS_TYPE(MouseButtonReleased)
 };

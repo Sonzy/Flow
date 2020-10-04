@@ -10,6 +10,6 @@ PointLightActor::PointLightActor()
 PointLightActor::PointLightActor(const std::string& Name)
 	: Actor(Name)
 {
-	_PointLight = CreateComponent<PointLightComponent>("Point Light");
-	_RootComponent = _PointLight.get();
+	m_PointLight = CreateComponent<PointLightComponent>("Point Light");
+	m_RootComponent = m_PointLight.get();
 }

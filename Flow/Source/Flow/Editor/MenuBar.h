@@ -1,26 +1,38 @@
 #pragma once
 
-class EditorLayer;
+//= Forward Declarations ===================
+
+class Editor;
 struct ImVec2;
 
+//= Class Declarations =====================
+
+// Menu bar drawn at the top of the editor
 class MenuBar
 {
 public:
 
-	MenuBar(EditorLayer* EditorPointer);
-	ImVec2 Draw();
+	//= Public Functions ========================================
 
+					MenuBar(Editor* EditorPointer);
 
-
-private:
-	EditorLayer* _Editor;
-	bool _Visible_BulletConfiguration;
-	bool _Visible_EditorSettings;
+	// Draws the menu bar. Returns the size of the menu so the editor can manage the dockspace
+	ImVec2			Draw();
 
 private:
 
-	//= Windows ========
+	//= Private Functions ========================================
 
-	void Window_BulletDebugDrawSettings();
-	void Window_EditorSettings();
+	void			Window_BulletDebugDrawSettings();
+	void			Window_EditorSettings();
+
+private:
+
+	//= Private Variables ========================================
+
+	Editor*			m_Editor;
+	bool			m_Visible_BulletConfiguration;
+	bool			m_Visible_EditorSettings;
+
+
 };

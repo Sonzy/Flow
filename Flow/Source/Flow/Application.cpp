@@ -13,7 +13,7 @@
 //= Editor Includes =
 #if WITH_EDITOR
 #include "Flow\Editor\Inspector.h"
-#include "Flow/Editor/EditorLayer.h"
+#include "Flow/Editor/Editor.h"
 #endif
 
 //= Asset Includes =
@@ -67,7 +67,7 @@ void Application::InitialiseApplication()
 	m_ApplicationPath = std::filesystem::current_path();
 
 	//Create the main window
-	m_MainWindow = Window::Create(WindowProperties(m_ApplicationName, 1280u, 720u));
+	m_MainWindow = Window::Create(Window::Properties(m_ApplicationName, 1280u, 720u));
 	m_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 
 	//Initialise the debug UI Layer
@@ -148,7 +148,7 @@ void Application::InitialiseApplication()
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Brown");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector3(0.31, 0.08, 0));
+	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector3(0.31f, 0.08f, 0.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
 	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
@@ -195,7 +195,7 @@ void Application::InitialiseApplication()
 
 	//Create the editor
 #if WITH_EDITOR
-	m_Layer_Editor = new EditorLayer();
+	m_Layer_Editor = new Editor();
 	m_Layer_Editor->Initialise();
 #endif
 
@@ -325,7 +325,7 @@ void Application::OnEvent(Event& e)
 	for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
 	{
 		(*--iterator)->OnEvent(e);
-		if (e._Handled)
+		if (e.m_Handled)
 			break;
 	}
 }

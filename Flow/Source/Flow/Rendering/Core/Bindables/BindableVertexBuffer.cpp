@@ -1,10 +1,15 @@
+//= Includes ==========================================
+
 #include "Flowpch.h"
 #include "BindableVertexBuffer.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
 #include "BindableCodex.h"
 
+//= Class (BindableVertexBuffer) Definition ===========
+
 BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer)
-	: _Stride((UINT)Buffer.GetLayout().GetSize()), _Tag(Tag)
+	: m_Stride((UINT)Buffer.GetLayout().GetSize())
+	, m_Tag(Tag)
 {
 	CREATE_RESULT_HANDLE();
 
@@ -14,18 +19,18 @@ BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexB
 	BufferDescription.CPUAccessFlags = 0u;
 	BufferDescription.MiscFlags = 0u;
 	BufferDescription.ByteWidth = UINT(Buffer.GetBufferSizeAsBytes());
-	BufferDescription.StructureByteStride = _Stride;
+	BufferDescription.StructureByteStride = m_Stride;
 
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
 	SubresourceData.pSysMem = Buffer.GetData();
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &_Buffer));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &m_Buffer));
 }
 
 void BindableVertexBuffer::Bind()
 {
 	const UINT offset = 0u;
-	RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, _Buffer.GetAddressOf(), &_Stride, &offset);
+	RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, m_Buffer.GetAddressOf(), &m_Stride, &offset);
 }
 std::shared_ptr<Bindable> BindableVertexBuffer::Resolve(const std::string& Tag, const VertexBuffer& Buffer)
 {
@@ -34,7 +39,7 @@ std::shared_ptr<Bindable> BindableVertexBuffer::Resolve(const std::string& Tag, 
 
 std::string BindableVertexBuffer::GetUID() const
 {
-	return GenerateUID(_Tag);
+	return GenerateUID(m_Tag);
 }
 std::string BindableVertexBuffer::GenerateUID_Internal(const std::string& Tag)
 {

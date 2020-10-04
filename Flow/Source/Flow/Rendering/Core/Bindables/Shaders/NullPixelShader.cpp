@@ -1,7 +1,10 @@
+//= Includes ===============================================
+
 #include "Flowpch.h"
 #include "NullPixelShader.h"
 #include "Flow/Rendering/Core/Bindables/BindableCodex.h"
 
+//= Class (Null Pixel Shader) Definition ===================
 NullPixelShader::NullPixelShader()
 {
 }

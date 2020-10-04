@@ -1,29 +1,35 @@
+//= Includes ========================================================
+
 #include "Flowpch.h"
 #include "LineBatcher.h"
 
-#include "Flow/Rendering/Core/Bindables/Topology.h"
-#include "Flow/Rendering/Core/Bindables/InputLayout.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
-#include "Flow/Rendering/Core/Bindables/BindableVertexBuffer.h"
-#include "Flow/Rendering/Core/Bindables/Stencil.h"
+#include "Rendering/Core/Bindables/Topology.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/Shaders/VertexShader.h"
+#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Rendering/Core/Bindables/Stencil.h"
+#include "Rendering/Core/Vertex/VertexLayout.h"
+#include "Rendering/Core/Vertex/VertexBuffer.h"
 
-#include "Flow/Rendering/Core/Vertex/VertexLayout.h"
-#include "Flow/Rendering/Core/Vertex/VertexBuffer.h"
+#include "Assets/AssetSystem.h"
 
-#include "Flow/Assets/AssetSystem.h"
+//= Class (LineBatcher) Definition ==================================
 
 LineBatcher::LineBatcher()
-	: _VertexBuffer(nullptr), _BindableVertexBuffer(nullptr), _VertexLayout(nullptr), _VertexCB(nullptr)
+	: m_VertexBuffer(nullptr)
+	, m_BindableVertexBuffer(nullptr)
+	, m_VertexLayout(nullptr)
+	, m_VertexCB(nullptr)
 {
 
 }
 
 LineBatcher::~LineBatcher()
 {
-	delete _VertexBuffer;
-	delete _VertexCB;
-	delete _VertexLayout;
+	delete m_VertexBuffer;
+	delete m_VertexCB;
+	delete m_VertexLayout;
 	//delete _BindableVertexBuffer; TODO: Crashes on release?
 }
 
@@ -31,68 +37,66 @@ void LineBatcher::Initialise()
 {
 	AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_LINELIST));
 
-	_VertexLayout = new VertexLayout();
-	_VertexLayout->Append(ElementType::Position3D);
-	_VertexLayout->Append(ElementType::Float3Colour);
+	m_VertexLayout = new VertexLayout();
+	m_VertexLayout->Append(ElementType::Position3D);
+	m_VertexLayout->Append(ElementType::Float3Colour);
 
-	_VertexBuffer = new VertexBuffer(*_VertexLayout);
+	m_VertexBuffer = new VertexBuffer(*m_VertexLayout);
 
 	AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColourP")->GetPath()));
 	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColourV")->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	AddBind(std::move(vShader));
-	AddBind(InputLayout::Resolve(*_VertexLayout, vShaderByteCode));
+	AddBind(InputLayout::Resolve(*m_VertexLayout, vShaderByteCode));
 	AddBind(Stencil::Resolve(StencilMode::AlwaysOnTop));
 
-	_VertexCB = new VertexConstantBuffer<ViewProjectionBuffer>(0);
+	m_VertexCB = new VertexConstantBuffer<ViewProjectionBuffer>(0);
 }
 
 void LineBatcher::AddLine(Vector3 From, Vector3 To, Vector3 Colour)
 {
-	_VertexBuffer->EmplaceBack(
+	m_VertexBuffer->EmplaceBack(
 		DirectX::XMFLOAT3{ From.x, From.y, From.z },
 		DirectX::XMFLOAT3{ Colour.x, Colour.y, Colour.z });
 
-	_VertexBuffer->EmplaceBack(
+	m_VertexBuffer->EmplaceBack(
 		DirectX::XMFLOAT3{ To.x, To.y, To.z },
 		DirectX::XMFLOAT3{ Colour.x, Colour.y, Colour.z });
 
-	Lines++;
+	m_Lines++;
 }
 
 void LineBatcher::DrawLines()
 {
-	if (Lines == 0)
+	if (m_Lines == 0)
 		return;
 
-	_BindableVertexBuffer = new BindableVertexBuffer("LineBatcher", *_VertexBuffer);
+	m_BindableVertexBuffer = new BindableVertexBuffer("LineBatcher", *m_VertexBuffer);
 
-	_CameraMatrix._ViewProjectionMatrix = RenderCommand::GetMainCamera()->GetTransposedCachedViewProjection();
-	_VertexCB->Update(_CameraMatrix);
+	m_CameraMatrix._ViewProjectionMatrix = RenderCommand::GetMainCamera()->GetTransposedCachedViewProjection();
+	m_VertexCB->Update(m_CameraMatrix);
 
-	_VertexCB->Bind();
-	_BindableVertexBuffer->Bind();
+	m_VertexCB->Bind();
+	m_BindableVertexBuffer->Bind();
 	BindAll();
 
-	RenderCommand::Draw(Lines * 2);
+	RenderCommand::Draw(m_Lines * 2);
 
 	FlushLines();
 }
 
 void LineBatcher::FlushLines()
 {
-	//PROFILE_FUNCTION();
+	delete m_VertexBuffer;
+	delete m_BindableVertexBuffer;
 
-	delete _VertexBuffer;
-	delete _BindableVertexBuffer;
-
-	_VertexBuffer = new VertexBuffer(*_VertexLayout);
-	Lines = 0;
+	m_VertexBuffer = new VertexBuffer(*m_VertexLayout);
+	m_Lines = 0;
 }
 
 void LineBatcher::BindAll()
 {
-	for (const auto& Bind : _Binds)
+	for (const auto& Bind : m_Binds)
 	{
 		Bind->Bind();
 	}
@@ -100,5 +104,5 @@ void LineBatcher::BindAll()
 
 void LineBatcher::AddBind(std::shared_ptr<Bindable> NewBind)
 {
-	_Binds.push_back(std::move(NewBind));
+	m_Binds.push_back(std::move(NewBind));
 }

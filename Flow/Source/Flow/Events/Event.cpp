@@ -6,13 +6,13 @@ std::string Event::ToString() const
 	return GetName();
 }
 
-bool Event::IsInCategory(EventCategory Category) const
+bool Event::IsInCategory(Event::Category Category) const
 {
 	return GetCategoryFlags() & (int)Category; //TODO: Check if I wiffed changing to enum class
 }
 
 EventDispatcher::EventDispatcher(Event& event)
-	: _Event(event)
+	: m_Event(event)
 {
 }
 

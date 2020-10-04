@@ -1,18 +1,25 @@
 #pragma once
 
+//= Class Definitions =============================
+
 class Step;
 class Renderable;
+
+//= Class Definition =============================
 
 class Job
 {
 public:
 
-	Job(const Step* NewStep, const Renderable* Drawable);
+	//= Public Functions ================================
 
-	void Execute() const;
+						Job(const Step* NewStep, const Renderable* Drawable);
+	void				Execute() const;
 
 private:
 
-	const Step* _Step;
-	const Renderable* _Renderable;
+	//= Private Variables ===============================
+
+	const Step*			m_Step;
+	const Renderable*	m_Renderable;
 };

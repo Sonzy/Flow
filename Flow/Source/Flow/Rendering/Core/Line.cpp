@@ -9,10 +9,10 @@
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
-VertexLayout Line::VertexLayout_ = VertexLayout();
-std::vector<std::shared_ptr<Bindable>> Line::Binds_ = std::vector<std::shared_ptr<Bindable>>();
-IndexBuffer* Line::IndexBuffer_ = nullptr;
-int Line::Count = 0;
+VertexLayout								Line::m_VertexLayout = VertexLayout();
+std::vector<std::shared_ptr<Bindable>>		Line::m_Binds = std::vector<std::shared_ptr<Bindable>>();
+IndexBuffer*								Line::m_IndexBuffer = nullptr;
+int											Line::m_Count = 0;
 
 Line::Line()
 {
@@ -23,7 +23,7 @@ void Line::Initialise()
 	Line* LineObj = new Line();
 	LineObj->AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_LINELIST));
 
-	VertexLayout_.Append(ElementType::Position3D);
+	m_VertexLayout.Append(ElementType::Position3D);
 
 	std::vector<unsigned short> indices;
 	indices.push_back(0);
@@ -36,7 +36,7 @@ void Line::Initialise()
 	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShaderV")->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	LineObj->AddBind(std::move(vShader));
-	LineObj->AddBind(InputLayout::Resolve(VertexLayout_, vShaderByteCode));
+	LineObj->AddBind(InputLayout::Resolve(m_VertexLayout, vShaderByteCode));
 }
 
 void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
@@ -44,7 +44,7 @@ void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 	Line NewLine = Line();
 
 	// Define Vertex Layout
-	VertexBuffer VBuffer(VertexLayout_);
+	VertexBuffer VBuffer(m_VertexLayout);
 	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ From.x ,  From.y,  From.z });
 	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ To.x ,  To.y,  To.z });
 
@@ -76,9 +76,9 @@ void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 
 	NewLine.BindAll();
 
-	RenderCommand::DrawIndexed(IndexBuffer_->GetCount());
+	RenderCommand::DrawIndexed(m_IndexBuffer->GetCount());
 
-	Count++;
+	m_Count++;
 }
 
 DirectX::XMMATRIX Line::GetTransformXM() const
@@ -91,16 +91,16 @@ void Line::AddBind(std::shared_ptr<Bindable> bind)
 	//If index buffer, only allow single bind.
 	if (typeid(*bind) == typeid(IndexBuffer))
 	{
-		assert("Renderable::AddBind: Cannot bind multiple index buffers." && IndexBuffer_ == nullptr);
-		IndexBuffer_ = static_cast<IndexBuffer*>(bind.get());
+		assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
+		m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
 	}
 
-	Binds_.push_back(std::move(bind));
+	m_Binds.push_back(std::move(bind));
 }
 
 void Line::BindAll()
 {
-	for (auto& b : Binds_)
+	for (auto& b : m_Binds)
 	{
 		b->Bind();
 	}

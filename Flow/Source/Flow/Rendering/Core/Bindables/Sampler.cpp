@@ -1,7 +1,11 @@
+//= Includes ============================================
+
 #include "Flowpch.h"
 #include "Sampler.h"
 #include "Flow/ErrorHandling/ErrorMacros.h"
 #include "BindableCodex.h"
+
+//= Class (Sampler) Definition ==========================
 
 Sampler::Sampler()
 {
@@ -18,12 +22,12 @@ Sampler::Sampler()
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	SamplerDesc.MipLODBias = 0.0f;
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &_Sampler));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
 }
 
 void Sampler::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, _Sampler.GetAddressOf());
+	RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
 }
 std::shared_ptr<Bindable> Sampler::Resolve()
 {

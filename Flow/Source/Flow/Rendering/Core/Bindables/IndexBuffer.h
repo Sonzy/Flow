@@ -1,37 +1,50 @@
 #pragma once
+
+//= Includes ====================================
+
 #include <vector>
 #include "Flow/Rendering/Core/Bindable.h"
+
+//= Class Definition ============================
 
 class IndexBuffer : public Bindable
 {
 public:
-	IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices);
 
-	virtual void Bind() override;
+	//= Public Static Functions =======================================
 
-	UINT GetCount() const;
-
-
-	//= Bindable Interface =
-
-	static std::shared_ptr<Bindable> Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices);
+	static std::shared_ptr<Bindable>			Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices);
 
 	/* Calls GenerateUID_Internal without passing the VBuffer */
 	template<typename ...Ignore>
 	static std::string GenerateUID(const std::string& Tag, Ignore&&... Ign)
 	{
 		return GenerateUID_Internal(Tag);
+
 	}
 
-	std::string GetUID() const override;
+	//= Public Functions ==============================================
 
-protected:
+												IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices);
+	virtual void								Bind() override;
+	UINT										GetCount() const;
+	std::string									GetUID() const override;
 
-	static std::string GenerateUID_Internal(const std::string& Tag);
+	//= Public Variables ==============================================
 
-	std::string _Tag;
-public:
+	UINT										m_Count;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_IndexBuffer;
 
-	UINT _Count;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> _IndexBuffer;
+private:
+
+	//= Private Functions =============================================
+
+	static std::string							GenerateUID_Internal(const std::string& Tag);
+
+private:
+
+	//= Private Variables =============================================
+
+	std::string									m_Tag;
+
 };

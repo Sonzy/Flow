@@ -5,7 +5,10 @@
 #include "Flow/Events/KeyEvent.h"
 
 EditorCamera::EditorCamera()
-	: _Position(0), _Rotation(0), _MouseLastFrame(0), _CameraSpeed(10.0f)
+	: m_Position(0)
+	, m_Rotation(0)
+	, m_MouseLastFrame(0)
+	, m_CameraSpeed(10.0f)
 {
 }
 
@@ -14,8 +17,8 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 	PROFILE_FUNCTION();
 
 	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	Rotator WorldRotation = Rotator::AsRadians(_Rotation);
-	Vector3 WorldPosition = _Position;
+	Rotator WorldRotation = Rotator::AsRadians(m_Rotation);
+	Vector3 WorldPosition = m_Position;
 
 	//Get Camera Look Vector3
 	const auto lookVector = DirectX::XMVector3Transform(Forward,
@@ -41,57 +44,55 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 void EditorCamera::MoveCamera(const Transform& NewTransform)
 {
-	_Position = NewTransform.m_Position;
-	_Rotation = NewTransform.m_Rotation;
+	m_Position = NewTransform.m_Position;
+	m_Rotation = NewTransform.m_Rotation;
 }
 
 Transform EditorCamera::GetCameraTransform() const
 {
-	return Transform(_Position, _Rotation, Vector3(1));
+	return Transform(m_Position, m_Rotation, Vector3(1));
 }
 
 Vector3 EditorCamera::GetCameraPosition() const
 {
-	return _Position;
+	return m_Position;
 }
 
 void EditorCamera::Update(float DeltaTime)
 {
-	if (!_CanUpdate)
+	if (!m_CanUpdate)
 		return;
 
 	IntVector2 MousePosition = Input::GetMousePosition();
 	Vector3 Translation(0.0f);
 
-
-
 	//Camera rotation
-	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
+	if (Input::IsMousePressed(MOUSE_RIGHT))
 	{
-		if (Input::IsKeyPressed(FLOW_KEY_W))
-			Translation.z += _CameraSpeed;
-		if (Input::IsKeyPressed(FLOW_KEY_A))
-			Translation.x += -_CameraSpeed;
-		if (Input::IsKeyPressed(FLOW_KEY_S))
-			Translation.z += -_CameraSpeed;
-		if (Input::IsKeyPressed(FLOW_KEY_D))
-			Translation.x += _CameraSpeed;
-		if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-			Translation.y += _CameraSpeed;
-		if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
+		if (Input::IsKeyPressed(KEY_W))
+			Translation.z += m_CameraSpeed;
+		if (Input::IsKeyPressed(KEY_A))
+			Translation.x += -m_CameraSpeed;
+		if (Input::IsKeyPressed(KEY_S))
+			Translation.z += -m_CameraSpeed;
+		if (Input::IsKeyPressed(KEY_D))
+			Translation.x += m_CameraSpeed;
+		if (Input::IsKeyPressed(KEY_SPACE))
+			Translation.y += m_CameraSpeed;
+		if (Input::IsKeyPressed(KEY_SHIFT))
 
-			Translation.y += -_CameraSpeed;
-		if (_MouseLastFrame != MousePosition)
+			Translation.y += -m_CameraSpeed;
+		if (m_MouseLastFrame != MousePosition)
 		{
-			Vector3 Direction = _MouseLastFrame - MousePosition;
-			_Rotation.Yaw -= Direction.x * 0.25f; //Horizontal Sensitivity
-			_Rotation.Pitch -= Direction.y * 0.15f;  //Vertical Sensitivity
+			Vector3 Direction = m_MouseLastFrame - MousePosition;
+			m_Rotation.Yaw -= Direction.x * 0.25f; //Horizontal Sensitivity
+			m_Rotation.Pitch -= Direction.y * 0.15f;  //Vertical Sensitivity
 		}
 	}
 
-	_Position += _Rotation.RotateVector(Translation * DeltaTime);
+	m_Position += m_Rotation.RotateVector(Translation * DeltaTime);
 
-	_MouseLastFrame = MousePosition;
+	m_MouseLastFrame = MousePosition;
 
 	CacheMatrices();
 }

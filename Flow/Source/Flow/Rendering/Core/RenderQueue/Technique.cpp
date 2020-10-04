@@ -1,7 +1,11 @@
+//= Includes ==================================
+
 #include "Flowpch.h"
 #include "Technique.h"
-#include "Flow/Rendering/Core/RenderQueue/Step.h"
-#include "Flow/Rendering/Core/TechniqueProbe.h"
+#include "Rendering/Core/RenderQueue/Step.h"
+#include "Rendering/Core/TechniqueProbe.h"
+
+//= Class Definition - Technique ==============
 
 Technique::Technique(const std::string& Name)
 	: m_Name(Name)
@@ -10,9 +14,9 @@ Technique::Technique(const std::string& Name)
 
 void Technique::Submit(const Renderable& Drawable) const
 {
-	if (_Active)
+	if (m_Active)
 	{
-		for (const auto& Step : _Steps)
+		for (const auto& Step : m_Steps)
 		{
 			Step.Submit(Drawable);
 		}
@@ -21,22 +25,22 @@ void Technique::Submit(const Renderable& Drawable) const
 
 void Technique::AddStep(Step NewStep)
 {
-	_Steps.push_back(std::move(NewStep));
+	m_Steps.push_back(std::move(NewStep));
 }
 
 void Technique::Activate()
 {
-	_Active = true;
+	m_Active = true;
 }
 
 void Technique::Deactivate()
 {
-	_Active = false;
+	m_Active = false;
 }
 
 void Technique::InitialiseParentReferences(const Renderable& Parent)
 {
-	for (auto& S : _Steps)
+	for (auto& S : m_Steps)
 	{
 		S.InitialiseParentReferences(Parent);
 	}
@@ -46,7 +50,7 @@ void Technique::AcceptProbe(TechniqueProbe& Probe)
 {
 	Probe.SetTechnique(this);
 
-	for (auto& S : _Steps)
+	for (auto& S : m_Steps)
 	{
 		S.AcceptProbe(Probe);
 	}

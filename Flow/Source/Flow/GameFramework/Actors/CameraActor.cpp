@@ -11,17 +11,17 @@ CameraActor::CameraActor()
 }
 
 CameraActor::CameraActor(const std::string& Name)
-	: Pawn(Name), CameraMovementSpeed(1.0f), CameraHorizontalRotationSpeed(0.25f), CameraVerticalRotationSpeed(0.15f)
+	: Pawn(Name), m_CameraMovementSpeed(1.0f), m_CameraHorizontalRotationSpeed(0.25f), m_CameraVerticalRotationSpeed(0.15f)
 {
-	_CameraComponent = CreateComponent<CameraComponent>("Camera");
+	m_CameraComponent = CreateComponent<CameraComponent>("Camera");
 
-	_RootComponent = _CameraComponent.get();
+	m_RootComponent = m_CameraComponent.get();
 }
 
 void CameraActor::OnControlled(Controller* OwningController)
 {
 	SetMainCamera();
-	OwningController->SetCamera(_CameraComponent);
+	OwningController->SetCamera(m_CameraComponent);
 }
 
 void CameraActor::Tick(float DeltaTime)
@@ -32,38 +32,38 @@ void CameraActor::Tick(float DeltaTime)
 
 	Vector3 Translation(0.0f);
 
-	if (Input::IsKeyPressed(FLOW_KEY_W))
-		Translation.z = CameraMovementSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_A))
-		Translation.x = -CameraMovementSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_S))
-		Translation.z = -CameraMovementSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_D))
-		Translation.x = CameraMovementSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_SPACE))
-		Translation.y = CameraMovementSpeed;
-	if (Input::IsKeyPressed(FLOW_KEY_SHIFT))
-		Translation.y = -CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_W))
+		Translation.z = m_CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_A))
+		Translation.x = -m_CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_S))
+		Translation.z = -m_CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_D))
+		Translation.x = m_CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_SPACE))
+		Translation.y = m_CameraMovementSpeed;
+	if (Input::IsKeyPressed(KEY_SHIFT))
+		Translation.y = -m_CameraMovementSpeed;
 
 	//Camera rotation
-	if (Input::IsMousePressed(FLOW_MOUSE_RIGHT))
+	if (Input::IsMousePressed(MOUSE_RIGHT))
 	{
-		if (_LastMousePosition != Pos)
+		if (m_LastMousePosition != Pos)
 		{
-			Vector3 Direction = (_LastMousePosition - Pos);
-			Direction.x = Direction.x * CameraHorizontalRotationSpeed; //Horizontal Sensitivity
-			Direction.y = Direction.y * CameraVerticalRotationSpeed;  //Vertical Sensitivity
-			_RootComponent->AddRelativeRotation(Rotator(-Direction.y, 0.0f, -Direction.x));
+			Vector3 Direction = (m_LastMousePosition - Pos);
+			Direction.x = Direction.x * m_CameraHorizontalRotationSpeed; //Horizontal Sensitivity
+			Direction.y = Direction.y * m_CameraVerticalRotationSpeed;  //Vertical Sensitivity
+			m_RootComponent->AddRelativeRotation(Rotator(-Direction.y, 0.0f, -Direction.x));
 		}
 	}
 
-	_RootComponent->SetRelativePosition(_RootComponent->GetRelativePosition() + _RootComponent->GetRelativeRotation().RotateVector(Translation));
-	_LastMousePosition = Pos;
+	m_RootComponent->SetRelativePosition(m_RootComponent->GetRelativePosition() + m_RootComponent->GetRelativeRotation().RotateVector(Translation));
+	m_LastMousePosition = Pos;
 
-	_CameraComponent->CacheMatrices();
+	m_CameraComponent->CacheMatrices();
 }
 
 void CameraActor::SetMainCamera() const
 {
-	RenderCommand::SetMainCamera(_CameraComponent);
+	RenderCommand::SetMainCamera(m_CameraComponent);
 }

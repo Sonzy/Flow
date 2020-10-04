@@ -1,37 +1,49 @@
 #pragma once
 
-#include "Flow/Layers/Layer.h"
+//= Includes =================================
 
-#include "Flow/Events/KeyEvent.h"
-#include "Flow/Events/MouseEvent.h"
-#include "Flow/Events/ApplicationEvent.h"
+#include "Layers/Layer.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/ApplicationEvent.h"
+
+//= Class Definition =========================
 
 class FLOW_API ImGuiLayer : public Layer
 {
 public:
-	ImGuiLayer();
-	~ImGuiLayer();
 
-	virtual void OnAttach() override;
-	virtual void OnDetach() override;
-	virtual void OnImGuiRender(bool DrawEditor) override;
-	void OnEvent(Event& e) override;
+	//= Public Functions ===================================
 
-	void Begin();
-	void End();
+					ImGuiLayer();
+					~ImGuiLayer();
+
+	virtual void	OnAttach() override;
+	virtual void	OnDetach() override;
+	virtual void	OnImGuiRender(bool DrawEditor) override;
+	void			OnEvent(Event& e) override;
+
+	void			Begin();
+	void			End();
 
 private:
 
-	bool OnMouseButtonPressed(MouseButtonEvent& e);
-	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
-	bool OnMouseMoved(MouseMovedEvent& e);
-	bool OnMouseScrolled(MouseScrolledEvent& e);
-	bool OnKeyPressed(KeyPressedEvent& e);
-	bool OnKeyTyped(KeyTypedEvent& e);
-	bool OnKeyReleased(KeyReleasedEvent& e);
-	bool OnWindowResized(WindowResizedEvent& e);
+	//= Private Functions =================================
 
-	void ConfigureStyle();
+	bool			OnMouseButtonPressed(MouseButtonEvent& e);
+	bool			OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+	bool			OnMouseMoved(MouseMovedEvent& e);
+	bool			OnMouseScrolled(MouseScrolledEvent& e);
+	bool			OnKeyPressed(KeyPressedEvent& e);
+	bool			OnKeyTyped(KeyTypedEvent& e);
+	bool			OnKeyReleased(KeyReleasedEvent& e);
+	bool			OnWindowResized(WindowResizedEvent& e);
 
-	const float MenuBarSize = 20.0f;
+	void			ConfigureStyle();
+
+private:
+
+	//= Private Variables ==================================
+
+	const float		m_MenuBarSize = 20.0f;
 };

@@ -1,10 +1,15 @@
 #pragma once
+
+//= Includes ======================================
+
 #include "Maths/Vector3.h"
 #include "Maths/IntVector2.h"
 #include "Rendering\Core\Bindable.h"
 #include "Rendering\Core\Bindables\IndexBuffer.h"
 #include "GameFramework/Components/WorldComponent.h"
 #include "GameFramework/Actor.h"
+
+//= Forward Declarations ==========================
 
 class btCollisionShape;
 class btGhostObject;
@@ -15,6 +20,8 @@ class StaticMeshComponent;
 class World;
 class MeshAsset;
 
+//= Global Enums ===================================
+
 enum class Axis
 {
 	None,
@@ -23,10 +30,14 @@ enum class Axis
 	Z
 };
 
+//= Class Definition ================================
+
 /* Gizmo used for moving objects within the world within the editor */
 class SelectionGizmo : public Actor
 {
 public:
+
+	//= Public Enums ===============================
 	enum Transform
 	{
 		Translation,
@@ -35,42 +46,50 @@ public:
 	};
 
 public:
-	SelectionGizmo();
-	virtual ~SelectionGizmo();
 
-	void InitialisePhysics();
+	//= Public Functions ===========================
 
-	void UpdateSelection();
+								SelectionGizmo();
+	virtual						~SelectionGizmo();
 
-	void UpdatePosition(Vector3 Position);
-	void UpdateRotation(Rotator Rotation);
-	void SetScale(Vector3 Scale);
+	void						InitialisePhysics();
 
-	void Render();
+	void						UpdateSelection();
 
-	[[nodiscard]] Vector3 GetPosition()  const;
+	void						UpdatePosition(Vector3 Position);
+	void						UpdateRotation(Rotator Rotation);
+	void						SetScale(Vector3 Scale);
 
-	void SetVisibility(bool Visible);
-	bool IsVisible() const { return _Visible; }
+	void						Render();
+
+	Vector3						GetPosition()  const;
+
+	void						SetVisibility(bool Visible);
+	bool						IsVisible() const { return m_Visible; }
 
 	/* Adds the collision data to the physics world. */
-	void AddCollidersToWorld(World* World);	
-	void RemoveCollidersFromWorld(World* World);	
-	void Reset();
+	void						AddCollidersToWorld(World* World);	
+	void						RemoveCollidersFromWorld(World* World);	
+	void						Reset();
 
-	void OnSelected(Axis SelectedAxis, WorldComponent* Object);
-	void OnNewComponentSelected(WorldComponent* Object);
-	void OnDeselected();
+	void						OnSelected(Axis SelectedAxis, WorldComponent* Object);
+	void						OnNewComponentSelected(WorldComponent* Object);
+	void						OnDeselected();
 
-	Axis GetSelectedAxis() const { return m_SelectedAxis; }
+	Axis						GetSelectedAxis() const { return m_SelectedAxis; }
 
-	SelectionGizmo::Transform GetTransformationMode() const				{ return m_TransformMode; }
-	void SetTransformationMode(SelectionGizmo::Transform newMode);
-
-private:
-	void GenerateCollision();
+	SelectionGizmo::Transform	GetTransformationMode() const				{ return m_TransformMode; }
+	void						SetTransformationMode(SelectionGizmo::Transform newMode);
 
 private:
+
+	//= Private Functions =============================================
+
+	void						GenerateCollision();
+
+private:
+
+	//= Private Variables =============================================
 
 	WorldComponent*					m_Root;
 	StaticMeshComponent*			m_ArrowX;

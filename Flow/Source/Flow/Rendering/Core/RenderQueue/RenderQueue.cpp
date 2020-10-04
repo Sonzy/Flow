@@ -1,34 +1,36 @@
+//= Includes ==========================================
+
 #include "Flowpch.h"
 #include "RenderQueue.h"
-#include "Flow/Rendering/Core/RenderQueue/Pass.h"
+#include "Rendering/Core/RenderQueue/Pass.h"
 
-#include "Flow/Rendering/Core/Bindables/Stencil.h"
-#include "Flow/Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/NullPixelShader.h"
-#include "Flow/Rendering/Core/Bindables/Rasterizer.h"
-#include "Flow/Rendering/Other/DepthBuffer.h"
+#include "Rendering/Core/Bindables/Stencil.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
+#include "Rendering/Core/Bindables/Shaders/NullPixelShader.h"
+#include "Rendering/Core/Bindables/Rasterizer.h"
+#include "Rendering/Other/DepthBuffer.h"
 
 #if WITH_EDITOR
-#include "Flow/Editor/EditorLayer.h"
-#include "Flow/Rendering/Core/TemplateBuffers/TemplateBuffers.h"
+#include "Editor/Editor.h"
+#include "Rendering/Core/TemplateBuffers/TemplateBuffers.h"
 #endif
 
-RenderQueue* RenderQueue::s_RenderQueue = new RenderQueue();
+RenderQueue* RenderQueue::sm_RenderQueue = new RenderQueue();
 
 RenderQueue::RenderQueue()
 {
-	_Passes.emplace_back(new Pass()); //Main Pass (Back Culled)
-	_Passes.emplace_back(new Pass()); //Main Pass (Forward Culled)
-	_Passes.emplace_back(new Pass()); //Main Pass (Two Sided)
-	_Passes.emplace_back(new Pass()); //Mask Pass
-	_Passes.emplace_back(new Pass()); //Outline Draw Pass
-	_Passes.emplace_back(new Pass()); //No Depth
+	m_Passes.emplace_back(new Pass()); //Main Pass (Back Culled)
+	m_Passes.emplace_back(new Pass()); //Main Pass (Forward Culled)
+	m_Passes.emplace_back(new Pass()); //Main Pass (Two Sided)
+	m_Passes.emplace_back(new Pass()); //Mask Pass
+	m_Passes.emplace_back(new Pass()); //Outline Draw Pass
+	m_Passes.emplace_back(new Pass()); //No Depth
 }
 
 RenderQueue::~RenderQueue()
 {
 	//TODO: canny remember if this one destructs.
-	_Passes.clear();
+	m_Passes.clear();
 }
 
 void RenderQueue::SubmitTechnique(Technique* Tech)
@@ -38,7 +40,7 @@ void RenderQueue::SubmitTechnique(Technique* Tech)
 void RenderQueue::AcceptJob(Job NewJob, size_t TargetPass)
 {
 	//TODO: Ensure that this is a valid pass
-	s_RenderQueue->_Passes[TargetPass]->Accept(NewJob);
+	sm_RenderQueue->m_Passes[TargetPass]->Accept(NewJob);
 }
 
 void RenderQueue::Execute()
@@ -51,14 +53,14 @@ void RenderQueue::Execute()
 	{
 		Rasterizer::Resolve(CullMode::Back)->Bind();
 		Stencil::Resolve(StencilMode::Off)->Bind();
-		Queue->_Passes[0]->Execute();
+		Queue->m_Passes[0]->Execute();
 	}
 
 	//= Main Pass (Front Culled)
 	if (Queue->m_Pass1Enabled)
 	{
 		Rasterizer::Resolve(CullMode::Front)->Bind();
-		Queue->_Passes[1]->Execute();
+		Queue->m_Passes[1]->Execute();
 	}
 
 
@@ -66,7 +68,7 @@ void RenderQueue::Execute()
 	if (Queue->m_Pass2Enabled)
 	{
 		Rasterizer::Resolve(CullMode::None)->Bind();
-		Queue->_Passes[2]->Execute();
+		Queue->m_Passes[2]->Execute();
 	}
 
 	//Reset 
@@ -76,13 +78,13 @@ void RenderQueue::Execute()
 	{
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		NullPixelShader::Resolve()->Bind(); //Stop D3D11 from using render targets
-		Queue->_Passes[3]->Execute();
+		Queue->m_Passes[3]->Execute();
 	}
 
 	//TODO: Editor defs
 	if (Queue->m_Pass4Enabled)
 	{
-		Vector3 Colour = EditorLayer::GetEditorSettings()._ObjectHighlightColour;
+		Vector3 Colour = Editor::GetEditorSettings().m_ObjectHighlightColour;
 
 		//= Outline Drawing Pass.
 		Stencil::Resolve(StencilMode::Mask)->Bind();
@@ -92,7 +94,7 @@ void RenderQueue::Execute()
 		PXCB->Update(ColourBuffer);
 		PXCB->Bind();
 
-		Queue->_Passes[4]->Execute();
+		Queue->m_Passes[4]->Execute();
 	}
 
 	//=  No depth pass
@@ -100,20 +102,20 @@ void RenderQueue::Execute()
 	{
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		Rasterizer::Resolve(CullMode::Back)->Bind();
-		Queue->_Passes[5]->Execute();
+		Queue->m_Passes[5]->Execute();
 	}
 }
 
 RenderQueue* RenderQueue::Get()
 {
-	return s_RenderQueue;
+	return sm_RenderQueue;
 }
 
 void RenderQueue::Reset()
 {
 	RenderQueue* Queue = RenderQueue::Get();
 	
-	for (auto& Pass : Queue->_Passes)
+	for (auto& Pass : Queue->m_Passes)
 	{
 		Pass->Reset();
 	}

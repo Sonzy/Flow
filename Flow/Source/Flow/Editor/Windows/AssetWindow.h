@@ -5,13 +5,20 @@ class AssetWindow
 {
 public:
 
-	AssetWindow();
+	//= Public Functions ==================================
 
-	void DrawWindow();
+										AssetWindow();
+	void								DrawWindow();
 
 private:
+
+	//= Private Functions =================================
+
 	void DrawDirectory(const std::filesystem::path& CurrentPath);
 
-	std::filesystem::path _SelectedDirectory;
-	std::filesystem::path _CurrentParentDirectory;
+private:
+	//= Private Variables =================================
+
+	std::filesystem::path				m_SelectedDirectory;
+	std::filesystem::path				m_CurrentParentDirectory;
 };

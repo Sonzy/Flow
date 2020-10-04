@@ -21,7 +21,7 @@ SceneManager::SceneManager()
 	m_EditorCam(nullptr)
 {
 
-	tb = new ToolBar();
+	m_Toolbar = new ToolBar();
 }
 
 SceneManager::~SceneManager()
@@ -49,13 +49,13 @@ void SceneManager::DrawWindow_Scene()
 
 	if (ImGui::Begin(WindowName.c_str()))
 	{
-		tb->DrawWindow();
+		m_Toolbar->DrawWindow();
 
 		m_SceneFocused = ImGui::IsWindowFocused();
 
 		//TODO: should only push input if the scene is focused, rather than the camera blocking
 		if (m_EditorCam)
-			m_EditorCam->_CanUpdate = m_SceneFocused ? true : !ImGui::IsAnyItemActive();
+			m_EditorCam->m_CanUpdate = m_SceneFocused ? true : !ImGui::IsAnyItemActive();
 
 		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
 
@@ -73,7 +73,7 @@ void SceneManager::DrawWindow_Scene()
 			m_CachedWindowSize = *reinterpret_cast<Vector2*>(&m_SceneWindowSize);
 		}
 
-		ImGui::Image(Buff->GetTextureView(), ImVec2(Buff->GetWidth(), Buff->GetHeight()));
+		ImGui::Image(Buff->GetTextureView(), ImVec2(static_cast<float>(Buff->GetWidth()), static_cast<float>(Buff->GetHeight())));
 	}
 	ImGui::End();
 

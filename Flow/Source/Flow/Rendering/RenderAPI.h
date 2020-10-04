@@ -1,12 +1,21 @@
 #pragma once
+
+//= Includes ==================================
+
 #include "Rendering/Core/Camera/Camera.h"
 #include "Maths/IntVector2.h"
 
+//= Forward Declarations ======================
+
 class FrameBuffer;
+
+//= Class Definitions =========================
 
 class FLOW_API RenderAPI
 {
 public:
+
+	//= Public Enums ============================================
 
 	enum class API
 	{
@@ -17,47 +26,47 @@ public:
 	};
 
 public:
-	virtual ~RenderAPI() {};
 
-	virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight);
+	//= Public Functions ========================================
 
-	virtual void SetClearColour(float R, float G, float B, float A) = 0;
-	virtual void Clear() = 0;
+	virtual							~RenderAPI() {};
 
-	virtual void DrawIndexed(int Count) = 0;
-	virtual void Draw(unsigned int Count) = 0;
+	virtual void					InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight);
 
-	virtual void BeginFrame() = 0;
-	virtual void EndFrame() = 0;
+	virtual void					SetClearColour(float R, float G, float B, float A) = 0;
+	virtual void					Clear() = 0;
 
-	virtual void Resize(int Width, int Height) = 0;
-	virtual void ResizeDepthBuffer(int Width, int Height) = 0;
+	virtual void					DrawIndexed(int Count) = 0;
+	virtual void					Draw(unsigned int Count) = 0;
 
-	virtual Vector3 GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0)) = 0;
+	virtual void					BeginFrame() = 0;
+	virtual void					EndFrame() = 0;
 
-	static API GetAPI() { return s_API; };
+	virtual void					Resize(int Width, int Height) = 0;
+	virtual void					ResizeDepthBuffer(int Width, int Height) = 0;
 
-	void SetMainCamera(std::shared_ptr<CameraBase> Camera) { _MainCamera = Camera;	}
-	std::shared_ptr<CameraBase> GetMainCamera() const { return _MainCamera; }
+	virtual Vector3					GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0)) = 0;
 
-	virtual void BindBackBuffer() = 0;
-	virtual void BindFrameBuffer(FrameBuffer* Buffer) = 0;
+	virtual API						GetAPI() = 0;
 
-public:
+	void							SetMainCamera(std::shared_ptr<CameraBase> Camera) { m_MainCamera = Camera;	}
+	std::shared_ptr<CameraBase>		GetMainCamera() const { return m_MainCamera; }
 
-	IntVector2 GetWindowSize() { return _ViewportSize; }
+	virtual void					BindBackBuffer() = 0;
+	virtual void					BindFrameBuffer(FrameBuffer* Buffer) = 0;
 
-private:
-	static API s_API;
+	IntVector2						GetWindowSize() { return m_ViewportSize; }
 
 protected:
 
-	float _BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
-	std::shared_ptr<CameraBase> _MainCamera;
+	//= Protected Variables ===================================
 
-	IntVector2 _ViewportSize;
-	IntVector2 _AdjustedViewportSize;
-
-	float _NearPlane;
-	float _FarPlane;
+	float							m_BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
+	std::shared_ptr<CameraBase>		m_MainCamera;
+									
+	IntVector2						m_ViewportSize;
+	IntVector2						m_AdjustedViewportSize;
+									
+	float							m_NearPlane;
+	float							m_FarPlane;
 };

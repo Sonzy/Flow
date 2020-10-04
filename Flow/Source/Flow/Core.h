@@ -21,4 +21,6 @@
 
 #define FLOW_BIND_EVENT_FUNCTION(Func) std::bind(&Func, this, std::placeholders::_1)
 
+#define N_DISC [[nodiscard]]
+
 #define WITH_EDITOR 1

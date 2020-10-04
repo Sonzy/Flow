@@ -10,8 +10,8 @@ StaticMeshActor::StaticMeshActor()
 StaticMeshActor::StaticMeshActor(const std::string& NewName)
 	: Actor(NewName)
 {
-	_MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
-	_RootComponent = _MeshComponent.get();
+	m_MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
+	m_RootComponent = m_MeshComponent.get();
 }
 
 StaticMeshActor::~StaticMeshActor()
@@ -21,5 +21,5 @@ StaticMeshActor::~StaticMeshActor()
 
 StaticMeshComponent* StaticMeshActor::GetMeshComponent() const
 {
-	return _MeshComponent.get();
+	return m_MeshComponent.get();
 }

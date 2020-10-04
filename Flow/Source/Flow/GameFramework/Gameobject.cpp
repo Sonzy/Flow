@@ -2,12 +2,12 @@
 #include "Gameobject.h"
 
 GameObject::GameObject()
-	: _ObjectName("Unnamed Object")
+	: m_ObjectName("Unnamed Object")
 {
 }
 
 GameObject::GameObject(const std::string& Name)
-	: _ObjectName(Name)
+	: m_ObjectName(Name)
 {
 }
 
@@ -25,15 +25,15 @@ void GameObject::DrawDetailsWindow(bool bDontUpdate)
 
 const std::string& GameObject::GetName() const
 {
-	return _ObjectName;
+	return m_ObjectName;
 }
 
 std::string& GameObject::GetWritableName()
 {
-	return _ObjectName;
+	return m_ObjectName;
 }
 
 void GameObject::SetName(const std::string& NewName)
 {
-	_ObjectName = NewName;
+	m_ObjectName = NewName;
 }

@@ -8,57 +8,65 @@ class FLOW_API Input
 {
 public:
 
+	//= Public Static Functions =================================
+
 	static bool IsKeyPressed(int Keycode)
 	{
-		return s_Instance->IsKeyPressed_Implementation(Keycode);
+		return sm_Instance->IsKeyPressed_Implementation(Keycode);
 	}
 
 	static bool IsMousePressed(int MouseButton)
 	{
-		return s_Instance->_InputStates[MouseButton];
+		return sm_Instance->m_InputStates[MouseButton];
 	}
 
 	static void OnKeyPressed(int KeyCode)
 	{
-		s_Instance->_InputStates[KeyCode] = true;
+		sm_Instance->m_InputStates[KeyCode] = true;
 	}
 
 	static void OnKeyReleased(int KeyCode)
 	{
-		s_Instance->_InputStates[KeyCode] = false;
+		sm_Instance->m_InputStates[KeyCode] = false;
 	}
 
 	static void OnMouseMoved(int X, int Y)
 	{
-		s_Instance->_MouseX = X;
-		s_Instance->_MouseY = Y;
+		sm_Instance->m_MouseX = X;
+		sm_Instance->m_MouseY = Y;
 	}
 
 	static int GetMouseX()
 	{
-		return s_Instance->_MouseX;
+		return sm_Instance->m_MouseX;
 	}
 
 	static int GetMouseY()
 	{
-		return s_Instance->_MouseY;
+		return sm_Instance->m_MouseY;
 	}
 
 	static IntVector2 GetMousePosition()
 	{
-		return IntVector2(s_Instance->_MouseX, s_Instance->_MouseY);
+		return IntVector2(sm_Instance->m_MouseX, sm_Instance->m_MouseY);
 	}
 
-
 protected:
+
+	//= Protected Functions ====================================
+
 	virtual bool IsKeyPressed_Implementation(int Keycode) = 0;
 
-	std::bitset<256> _InputStates;
+protected:
 
-	int _MouseX;
-	int _MouseY;
+	//= Protected Variables ====================================
+
+	std::bitset<256>	m_InputStates;
+	int					m_MouseX;
+	int					m_MouseY;
+
 private:
 
-
-	static Input* s_Instance;
+	//= Private Static Variables ===============================
+	static Input*		sm_Instance;
 };

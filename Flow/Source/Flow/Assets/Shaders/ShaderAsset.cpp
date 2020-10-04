@@ -5,7 +5,7 @@ ShaderAsset::ShaderAsset()
 {
 }
 
-bool ShaderAsset::LoadAsset(const std::string& AssetPath)
+bool ShaderAsset::ImportAsset(const std::string& AssetPath)
 {
 	m_ShaderPath = AssetPath;
 	m_AssetSize = sizeof(m_ShaderPath);

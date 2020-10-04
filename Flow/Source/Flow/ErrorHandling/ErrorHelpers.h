@@ -5,15 +5,13 @@
 #include "Flow/ErrorHandling/dxerr.h"
 #include <string>
 
-class ErrorHelpers
+namespace ErrorHelpers
 {
-public:
-
 	static std::string GenerateErrorDescription(HRESULT result)
 	{
 		char buf[512];
 		DXGetErrorDescription(result, buf, sizeof(buf));
-		return buf;
+		return std::string(buf);
 	}
-};
+}
 #endif

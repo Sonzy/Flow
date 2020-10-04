@@ -40,7 +40,7 @@ private:
 	//= Settings =
 
 	bool										m_DrawSelectionLines;
-	std::vector<std::pair<Vector3, Vector3>>		m_PreviousLines;
+	std::vector<std::pair<Vector3, Vector3>>	m_PreviousLines;
 	Vector3										m_DebugLineColor;
 
 };

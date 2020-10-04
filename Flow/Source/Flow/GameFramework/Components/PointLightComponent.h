@@ -1,10 +1,19 @@
 #pragma once
+
+//= Includes ==============================================================
+
 #include "Flow/GameFramework/Components/RenderableComponent.h"
 #include "Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h"
+
+//= Class Definitions =====================================================
+
 
 class PointLightComponent : public RenderableComponent
 {
 public:
+
+	//= Public Functions ======================================
+
 	PointLightComponent();
 	PointLightComponent(const std::string& ComponentName);
 
@@ -12,17 +21,24 @@ public:
 	virtual void DrawComponentDetailsWindow() override;
 
 private:
+
+	//= Private Structs =======================================
+
 	struct LightCB
 	{
-		alignas(16) DirectX::XMFLOAT3 _Position;
-		alignas(16) DirectX::XMFLOAT3 _Ambient;
-		alignas(16) DirectX::XMFLOAT3 _Diffuse;
-		float _DiffuseIntensity;
-		float _AttenuationConstant;
-		float _AttenuationLinear;
-		float _AttenuationQuadratic;
+		alignas(16) DirectX::XMFLOAT3	m_Position;
+		alignas(16) DirectX::XMFLOAT3	m_Ambient;
+		alignas(16) DirectX::XMFLOAT3	m_Diffuse;
+		float							m_DiffuseIntensity;
+		float							m_AttenuationConstant;
+		float							m_AttenuationLinear;
+		float							m_AttenuationQuadratic;
 	};
 
-	LightCB _CB;
-	PixelConstantBuffer<LightCB> _PixelCB;
+private:
+
+	//= Private Variables =====================================
+
+	LightCB							m_CB;
+	PixelConstantBuffer<LightCB>	m_PixelCB;
 };

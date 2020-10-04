@@ -6,8 +6,8 @@
 #include "Flow\Assets\Meshes\MeshAsset.h"
 #include "Flow\Assets\Materials\MaterialAsset.h"
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include "Bullet/btBulletCollisionCommon.h"
+#include "Bullet/btBulletDynamicsCommon.h"
 
 ExampleWorldObject::ExampleWorldObject()
 	: ExampleWorldObject("Example World Object")
@@ -21,9 +21,9 @@ ExampleWorldObject::ExampleWorldObject(const std::string& NewName)
 {
 	TestMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
 	TestMesh2 = CreateComponent<StaticMeshComponent>("Test Mesh 2");
-	_RootComponent = TestMesh.get();
+	m_RootComponent = TestMesh.get();
 
-	_RootComponent->AddChild(TestMesh2.get());
+	m_RootComponent->AddChild(TestMesh2.get());
 
 	//MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("Hat_Sherif");
 	MeshAsset* Mesh = AssetSystem::GetAsset<MeshAsset>("SelectionGizmo");

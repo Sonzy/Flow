@@ -23,7 +23,9 @@ StaticMeshComponent::StaticMeshComponent()
 }
 
 StaticMeshComponent::StaticMeshComponent(const std::string& Name, const std::string& MeshName, const std::string& MaterialName, int MeshIndex)
-	: RenderableComponent(Name), _StaticMesh(nullptr), _Material(nullptr)
+	: RenderableComponent(Name)
+	, m_StaticMesh(nullptr)
+	, m_Material(nullptr)
 {
 	if(!MeshName.empty() && !MaterialName.empty())
 		SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
@@ -68,8 +70,8 @@ void StaticMeshComponent::OnViewportSelected()
 {
 	RenderableComponent::OnViewportSelected();
 
-	if (_Techniques.size() >= 2)
-		_Techniques[1].Activate();
+	if (m_Techniques.size() >= 2)
+		m_Techniques[1].Activate();
 }
 
 void StaticMeshComponent::OnViewportDeselected()
@@ -77,8 +79,8 @@ void StaticMeshComponent::OnViewportDeselected()
 	RenderableComponent::OnViewportSelected();
 
 	//TODO: dont hard code
-	if(_Techniques.size() >= 2)
-		_Techniques[1].Deactivate();
+	if(m_Techniques.size() >= 2)
+		m_Techniques[1].Deactivate();
 }
 
 
@@ -91,23 +93,23 @@ void StaticMeshComponent::SetMeshAndMaterial(const std::string& MeshName, const 
 		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", MaterialName);
 		return;
 	}
-	_Material = FoundMat->GetMaterial();
+	m_Material = FoundMat->GetMaterial();
 
 	//Set the mesh
 	MeshAsset* FoundAsset = AssetSystem::GetAsset<MeshAsset>(MeshName);
 	if (!FoundAsset)
 	{
-		_StaticMesh = nullptr;
-		_MeshIndex = -1;
-		_MeshIdentifier = "None";
-		_MaterialIdentifier = "None";
+		m_StaticMesh = nullptr;
+		m_MeshIndex = -1;
+		m_MeshIdentifier = "None";
+		m_MaterialIdentifier = "None";
 	}
 	else
 	{
-		_StaticMesh = FoundAsset->GetMesh(MeshIndex);
-		_MaterialIdentifier = MaterialName;
-		_MeshIndex = MeshIndex;
-		_MeshIdentifier = MeshName;
+		m_StaticMesh = FoundAsset->GetMesh(MeshIndex);
+		m_MaterialIdentifier = MaterialName;
+		m_MeshIndex = MeshIndex;
+		m_MeshIdentifier = MeshName;
 	}
 
 	RefreshBinds();
@@ -119,7 +121,7 @@ void StaticMeshComponent::SetStaticMesh(const std::string& MeshName)
 	MeshAsset* NewAsset = AssetSystem::GetAsset<MeshAsset>(MeshName);
 	CHECK_RETURN(!NewAsset, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
 
-	_StaticMesh = NewAsset->GetMesh(0);
+	m_StaticMesh = NewAsset->GetMesh(0);
 
 	RefreshBinds(); //TODO: Dont call this twice? dunno
 }
@@ -132,7 +134,7 @@ void StaticMeshComponent::SetMaterial(const std::string& MaterialName)
 		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", MaterialName);
 		return;
 	}
-	_Material = FoundMat->GetMaterial();
+	m_Material = FoundMat->GetMaterial();
 
 	RefreshBinds();
 }
@@ -142,25 +144,25 @@ void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* NewMesh, MaterialAsset* 
 	//Set the material
 	if (!NewMaterial)
 	{
-		_MaterialIdentifier = "None";
+		m_MaterialIdentifier = "None";
 		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
 		return;
 	}
-	_Material = NewMaterial->GetMaterial();
-	_MaterialIdentifier = NewMaterial->GetAssetName();
+	m_Material = NewMaterial->GetMaterial();
+	m_MaterialIdentifier = NewMaterial->GetAssetName();
 
 	//Set the mesh
 	if (!NewMesh)
 	{
-		_StaticMesh = nullptr;
-		_MeshIndex = -1;
-		_MeshIdentifier = "None";
+		m_StaticMesh = nullptr;
+		m_MeshIndex = -1;
+		m_MeshIdentifier = "None";
 	}
 	else
 	{
-		_StaticMesh = NewMesh->GetMesh(MeshIndex);
-		_MeshIndex = MeshIndex;
-		_MeshIdentifier = NewMesh->GetAssetName();
+		m_StaticMesh = NewMesh->GetMesh(MeshIndex);
+		m_MeshIndex = MeshIndex;
+		m_MeshIdentifier = NewMesh->GetAssetName();
 	}
 
 	RefreshBinds();
@@ -169,14 +171,14 @@ void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* NewMesh, MaterialAsset* 
 void StaticMeshComponent::SetStaticMesh(MeshAsset* NewMesh)
 {
 	CHECK_RETURN(!NewMesh, "StaticMeshComponent::SetStaticMesh: Failed to get new static mesh.");
-	_StaticMesh = NewMesh->GetMesh(0);
+	m_StaticMesh = NewMesh->GetMesh(0);
 	RefreshBinds(); //TODO: Dont call this twice? dunno
 
 	//Update physics
 	if (m_CollisionEnabled)
 	{
 		GenerateCollision();
-		if (!_RigidBody)
+		if (!m_RigidBody)
 		{
 			InitialisePhysics();
 			return;
@@ -184,9 +186,9 @@ void StaticMeshComponent::SetStaticMesh(MeshAsset* NewMesh)
 		else
 		{
 			auto* physWorld = World::GetPhysicsWorld();
-			physWorld->removeRigidBody(_RigidBody);
-			_RigidBody->setCollisionShape(m_CollisionShape);
-			//physWorld->addRigidBody(_RigidBody); //TODO?
+			physWorld->removeRigidBody(m_RigidBody);
+			m_RigidBody->setCollisionShape(m_CollisionShape);
+			//physWorld->addRigidBody(m_RigidBody); //TODO?
 		}
 	}
 }
@@ -198,7 +200,7 @@ void StaticMeshComponent::SetMaterial(MaterialAsset* NewMaterial)
 		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
 		return;
 	}
-	_Material = NewMaterial->GetMaterial();
+	m_Material = NewMaterial->GetMaterial();
 	RefreshBinds();
 }
 
@@ -212,9 +214,9 @@ void StaticMeshComponent::Serialize(std::ofstream* Archive)
 	WorldComponent::Serialize(Archive);
 
 	//Save Mesh and material
-	Archive->write(_MeshIdentifier.c_str(), sizeof(char) * 32);
-	Archive->write(_MaterialIdentifier.c_str(), sizeof(char) * 32);
-	Archive->write(reinterpret_cast<char*>(&_MeshIndex), sizeof(int));
+	Archive->write(m_MeshIdentifier.c_str(), sizeof(char) * 32);
+	Archive->write(m_MaterialIdentifier.c_str(), sizeof(char) * 32);
+	Archive->write(reinterpret_cast<char*>(&m_MeshIndex), sizeof(int));
 }
 
 void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
@@ -243,7 +245,7 @@ void StaticMeshComponent::Render()
 
 void StaticMeshComponent::RefreshBinds()
 {
-	_Techniques.clear();
+	m_Techniques.clear();
 
 	//= Standard Rendering ====
 	VertexLayout MeshLayout;
@@ -256,13 +258,13 @@ void StaticMeshComponent::RefreshBinds()
 			Step MainStep(0);
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
-			_StaticMesh->GenerateBinds(MeshLayout);
-			_VertexBuffer = _StaticMesh->m_BindableVBuffer;
-			_IndexBuffer = _StaticMesh->m_IndexBuffer;
-			_Topology = _StaticMesh->m_Topology;
+			m_StaticMesh->GenerateBinds(MeshLayout);
+			m_VertexBuffer = m_StaticMesh->m_BindableVBuffer;
+			m_IndexBuffer = m_StaticMesh->m_IndexBuffer;
+			m_Topology = m_StaticMesh->m_Topology;
 
-			if (_Material)
-				_Material->BindMaterial(&MainStep, MeshLayout);
+			if (m_Material)
+				m_Material->BindMaterial(&MainStep, MeshLayout);
 
 			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 
@@ -277,13 +279,13 @@ void StaticMeshComponent::RefreshBinds()
 			Step MainStep(5);
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
-			_StaticMesh->GenerateBinds(MeshLayout);
-			_VertexBuffer = _StaticMesh->m_BindableVBuffer;
-			_IndexBuffer = _StaticMesh->m_IndexBuffer;
-			_Topology = _StaticMesh->m_Topology;
+			m_StaticMesh->GenerateBinds(MeshLayout);
+			m_VertexBuffer = m_StaticMesh->m_BindableVBuffer;
+			m_IndexBuffer = m_StaticMesh->m_IndexBuffer;
+			m_Topology = m_StaticMesh->m_Topology;
 
-			if (_Material)
-				_Material->BindMaterial(&MainStep, MeshLayout);
+			if (m_Material)
+				m_Material->BindMaterial(&MainStep, MeshLayout);
 
 			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 
@@ -341,14 +343,14 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();
 
-	if(_Techniques.size() >= 2) //TODO: better system for this
-		ImGui::Checkbox("Draw Outline", &_Techniques[1].GetWriteAccessToActive());
+	if(m_Techniques.size() >= 2) //TODO: better system for this
+		ImGui::Checkbox("Draw Outline", &m_Techniques[1].GetWriteAccessToActive());
 
-	std::string MeshNameTemp = _MeshIdentifier;
-	std::string MatNameTemp = _MaterialIdentifier;
+	std::string MeshNameTemp = m_MeshIdentifier;
+	std::string MatNameTemp = m_MaterialIdentifier;
 
-	if (_MeshIdentifier.empty())	_MeshIdentifier = "None";
-	if (_MaterialIdentifier.empty())	_MaterialIdentifier = "None";
+	if (m_MeshIdentifier.empty())	m_MeshIdentifier = "None";
+	if (m_MaterialIdentifier.empty())	m_MaterialIdentifier = "None";
 
 	if (ImGui::InputText("Mesh Identifier", &MeshNameTemp, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
@@ -363,12 +365,12 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 			return;
 		}
 
-		_MeshIdentifier = MeshNameTemp;
+		m_MeshIdentifier = MeshNameTemp;
 		SetStaticMesh(FoundMesh);
 		InitialisePhysics();
 	}
-																									//Doesnt allow us to add it, is added automatically?
-	if (ImGui::InputText("Material Identifier", &MatNameTemp, ImGuiInputTextFlags_EnterReturnsTrue /*| ImGuiInputTextFlags_CallbackResize */ , ImHelp::InputTextCallback))
+																									
+	if (ImGui::InputText("Material Identifier", &MatNameTemp, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MatNameTemp);
 		if (!FoundMat)
@@ -377,7 +379,7 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 			return;
 		}
 
-		_MaterialIdentifier = MatNameTemp;
+		m_MaterialIdentifier = MatNameTemp;
 		SetMaterial(FoundMat);
 	}
 
@@ -387,7 +389,7 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 void StaticMeshComponent::GenerateCollision()
 {
 	btConvexHullShape* Shape = new btConvexHullShape();
-	auto Vertices = _StaticMesh->GetCollisionVertices();
+	auto Vertices = m_StaticMesh->GetCollisionVertices();
 	for (auto Vert : Vertices)
 	{
 		Shape->addPoint(Vert);
@@ -403,16 +405,16 @@ void StaticMeshComponent::GenerateCollision()
 
 void StaticMeshComponent::InitialisePhysics()
 {
-	if (!_StaticMesh)
+	if (!m_StaticMesh)
 	{
 		FLOW_ENGINE_WARNING("StaticMeshComponent::InitialisePhysics: StaticMesh was nullptr, skipped init");
 		return;
 	}
 
-	if (_RigidBody)
+	if (m_RigidBody)
 	{
-		World::GetPhysicsWorld()->removeRigidBody(_RigidBody);
-		delete _RigidBody;
+		World::GetPhysicsWorld()->removeRigidBody(m_RigidBody);
+		delete m_RigidBody;
 	}
 	if (m_CollisionShape)
 	{
@@ -424,22 +426,22 @@ void StaticMeshComponent::InitialisePhysics()
 
 	World* CurrentWorld = World::Get();
 
-	if (!_RigidBody)
+	if (!m_RigidBody)
 	{
 		FLOW_ENGINE_ERROR("StaticMeshComponent::InitialisePhysics: Rigidbody was nullptr");
 		return;
 	}
 
-	CurrentWorld->AddPhysicsObject(_RigidBody);
+	CurrentWorld->AddPhysicsObject(m_RigidBody);
 }
 
 void StaticMeshComponent::DestroyPhysics()
 {
-	if (!_RigidBody)
+	if (!m_RigidBody)
 		return;
 
-	World::Get()->GetPhysicsWorld()->removeRigidBody(_RigidBody);
-	delete _RigidBody;
+	World::Get()->GetPhysicsWorld()->removeRigidBody(m_RigidBody);
+	delete m_RigidBody;
 }
 
 void StaticMeshComponent::SetStencilMode(StencilMode NewMode)

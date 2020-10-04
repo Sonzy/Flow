@@ -1,28 +1,35 @@
 #pragma once
+
+//= Includes =============================================
+
 #include "Flow/Rendering/Core/Camera/Camera.h"
+
+//= Class Definition =====================================
 
 class EditorCamera : public CameraBase
 {
 public:
+	
+	//= Public Functions =================================
 	EditorCamera();
 
-	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const override;
-	virtual void MoveCamera(const Transform& NewTransform) override;
-	virtual Transform GetCameraTransform() const override;
-	virtual Vector3 GetCameraPosition() const override;
+	virtual void								MoveCamera(const Transform& NewTransform) override;
+	virtual void								Update(float DeltaTime) override;
 
-	virtual void Update(float DeltaTime) override;
+	N_DISC virtual DirectX::XMMATRIX				GetViewMatrix() const override;
+	virtual Transform							GetCameraTransform() const override;
+	virtual Vector3								GetCameraPosition() const override;
+
 
 protected:
-	friend class EditorLayer;
+	friend class Editor;
 	friend class SceneManager;
 
-	bool _CanUpdate;
-	IntVector2 _MouseLastFrame;
+	//= Protected Variables ==============================
 
-	Vector3 _Position;
-	Rotator _Rotation;
-
-
-	float _CameraSpeed;
+	bool										m_CanUpdate;
+	IntVector2									m_MouseLastFrame;
+	Vector3										m_Position;
+	Rotator										m_Rotation;
+	float										m_CameraSpeed;
 };

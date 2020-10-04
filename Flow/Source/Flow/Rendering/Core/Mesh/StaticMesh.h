@@ -1,24 +1,32 @@
 #pragma once
-#include "Flow/Core.h"
-#include "Flow\Assets\Meshes\MeshAsset.h"
-#include "Flow/Rendering/Core/RenderableBase.h"
+
+//= Includes ========================================
+
 #include <DirectXMath.h>
+#include "Core.h"
+#include "Rendering/Core/RenderableBase.h"
+
+//= Forward Declarations ============================
 
 class Material;
+
+//= Class Definition ================================
 
 class FLOW_API StaticMesh : public RenderableBase
 {
 public:
 
-	StaticMesh(const std::string& LocalPath);
+	//= Public Functions ============================================
 
-	void InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
-
-	virtual DirectX::XMMATRIX GetTransformXM() const override;
+								StaticMesh(const std::string& LocalPath);
+	void						InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
+	virtual DirectX::XMMATRIX	GetTransformXM() const override;
 
 protected:
 
-	Vector3 _Position;
-	Rotator _Rotation;
-	Vector3 _Scale;
+	//= Protected Variables =========================================
+
+	Vector3						m_Position;
+	Rotator						m_Rotation;
+	Vector3						m_Scale;
 };

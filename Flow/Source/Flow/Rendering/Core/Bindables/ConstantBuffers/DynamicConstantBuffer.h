@@ -1,9 +1,14 @@
 #pragma once
+
+//= Includes ===============================================
+
 #include <string>
 #include <optional>
 #include <memory>
 #include <vector>
 #include <DirectXMath.h>
+
+//= Macros =================================================
 
 #define ELEMENT_TYPES \
 		X(Float) \
@@ -13,6 +18,8 @@
 		X(Matrix) \
 		X(Bool)
 
+
+//= Global Enums ===========================================
 
 enum ElemType
 {
@@ -25,6 +32,7 @@ enum ElemType
 		Empty,
 };
 
+//= Struct Definitions =====================================
 
 namespace DynamicCB
 {

@@ -1,25 +1,38 @@
 #pragma once
+
+//= Includes =============================================
+
 #include "Flow/GameFramework/Pawn.h"
 
+//= Forward Declarations =================================
+
 class CameraComponent;
+
+//= Class Definition =====================================
+
 
 class FLOW_API CameraActor : public Pawn
 {
 public:
-	CameraActor();
-	CameraActor(const std::string& Name);
 
-	virtual void OnControlled(Controller* OwningController) override;
-	virtual void Tick(float DeltaTime) override;
+	//= Public Functions ========================
 
-	void SetMainCamera() const;
+										CameraActor();
+										CameraActor(const std::string& Name);
+
+	virtual void						OnControlled(Controller* OwningController) override;
+	virtual void						Tick(float DeltaTime) override;
+
+	void								SetMainCamera() const;
 
 protected:
 
-	std::shared_ptr<CameraComponent> _CameraComponent;
-	IntVector2 _LastMousePosition;
+	//= Protected Variables ======================
 
-	float CameraMovementSpeed;
-	float CameraHorizontalRotationSpeed;
-	float CameraVerticalRotationSpeed;
+	std::shared_ptr<CameraComponent>	m_CameraComponent;
+	IntVector2							m_LastMousePosition;
+
+	float								m_CameraMovementSpeed;
+	float								m_CameraHorizontalRotationSpeed;
+	float								m_CameraVerticalRotationSpeed;
 };

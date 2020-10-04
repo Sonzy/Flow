@@ -1,22 +1,32 @@
 #pragma once
+
+//= Includes ========================================
+
 #include "Flow\GameFramework\Actor.h"
 
+//= Forward Declarations ============================
+
 class Controller;
+
+//= Class Definitions ===============================
 
 class FLOW_API Pawn : public Actor
 {
 public:
-	Pawn();
-	Pawn(const std::string& Name);
 
-	void Control(Controller* NewController);
-	void RemoveControl();
+	//= Public Functions ============================
 
-	virtual void OnControlled(Controller* OwningController);
+						Pawn();
+						Pawn(const std::string& Name);
 
-	Controller* GetController() const;
+	void				Control(Controller* NewController);
+	void				RemoveControl();
+	virtual void		OnControlled(Controller* OwningController);
+	Controller*			GetController() const;
 
 private:
 
-	Controller* _Controller;
+	//= Private Variables ===========================
+
+	Controller*			m_Controller;
 };

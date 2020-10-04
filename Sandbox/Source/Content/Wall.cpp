@@ -24,7 +24,7 @@ Wall::Wall(const std::string& NewName)
 
 	WallMesh = CreateComponent<StaticMeshComponent>("Test Mesh");
 	WallMesh->SetMeshAndMaterial(Mesh, Material);
-	_RootComponent = WallMesh.get();
+	m_RootComponent = WallMesh.get();
 
 //	_HasCollision = true;
 }

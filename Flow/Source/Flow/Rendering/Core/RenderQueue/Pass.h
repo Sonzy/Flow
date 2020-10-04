@@ -1,15 +1,25 @@
 #pragma once
+
+//= Includes ================================
+
 #include <vector>
-#include "Flow/Rendering/Core/RenderQueue/Job.h"
+#include "Rendering/Core/RenderQueue/Job.h"
+
+//= Class Definition ========================
 
 class Pass
 {
 public:
 
-	void Accept(Job NewJob);
-	void Execute() const;
-	void Reset();
+	//= Public Functions ==========================
+
+	void				Accept(Job NewJob);
+	void				Execute() const;
+	void				Reset();
 
 private:
-	std::vector<Job> _Jobs;
+
+	//= Private Variables =========================
+
+	std::vector<Job>	m_Jobs;
 };

@@ -1,7 +1,7 @@
 #define NOMINMAX
 #include "Flowpch.h"
 #include "SelectionTool.h"
-#include "Flow/Editor/EditorLayer.h"
+#include "Flow/Editor/Editor.h"
 #include "Flow/Input/Input.h"
 
 #include "Flow\Rendering\RenderCommand.h"
@@ -23,8 +23,7 @@
 SelectionTool::SelectionTool()
 {
 	m_Gizmo = new SelectionGizmo();
-
-	m_InspectorWindow = EditorLayer::GetEditor()->GetInspector();
+	m_InspectorWindow = Editor::GetEditor()->GetInspector();
 }
 
 SelectionTool::~SelectionTool()
@@ -53,7 +52,7 @@ void SelectionTool::BeginPlay()
 
 bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
-	if (e.GetMouseButton() != FLOW_MOUSE_LEFT)
+	if (e.GetMouseButton() != MOUSE_LEFT)
 		return false;
 
 	//Calculate the ray bounds
@@ -62,8 +61,8 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector( 	//TODO: normalise direction
 		MousePosition.x,
 		MousePosition.y,
-		EditorLayer::GetEditor()->GetSceneWindowSize(),
-		EditorLayer::GetEditor()->GetSceneWindowPosition());
+		Editor::GetEditor()->GetSceneWindowSize(),
+		Editor::GetEditor()->GetSceneWindowPosition());
 	Vector3 End = Start + (Direction * 1000.0f);
 
 	if (m_DrawSelectionLines)
@@ -93,11 +92,11 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 			{
 				Axis Axis = Axis::None;
 
-				if (comp->_Tag._Equal("ArrowX"))
+				if (comp->m_Tag._Equal("ArrowX"))
 					Axis = Axis::X;
-				else if (comp->_Tag._Equal("ArrowY"))
+				else if (comp->m_Tag._Equal("ArrowY"))
 					Axis = Axis::Y;
-				else if (comp->_Tag._Equal("ArrowZ"))
+				else if (comp->m_Tag._Equal("ArrowZ"))
 					Axis = Axis::Z;
 
 				if (Axis == Axis::None)
@@ -197,7 +196,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 {
-	if (e.GetKeyCode() == FLOW_KEY_DELETE && m_SelectedActor)
+	if (e.GetKeyCode() == KEY_DELETE && m_SelectedActor)
 	{
 		//std::shared_ptr<Actor> ActorPtr(_FocusedItem);
 		//World::Get()->DestroyActor(ActorPtr);
@@ -223,17 +222,17 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		return true;
 	}
 
-	if (e.GetKeyCode() == FLOW_KEY_W)
+	if (e.GetKeyCode() == KEY_W)
 	{
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Translation);
 	}
 
-	if (e.GetKeyCode() == FLOW_KEY_E)
+	if (e.GetKeyCode() == KEY_E)
 	{
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Rotation);
 	}
 
-	if (e.GetKeyCode() == FLOW_KEY_R)
+	if (e.GetKeyCode() == KEY_R)
 	{
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Scale);
 	}
@@ -243,7 +242,7 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 
 bool SelectionTool::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
-	if (e.GetMouseButton() == FLOW_MOUSE_LEFT)
+	if (e.GetMouseButton() == MOUSE_LEFT)
 	{
 		if (m_Gizmo->GetSelectedAxis() != Axis::None)
 		{

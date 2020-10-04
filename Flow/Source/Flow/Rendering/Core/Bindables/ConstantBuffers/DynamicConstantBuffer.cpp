@@ -1,6 +1,10 @@
+//= Includes ===========================================
+
 #include "Flowpch.h"
 #include "DynamicConstantBuffer.h"
 #include "Flow\Rendering\Core\Bindables\LayoutCodex.h"
+
+//= Class Definitions ==================================
 
 namespace DynamicCB
 {
@@ -158,7 +162,7 @@ namespace DynamicCB
 	{
 		using namespace std::string_literals;
 
-		auto Signature = "Struct{"s;
+		std::string Signature = "Struct{"s;
 		for (const auto& Element : static_cast<ExtraData::Struct&>(*ExtraData_).LayoutElements_)
 		{
 			Signature += Element.first + ":"s + Element.second.GetSignature() + ";"s;

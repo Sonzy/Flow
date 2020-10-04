@@ -1,65 +1,91 @@
 #pragma once
-#include "Flow\Core.h"
-#include <iostream>
-#include <fstream>
-#include <chrono>
-#include <string>
+
+//= Includes =======================
+
 #include <algorithm>
+#include <chrono>
+#include <fstream>
+#include <iostream>
 #include <mutex>
+#include <string>
+#include "Flow\Core.h"
+
+//= Macro Definitions ==================================
 
 #define PROFILING_ENABLED 1
 #if PROFILING_ENABLED
-#define PROFILE_CURRENT_SCOPE(Name) BenchmarkTimer NewBenchmark##__LINE__(Name)
-#define PROFILE_FUNCTION() PROFILE_CURRENT_SCOPE(__FUNCTION__)
+	#define PROFILE_CURRENT_SCOPE(Name) BenchmarkTimer NewBenchmark##__LINE__(Name)
+	#define PROFILE_FUNCTION() PROFILE_CURRENT_SCOPE(__FUNCTION__)
 #else
-#define PROFILE_CURRENT_SCOPE(Name)
-#define PROFILE_FUNCTION()
+	#define PROFILE_CURRENT_SCOPE(Name)
+	#define PROFILE_FUNCTION()
 #endif
+
+//= Global Struct Definitions ==========================
 
 struct ProfileResult
 {
-	std::string Name_;
-	long long Start_;
-	long long End_;
-	uint32_t ThreadID;
+	std::string		m_Name;
+	long long		m_Start;
+	long long		m_End;
+	uint32_t		m_ThreadID;
 };
 
 struct InstrumentationSession
 {
-	std::string Name_;
+	std::string		m_Name;
 };
+
+//= Class Definitions ==================================
 
 class FLOW_API Instrumentor
 {
-private:
-	InstrumentationSession* CurrentSession_;
-	std::ofstream OutputStream_;
-	int ProfileCount_;
-	std::mutex Lock_;
 public:
-	Instrumentor();
 
-	void BeginSession(const std::string& Name, const std::string& FilePath = "results.json");
-	void EndSession();
-
-	void WriteProfile(const ProfileResult& Result);
-	void WriteHeader();
-	void WriteFooter();
+	//= Public Static Functions =================
 
 	static Instrumentor& Get();
+
+public:
+
+	//= Public Functions ========================
+
+							Instrumentor();
+
+	void					BeginSession(const std::string& Name, const std::string& FilePath = "results.json");
+	void					EndSession();
+
+	void					WriteProfile(const ProfileResult& Result);
+	void					WriteHeader();
+	void					WriteFooter();
+
+private:
+
+	//= Private Variables ======================
+
+	InstrumentationSession* m_CurrentSession;
+	std::ofstream			m_OutputStream;
+	int						m_ProfileCount;
+	std::mutex				m_Lock;
 };
+
 
 class FLOW_API BenchmarkTimer
 {
 public:
 
-	BenchmarkTimer(const std::string& TimerName);
-	~BenchmarkTimer();
-	void Stop();
+	//= Public Functions ========================
+
+					BenchmarkTimer(const std::string& TimerName);
+					~BenchmarkTimer();
+	void			Stop();
 
 private:
-	std::string TimerName_;
-	std::chrono::time_point<std::chrono::steady_clock> StartPoint_;
-	bool Stopped_;
+
+	//= Private Variables ======================
+
+	std::string											m_TimerName;
+	std::chrono::time_point<std::chrono::steady_clock>	m_StartPoint;
+	bool												m_Stopped;
 };
 

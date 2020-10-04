@@ -4,7 +4,7 @@
 #include "Flow/GameFramework/Other/ClassFactory.h"
 
 Level::Level(const std::string& LevelName)
-	: _Name(LevelName)
+	: m_Name(LevelName)
 {
 }
 
@@ -20,16 +20,16 @@ void Level::Save(std::ofstream& Output)
 	}
 
 	//Save Level Name (TODO: Max character length - 32 for now)
-	OutStream.write(reinterpret_cast<const char*>(&_Name), sizeof(char) * 32);
+	OutStream.write(reinterpret_cast<const char*>(&m_Name), sizeof(char) * 32);
 
 	//Write level metadata
 
 
 	//Write the number of actors in the file
-	int NumberOfActors = _Actors.size();
+	int NumberOfActors = m_Actors.size();
 	OutStream.write(reinterpret_cast<const char*>(&NumberOfActors), sizeof(int));
 
-	for (auto Object : _Actors)
+	for (auto Object : m_Actors)
 	{
 		Object->Serialize(&OutStream);
 	}
@@ -45,7 +45,7 @@ void Level::Load(std::ifstream& Input)
 	PROFILE_FUNCTION();
 
 	//TODO: Delete all actors in level
-	_Actors.erase(_Actors.begin(), _Actors.end());
+	m_Actors.erase(m_Actors.begin(), m_Actors.end());
 
 	std::string SavePath = "Saved/SaveFile.flvl";
 	std::ifstream InputStream = std::ifstream(SavePath, std::ios::in | std::ios::binary);
@@ -56,7 +56,7 @@ void Level::Load(std::ifstream& Input)
 	}
 
 	//Load Level Name
-	InputStream.read(reinterpret_cast<char*>(&_Name), sizeof(char) * 32);
+	InputStream.read(reinterpret_cast<char*>(&m_Name), sizeof(char) * 32);
 
 	//Load Level Meta Data
 
@@ -86,22 +86,22 @@ void Level::Load(std::ifstream& Input)
 		}
 		
 		NewActor->Deserialize(&InputStream);
-		_Actors.push_back(NewActor);
+		m_Actors.push_back(NewActor);
 	}
 }
 
 void Level::InitialiseTickList()
 {
-	for (auto& BeginActor : _Actors)
+	for (auto& BeginActor : m_Actors)
 	{
 		if(BeginActor->IsTickEnabled())
-			_TickList.push_back(BeginActor);
+			m_TickList.push_back(BeginActor);
 	}
 }
 
 void Level::DispatchBeginPlay()
 {
-	for (auto& BeginActor : _Actors)
+	for (auto& BeginActor : m_Actors)
 	{
 		BeginActor->BeginPlay();
 	}
@@ -109,7 +109,7 @@ void Level::DispatchBeginPlay()
 
 void Level::DispatchEditorBeginPlay()
 {
-	for (auto& BeginActor : _Actors)
+	for (auto& BeginActor : m_Actors)
 	{
 		BeginActor->EditorBeginPlay();
 	}
@@ -117,7 +117,7 @@ void Level::DispatchEditorBeginPlay()
 
 void Level::Tick(float DeltaTime)
 {
-	for (auto& TickActor : _TickList)
+	for (auto& TickActor : m_TickList)
 	{
 		TickActor->Tick(DeltaTime);
 	}
@@ -139,12 +139,12 @@ void Level::SetTickEnabled(std::shared_ptr<Actor> TickActor, bool Enable)
 
 	if (Enable)
 	{
-		_TickList.push_back(TickActor);
-		TickActor->_TickEnabled = true;
+		m_TickList.push_back(TickActor);
+		TickActor->m_TickEnabled = true;
 	}
 	else
 	{
-		_TickList.erase(std::find(_TickList.begin(), _TickList.end(), TickActor));
-		TickActor->_TickEnabled = false;
+		m_TickList.erase(std::find(m_TickList.begin(), m_TickList.end(), TickActor));
+		TickActor->m_TickEnabled = false;
 	}
 }

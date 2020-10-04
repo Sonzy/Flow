@@ -1,9 +1,14 @@
 #pragma once
+
+//= Includes ========================
+
 #include <DirectXMath.h>
 #include <d3d11.h>
 
+//= Global Structs ==================
+
 //TODO: Move somewhere appropriate
-	//4x8bit Colour 
+//4x8bit Colour 
 struct RGBAColour
 {
 	unsigned char r;
@@ -12,6 +17,8 @@ struct RGBAColour
 	unsigned char a;
 
 };
+
+//= Global Enums ====================
 
 enum class ElementType : unsigned char
 {
@@ -23,6 +30,8 @@ enum class ElementType : unsigned char
 	Float4Colour = 0b111111,
 	RGBAColour = 0b1111111,
 };
+
+//= Global Structs Definitions ======
 
 /* Describes the layout of a vertex, meta template programmed for ease of use */
 template<ElementType>
@@ -91,29 +100,34 @@ struct VertexElement<ElementType::RGBAColour>
 	static constexpr const char* Code = "Col32b";
 };
 
+//= Class Definition =========================
+
 /* Single element of a vertex */
 class Element
 {
 public:
+
+	//= Public Functions =====================
+
 	Element(ElementType Type, size_t Offset)
-		: ElementType_(Type), Offset_(Offset)
+		: m_ElementType(Type)
+		, m_Offset(Offset)
 	{
 
 	}
 
-	/* Gets the size offset for this element */
-	size_t GetOffset() const;
-	/* Gets the size offset for the next element */
-	size_t GetOffsetAfter() const;
-	size_t GetSize() const;
+	size_t						GetOffset() const;		/* Gets the size offset for this element */
+	size_t						GetOffsetAfter() const;	/* Gets the size offset for the next element */
+	size_t						GetSize() const;
+	ElementType					GetType() const;
+	D3D11_INPUT_ELEMENT_DESC	GetDescription() const;	/* Translates the element to a DX11 element description */
 
-	ElementType GetType() const;
-	/* Translates the element to a DX11 element description */
-	D3D11_INPUT_ELEMENT_DESC GetDescription() const;
-
-	std::string GetCode() const;
+	std::string					GetCode() const;
 
 private:
+
+	//= Private Static Functions =============
+
 	static constexpr size_t GetSizeOf(ElementType Type);
 
 	template<ElementType type>
@@ -123,6 +137,9 @@ private:
 	}
 
 private:
-	ElementType ElementType_;
-	size_t Offset_;
+
+	//= Private Variables ====================
+
+	ElementType					m_ElementType;
+	size_t						m_Offset;
 };

@@ -41,9 +41,9 @@ void Renderer::Submit(Renderable* const  Object)
 
 	CHECK_RETURN(!Object, "Renderer::Submit: Renderable was nullptr");
 
-	assert(Object->_Techniques.size() != 0 && "Renderer::Submit: Object %s had 0 techniques");
+	assert(Object->m_Techniques.size() != 0 && "Renderer::Submit: Object %s had 0 techniques");
 
-	for (const auto& T : Object->_Techniques)
+	for (const auto& T : Object->m_Techniques)
 	{
 		T.Submit(*Object);
 	}

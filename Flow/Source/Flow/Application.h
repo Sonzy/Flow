@@ -21,7 +21,7 @@
 class Application;
 class World;
 class Inspector;
-class EditorLayer;
+class Editor;
 class ClassFactory;
 class GameLayer;
 class Layer;
@@ -65,7 +65,7 @@ public:
 	Window&								GetWindow();
 
 #if WITH_EDITOR
-	EditorLayer*						GetEditor()				{ return m_Layer_Editor; };
+	Editor*						GetEditor()				{ return m_Layer_Editor; };
 #endif
 
 	static bool StartGame();
@@ -88,7 +88,7 @@ public:
 
 private:
 	//Allow editor to control local variables
-	friend class EditorLayer;
+	friend class Editor;
 
 	//= Private Static Variables ================================
 
@@ -103,7 +103,7 @@ private:
 	ImGuiLayer*							m_Layer_ImGui;
 	GameLayer*							m_Layer_Game;
 #if WITH_EDITOR
-	EditorLayer*						m_Layer_Editor;
+	Editor*						m_Layer_Editor;
 #endif
 
 	bool								m_Running;

@@ -1,10 +1,14 @@
+//= Includes =====================================
+
 #include "Flowpch.h"
 #include "LayoutCodex.h"
+
+//= Class (CookedLayout) Definition =======================================
 
 DynamicCB::CookedLayout DynamicCB::LayoutCodex::Resolve(DynamicCB::RawLayout&& Layout)
 {
 	auto Signature = Layout.GetSignature();
-	auto& Map = Get().Map_;
+	auto& Map = Get().m_Map;
 	const auto i = Map.find(Signature);
 	// idential layout already exists
 	if (i != Map.end())
@@ -19,6 +23,8 @@ DynamicCB::CookedLayout DynamicCB::LayoutCodex::Resolve(DynamicCB::RawLayout&& L
 	// return layout with additional reference to root
 	return { result.first->second };
 }
+
+//= Class (LayoutCodex) Definition ========================================
 
 DynamicCB::LayoutCodex& DynamicCB::LayoutCodex::Get()
 {

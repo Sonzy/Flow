@@ -1,4 +1,7 @@
 #pragma once
+
+//= Includes =======================================
+
 #include "Flow/Rendering/RenderAPI.h"
 #include <Windows.h>
 #include <d3d11.h>
@@ -6,54 +9,62 @@
 #include <DirectXMath.h>
 #include <dxgidebug.h>
 
+//= Class Definition ===============================
+
 class DX11RenderAPI : public RenderAPI
 {
 public:
-	virtual ~DX11RenderAPI();
 
-	virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) override;
+	//= Public Functions ============================================
 
-	virtual void SetClearColour(float R, float G, float B, float A) override;
-	virtual void Clear() override;
+	virtual					~DX11RenderAPI();
 
-	virtual void BeginFrame() override;
-	virtual void EndFrame() override;
+	virtual void			InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) override;
 
-	virtual void DrawIndexed(int Count) override;
-	virtual void Draw(unsigned int  Count) override;
+	virtual void			SetClearColour(float R, float G, float B, float A) override;
+	virtual void			Clear() override;
 
-	virtual void Resize(int Width, int Height) override;
-	virtual void ResizeDepthBuffer(int Width, int Height) override;
+	virtual void			BeginFrame() override;
+	virtual void			EndFrame() override;
 
-	virtual Vector3 GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0));
+	virtual void			DrawIndexed(int Count) override;
+	virtual void			Draw(unsigned int  Count) override;
 
-	ID3D11Device* GetDevice();
-	ID3D11DeviceContext* GetContext();
+	virtual void			Resize(int Width, int Height) override;
+	virtual void			ResizeDepthBuffer(int Width, int Height) override;
 
-	virtual void BindBackBuffer() override;
-	virtual void BindFrameBuffer(FrameBuffer* Buffer) override;
+	virtual API				GetAPI() override { return API::DirectX11; };
+
+	virtual Vector3			GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0));
+
+	ID3D11Device*			GetDevice();
+	ID3D11DeviceContext*	GetContext();
+
+	virtual void			BindBackBuffer() override;
+	virtual void			BindFrameBuffer(FrameBuffer* Buffer) override;
 
 #if WITH_EDITOR
-	void BindEditorFrameBuffer();
-	FrameBuffer* GetEditorBuffer() const;
+	void					BindEditorFrameBuffer();
+	FrameBuffer*			GetEditorBuffer() const;
 #endif
 
 private:
-	Microsoft::WRL::ComPtr<IDXGISwapChain> _SwapChain = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> _Context = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _RenderTarget = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Device> _Device = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> _DepthTexture = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthTextureView = nullptr;
 
-	FrameBuffer* CurrentBuffer;
+	//= Private Variables ============================================
+
+	Microsoft::WRL::ComPtr<IDXGISwapChain>			m_SwapChain = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_Context = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_RenderTarget = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			m_DepthTexture = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthTextureView = nullptr;
+
+	FrameBuffer*									m_CurrentBuffer;
 
 #if WITH_EDITOR
-	FrameBuffer* _EditorBuffer;
-	bool _EditorBufferBound;
+	FrameBuffer*									m_EditorBuffer;
+	bool											m_EditorBufferBound;
 #endif
 
-	/* Debug interfaces */
-	//Microsoft::WRL::ComPtr<IDXGIDebug> Debug = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Debug> _DeviceDebug = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Debug>				m_DeviceDebug = nullptr;
 };

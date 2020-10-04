@@ -1,11 +1,15 @@
+//= Includes ====================================================
+
 #include "Flowpch.h"
 #include "AssetWindow.h"
+#include "Assets/AssetSystem.h"
 #include "ThirdParty/ImGui/imgui.h"
-#include "Flow/Assets/AssetSystem.h"
+
+//= Class Definition - AssetWindow ==============================
 
 AssetWindow::AssetWindow()
 {
-	_SelectedDirectory = AssetSystem::GetAssetDirectory().append("Assets");
+	m_SelectedDirectory = AssetSystem::GetAssetDirectory().append("Assets");
 }
 
 void AssetWindow::DrawWindow()
@@ -28,15 +32,15 @@ void AssetWindow::DrawWindow()
 
 			if (ImGui::TreeNode("Editor Assets"))
 			{
-				_CurrentParentDirectory = AssetSystem::GetAssetDirectory(true).append("Assets");
-				DrawDirectory(_CurrentParentDirectory);
+				m_CurrentParentDirectory = AssetSystem::GetAssetDirectory(true).append("Assets");
+				DrawDirectory(m_CurrentParentDirectory);
 				ImGui::TreePop();
 			}
 
 			if (ImGui::TreeNode("Application Assets"))
 			{
-				_CurrentParentDirectory = AssetSystem::GetAssetDirectory(true).append("Assets");
-				DrawDirectory(_CurrentParentDirectory);
+				m_CurrentParentDirectory = AssetSystem::GetAssetDirectory(false).append("Assets");
+				DrawDirectory(m_CurrentParentDirectory);
 				ImGui::TreePop();
 			}
 		}
@@ -52,12 +56,16 @@ void AssetWindow::DrawWindow()
 				ImGui::EndMenuBar();
 			}
 
-			//std::string String = AssetSystem::GetRootDirectory().string();
-			//ImGui::Text(String.c_str());
-
-			for (auto& Element : std::filesystem::directory_iterator(_SelectedDirectory, std::filesystem::directory_options::skip_permission_denied))
+			for (const std::filesystem::directory_entry& Element : std::filesystem::directory_iterator(m_SelectedDirectory, std::filesystem::directory_options::skip_permission_denied))
 			{
+#if 1
+				if (Element.path().extension() == ".FMesh")
+				{
+					ImGui::Button(Element.path().filename().string().c_str());
+				}
+#else
 				ImGui::Button(Element.path().filename().string().c_str());
+#endif
 			}
 		}
 		ImGui::EndChild();
@@ -73,11 +81,11 @@ void AssetWindow::DrawDirectory(const std::filesystem::path& CurrentPath)
 		//If this is a directory, draw as part of tree, otherwise draw as label.
 		if (IsDirectory)
 		{
-			auto RelativePath = std::filesystem::relative(Element.path(), _CurrentParentDirectory);
+			auto RelativePath = std::filesystem::relative(Element.path(), m_CurrentParentDirectory);
 			bool TreeOpen = ImGui::TreeNode(RelativePath.string().c_str());
 
 			if (ImGui::IsItemClicked())
-				_SelectedDirectory = Element.path();
+				m_SelectedDirectory = Element.path();
 
 			if(TreeOpen)
 			{

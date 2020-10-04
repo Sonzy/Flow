@@ -1,24 +1,28 @@
 #pragma once
-#include "Flow\Core.h"
+
+//= Includes ============================================
+
 #include <vector>
 #include <memory>
+#include "Bullet/btBulletDynamicsCommon.h"
+#include "Core.h"
+#include "GameFramework/Level.h"
+#include "Rendering/Core/DebugDrawing/LineBatcher.h"
 #include "Maths/Vector3.h"
+#include "Utils\BulletDebugDrawing.h"
 
-#include "btBulletDynamicsCommon.h"
-
-#include "Flow\Utils\BulletDebugDrawing.h"
-#include "Flow/GameFramework/Level.h"
-#include "Flow/Rendering/Core/DebugDrawing/LineBatcher.h"
+//= Forward Declarations =================================
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
-
 class Actor;
 class Skybox;
 class Controller;
+
+//= Enum Definitions ====================================
 
 enum class WorldState
 {
@@ -27,115 +31,119 @@ enum class WorldState
 	InGame
 };
 
+//= Class Definition ====================================
+
 class FLOW_API World
 {
 public:
-	World();
-	World(const std::string& WorldName);
-	~World();
 
-	void SaveLevel();
-	void LoadLevel();
+	//= Public Template Functions ===================
 
-	void SavePlayState();
-	void LoadPlayState();
-
-	//TODO: Temp rendering in the level
-	void Render();
-
-	void InitialiseWorld();
-#if WITH_EDITOR
-	void StartEditor();
-#endif
-
-	/* Adds an actor to the world that was default created, takes ownership*/
-	void AddDefaultInitialisedActor(Actor* NewActor);
-	void AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor);
 	template<typename T>
-	std::shared_ptr<T> SpawnActor(const std::string& Name)
+	std::shared_ptr<T>	SpawnActor(const std::string& Name)
 	{
 		std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
-		_MainLevel->GetActors().push_back(NewObject);
+		m_MainLevel->GetActors().push_back(NewObject);
 
 		return NewObject;
 	}
 
-	void DestroyActor(std::shared_ptr<Actor> Act);
-	void DestroyActor(Actor* Act);
+	//= Public Functions ============================
 
-	void Tick(float DeltaTime);
+														World();
+														World(const std::string& WorldName);
+														~World();
 
-	const std::string& GetName();
+	void												Tick(float DeltaTime);
+	void												SaveLevel();
+	void												LoadLevel();
+	void												SavePlayState();
+	void												LoadPlayState();
 
-	static btCollisionWorld::ClosestRayResultCallback WorldTrace(Vector3 Start, Vector3 End);
+	//TODO: Temp rendering in the level
+	void												Render();
 
-	static btDiscreteDynamicsWorld* GetPhysicsWorld();
-	static World* Get();
+	void												InitialiseWorld();
+#if WITH_EDITOR
+	void												StartEditor();
+#endif
 
-	void AddPhysicsObject(btRigidBody* Obj);
-	void AddCollisionObject(btCollisionObject* Obj);
+	/* Adds an actor to the world that was default created, takes ownership*/
+	void												AddDefaultInitialisedActor(Actor* NewActor);
+	void												AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor);
+
+	void												DestroyActor(std::shared_ptr<Actor> Act);
+	void												DestroyActor(Actor* Act);
+
+	const std::string&									GetName();
+
+	static btCollisionWorld::ClosestRayResultCallback	WorldTrace(Vector3 Start, Vector3 End);
+
+	static btDiscreteDynamicsWorld*						GetPhysicsWorld();
+	static World*										Get();
+
+	void												AddPhysicsObject(btRigidBody* Obj);
+	void												AddCollisionObject(btCollisionObject* Obj);
 
 	//= Controllers ========
 
-	void RegisterController(std::shared_ptr<Controller> NewController);
-	void DeRegisterController(std::shared_ptr<Controller> OldController);
-	Controller* GetLocalController() const;
+	void												RegisterController(std::shared_ptr<Controller> NewController);
+	void												DeRegisterController(std::shared_ptr<Controller> OldController);
+	Controller*											GetLocalController() const;
 
 
 	//= Getters etc
-	LineBatcher& GetLineBatcher() const { return s_LineBatcher; };
-	static LineBatcher& GetLineBatcher_S();
+	LineBatcher&										GetLineBatcher() const { return sm_LineBatcher; };
+	static LineBatcher&									GetLineBatcher_S();
+	BulletDebugDraw&									GetPhysicsDebugDrawer() { return m_DebugDrawer; }
+	std::vector<std::shared_ptr<Actor>>&				GetActors(){ return m_MainLevel->GetActors(); }
 
-	BulletDebugDraw& GetPhysicsDebugDrawer() { return _DebugDrawer; }
-
-	std::vector<std::shared_ptr<Actor>>& GetActors() { return _MainLevel->GetActors(); }
-
-	WorldState GetWorldState() const { return _WorldState; }
+	WorldState											GetWorldState() const { return m_WorldState; }
 protected:
 	friend class Application;
-	void StartGame();
-	void PauseGame();
-	void StopGame();
 
+	//= Protected Functions ===============
 
-protected:
-	void InitialisePhysics();
+	void												StartGame();
+	void												PauseGame();
+	void												StopGame();
+	void												InitialisePhysics();
 
 private:
 	friend class Inspector;
 
-	std::string _WorldName;
+	//= Private Variables =================
 
-	Level* _MainLevel;
-
-	WorldState _WorldState;
+	std::string											m_WorldName;
+	Level*												m_MainLevel;
+	WorldState											m_WorldState;
 
 	//=== World Physics ===
 
 	/* Default memory setup */
-	btDefaultCollisionConfiguration* _CollisionConfig;
+	btDefaultCollisionConfiguration*					m_CollisionConfig;
 	/* Default single threaded collision dispatcher */
-	btCollisionDispatcher* _Dispatcher;
+	btCollisionDispatcher*								m_Dispatcher;
 	/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
-	btBroadphaseInterface* _OverlappingPairCache;
+	btBroadphaseInterface*								m_OverlappingPairCache;
 	/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
-	btSequentialImpulseConstraintSolver* _Solver;
-	btDiscreteDynamicsWorld* _PhysicsWorld;
+	btSequentialImpulseConstraintSolver*				m_Solver;
+	btDiscreteDynamicsWorld*							m_PhysicsWorld;
 
 	//= Debug ===
 
-	BulletDebugDraw _DebugDrawer;
-	static LineBatcher s_LineBatcher;
+	BulletDebugDraw										m_DebugDrawer;
+	static LineBatcher									sm_LineBatcher;
 
 	//= Other =======
 
 	//= Editor =========
 
 #if WITH_EDITOR
-	 std::shared_ptr<class EditorCamera> _EditorCam;
+	 std::shared_ptr<class EditorCamera>				m_EditorCam;
 #endif
 
 	//= Controllers =======
 
-	std::vector<std::shared_ptr<Controller>> _RegisteredControllers;
+	std::vector<std::shared_ptr<Controller>>			m_RegisteredControllers;
 };

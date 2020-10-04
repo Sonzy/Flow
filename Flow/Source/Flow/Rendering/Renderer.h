@@ -1,29 +1,38 @@
 #pragma once
-#include "Flow/Core.h"
 
+//= Includes ===================================
+
+#include "Flow/Core.h"
 #include "RenderCommand.h"
 #include "Flow/Rendering/Core/Renderable.h"
+
+//= Forward Declarations =======================
 
 class RenderableComponent;
 class Technique;
 
+//= Class Definitons ===========================
+
 class FLOW_API Renderer
 {
 public:
-	virtual ~Renderer();
-	static RenderAPI::API GetRenderAPI() { return RenderAPI::GetAPI(); };
+	
+	//= Public Static Functions ========================================
 
-	virtual void InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) {}
+	static void					BeginScene();
+	static void					EndScene();
+	static int					SubmitWithoutDraw(Renderable* Renderables);
+	static void					Submit(Renderable* const Object);
+	static void					Draw(int Count);
 
-	static void BeginScene();
-	static void EndScene();
+	//= Public Functions ===============================================
 
-	static int SubmitWithoutDraw(Renderable* Renderables);
-	static void Submit(Renderable* const Object);
-
-
-	static void Draw(int Count);
+	virtual						~Renderer();
+	virtual void				InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight) {}
 
 private:
-	static int s_ObjectsRendered;
+
+	//= Private Variables ==============================================
+
+	static int					s_ObjectsRendered;
 };

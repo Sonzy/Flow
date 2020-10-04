@@ -1,24 +1,28 @@
 #pragma once
 
+//= Includes =================================================
+
 #include <DirectXMath.h>
-#include "Flow\Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h"
-#include "Flow\Rendering\Core\Mesh\StaticMesh.h"
+#include "Rendering\Core\Bindables\ConstantBuffers\ShaderConstantBuffers.h"
+#include "Rendering\Core\Mesh\StaticMesh.h"
+
+//= Class Definition =========================================
 
 class FLOW_API PointLight
 {
 public:
-	PointLight(float LightRadius = 0.5f);
+	
+	//= Public Functions =================================================
 
-	void Reset();
-
-	void BindLight(DirectX::FXMMATRIX ViewMatrix);
-
-	void RenderControlWindow();
-
-	//StaticMesh* GetMesh() { return &_Mesh; }
-	StaticMesh* GetMesh() { return nullptr; }
+											PointLight(float LightRadius = 0.5f);
+	void									Reset();
+	void									BindLight(DirectX::FXMMATRIX ViewMatrix);
+	void									RenderControlWindow();
+	StaticMesh*								GetMesh()	{ return nullptr; }
 
 private:
+
+	//= Private Structs ==================================================
 
 	struct LightConstantBuffer
 	{
@@ -32,9 +36,9 @@ private:
 	};
 
 private:
-	//StaticMesh _Mesh;
-	//bool _DrawMesh = false; //TODO fix mesh
 
-	LightConstantBuffer _ConstantBuffer;
-	PixelConstantBuffer<LightConstantBuffer> _PixelConstantBuffer;
+	//= Private Variables ================================================
+
+	LightConstantBuffer							m_ConstantBuffer;
+	PixelConstantBuffer<LightConstantBuffer>	m_PixelConstantBuffer;
 };

@@ -9,8 +9,8 @@ ScaledTransformConstantBuffer::ScaledTransformConstantBuffer(Renderable* Parent,
 void ScaledTransformConstantBuffer::Bind()
 {
 	DirectX::XMMATRIX ParentMatrix;
-	if (_ParentObject)
-		ParentMatrix = DirectX::XMMatrixScaling(1.05f, 1.05f, 1.05f) * _ParentObject->GetTransformXM();
+	if (m_ParentObject)
+		ParentMatrix = DirectX::XMMatrixScaling(1.05f, 1.05f, 1.05f) * m_ParentObject->GetTransformXM();
 	else
 		FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
@@ -25,6 +25,6 @@ void ScaledTransformConstantBuffer::Bind()
 	};
 
 	//Update and bind the constant buffers
-	_VertexConstBuffer->Update(transform);
-	_VertexConstBuffer->Bind();
+	m_VertexConstBuffer->Update(transform);
+	m_VertexConstBuffer->Bind();
 }

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <DirectXMath.h>
 #include "spdlog/fmt/ostr.h"
-#include "ThirdParty/Bullet/LinearMath/btVector3.h"
+#include "Bullet/LinearMath/btVector3.h"
 #include "Vector2.h"
 
 class Vector4;

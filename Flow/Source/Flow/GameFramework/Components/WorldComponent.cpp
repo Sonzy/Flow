@@ -4,8 +4,8 @@
 #include "ThirdParty\ImGui\imgui.h"
 #include "Flow\Editor\Inspector.h"
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include "Bullet/btBulletCollisionCommon.h"
+#include "Bullet/btBulletDynamicsCommon.h"
 #include "Flow/Physics/MotionState.h"
 
 #include "Flow/GameFramework/World.h"
@@ -18,24 +18,24 @@ WorldComponent::WorldComponent()
 }
 
 WorldComponent::WorldComponent(const std::string& Name)
-	: Component(Name), _ParentComponent(nullptr), _RigidBody(nullptr), m_CollisionShape(nullptr),
-	_MotionState(nullptr), m_CollisionEnabled(true)
+	: Component(Name), m_ParentComponent(nullptr), m_RigidBody(nullptr), m_CollisionShape(nullptr),
+	m_MotionState(nullptr), m_CollisionEnabled(true)
 {
 }
 
 WorldComponent::~WorldComponent()
 {
-	_Children.clear();
+	m_Children.clear();
 
-	delete _RigidBody;
+	delete m_RigidBody;
 	delete m_CollisionShape;
-	delete _MotionState;
+	delete m_MotionState;
 }
 
 #if WITH_EDITOR
 void WorldComponent::EditorBeginPlay()
 {
-	for (auto& Child : _Children)
+	for (auto& Child : m_Children)
 	{
 		Child->EditorBeginPlay();
 	}
@@ -50,7 +50,7 @@ void WorldComponent::OnViewportDeselected()
 
 void WorldComponent::BeginPlay()
 {
-	for (auto& Child : _Children)
+	for (auto& Child : m_Children)
 	{
 		Child->BeginPlay();
 	}
@@ -60,7 +60,7 @@ void WorldComponent::Tick(float DeltaTime)
 {
 	PROFILE_FUNCTION();
 
-	for (auto& Child : _Children)
+	for (auto& Child : m_Children)
 	{
 		Child->Tick(DeltaTime);
 	}
@@ -69,20 +69,20 @@ void WorldComponent::Tick(float DeltaTime)
 void WorldComponent::AddChild(WorldComponent* Child)
 {
 	CHECK_RETURN(!Child, "WorldComponent::AddChild: New Child was nullptr");
-	_Children.push_back(Child);
+	m_Children.push_back(Child);
 	Child->SetParentComponent(this);
 }
 
 Vector3 WorldComponent::GetWorldPosition() const
 {
 	WorldComponent* Parent = GetParentComponent(); //TODO: Rotate this by the parents rotation
-	//return Parent ? Parent->GetWorldPosition() + _RelativeTransform._Position : _RelativeTransform._Position;
+	//return Parent ? Parent->GetWorldPosition() + m_RelativeTransform._Position : m_RelativeTransform._Position;
 
 	if (Parent)
 	{
 		Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
 
-		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(_RelativeTransform.m_Position));
+		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(m_RelativeTransform.m_Position));
 		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
 		DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
 		DirectX::XMFLOAT3 RotatedPos;
@@ -91,12 +91,12 @@ Vector3 WorldComponent::GetWorldPosition() const
 		return Parent->GetWorldPosition() + Vector3(RotatedPos.x, RotatedPos.y, RotatedPos.z);
 	}
 	else
-		return _RelativeTransform.m_Position;
+		return m_RelativeTransform.m_Position;
 }
 
 Vector3 WorldComponent::GetRelativePosition() const
 {
-	return _RelativeTransform.m_Position;
+	return m_RelativeTransform.m_Position;
 }
 
 void WorldComponent::SetWorldPosition(Vector3 NewPosition)
@@ -105,53 +105,53 @@ void WorldComponent::SetWorldPosition(Vector3 NewPosition)
 	WorldComponent* Parent = GetParentComponent();
 	while (Parent)
 	{
-		CurrentParentWorld += Parent->_RelativeTransform.m_Position;
+		CurrentParentWorld += Parent->m_RelativeTransform.m_Position;
 		Parent = Parent->GetParentComponent();
 	}
 
-	_RelativeTransform.m_Position = NewPosition - CurrentParentWorld;
+	m_RelativeTransform.m_Position = NewPosition - CurrentParentWorld;
 
 	// Update the physics transform. Data isnt grabbed from the motion state at runtime unless object is kinematic
-	if (_RigidBody)
+	if (m_RigidBody)
 	{
 		btTransform NewTransform;
 		//We assume that the object is the root component
-		NewTransform.setOrigin(btVector3(_RelativeTransform.m_Position));
+		NewTransform.setOrigin(btVector3(m_RelativeTransform.m_Position));
 
 		//Convert to radians for now, need to do rotations better lul
 		btQuaternion Rotation;
-		Rotator RadiansRotation = Rotator::AsRadians(_RelativeTransform.m_Rotation);
+		Rotator RadiansRotation = Rotator::AsRadians(m_RelativeTransform.m_Rotation);
 		Rotation.setEuler(RadiansRotation.Yaw, RadiansRotation.Pitch, RadiansRotation.Roll);
 		NewTransform.setRotation(Rotation);
 
 
-		_RigidBody->setWorldTransform(NewTransform);
-		//_RigidBody->clearForces();
-		//_RigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
-		_RigidBody->activate();
+		m_RigidBody->setWorldTransform(NewTransform);
+		//m_RigidBody->clearForces();
+		//m_RigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+		m_RigidBody->activate();
 	}
 
 }
 
 void WorldComponent::SetRelativePosition(Vector3 NewPosition)
 {
-	_RelativeTransform.m_Position = NewPosition;
+	m_RelativeTransform.m_Position = NewPosition;
 }
 
 void WorldComponent::AddRelativePosition(Vector3 Position)
 {
-	_RelativeTransform.m_Position += Position;
+	m_RelativeTransform.m_Position += Position;
 }
 
 Rotator WorldComponent::GetWorldRotation() const
 {
 	WorldComponent* Parent = GetParentComponent();
-	return Parent ? Parent->GetWorldRotation() + _RelativeTransform.m_Rotation : _RelativeTransform.m_Rotation;
+	return Parent ? Parent->GetWorldRotation() + m_RelativeTransform.m_Rotation : m_RelativeTransform.m_Rotation;
 }
 
 Rotator WorldComponent::GetRelativeRotation() const
 {
-	return _RelativeTransform.m_Rotation;
+	return m_RelativeTransform.m_Rotation;
 }
 
 void WorldComponent::SetWorldRotation(Rotator NewRotation)
@@ -161,30 +161,30 @@ void WorldComponent::SetWorldRotation(Rotator NewRotation)
 	if (WorldComponent* Parent = GetParentComponent())
 		CurrentParentWorld = Parent->GetWorldRotation();
 
-	_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
+	m_RelativeTransform.m_Rotation = NewRotation - CurrentParentWorld;
 	//TODO: UpdatePhysics Movement
 }
 
 void WorldComponent::SetRelativeRotation(Rotator NewRotation)
 {
-	_RelativeTransform.m_Rotation = NewRotation;
+	m_RelativeTransform.m_Rotation = NewRotation;
 	//TODO: UpdatePhysics Movement
 }
 
 void WorldComponent::AddRelativeRotation(Rotator Rotation)
 {
-	_RelativeTransform.m_Rotation += Rotation;
+	m_RelativeTransform.m_Rotation += Rotation;
 }
 
 Vector3 WorldComponent::GetWorldScale() const
 {
 	WorldComponent* Parent = GetParentComponent();
-	return Parent ? Parent->GetWorldScale() * _RelativeTransform.m_Scale : _RelativeTransform.m_Scale;
+	return Parent ? Parent->GetWorldScale() * m_RelativeTransform.m_Scale : m_RelativeTransform.m_Scale;
 }
 
 Vector3 WorldComponent::GetRelativeScale() const
 {
-	return _RelativeTransform.m_Scale;
+	return m_RelativeTransform.m_Scale;
 }
 
 void WorldComponent::SetWorldScale(Vector3 NewScale)
@@ -193,18 +193,18 @@ void WorldComponent::SetWorldScale(Vector3 NewScale)
 	WorldComponent* PointedComp = GetParentComponent();
 	while (PointedComp)
 	{
-		CurrentParentWorld *= PointedComp->_RelativeTransform.m_Scale;
+		CurrentParentWorld *= PointedComp->m_RelativeTransform.m_Scale;
 		PointedComp = PointedComp->GetParentComponent();
 	}
 
-	_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
+	m_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
 
 	UpdateCollisionScale();
 }
 
 void WorldComponent::SetRelativeScale(Vector3 NewScale)
 {
-	_RelativeTransform.m_Scale = NewScale;
+	m_RelativeTransform.m_Scale = NewScale;
 
 	UpdateCollisionScale();
 }
@@ -216,7 +216,7 @@ Transform WorldComponent::GetWorldTransform() const
 
 Transform WorldComponent::GetRelativeTransform() const
 {
-	return _RelativeTransform;
+	return m_RelativeTransform;
 }
 
 void WorldComponent::SetWorldTransform(Transform NewTransform)
@@ -228,14 +228,14 @@ void WorldComponent::SetWorldTransform(Transform NewTransform)
 
 void WorldComponent::SetRelativeTransform(Transform NewTransform)
 {
-	_RelativeTransform = NewTransform;
+	m_RelativeTransform = NewTransform;
 }
 
 void WorldComponent::Render()
 {
 	PROFILE_CURRENT_SCOPE("Render Children");
 
-	for (auto Child : _Children)
+	for (auto Child : m_Children)
 	{
 		if (Child)
 			Child->Render();
@@ -244,15 +244,15 @@ void WorldComponent::Render()
 
 Vector3* WorldComponent::GetWriteablePosition()
 {
-	return &_RelativeTransform.m_Position;
+	return &m_RelativeTransform.m_Position;
 }
 Rotator* WorldComponent::GetWriteableRotation()
 {
-	return &_RelativeTransform.m_Rotation;
+	return &m_RelativeTransform.m_Rotation;
 }
 Vector3* WorldComponent::GetWriteableScale()
 {
-	return &_RelativeTransform.m_Scale;
+	return &m_RelativeTransform.m_Scale;
 }
 void WorldComponent::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
 {
@@ -278,7 +278,7 @@ void WorldComponent::DrawInspectionTree(WorldComponent* CurrentInspectedComponen
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		ImU32 col = ImColor(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
 
-		for (auto& Child : _Children)
+		for (auto& Child : m_Children)
 		{
 			Child->DrawInspectionTree(CurrentInspectedComponent, DontOpenTree);
 		}
@@ -291,12 +291,12 @@ void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 }
 std::vector<WorldComponent*> WorldComponent::GetChildren() const
 {
-	return _Children;
+	return m_Children;
 }
 
 WorldComponent* WorldComponent::GetChildByName(const std::string& ChildName)
 {
-	for (auto& Comp : _Children)
+	for (auto& Comp : m_Children)
 	{
 		if (Comp->GetName() == ChildName)
 			return Comp;
@@ -307,16 +307,16 @@ WorldComponent* WorldComponent::GetChildByName(const std::string& ChildName)
 
 void WorldComponent::SetVisibility(bool Visible)
 {
-	_Visible = Visible;
+	m_Visible = Visible;
 }
 bool WorldComponent::IsVisible() const
 {
-	return _Visible;
+	return m_Visible;
 }
 
 void WorldComponent::InitialisePhysics()
 {
-	_SimulatePhysics = false;
+	m_SimulatePhysics = false;
 }
 
 void WorldComponent::DestroyPhysics()
@@ -336,10 +336,10 @@ void WorldComponent::CreateRigidBody()
 	Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
 
 	//FOR NOW WE ASSUME THAT THE PHYSICS COMPONENT IS THE ROOT COMPONENT
-	MotionState* motionState = new MotionState(&_RelativeTransform.m_Position, &_RelativeTransform.m_Rotation);
+	MotionState* motionState = new MotionState(&m_RelativeTransform.m_Position, &m_RelativeTransform.m_Rotation);
 
 	//Initialise the mass and intertia values
-	btScalar bodyMass = _SimulatePhysics ? 20.0f : 0.0f;
+	btScalar bodyMass = m_SimulatePhysics ? 20.0f : 0.0f;
 	btVector3 bodyInertia;
 	m_CollisionShape->calculateLocalInertia(bodyMass, bodyInertia);
 
@@ -351,22 +351,22 @@ void WorldComponent::CreateRigidBody()
 	bodyCI.m_rollingFriction = 0.2f;
 	bodyCI.m_spinningFriction = 0.3f;
 
-	_RigidBody = new btRigidBody(bodyCI);
-	_RigidBody->setUserPointer(this);
+	m_RigidBody = new btRigidBody(bodyCI);
+	m_RigidBody->setUserPointer(this);
 
 	//TODO: Testing flag issues
-	_RigidBody->setCollisionFlags(0);
+	m_RigidBody->setCollisionFlags(0);
 }
 
 void WorldComponent::UpdateAABB()
 {
-	if(_RigidBody)
-		World::GetPhysicsWorld()->updateSingleAabb(_RigidBody);
+	if(m_RigidBody)
+		World::GetPhysicsWorld()->updateSingleAabb(m_RigidBody);
 }
 
 btRigidBody* WorldComponent::GetRigidBody() const
 {
-	return _RigidBody;
+	return m_RigidBody;
 }
 
 btCollisionShape* WorldComponent::GetCollisionShape() const
@@ -376,12 +376,12 @@ btCollisionShape* WorldComponent::GetCollisionShape() const
 
 void WorldComponent::SetSimulatePhysics(bool Simulate)
 {
-	_SimulatePhysics = Simulate;
+	m_SimulatePhysics = Simulate;
 }
 
 bool WorldComponent::IsSimulatingPhysics() const
 {
-	return _SimulatePhysics;
+	return m_SimulatePhysics;
 }
 
 bool WorldComponent::HasCollision() const
@@ -391,13 +391,13 @@ bool WorldComponent::HasCollision() const
 
 void WorldComponent::UpdateCollisionScale()
 {
-	if (!m_CollisionEnabled || !m_CollisionShape || !_RigidBody)
+	if (!m_CollisionEnabled || !m_CollisionShape || !m_RigidBody)
 	{
 		return;
 	}
 
-	m_CollisionShape->setLocalScaling(_RelativeTransform.m_Scale);
-	World::GetPhysicsWorld()->updateSingleAabb(_RigidBody);
+	m_CollisionShape->setLocalScaling(m_RelativeTransform.m_Scale);
+	World::GetPhysicsWorld()->updateSingleAabb(m_RigidBody);
 }
 
 std::string WorldComponent::GetClassSerializationUID(std::ofstream* Archive)
@@ -422,7 +422,7 @@ void WorldComponent::Serialize(std::ofstream* Archive)
 	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
 
 	//= Physics ===
-	Archive->write(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
+	Archive->write(reinterpret_cast<char*>(&m_SimulatePhysics), sizeof(bool));
 }
 
 void WorldComponent::SerializeChildren(std::ofstream* Archive)
@@ -463,12 +463,12 @@ void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	SetRelativeTransform(NewTrans);
 
 	//= Load Physics properties
-	Archive->read(reinterpret_cast<char*>(&_SimulatePhysics), sizeof(bool));
+	Archive->read(reinterpret_cast<char*>(&m_SimulatePhysics), sizeof(bool));
 }
 
 void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParent)
 {
-	for (auto& Comp : _Children)
+	for (auto& Comp : m_Children)
 	{
 		Comp->Deserialize(Archive, NewParent);
 		Comp->DeserializeChildren(Archive, NewParent);

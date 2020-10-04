@@ -38,7 +38,7 @@ bool AssetSystem::LoadAsset(const std::string& AssetName, const std::string& Ass
 
 	std::string UpdatedPath = AbsolutePath ? AssetPath : GetAssetDirectoryString(EditorAsset) + AssetPath;
 	//Try to load asset, log if we fail
-	if (!NewAsset->LoadAsset(UpdatedPath))
+	if (!NewAsset->ImportAsset(UpdatedPath)) //TODO: Load the asset instead
 	{
 		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset {0} at path {1}", AssetName, UpdatedPath);
 		delete NewAsset;

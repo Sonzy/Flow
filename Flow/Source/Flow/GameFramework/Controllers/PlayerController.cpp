@@ -7,12 +7,12 @@ PlayerController::PlayerController()
 }
 
 PlayerController::PlayerController(const std::string& Name)
-	: Controller(Name), _Camera(nullptr)
+	: Controller(Name), m_Camera(nullptr)
 {
 }
 
 void PlayerController::SetCamera(std::shared_ptr<CameraBase> NewCamera)
 {
 	CHECK_RETURN(!NewCamera, "PlayerController::SetCamera: Camera was nullptr");
-	_Camera = NewCamera;
+	m_Camera = NewCamera;
 }

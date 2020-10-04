@@ -1,28 +1,46 @@
 #pragma once
+
+//= Includes =======================================
+
 #include <DirectXMath.h>
 #include <memory>
 #include "ShaderConstantBuffers.h"
+#include "Rendering/Core/Renderable.h"
 
-#include "Flow/Rendering/Core/Renderable.h"
+//= Forward Declarations ===========================
 
 class RenderableComponent;
+
+//= Class Definiton ================================
 
 class TransformConstantBuffer : public Bindable
 {
 public:
+	
+	//= Public Functions ==================================================
 
-	TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
-	void Bind() override;
+								TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
+	void						Bind() override;
 
 protected:
+
+	//= Protected Structs =================================================
 	struct Transforms
 	{
-		DirectX::XMMATRIX modelView;
-		DirectX::XMMATRIX modelViewProj;
+		DirectX::XMMATRIX		m_ModelView;
+		DirectX::XMMATRIX		m_ModelViewProjection;
 	};
 
 protected:
-	std::string _Tag;
-	static std::unique_ptr<VertexConstantBuffer<Transforms>> _VertexConstBuffer;
-	Renderable* _ParentObject;
+
+	//= Protected Static Variables ========================================
+
+	static std::unique_ptr<VertexConstantBuffer<Transforms>>		m_VertexConstBuffer;
+
+protected:
+
+	//= Protected Variables ===============================================
+
+	std::string					m_Tag;
+	Renderable*					m_ParentObject;
 };

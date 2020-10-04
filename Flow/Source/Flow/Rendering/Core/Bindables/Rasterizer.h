@@ -1,5 +1,10 @@
 #pragma once
-#include "Flow\Rendering\Core\Bindable.h"
+
+//= Includes ===================================
+
+#include "Rendering\Core\Bindable.h"
+
+//= Global Enums ===============================
 
 enum class CullMode
 {
@@ -8,16 +13,28 @@ enum class CullMode
 	Back = 3
 };
 
+//= Class Definition ===========================
+
 class Rasterizer : public Bindable
 {
 public:
-	Rasterizer(CullMode CullMode);
-	void Bind() override;
 
-	static std::shared_ptr<Rasterizer> Resolve(CullMode CullMode);
-	static std::string GenerateUID(CullMode CullMode);
+	//= Public Static Functions ===============================
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> _Rasterizer;
-	CullMode _CullMode;
+	static std::shared_ptr<Rasterizer>				Resolve(CullMode CullMode);
+	static std::string								GenerateUID(CullMode CullMode);
+
+public:
+
+	//= Public Functions ======================================
+
+													Rasterizer(CullMode CullMode);
+	void											Bind() override;
+
+private:
+
+	//= Private Variables ====================================
+
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	m_Rasterizer;
+	CullMode										m_CullMode;
 };

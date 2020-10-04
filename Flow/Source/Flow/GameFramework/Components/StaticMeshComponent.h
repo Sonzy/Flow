@@ -1,19 +1,27 @@
 #pragma once
-#include "Flow\GameFramework\Components\RenderableComponent.h"
-#include "Flow\Rendering\Core\Bindables\Stencil.h"
+
+//= Includes ============================================================
+
+#include "GameFramework\Components\RenderableComponent.h"
+#include "Rendering\Core\Bindables\Stencil.h"
+
+//= Forward Declarations ================================================
 
 class btCollisionShape;
 class btRigidBody;
-
 class MeshAsset;
 class MaterialAsset;
 class Material;
 class Mesh;
 
+//= Class Definitions ==================================================
 
 class FLOW_API StaticMeshComponent : public RenderableComponent
 {
 public:
+	
+	//= Public Functions ================================
+
 								StaticMeshComponent();
 								StaticMeshComponent(const std::string& Name, const std::string& MeshName = "", const std::string& MaterialName = "", int MeshIndex = 0);
 	virtual						~StaticMeshComponent();
@@ -53,9 +61,9 @@ public:
 
 
 	//Temp - TODO: Actually use component movement for rendering
-	Mesh*						GetMesh() { return _StaticMesh; }
+	Mesh*						GetMesh() { return m_StaticMesh; }
 
-	void						EnableOutlineDrawing(bool Enabled) { _DrawOutline = Enabled; RefreshBinds(); }
+	void						EnableOutlineDrawing(bool Enabled) { m_DrawOutline = Enabled; RefreshBinds(); }
 
 	virtual void				DrawComponentDetailsWindow() override;
 
@@ -69,19 +77,24 @@ public:
 
 	void						SetStencilMode(StencilMode NewMode);
 
-	//TODO: Move
-	bool						m_DrawWithoutDepth = false;
+public:
+
+	//= Public Variables =================================
+
+	bool						m_DrawWithoutDepth = false;	//TODO: Move
+
 protected:
 
-	bool						_DrawOutline = false;
+	//= Protected Variables ==============================
 
+	bool						m_DrawOutline = false;
+	float						m_OutlineThickness = 0.05f;
 
 	//TODO: Rework how we store meshes
-	Mesh*						_StaticMesh;
-	int							_MeshIndex;
-	std::string					_MeshIdentifier;
-	std::string					_MaterialIdentifier;
-	Material*					_Material;
+	Mesh*						m_StaticMesh;
+	int							m_MeshIndex;
+	std::string					m_MeshIdentifier;
+	std::string					m_MaterialIdentifier;
+	Material*					m_Material;
 
-	float						_OutlineThickness = 0.05f;
 };

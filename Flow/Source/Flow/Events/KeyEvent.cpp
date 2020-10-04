@@ -3,31 +3,31 @@
 #include "Flow/Input/Input.h"
 
 KeyEvent::KeyEvent(int KeyCode)
-	: _KeyCode(KeyCode)
+	: m_KeyCode(KeyCode)
 {
 
 }
 
 int KeyEvent::GetKeyCode() const
 {
-	return _KeyCode;
+	return m_KeyCode;
 }
 
 KeyPressedEvent::KeyPressedEvent(int KeyCode, int RepeatCount)
-	: KeyEvent(KeyCode), _RepeatCount(RepeatCount)
+	: KeyEvent(KeyCode), m_RepeatCount(RepeatCount)
 {
 	Input::OnKeyPressed(KeyCode);
 }
 
 int KeyPressedEvent::GetRepeatCount() const
 {
-	return _RepeatCount;
+	return m_RepeatCount;
 }
 
 std::string KeyPressedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyPressedEvent: " << _KeyCode << " (" << _RepeatCount << " repeats)";
+	ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
 	return ss.str();
 }
 KeyReleasedEvent::KeyReleasedEvent(int KeyCode)
@@ -39,12 +39,12 @@ KeyReleasedEvent::KeyReleasedEvent(int KeyCode)
 std::string KeyReleasedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyReleasedEvent: " << _KeyCode;
+	ss << "KeyReleasedEvent: " << m_KeyCode;
 	return ss.str();
 }
 std::string KeyTypedEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyTypedEvent: " << _KeyCode;
+	ss << "KeyTypedEvent: " << m_KeyCode;
 	return ss.str();
 }

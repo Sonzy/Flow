@@ -1,24 +1,36 @@
 #pragma once
+
+//= Includes ===================================
+
 #include "Flow/Core.h"
 #include "Flow/Events/Event.h"
 
+//= Forward Declarations =======================
+
 class Controller;
+
+//= Class Definition ===========================
 
 class FLOW_API Layer
 {
 public:
-	Layer(const std::string& Name);
-	virtual ~Layer();
 
-	virtual void BeginPlay();
-	virtual void OnAttach();
-	virtual void OnDetach();
-	virtual void OnUpdate(float DeltaTime);
-	virtual void OnEvent(Event& e);
+	//= Public Functions ================
 
-	virtual void OnImGuiRender(bool DrawEditor);
+							Layer(const std::string& Name);
+	virtual					~Layer();
 
-	const std::string& GetName() const;
+	virtual void			BeginPlay();
+	virtual void			OnAttach();
+	virtual void			OnDetach();
+	virtual void			OnUpdate(float DeltaTime);
+	virtual void			OnEvent(Event& e);
+	virtual void			OnImGuiRender(bool DrawEditor);
+
+	const std::string&		GetName() const;
 protected:
-	std::string _Name;
+
+	//= Protected Variables ================
+
+	std::string				m_Name;
 };

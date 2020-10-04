@@ -1,27 +1,36 @@
 #pragma once
 #include <unordered_map>
 
+//= Forward Declarations ====================================
+
 class World;
+
+//= Class Definitions =======================================
 
 class SpawnWindow
 {
 public:
 
-	SpawnWindow(World* WorldRef);
+	//= Public Functions ====================================
 
-	void Draw();
+													SpawnWindow(World* WorldRef);
+	void											Draw();
+
+	//= Public Template Functions ===========================
 
 	template<typename T>
 	void RegisterActorClass(std::string_view DisplayName)
 	{
-		_ActorClassMap.emplace(typeid(T).name(), DisplayName);
+		m_ActorClassMap.emplace(typeid(T).name(), DisplayName);
 	}
 
 private:
+	
+	//= Private Variables ===================================
 
-	World* _WorldReference;
-	float _SpawnDistance;
+	World*											m_WorldReference;
+	float											m_SpawnDistance;
 
 	/* Type name, display name*/
-	std::unordered_map<std::string, std::string> _ActorClassMap;
+	std::unordered_map<std::string, std::string>	m_ActorClassMap;
 };

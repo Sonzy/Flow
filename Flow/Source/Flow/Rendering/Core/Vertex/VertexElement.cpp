@@ -3,27 +3,27 @@
 
 size_t Element::GetOffset() const
 {
-	return Offset_;
+	return m_Offset;
 }
 
 size_t Element::GetOffsetAfter() const
 {
-	return Offset_ + GetSize();
+	return m_Offset + GetSize();
 }
 
 size_t Element::GetSize() const
 {
-	return GetSizeOf(ElementType_);
+	return GetSizeOf(m_ElementType);
 }
 
 ElementType Element::GetType() const
 {
-	return ElementType_;
+	return m_ElementType;
 }
 
 D3D11_INPUT_ELEMENT_DESC Element::GetDescription() const
 {
-	switch (ElementType_)
+	switch (m_ElementType)
 	{
 	case ElementType::Position2D:
 		return GenerateDescription<ElementType::Position2D>(GetOffset());
@@ -48,7 +48,7 @@ D3D11_INPUT_ELEMENT_DESC Element::GetDescription() const
 
 std::string Element::GetCode() const
 {
-	switch (ElementType_)
+	switch (m_ElementType)
 	{
 	case ElementType::Position2D:
 		return VertexElement<ElementType::Position2D>::Code;

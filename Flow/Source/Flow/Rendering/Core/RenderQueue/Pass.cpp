@@ -1,16 +1,20 @@
+//= Includes ==========================
+
 #include "Flowpch.h"
 #include "Pass.h"
 
+//= Class Definition - Pass ===========
+
 void Pass::Accept(Job NewJob)
 {
-	_Jobs.push_back(NewJob);
+	m_Jobs.push_back(NewJob);
 }
 
 void Pass::Execute() const
 {
 	PROFILE_FUNCTION();
 
-	for (const auto& J : _Jobs)
+	for (const auto& J : m_Jobs)
 	{
 		J.Execute();
 	}
@@ -18,5 +22,5 @@ void Pass::Execute() const
 
 void Pass::Reset()
 {
-	_Jobs.clear();
+	m_Jobs.clear();
 }

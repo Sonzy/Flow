@@ -1,6 +1,11 @@
 #pragma once
+
+//= Includes ===========================================
+
 #include "Flow\Rendering\Core\Bindable.h"
 #include <wrl.h>
+
+//= Global Enums =======================================
 
 enum class StencilMode
 {
@@ -10,19 +15,30 @@ enum class StencilMode
 	AlwaysOnTop
 };
 
+//= Class Definitions ===================================
 
 class Stencil : public Bindable
 {
 public:
-	Stencil(StencilMode mode);
-	virtual void Bind() override;
 
-	static std::shared_ptr<Bindable> Resolve(StencilMode mode);
-	static std::string GenerateUID(StencilMode mode);
-	virtual std::string GetUID() const;
+	//= Public Static Functions ========================================
+	static std::shared_ptr<Bindable>					Resolve(StencilMode mode);
+	static std::string									GenerateUID(StencilMode mode);
+	static std::string									GetModeAsString(StencilMode mode);
 
-	static std::string GetModeAsString(StencilMode mode);
+public:
+
+	//= Public Functions ===============================================
+
+														Stencil(StencilMode mode);
+	virtual void										Bind() override;
+	virtual std::string									GetUID() const;
+
+
 private:
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _Stencil;
-	StencilMode _Mode;
+
+	//= Private Variables ==============================================
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>		m_Stencil;
+	StencilMode											m_Mode;
 };

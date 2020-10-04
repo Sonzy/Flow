@@ -1,21 +1,25 @@
+//= Includes ===================================================
+
 #include "Flowpch.h"
-#include "PixelShader.h"
 #include <d3dcompiler.h>
-#include "Flow\Rendering\Core\Bindables\BindableCodex.h"
+#include "PixelShader.h"
+#include "Rendering\Core\Bindables\BindableCodex.h"
+
+//= Class (Pixel Shader) Definition =============================
 
 PixelShader::PixelShader(const std::string& LocalPath)
-	: _ShaderPath(LocalPath)
+	: m_ShaderPath(LocalPath)
 {
 	CREATE_RESULT_HANDLE();
 
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
 	CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob));
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &_PixelShader));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
 }
 
 void PixelShader::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetShader(_PixelShader.Get(), nullptr, 0);
+	RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 }
 std::shared_ptr<Bindable> PixelShader::Resolve(const std::string& LocalPath)
 {
@@ -28,5 +32,5 @@ std::string PixelShader::GenerateUID(const std::string& LocalPath)
 }
 std::string PixelShader::GetUID() const
 {
-	return GenerateUID(_ShaderPath);
+	return GenerateUID(m_ShaderPath);
 }

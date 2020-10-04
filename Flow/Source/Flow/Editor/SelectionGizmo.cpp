@@ -8,15 +8,15 @@
 #include "Flow/GameFramework/World.h"
 #include "Flow\Assets\AssetSystem.h"
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
+#include "Bullet/btBulletCollisionCommon.h"
+#include "Bullet/btBulletDynamicsCommon.h"
+#include "Bullet/BulletCollision\CollisionDispatch\btGhostObject.h"
 
 #include "Flow/Input/Input.h"
 
 #include "Maths/Vector3.h"
 
-#include "Flow/Editor/EditorLayer.h"
+#include "Flow/Editor/Editor.h"
 
 #include "Physics/Physics.h"
 
@@ -43,14 +43,14 @@ SelectionGizmo::SelectionGizmo()
 	m_ArrowY->SetCollisionEnabled(false);
 	m_ArrowZ->SetCollisionEnabled(false);
 
-	m_ArrowX->_Tag = "ArrowX";
-	m_ArrowY->_Tag = "ArrowY";
-	m_ArrowZ->_Tag = "ArrowZ";
+	m_ArrowX->m_Tag = "ArrowX";
+	m_ArrowY->m_Tag = "ArrowY";
+	m_ArrowZ->m_Tag = "ArrowZ";
 
-	_RootComponent = m_Root;
-	_RootComponent->AddChild(m_ArrowX);
-	_RootComponent->AddChild(m_ArrowY);
-	_RootComponent->AddChild(m_ArrowZ);
+	m_RootComponent = m_Root;
+	m_RootComponent->AddChild(m_ArrowX);
+	m_RootComponent->AddChild(m_ArrowY);
+	m_RootComponent->AddChild(m_ArrowZ);
 
 	m_ArrowX->SetParent(this);
 	m_ArrowY->SetParent(this);
@@ -61,7 +61,7 @@ SelectionGizmo::SelectionGizmo()
 	m_ArrowZ->SetWorldRotation(m_Translation_Z_Rot);
 
 	//Init the transform
-	const int Scale = 1.0f;
+	const float Scale = 1.0f;
 	m_ArrowX->SetWorldScale(Scale);
 	m_ArrowY->SetWorldScale(Scale);
 	m_ArrowZ->SetWorldScale(Scale);
@@ -83,7 +83,7 @@ SelectionGizmo::SelectionGizmo()
 	m_YGhost = new btGhostObject();
 	m_ZGhost = new btGhostObject();
 
-	_Visible = false;
+	m_Visible = false;
 
 	GenerateCollision();
 }
@@ -136,7 +136,7 @@ void SelectionGizmo::UpdateSelection()
 
 	//Fire a ray from the current mouse position.
 	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.x, MousePosition.y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.x, MousePosition.y, Editor::GetEditor()->GetSceneWindowSize(), Editor::GetEditor()->GetSceneWindowPosition());
 
 	switch (m_TransformMode)
 	{
@@ -285,7 +285,7 @@ void SelectionGizmo::SetScale(Vector3 Scale)
 
 void SelectionGizmo::Render()
 {
-	if (!_Visible)
+	if (!m_Visible)
 		return;
 
 	Renderer::Submit(m_ArrowX);
@@ -295,13 +295,15 @@ void SelectionGizmo::Render()
 
 Vector3 SelectionGizmo::GetPosition() const
 {
-	btVector3 T = m_XGhost->getWorldTransform().getOrigin();
-	return Vector3(T.x(), T.y(), T.z());
+	//btVector3 T = m_XGhost->getWorldTransform().getOrigin();
+	//return Vector3(T.x(), T.y(), T.z());
+
+	return m_XGhost->getWorldTransform().getOrigin();
 }
 
 void SelectionGizmo::SetVisibility(bool Visible)
 {
-	this->_Visible = Visible;
+	this->m_Visible = Visible;
 }
 
 void SelectionGizmo::AddCollidersToWorld(World* World)
@@ -322,7 +324,7 @@ void SelectionGizmo::Reset()
 {
 	m_SelectedAxis = Axis::None;
 	m_SelectedComponent = nullptr;
-	_Visible = false;
+	m_Visible = false;
 }
 
 void SelectionGizmo::OnSelected(Axis Axis, WorldComponent* Object)
@@ -350,7 +352,7 @@ void SelectionGizmo::OnSelected(Axis Axis, WorldComponent* Object)
 
 
 	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.x, m_MouseLastUpdate.y, EditorLayer::GetEditor()->GetSceneWindowSize(), EditorLayer::GetEditor()->GetSceneWindowPosition());
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.x, m_MouseLastUpdate.y, Editor::GetEditor()->GetSceneWindowSize(), Editor::GetEditor()->GetSceneWindowPosition());
 
 	float SelectionAxisClosestScale;
 	float RayClosestScale;
@@ -375,7 +377,7 @@ void SelectionGizmo::OnDeselected()
 
 void SelectionGizmo::SetTransformationMode(SelectionGizmo::Transform newMode)
 {
-	if (!_Visible)
+	if (!m_Visible)
 	{
 		return;
 	}

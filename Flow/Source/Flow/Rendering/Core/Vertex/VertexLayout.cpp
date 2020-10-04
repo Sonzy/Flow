@@ -1,25 +1,29 @@
+//= Includes ======================================================
+
 #include "Flowpch.h"
 #include "VertexLayout.h"
 
+//= Class Definition - Vertex Layout ==============================
+
 VertexLayout& VertexLayout::Append(ElementType type)
 {
-	Elements_.emplace_back(type, GetSize());
+	m_Elements.emplace_back(type, GetSize());
 	return *this;
 }
 
 size_t VertexLayout::GetSize() const
 {
-	return Elements_.empty() ? 0u : Elements_.back().GetOffsetAfter();
+	return m_Elements.empty() ? 0u : m_Elements.back().GetOffsetAfter();
 }
 
 const Element& VertexLayout::GetElementByIndex(size_t Index) const
 {
-	return Elements_[Index];
+	return m_Elements[Index];
 }
 
 size_t VertexLayout::GetElementCount() const
 {
-	return Elements_.size();
+	return m_Elements.size();
 }
 
 std::vector<D3D11_INPUT_ELEMENT_DESC> VertexLayout::GetD3DLayout() const
@@ -27,7 +31,7 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> VertexLayout::GetD3DLayout() const
 	std::vector<D3D11_INPUT_ELEMENT_DESC> VertexDescription;
 	VertexDescription.reserve(GetElementCount());
 
-	for (const auto& e : Elements_)
+	for (const auto& e : m_Elements)
 	{
 		VertexDescription.push_back(e.GetDescription());
 	}
@@ -37,7 +41,7 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> VertexLayout::GetD3DLayout() const
 std::string VertexLayout::GetCode() const
 {
 	std::string Code;
-	for (const auto& El : Elements_)
+	for (const auto& El : m_Elements)
 	{
 		Code += El.GetCode();
 	}

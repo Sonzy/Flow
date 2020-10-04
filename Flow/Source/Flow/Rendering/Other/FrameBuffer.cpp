@@ -4,15 +4,15 @@
 #include "DepthBuffer.h"
 
 FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer)
-	: _HasDepthBuffer(CreateDepthBuffer)
+	: m_HasDepthBuffer(CreateDepthBuffer)
 {
 	Resize(Width, Height);
 }
 
 FrameBuffer::~FrameBuffer()
 {
-	_Texture->Release();
-	_TextureView->Release();
+	m_Texture->Release();
+	m_TextureView->Release();
 }//
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
@@ -34,10 +34,10 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	Description.MiscFlags = 0;
 
 	//Create Texture
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&Description, nullptr, &_Texture));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&Description, nullptr, &m_Texture));
 
-	_Width = Width;
-	_Height = Height;
+	m_Width = Width;
+	m_Height = Height;
 
 	//Create a view to the texture
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
@@ -45,43 +45,43 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = -1;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(_Texture.Get(), &SRVDesc, &_TextureView));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(m_Texture.Get(), &SRVDesc, &m_TextureView));
 
-	if (_HasDepthBuffer)
+	if (m_HasDepthBuffer)
 	{
-		if (!_DepthBuffer)
-			_DepthBuffer = std::make_shared<DepthBuffer>(Width, Height);
+		if (!m_DepthBuffer)
+			m_DepthBuffer = std::make_shared<DepthBuffer>(Width, Height);
 		else
-			_DepthBuffer->Resize(Width, Height);
+			m_DepthBuffer->Resize(Width, Height);
 	}
 }
 
 ID3D11Texture2D* FrameBuffer::GetTexture() const
 {
-	return _Texture.Get();
+	return m_Texture.Get();
 }
 
 ID3D11ShaderResourceView* FrameBuffer::GetTextureView() const
 {
-	return _TextureView.Get();
+	return m_TextureView.Get();
 }
 
 std::shared_ptr<DepthBuffer> FrameBuffer::GetDepthBuffer() const
 {
-	return _DepthBuffer;
+	return m_DepthBuffer;
 }
 
 unsigned int FrameBuffer::GetWidth() const
 {
-	return _Width;
+	return m_Width;
 }
 
 unsigned int FrameBuffer::GetHeight() const
 {
-	return _Height;
+	return m_Height;
 }
 
 bool FrameBuffer::HasDepthBuffer() const
 {
-	return _HasDepthBuffer;
+	return m_HasDepthBuffer;
 }

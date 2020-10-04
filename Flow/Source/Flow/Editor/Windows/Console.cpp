@@ -1,7 +1,7 @@
 #include "Flowpch.h"
 #include "Console.h"
 #include "ThirdParty/ImGui/imgui.h"
-#include "Flow/Editor/EditorLayer.h"
+#include "Flow/Editor/Editor.h"
 
 Console::Console()
 {
@@ -29,14 +29,14 @@ void Console::Draw()
 
 Console& Console::Get()
 {
-	return EditorLayer::GetEditor()->GetConsole();
+	return Editor::GetEditor()->GetConsole();
 }
 
 Console* Console::GetSafe()
 {
-	if (EditorLayer* Editor = EditorLayer::GetEditor())
+	if (Editor* Editor = Editor::GetEditor())
 	{
-		if (!Editor->Initialised)
+		if (Editor->IsInitialised() == false)
 		{
 			return nullptr;
 		}

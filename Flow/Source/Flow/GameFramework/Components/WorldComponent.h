@@ -1,15 +1,25 @@
 #pragma once
+
+//= Includes ========================================================
+
 #include "Component.h"
 #include "Maths/Maths.h"
 #include <fstream>
+
+//= Forward Declarations ============================================
 
 class btRigidBody;
 class btCollisionShape;
 class MotionState;
 
+//= Class Definitions ===============================================
+
 class FLOW_API WorldComponent : public Component
 {
 public:
+	
+	//= Public Functions ================================
+
 									WorldComponent();
 									WorldComponent(const std::string& Name);
 	virtual							~WorldComponent();
@@ -48,9 +58,9 @@ public:
 
 	virtual void					Render();
 
-	Vector3*							GetWriteablePosition();
+	Vector3*						GetWriteablePosition();
 	Rotator*						GetWriteableRotation();
-	Vector3*							GetWriteableScale();
+	Vector3*						GetWriteableScale();
 
 	void							DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree = false);
 	virtual void					DrawDetailsWindow(bool bDontUpdate) override;
@@ -61,7 +71,7 @@ public:
 	void							SetVisibility(bool Visible);
 	bool							IsVisible() const;
 
-	//= Physics =====
+	//= Physics =
 
 	virtual void					InitialisePhysics();
 	virtual void					DestroyPhysics();
@@ -78,31 +88,34 @@ public:
 
 	void							UpdateCollisionScale();
 
-protected:
-
-	std::vector<WorldComponent*>	_Children;
-	WorldComponent*					_ParentComponent;
-
-	Transform						_RelativeTransform;
-
-	bool							_Visible = true;
-
-	//= Physics ========
-
-	bool							_SimulatePhysics;
-	bool							m_CollisionEnabled;
-	btRigidBody*					_RigidBody;
-	btCollisionShape*				m_CollisionShape;
-	MotionState*					_MotionState;
-
-public:
-	std::string						_Tag;
-
-public:
+	//= Serialization =
 
 	virtual							std::string GetClassSerializationUID(std::ofstream* Archive);
 	virtual void					Serialize(std::ofstream* Archive);
 	void							SerializeChildren(std::ofstream* Archive);
 	virtual void					Deserialize(std::ifstream* Archive, Actor* NewParent);
 	void							DeserializeChildren(std::ifstream* Archive, Actor* NewParent);
+
+public:
+
+	//= Public Variables ===================================
+
+	std::string						m_Tag;
+
+protected:
+
+	//= Protected Variables ================================
+
+	std::vector<WorldComponent*>	m_Children;
+	WorldComponent*					m_ParentComponent;
+	Transform						m_RelativeTransform;
+	bool							m_Visible = true;
+
+	//= Physics ========
+
+	bool							m_SimulatePhysics;
+	bool							m_CollisionEnabled;
+	btRigidBody*					m_RigidBody;
+	btCollisionShape*				m_CollisionShape;
+	MotionState*					m_MotionState;
 };

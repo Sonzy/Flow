@@ -1,21 +1,31 @@
 #pragma once
+
+//= Includes ===========================================
+
 #include "Flow\Rendering\Core\Renderable.h"
+
+//= Forward Declarations ===============================
 
 class Material;
 class MeshAsset;
 
+//= Class Definition ===================================
+
 class Skybox : public Renderable
 {
 public:
-	Skybox();
 
-	virtual DirectX::XMMATRIX GetTransformXM() const override;
+	//= Public Functions ===================
+
+									Skybox();
+	virtual DirectX::XMMATRIX		GetTransformXM() const override;
 
 private:
 
-	MeshAsset* _Mesh;
-	Material* _Material;
+	//= Private Variables ==================
 
-	std::string _MeshPath = "Box";
-	std::string _MaterialPath = "Mat_SkyCube";
+	MeshAsset*						m_Mesh;
+	Material*						m_Material;									
+	std::string						m_MeshPath = "Box";
+	std::string						m_MaterialPath = "Mat_SkyCube";
 };

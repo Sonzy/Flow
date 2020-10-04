@@ -3,60 +3,60 @@
 #include <thread>
 
 Instrumentor::Instrumentor()
-	: CurrentSession_(nullptr), ProfileCount_(0)
+	: m_CurrentSession(nullptr), m_ProfileCount(0)
 {
 }
 
 void Instrumentor::BeginSession(const std::string& Name, const std::string& FilePath)
 {
-	OutputStream_.open(FilePath);
+	m_OutputStream.open(FilePath);
 	WriteHeader();
-	CurrentSession_ = new InstrumentationSession{ Name };
+	m_CurrentSession = new InstrumentationSession{ Name };
 }
 
 void Instrumentor::EndSession()
 {
 	WriteFooter();
-	OutputStream_.close();
-	delete CurrentSession_;
-	CurrentSession_ = nullptr;
-	ProfileCount_ = 0;
+	m_OutputStream.close();
+	delete m_CurrentSession;
+	m_CurrentSession = nullptr;
+	m_ProfileCount = 0;
 }
 
 void Instrumentor::WriteProfile(const ProfileResult& Result)
 {
 	//Disabled thread safety for performance, just probs wont use in threads
-	std::lock_guard<std::mutex> Lock(Lock_);
+	std::lock_guard<std::mutex> Lock(m_Lock);
 
-	if (ProfileCount_++ > 0)
-		OutputStream_ << ",";
+	if (m_ProfileCount++ > 0)
+		m_OutputStream << ",";
 
-	std::string Name = Result.Name_;
+	std::string Name = Result.m_Name;
 	std::replace(Name.begin(), Name.end(), '"', '\'');
 
-	OutputStream_ << "{";
-	OutputStream_ << "\"cat\":\"function\",";
-	OutputStream_ << "\"dur\":" << (Result.End_ - Result.Start_) << ',';
-	OutputStream_ << "\"name\":\"" << Name << "\",";
-	OutputStream_ << "\"ph\":\"X\",";
-	OutputStream_ << "\"pid\":0,";
-	OutputStream_ << "\"tid\":" << Result.ThreadID << ",";
-	OutputStream_ << "\"ts\":" << Result.Start_;
-	OutputStream_ << "}";
+	m_OutputStream << "{";
+	m_OutputStream << "\"cat\":\"function\",";
+	m_OutputStream << "\"dur\":" << (Result.m_End - Result.m_Start) << ',';
+	m_OutputStream << "\"name\":\"" << Name << "\",";
+	m_OutputStream << "\"ph\":\"X\",";
+	m_OutputStream << "\"pid\":0,";
+	m_OutputStream << "\"tid\":" << Result.m_ThreadID << ",";
+	m_OutputStream << "\"ts\":" << Result.m_Start;
+	m_OutputStream << "}";
 
-	OutputStream_.flush();
+	m_OutputStream.flush();
 }
 
 void Instrumentor::WriteHeader()
 {
-	OutputStream_ << "{\"otherData\": {},\"traceEvents\":[";
-	OutputStream_.flush();
+	m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
+	m_OutputStream.flush();
 }
 
 void Instrumentor::WriteFooter()
 {
-	OutputStream_ << "]}";
-	OutputStream_.flush();
+	m_OutputStream << "]}";
+	m_OutputStream.flush();
 }
 
 Instrumentor& Instrumentor::Get()
@@ -66,14 +66,14 @@ Instrumentor& Instrumentor::Get()
 }
 
 BenchmarkTimer::BenchmarkTimer(const std::string& TimerName)
-	: TimerName_(TimerName), Stopped_(false)
+	: m_TimerName(TimerName), m_Stopped(false)
 {
-	StartPoint_ = std::chrono::high_resolution_clock::now();
+	m_StartPoint = std::chrono::high_resolution_clock::now();
 }
 
 BenchmarkTimer::~BenchmarkTimer()
 {
-	if (!Stopped_)
+	if (!m_Stopped)
 		Stop();
 }
 
@@ -81,11 +81,11 @@ void BenchmarkTimer::Stop()
 {
 	auto EndPoint = std::chrono::high_resolution_clock::now();
 
-	long long start = std::chrono::time_point_cast<std::chrono::microseconds>(StartPoint_).time_since_epoch().count();
+	long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartPoint).time_since_epoch().count();
 	long long end = std::chrono::time_point_cast<std::chrono::microseconds>(EndPoint).time_since_epoch().count();
 
 	uint32_t ThreadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-	Instrumentor::Get().WriteProfile({ TimerName_, start, end, ThreadID });
+	Instrumentor::Get().WriteProfile({ m_TimerName, start, end, ThreadID });
 
-	Stopped_ = true;
+	m_Stopped = true;
 }

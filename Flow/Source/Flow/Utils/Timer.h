@@ -1,18 +1,25 @@
 #pragma once
+
+//= Includes ==================================
+
 #include <chrono>
+
+//= Class Definition ==========================
 
 class Timer
 {
 public:
 
-	Timer();
+	//= Public Functions =============
 
-	// Returns time since last called
-	float Mark();
+					Timer();
 
-	// Returns time since last called without resetting timer
-	float Peek();
+
+	float			Mark();	// Returns time since last called
+	float			Peek();	// Returns time since last called without resetting timer
 
 private:
-	std::chrono::steady_clock::time_point _Last;
+	
+	//= Private Variables ============
+	std::chrono::steady_clock::time_point m_Last;
 };

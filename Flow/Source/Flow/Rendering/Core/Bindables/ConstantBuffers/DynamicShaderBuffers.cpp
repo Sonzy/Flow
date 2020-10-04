@@ -18,10 +18,10 @@ PixelConstantBufferDynamic::PixelConstantBufferDynamic(const DynamicCB::LayoutEl
 	{
 		D3D11_SUBRESOURCE_DATA CSD = {};
 		CSD.pSysMem = Buffer->GetData();
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, &CSD, &_ConstantBuffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, &CSD, &m_ConstantBuffer));
 	}
 	else
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, nullptr, &_ConstantBuffer));
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, nullptr, &m_ConstantBuffer));
 }
 
 void PixelConstantBufferDynamic::Update(const DynamicCB::Buffer& Buffer)
@@ -32,7 +32,7 @@ void PixelConstantBufferDynamic::Update(const DynamicCB::Buffer& Buffer)
 
 	D3D11_MAPPED_SUBRESOURCE MSR;
 	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
-		_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+		m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 	memcpy(MSR.pData, Buffer.GetData(), Buffer.GetSizeInBytes());
 }
@@ -45,43 +45,43 @@ void PixelConstantBufferDynamic::Bind()
 //= Cached PCBD ==============
 
 CachedPixelConstantBufferDynamic::CachedPixelConstantBufferDynamic(const DynamicCB::CookedLayout& Layout, UINT Slot)
-	: PixelConstantBufferDynamic(*Layout.ShareRoot(), Slot, nullptr), _Buffer(DynamicCB::Buffer(Layout))
+	: PixelConstantBufferDynamic(*Layout.ShareRoot(), Slot, nullptr), m_Buffer(DynamicCB::Buffer(Layout))
 {
 }
 
 CachedPixelConstantBufferDynamic::CachedPixelConstantBufferDynamic(const DynamicCB::Buffer& Buffer, UINT Slot)
-	: PixelConstantBufferDynamic(Buffer.GetRootLayoutElement(), Slot, nullptr), _Buffer(Buffer)
+	: PixelConstantBufferDynamic(Buffer.GetRootLayoutElement(), Slot, nullptr), m_Buffer(Buffer)
 {
 }
 
 const DynamicCB::LayoutElement& CachedPixelConstantBufferDynamic::GetRootLayoutElement() const
 {
-	return _Buffer.GetRootLayoutElement();
+	return m_Buffer.GetRootLayoutElement();
 }
 
 const DynamicCB::Buffer& CachedPixelConstantBufferDynamic::GetBuffer() const
 {
-	return _Buffer;
+	return m_Buffer;
 }
 
 void CachedPixelConstantBufferDynamic::SetBuffer(const DynamicCB::Buffer& Buffer)
 {
-	_Buffer.CopyFrom(Buffer);
-	_Dirty = true;
+	m_Buffer.CopyFrom(Buffer);
+	m_Dirty = true;
 }
 
 void CachedPixelConstantBufferDynamic::AcceptProbe(TechniqueProbe& Probe)
 {
-	if (Probe.VisitBuffer(_Buffer))
-		_Dirty = true;
+	if (Probe.VisitBuffer(m_Buffer))
+		m_Dirty = true;
 }
 
 void CachedPixelConstantBufferDynamic::Bind()
 {
-	if (_Dirty)
+	if (m_Dirty)
 	{
-		Update(_Buffer);
-		_Dirty = false;
+		Update(m_Buffer);
+		m_Dirty = false;
 	}
 
 	PixelConstantBufferDynamic::Bind();
@@ -90,16 +90,16 @@ void CachedPixelConstantBufferDynamic::Bind()
 //= No Cache PCBD =========
 
 NoCachePixelConstantBufferDynamic::NoCachePixelConstantBufferDynamic(const DynamicCB::CookedLayout& Layout, UINT Slot)
-	: PixelConstantBufferDynamic(*Layout.ShareRoot(), Slot, nullptr), _LayoutRoot(Layout.ShareRoot())
+	: PixelConstantBufferDynamic(*Layout.ShareRoot(), Slot, nullptr), m_LayoutRoot(Layout.ShareRoot())
 {
 }
 
 NoCachePixelConstantBufferDynamic::NoCachePixelConstantBufferDynamic(const DynamicCB::Buffer& Buffer, UINT Slot)
-	: PixelConstantBufferDynamic(Buffer.GetRootLayoutElement(), Slot, nullptr), _LayoutRoot(Buffer.ShareLayoutRoot())
+	: PixelConstantBufferDynamic(Buffer.GetRootLayoutElement(), Slot, nullptr), m_LayoutRoot(Buffer.ShareLayoutRoot())
 {
 }
 
 const DynamicCB::LayoutElement& NoCachePixelConstantBufferDynamic::GetRootLayoutElement() const
 {
-	return *_LayoutRoot;
+	return *m_LayoutRoot;
 }

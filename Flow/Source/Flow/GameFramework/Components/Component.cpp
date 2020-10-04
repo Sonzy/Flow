@@ -7,7 +7,7 @@ Component::Component()
 }
 
 Component::Component(const std::string& Name)
-	: GameObject(Name), _ParentObject(nullptr), _AttachedComponent(nullptr)
+	: GameObject(Name), m_ParentObject(nullptr), m_AttachedComponent(nullptr)
 {
 }
 
@@ -17,22 +17,22 @@ Component::~Component()
 
 WorldComponent* Component::GetParentComponent() const
 {
-	return _AttachedComponent;
+	return m_AttachedComponent;
 }
 
 Actor* Component::GetParentActor() const
 {
-	return _ParentObject;
+	return m_ParentObject;
 }
 
 void Component::SetParent(Actor* Parent)
 {
-	_ParentObject = Parent;
+	m_ParentObject = Parent;
 }
 
 void Component::SetParentComponent(WorldComponent* Parent)
 {
-	_AttachedComponent = Parent;
+	m_AttachedComponent = Parent;
 }
 
 void Component::BeginPlay()

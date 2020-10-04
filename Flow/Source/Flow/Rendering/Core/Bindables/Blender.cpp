@@ -1,14 +1,18 @@
+//= Includes ===================================================
+
 #include "Flowpch.h"
 #include "Blender.h"
 #include "Flow/Rendering/Core/Bindables/BindableCodex.h"
 
+//= Class (Blender) Definition ================================
+
 Blender::Blender(bool Blending)
-	: _Blending(Blending)
+	: m_Blending(Blending)
 {
 	D3D11_BLEND_DESC BlendDescription = {};
 	auto& RenderTarget = BlendDescription.RenderTarget[0];
 
-	if (_Blending)
+	if (m_Blending)
 	{
 		RenderTarget.BlendEnable = TRUE;
 		RenderTarget.SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -26,12 +30,12 @@ Blender::Blender(bool Blending)
 	}
 
 	CREATE_RESULT_HANDLE();
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBlendState(&BlendDescription, &_Blender));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBlendState(&BlendDescription, &m_Blender));
 }
 
 void Blender::Bind()
 {
-	RenderCommand::DX11GetContext()->OMSetBlendState(_Blender.Get(), nullptr, 0xFFFFFFFFu);
+	RenderCommand::DX11GetContext()->OMSetBlendState(m_Blender.Get(), nullptr, 0xFFFFFFFFu);
 }
 
 std::shared_ptr<Blender> Blender::Resolve(bool Blending)
@@ -47,5 +51,5 @@ std::string Blender::GenerateUID(bool Blending)
 
 std::string Blender::GetUID() const
 {
-	return GenerateUID(_Blending);
+	return GenerateUID(m_Blending);
 }

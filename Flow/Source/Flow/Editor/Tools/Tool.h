@@ -40,5 +40,5 @@ public:
 
 protected:
 
-	bool m_ConfigurationWindowOpen;
+	bool					m_ConfigurationWindowOpen;
 };

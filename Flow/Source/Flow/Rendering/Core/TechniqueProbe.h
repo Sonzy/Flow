@@ -1,28 +1,34 @@
 #pragma once
 
-namespace DynamicCB
-{
-	class Buffer;
-}
+//= Forward Declarations ==================================
 
+namespace DynamicCB { class Buffer; }
 class Technique;
 class Step;
+
+//= Class Definitions =====================================
 
 class TechniqueProbe
 {
 public:
 
-	void SetTechnique(Technique* Technique_In);
-	void SetStep(Step* Step_In);
-	virtual bool VisitBuffer(DynamicCB::Buffer&) = 0;
+	//= Public Functions ====================================================
+
+	void				SetTechnique(Technique* Technique_In);
+	void				SetStep(Step* Step_In);
+	virtual bool		VisitBuffer(DynamicCB::Buffer&) = 0;
 
 protected:
 
-	virtual void OnSetTechnique() {};
-	virtual void OnSetStep() {};
+	//= Protected Functions ================================================
+
+	virtual void		OnSetTechnique() {};
+	virtual void		OnSetStep() {};
 
 protected:
 
-	Technique* _Technique;
-	Step* _Step;
+	//= Protected Variables ================================================
+
+	Technique*			m_Technique;
+	Step*				m_Step;
 };

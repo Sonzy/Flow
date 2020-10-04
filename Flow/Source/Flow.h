@@ -1,20 +1,21 @@
 #pragma once
-#include "Flow/Application.h"
+#include "Typedefs.h"
+#include "Application.h"
 
-#include "Flow/EntryPoint.h"
+#include "EntryPoint.h"
 
-#include "Flow/Logging/Log.h"
+#include "Logging/Log.h"
 
-#include "Flow/Layers/Layer.h"
-#include "Flow/UserInterface/imgui/ImGuiLayer.h"
+#include "Layers/Layer.h"
+#include "UserInterface/imgui/ImGuiLayer.h"
 
 //= Rendering ================
 
-#include "Flow/Rendering/RenderCommand.h"
-#include "Flow/Rendering/Renderer.h"
-#include "Flow/Rendering/Core/RenderableBase.h"
-#include "Flow/Rendering/Core/Camera/Camera.h"
+#include "Rendering/RenderCommand.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Core/RenderableBase.h"
+#include "Rendering/Core/Camera/Camera.h"
 
 
 //Suppressed Warnings:
-//4251 - DLL style interfaces
+// 4251 - DLL style interfaces

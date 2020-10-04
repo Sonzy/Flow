@@ -10,8 +10,8 @@ CameraComponent::CameraComponent()
 CameraComponent::CameraComponent(const std::string& Name)
 	: WorldComponent(Name)
 {
-	_Projection = DirectX::XMMATRIX();
-	_FieldOfView = 90.0f;
+	m_Projection = DirectX::XMMATRIX();
+	m_FieldOfView = 90.0f;
 }
 
 void CameraComponent::Update(float DeltaTime)
@@ -21,12 +21,12 @@ void CameraComponent::Update(float DeltaTime)
 
 void CameraComponent::MoveCamera(const Transform& NewTransform)
 {
-	_RelativeTransform = NewTransform;
+	m_RelativeTransform = NewTransform;
 }
 
 Transform CameraComponent::GetCameraTransform() const
 {
-	return _RelativeTransform;
+	return m_RelativeTransform;
 }
 
 

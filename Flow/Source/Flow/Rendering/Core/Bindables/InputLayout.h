@@ -1,22 +1,33 @@
 #pragma once
-#include "Flow/Rendering/Core/Bindable.h"
+
+//= Includes =======================================
+
 #include <vector>
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering/Core/Bindable.h"
+#include "Rendering/Core/Vertex/VertexLayout.h"
+
+//= Class Definition ================================
 
 class InputLayout : public Bindable
 {
 public:
-	InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode);
-	void Bind() override;
 
-	//= Bindable Interface =
+	//= Public Static Functions ========================================
 
-	static std::shared_ptr<Bindable> Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
-	static std::string GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode = nullptr);
-	std::string GetUID() const override;
+	static std::shared_ptr<Bindable>		Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
+	static std::string						GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode = nullptr);
+
+	//= Public Functions ===============================================
+
+											InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode);
+	void									Bind() override;
+	std::string								GetUID() const override;
 
 private:
+	
+	//= Private Variables ===============================================
+
 	//Describe the input layout for the vertex shader
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> _InputLayout;
-	VertexLayout _VertexLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>		m_InputLayout;
+	VertexLayout									m_VertexLayout;
 };

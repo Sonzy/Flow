@@ -1,30 +1,33 @@
 #pragma once
+
+//= Includes ==============================================
+
 #include <string>
+
+//= Class Definition ======================================
 
 class LevelManager
 {
 public:
-	LevelManager();
 
-	//Windows
-	void Open_NewLevelWindow();
+	//= Public Functions ==================================
 
-	void DrawWindows();
-
-
-private:
-
-	//Window Drawing
-	void Draw_NewLevelWindow();
+					LevelManager();
+	void			Open_NewLevelWindow();
+	void			DrawWindows();
 
 
 private:
 
-	//Window Drawing
-	bool _Draw_NewLevelWindow;
+	//= Private Functions ==================================
+
+	void			Draw_NewLevelWindow();
 
 
+private:
 
-	//NewLevelWindow
-	std::string _NewLevelName;
+	//= Private Variables ==================================
+
+	bool			m_Draw_NewLevelWindow;
+	std::string		m_NewLevelName;
 };

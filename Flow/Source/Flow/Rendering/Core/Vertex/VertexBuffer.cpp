@@ -1,42 +1,46 @@
+//= Includes ===========================
+
 #include "Flowpch.h"
 #include "VertexBuffer.h"
-#include "Flow/Rendering/Renderer.h"
-#include "Flow/Window/Window.h"
+#include "Rendering/Renderer.h"
+#include "Window/Window.h"
+
+//= Class Definition ===================
 
 const VertexLayout& VertexBuffer::GetLayout() const
 {
-	return VertexLayout_;
+	return m_VertexLayout;
 }
 
 size_t VertexBuffer::GetBufferSize() const
 {
-	return Buffer_.size() / VertexLayout_.GetSize();
+	return m_Buffer.size() / m_VertexLayout.GetSize();
 }
 
 size_t VertexBuffer::GetBufferSizeAsBytes() const
 {
-	return Buffer_.size();
+	return m_Buffer.size();
 }
 
 const char* VertexBuffer::GetData() const
 {
-	return Buffer_.data();
+	return m_Buffer.data();
 }
 
 Vertex VertexBuffer::GetBack()
 {
-	assert(Buffer_.size() != 0u);
-	return Vertex{ Buffer_.data() + Buffer_.size() - VertexLayout_.GetSize(), VertexLayout_ };
+	assert(m_Buffer.size() != 0u);
+	return Vertex{ m_Buffer.data() + m_Buffer.size() - m_VertexLayout.GetSize(), m_VertexLayout };
 }
 
 Vertex VertexBuffer::GetFront()
 {
-	assert(Buffer_.size() != 0u);
-	return Vertex{ Buffer_.data(), VertexLayout_ };
+	assert(m_Buffer.size() != 0u);
+	return Vertex{ m_Buffer.data(), m_VertexLayout };
 }
 
 Vertex VertexBuffer::operator[](size_t i)
 {
 	assert(i < GetBufferSize());
-	return Vertex{ Buffer_.data() + VertexLayout_.GetSize() * i, VertexLayout_ };
+	return Vertex{ m_Buffer.data() + m_VertexLayout.GetSize() * i, m_VertexLayout };
 }

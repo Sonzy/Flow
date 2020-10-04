@@ -1,38 +1,44 @@
+//= Includes ===================================
+
 #include "Flowpch.h"
 #include "Material.h"
 
-#include "Flow\Application.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/VertexShader.h"
-#include "Flow/Rendering/Core/Bindables/Shaders/PixelShader.h"
-#include "Flow\Rendering\Core\Bindables\InputLayout.h"
-#include "Flow\Rendering\Core\Bindables\Texture.h"
-#include "Flow\Rendering\Core\Bindables\Sampler.h"
+#include "Application.h"
+#include "Rendering/Core/Bindables/Shaders/VertexShader.h"
+#include "Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Bindables/Texture.h"
+#include "Rendering/Core/Bindables/Sampler.h"
 
-#include "Flow/Rendering/Core/Renderable.h"
-#include "Flow\GameFramework\Components\RenderableComponent.h"
+#include "Rendering/Core/Renderable.h"
+#include "GameFramework/Components/RenderableComponent.h"
 
-#include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Shaders\ShaderAsset.h"
-#include "Flow\Assets\Textures\TextureAsset.h"
+#include "Assets/AssetSystem.h"
+#include "Assets/Shaders/ShaderAsset.h"
+#include "Assets/Textures/TextureAsset.h"
 
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering/Core/Vertex/VertexLayout.h"
 
-#include "Flow/Rendering/Core/RenderQueue/Step.h"
+#include "Rendering/Core/RenderQueue/Step.h"
+
+//= Class Definition - Material =============================
 
 Material::Material()
-	: _Texture(nullptr), _PixelShader(nullptr), _VertexShader(nullptr), _WrappingMethod(false)
+	: m_Texture(nullptr)
+	, m_PixelShader(nullptr)
+	, m_VertexShader(nullptr)
 {
 }
 
 void Material::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
-	RenderingStep->AddBindable(Texture::Resolve(_Texture, 0));
+	RenderingStep->AddBindable(Texture::Resolve(m_Texture, 0));
 	RenderingStep->AddBindable(Sampler::Resolve());
 
-	auto vShader = VertexShader::Resolve(_VertexShader->GetPath());
+	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	RenderingStep->AddBindable(std::move(vShader));
-	RenderingStep->AddBindable(PixelShader::Resolve(_PixelShader->GetPath()));
+	RenderingStep->AddBindable(PixelShader::Resolve(m_PixelShader->GetPath()));
 
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 }
@@ -42,16 +48,16 @@ void Material::SetTexture(const std::string& TextureName)
 	auto NewTexture = AssetSystem::GetAsset<TextureAsset>(TextureName);
 
 	CHECK_RETURN(!NewTexture, "Material::SetShader: Texture was nullptr");
-	_Texture = NewTexture;
+	m_Texture = NewTexture;
 }
 
 void Material::SetPixelShader(const std::string& ShaderName)
 {
-	_PixelShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
+	m_PixelShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
 
 }
 
 void Material::SetVertexShader(const std::string& ShaderName)
 {
-	_VertexShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
+	m_VertexShader = AssetSystem::GetAsset<ShaderAsset>(ShaderName);
 }

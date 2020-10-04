@@ -3,7 +3,7 @@
 #include "Flow\Utils\HelperMacros.h"
 
 Layer::Layer(const std::string& Name)
-	:_Name(Name)
+	:m_Name(Name)
 {
 }
 
@@ -37,5 +37,5 @@ void Layer::OnImGuiRender(bool DrawEditor)
 
 const std::string& Layer::GetName() const
 {
-	return _Name;
+	return m_Name;
 }

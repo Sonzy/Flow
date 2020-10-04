@@ -7,6 +7,18 @@ bool Asset::LoadAsset(const std::string& LocalPath)
 	return false;
 }
 
+bool Asset::ImportAsset(const std::string& LocalPath)
+{
+	FLOW_ENGINE_WARNING("Asset::ImportAsset: Load definition not found.");
+	return false;
+}
+
+bool Asset::SaveAsset(const std::string& AssetName)
+{
+	FLOW_ENGINE_WARNING("Asset::SaveAsset: Load definition not found.");
+	return false;
+}
+
 std::string Asset::GetFormattedSize() const
 {
 	char Buffer[32];

@@ -1,9 +1,16 @@
 #pragma once
+
+//= Includes =================================
+
 #include "Input.h"
 
-// Dont need flow API marker since included in input
+//= Class Definition =========================
+
 class WindowsInput : public Input
 {
 protected:
+
+	//= Protected Functions ===============
+
 	virtual bool IsKeyPressed_Implementation(int Keycode);
 };

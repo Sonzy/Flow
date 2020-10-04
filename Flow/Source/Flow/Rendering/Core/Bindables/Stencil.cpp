@@ -1,9 +1,13 @@
+//= Includes =============================
+
 #include "Flowpch.h"
 #include "Stencil.h"
 #include "BindableCodex.h"
 
+//= Class (Stencil) Definition ===========
+
 Stencil::Stencil(StencilMode Mode)
-	: _Mode(Mode)
+	: m_Mode(Mode)
 {
 	D3D11_DEPTH_STENCIL_DESC Description = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
 
@@ -41,12 +45,12 @@ Stencil::Stencil(StencilMode Mode)
 		break;
 	}
 
-	RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description, &_Stencil);
+	RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description, &m_Stencil);
 }
 
 void Stencil::Bind()
 {
-	RenderCommand::DX11GetContext()->OMSetDepthStencilState(_Stencil.Get(), 0xFF);
+	RenderCommand::DX11GetContext()->OMSetDepthStencilState(m_Stencil.Get(), 0xFF);
 }
 
 std::shared_ptr<Bindable> Stencil::Resolve(StencilMode mode)
@@ -62,7 +66,7 @@ std::string Stencil::GenerateUID(StencilMode mode)
 
 std::string Stencil::GetUID() const
 {
-	return GenerateUID(_Mode);
+	return GenerateUID(m_Mode);
 }
 
 std::string Stencil::GetModeAsString(StencilMode mode)

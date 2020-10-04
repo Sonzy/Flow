@@ -18,7 +18,9 @@ public:
 
 	//= Public Functions ===============================
 
-	virtual bool			LoadAsset(const std::string& LocalPath);
+	virtual bool			ImportAsset(const std::string& LocalPath);
+	virtual bool			SaveAsset(const std::string& AssetName);
+	virtual bool			LoadAsset(const std::string& AssetName);
 
 	void					SetAssetName(const std::string& Name)			{ m_AssetName = Name; }
 	const std::string&		GetAssetName() const							{ return m_AssetName; }

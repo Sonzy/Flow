@@ -21,28 +21,28 @@ SkyboxComponent::SkyboxComponent()
 SkyboxComponent::SkyboxComponent(const std::string& Name)
 	: RenderableComponent(Name)
 {
-	_Mesh = AssetSystem::GetAsset<MeshAsset>(_MeshPath);
-	_Material = AssetSystem::GetAsset<MaterialAsset>(_MaterialPath)->GetMaterial();
+	m_Mesh = AssetSystem::GetAsset<MeshAsset>(m_MeshPath);
+	m_Material = AssetSystem::GetAsset<MaterialAsset>(m_MaterialPath)->GetMaterial();
 
 	Technique Standard("SkyboxComponent_Standard");
 	{
 		Step MainStep(1);
 
 		VertexLayout MeshLayout;
-		_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
+		m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
 
-		_IndexBuffer = _Mesh->GetMesh(0)->m_IndexBuffer;
-		_VertexBuffer = _Mesh->GetMesh(0)->m_BindableVBuffer;
-		_Topology = _Mesh->GetMesh(0)->m_Topology;
+		m_IndexBuffer = m_Mesh->GetMesh(0)->m_IndexBuffer;
+		m_VertexBuffer = m_Mesh->GetMesh(0)->m_BindableVBuffer;
+		m_Topology = m_Mesh->GetMesh(0)->m_Topology;
 
-		_Material->BindMaterial(&MainStep, MeshLayout);
+		m_Material->BindMaterial(&MainStep, MeshLayout);
 
 		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 		Standard.AddStep(MainStep);
 	}
 	AddTechnique(Standard);
 
-	_SimulatePhysics = false;
+	m_SimulatePhysics = false;
 }
 
 

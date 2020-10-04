@@ -15,14 +15,14 @@ Pawn::Pawn(const std::string& Name)
 void Pawn::Control(Controller* NewController)
 {
 	CHECK_RETURN(!NewController, "Pawn::Control: Controller was nullptr");
-	_Controller = NewController;
+	m_Controller = NewController;
 
-	OnControlled(_Controller);
+	OnControlled(m_Controller);
 }
 
 void Pawn::RemoveControl()
 {
-	_Controller = nullptr;
+	m_Controller = nullptr;
 }
 
 void Pawn::OnControlled(Controller* OwningController)
@@ -31,5 +31,5 @@ void Pawn::OnControlled(Controller* OwningController)
 
 Controller* Pawn::GetController() const
 {
-	return _Controller;
+	return m_Controller;
 }

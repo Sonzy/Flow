@@ -13,9 +13,9 @@
 #include "Flow/GameFramework/Other/ClassFactory.h"
 
 SpawnWindow::SpawnWindow(World* WorldReference)
-	: _WorldReference(WorldReference)
+	: m_WorldReference(WorldReference)
 {
-	_SpawnDistance = 20.0f;
+	m_SpawnDistance = 20.0f;
 
 	RegisterActorClass<StaticMeshActor>("Static Mesh Actor");
 	RegisterActorClass<PointLightActor>("Point Light Actor");
@@ -32,13 +32,13 @@ void SpawnWindow::Draw()
 		//Initialise a cube mesh actor
 		if (ImGui::Button("Cube"))
 		{
-			auto MeshActor = _WorldReference->SpawnActor<StaticMeshActor>("Cube");
+			auto MeshActor = m_WorldReference->SpawnActor<StaticMeshActor>("Cube");
 			auto MeshComponent = MeshActor->GetMeshComponent();
 			MeshComponent->SetMeshAndMaterial("Box", "Mat_FlatColour_White");
 			SpawnedActor = std::dynamic_pointer_cast<Actor>(MeshActor);
 		}
 
-		for (auto& ActorClass : _ActorClassMap)
+		for (auto& ActorClass : m_ActorClassMap)
 		{
 			if (ImGui::Button(ActorClass.second.c_str()) && !SpawnedActor)
 			{
@@ -53,9 +53,9 @@ void SpawnWindow::Draw()
 			Transform CameraTrans = RenderCommand::GetMainCamera()->GetCameraTransform();
 			Vector3 ForwardVector = static_cast<Vector3>(CameraTrans.m_Rotation).Normalize();
 			SpawnedActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position +
-				(ForwardVector * _SpawnDistance));
+				(ForwardVector * m_SpawnDistance));
 
-			switch (_WorldReference->GetWorldState())
+			switch (m_WorldReference->GetWorldState())
 			{
 			case WorldState::Editor: SpawnedActor->EditorBeginPlay(); break;
 			case WorldState::Paused:

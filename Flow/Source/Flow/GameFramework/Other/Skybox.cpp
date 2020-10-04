@@ -21,19 +21,19 @@
 
 Skybox::Skybox()
 {
-	_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(_MeshPath));
-	_Material = AssetSystem::GetAsset<MaterialAsset>(_MaterialPath)->GetMaterial();
+	m_Mesh = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(m_MeshPath));
+	m_Material = AssetSystem::GetAsset<MaterialAsset>(m_MaterialPath)->GetMaterial();
 
-	CHECK_RETURN(!_Mesh, "Skybox::Skybox: Failed to load mesh");
-	CHECK_RETURN(!_Material, "Skybox::Skybox: Failed to load material");
+	CHECK_RETURN(!m_Mesh, "Skybox::Skybox: Failed to load mesh");
+	CHECK_RETURN(!m_Material, "Skybox::Skybox: Failed to load material");
 
 	Technique Standard("Skybox_Standard");
 	{
 		Step MainStep(1);
 
 		VertexLayout MeshLayout;
-		MainStep.AddBindables(_Mesh->GetMesh(0)->GenerateBinds(MeshLayout));
-		_Material->BindMaterial(&MainStep, MeshLayout);
+		MainStep.AddBindables(m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout));
+		m_Material->BindMaterial(&MainStep, MeshLayout);
 
 		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
 	}

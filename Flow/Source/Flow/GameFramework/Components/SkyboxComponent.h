@@ -1,25 +1,36 @@
 #pragma once
-#include "Flow/GameFramework/Components/RenderableComponent.h"
+
+//= Includes ========================================================
+
+#include "GameFramework/Components/RenderableComponent.h"
+
+//= Forward Declarations ============================================
 
 class Material;
 class MeshAsset;
 
+//= Class Definitions ===============================================
+
 class SkyboxComponent : public RenderableComponent
 {
 public:
-	SkyboxComponent();
-	SkyboxComponent(const std::string& Name);
+	
+	//= Public Functions =================================
 
-	virtual DirectX::XMMATRIX GetTransformXM() const override;
-	virtual void Render() override;
+									SkyboxComponent();
+									SkyboxComponent(const std::string& Name);
 
-	virtual std::string GetClassSerializationUID(std::ofstream* Archive);
+	virtual DirectX::XMMATRIX		GetTransformXM() const override;
+	virtual void					Render() override;
+
+	virtual std::string				GetClassSerializationUID(std::ofstream* Archive);
 
 protected:
 
-	MeshAsset* _Mesh;
-	Material* _Material;
+	//= Protected Variables ==============================
 
-	std::string _MeshPath = "Box";
-	std::string _MaterialPath = "Mat_SkyCube";
+	MeshAsset*						m_Mesh;
+	Material*						m_Material;									
+	std::string						m_MeshPath = "Box";
+	std::string						m_MaterialPath = "Mat_SkyCube";
 };

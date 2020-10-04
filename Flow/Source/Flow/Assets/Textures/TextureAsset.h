@@ -3,6 +3,8 @@
 #include "Flow\Assets\Asset.h"
 #include "DXTex\DirectXTex.h"
 
+#define TIME_TEXTURE_CONVERSION 1
+
 class FLOW_API TextureAsset : public Asset
 {
 
@@ -13,6 +15,8 @@ public:
 									TextureAsset() {};
 									~TextureAsset();
 
+	virtual bool					ImportAsset(const std::string& FilePath) override;
+	virtual bool					SaveAsset(const std::string& FilePath) override;
 	virtual bool					LoadAsset(const std::string& FilePath) override;
 
 	unsigned int					GetWidth() const { return static_cast<unsigned int>(m_Image.GetMetadata().width); }

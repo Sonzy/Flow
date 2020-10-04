@@ -1,4 +1,7 @@
 #pragma once
+
+//= Includes ==========================================
+
 #include <string>
 #include <unordered_map>
 #include <functional>
@@ -7,13 +10,15 @@
 #include "Flow/Logging/Log.h"
 #include "Flow/Utils/Profiling.h"
 
+//= Class Definition ==================================
+
 class ClassFactory
 {
-public:
-	ClassFactory();
-	void RegisterClassUIDs();
 
-	static ClassFactory& Get();
+	typedef std::function<void* (const ClassFactory&)> SpawnFunction;
+public:
+
+	//= Public Template Functions ========
 
 	template<typename C>
 	void RegisterFactoryClass()
@@ -24,7 +29,7 @@ public:
 
 		std::function<void* (const ClassFactory&)> Temp = std::bind(&ClassFactory::CreateObject<C>, this);
 		auto Value = std::pair<std::string, std::function<void* (const ClassFactory&)>>(Hashed, Temp);
-		_FactoryMap.insert(Value);
+		m_FactoryMap.insert(Value);
 	}
 
 	template<typename T>
@@ -32,9 +37,9 @@ public:
 	{
 		PROFILE_FUNCTION();
 
-		auto Iterator = _FactoryMap.find(HashedName);
+		auto Iterator = m_FactoryMap.find(HashedName);
 
-		if (Iterator == _FactoryMap.end())
+		if (Iterator == m_FactoryMap.end())
 		{
 			FLOW_ENGINE_ERROR("ClassFactory::CreateObjectFromID: Failed to find class {0} in map", HashedName);
 			return nullptr;
@@ -50,8 +55,18 @@ public:
 		return (void*) new T();
 	}
 
+
+	//= Public Static Functions ===========
+
+	static ClassFactory&	Get();
+
+	//= Public Functions ==================
+
+							ClassFactory();
+	void					RegisterClassUIDs();
+
 private:
 
-	std::unordered_map <std::string, std::function<void*(const ClassFactory&)>> _FactoryMap;
+	std::unordered_map <std::string, SpawnFunction> m_FactoryMap;
 };
 

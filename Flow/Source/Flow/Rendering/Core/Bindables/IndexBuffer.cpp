@@ -3,7 +3,8 @@
 #include "BindableCodex.h"
 
 IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices)
-	: _Count((UINT)Indices.size()), _Tag(Tag)
+	: m_Count((UINT)Indices.size())
+	, m_Tag(Tag)
 {
 	CREATE_RESULT_HANDLE();
 
@@ -13,23 +14,23 @@ IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned shor
 	IndexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
 	IndexBufferDescription.CPUAccessFlags = 0u;
 	IndexBufferDescription.MiscFlags = 0u;
-	IndexBufferDescription.ByteWidth = UINT(_Count * sizeof(unsigned short));
+	IndexBufferDescription.ByteWidth = UINT(m_Count * sizeof(unsigned short));
 	IndexBufferDescription.StructureByteStride = sizeof(unsigned short);
 
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
 	SubresourceData.pSysMem = Indices.data();
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &_IndexBuffer));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_IndexBuffer));
 }
 
 void IndexBuffer::Bind()
 {
-	RenderCommand::DX11GetContext()->IASetIndexBuffer(_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	RenderCommand::DX11GetContext()->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }
 
 UINT IndexBuffer::GetCount() const
 {
-	return _Count;
+	return m_Count;
 }
 
 std::shared_ptr<Bindable> IndexBuffer::Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices)
@@ -39,7 +40,7 @@ std::shared_ptr<Bindable> IndexBuffer::Resolve(const std::string& Tag, const std
 
 std::string IndexBuffer::GetUID() const
 {
-	return GenerateUID(_Tag);
+	return GenerateUID(m_Tag);
 }
 
 std::string IndexBuffer::GenerateUID_Internal(const std::string& Tag)

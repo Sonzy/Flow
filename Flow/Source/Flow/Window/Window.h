@@ -1,53 +1,71 @@
 #pragma once
-#include "Flowpch.h"
 
-#include "Flow/Core.h"
-#include "Flow/Events/Event.h"
-#include "Flow/Rendering/Renderer.h"
+//= Includes ========================================
+
+#include "Flowpch.h"
+#include "Core.h"
+#include "Events/Event.h"
+#include "Rendering/Renderer.h"
 
 #ifdef FLOW_PLATFORM_WINDOWS
-#include "Flow/Rendering/DX11/DX11RenderAPI.h"
+	#include "Rendering/DX11/DX11RenderAPI.h"
 #endif
 
-struct WindowProperties
-{
-	std::string Title;
-	unsigned int Width;
-	unsigned int Height;
-
-	WindowProperties(const std::string& WindowTitle = "Flow Engine",
-		unsigned int Width = 1280, unsigned int Height = 720)
-		: Title(WindowTitle), Width(Width), Height(Height)
-	{
-
-	}
-};
+//= Class Definitions ==================================
 
 class FLOW_API Window
 {
 public:
+
+	//= Public Typedefs ===============================================
+
 	using EventCallbackFunction = std::function<void(Event&)>;
 
-	virtual ~Window() {};
+public:
 
-	static Window* Create(const WindowProperties& Properties, bool MainWindow = true);
+	//= Public Structs ================================================
 
-	virtual void PreUpdate() = 0;
-	virtual void OnUpdate() = 0;
-	virtual void PostUpdate() = 0;
-	virtual void Shutdown() = 0;
+	struct Properties
+	{
+		Properties(const std::string& WindowTitle = "Flow Engine",
+			unsigned int Width = 1280, unsigned int Height = 720)
+			: m_Title(WindowTitle)
+			, m_Width(Width)
+			, m_Height(Height)
+		{
 
-	virtual unsigned int GetWidth() const = 0;
-	virtual unsigned int GetHeight() const = 0;
+		}
 
-	virtual void SetEventCallback(const EventCallbackFunction& Callback) = 0;
-	virtual void EnableVSync(bool bEnabled) = 0;
-	virtual bool IsVSyncEnabled() const = 0;
+		std::string		m_Title;
+		unsigned int	m_Width;
+		unsigned int	m_Height;
+	};
 
-	virtual void Resize(int Width, int Height) = 0;
+public:
+
+	//= Public Functions ===============================================
+
+	virtual					~Window() {};
+	static Window*			Create(const Window::Properties& Properties, bool MainWindow = true);
+
+	virtual void			PreUpdate() = 0;
+	virtual void			OnUpdate() = 0;
+	virtual void			PostUpdate() = 0;
+	virtual void			Shutdown() = 0;
+
+	virtual unsigned int	GetWidth() const = 0;
+	virtual unsigned int	GetHeight() const = 0;
+
+	virtual void			SetEventCallback(const EventCallbackFunction& Callback) = 0;
+	virtual void			EnableVSync(bool bEnabled) = 0;
+	virtual bool			IsVSyncEnabled() const = 0;
+
+	virtual void			Resize(int Width, int Height) = 0;
 
 protected:
-	WindowProperties Props;
 
-	bool _MainWindow;
+	//= Protected Variables ============================================
+
+	Window::Properties		m_Props;
+	bool					m_MainWindow;
 };

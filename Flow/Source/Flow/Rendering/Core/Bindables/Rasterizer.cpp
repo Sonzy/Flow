@@ -1,22 +1,26 @@
+//= Includes =======================================
+
 #include "Flowpch.h"
 #include "Rasterizer.h"
 #include "BindableCodex.h"
 
+//= Class (Rasterizer) Definition ==================
+
 Rasterizer::Rasterizer(CullMode CullMode)
-	: _CullMode(CullMode)
+	: m_CullMode(CullMode)
 {
 	CREATE_RESULT_HANDLE();
 
 	CD3D11_RASTERIZER_DESC Description = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
-	Description.CullMode = static_cast<D3D11_CULL_MODE>(_CullMode); 
+	Description.CullMode = static_cast<D3D11_CULL_MODE>(m_CullMode); 
 	//TODO: Need to flip the normals in the shaders if it is a back face
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &_Rasterizer));
+	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &m_Rasterizer));
 }
 
 void Rasterizer::Bind()
 {
-	RenderCommand::DX11GetContext()->RSSetState(_Rasterizer.Get());
+	RenderCommand::DX11GetContext()->RSSetState(m_Rasterizer.Get());
 }
 
 std::shared_ptr<Rasterizer> Rasterizer::Resolve(CullMode CullMode)
