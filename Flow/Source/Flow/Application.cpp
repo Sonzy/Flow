@@ -78,72 +78,9 @@ void Application::InitialiseApplication()
 	m_ClassFactory = new ClassFactory();
 	m_ClassFactory->RegisterClassUIDs();
 
-	//TODO: Load assets somewhere
 	//= Models =
 
-	AssetSystem::LoadEditorAsset("Box",						"Assets/Models/Box.obj");
-	AssetSystem::LoadEditorAsset("Arrow",					"Assets/Models/Arrow.obj");
-	AssetSystem::LoadEditorAsset("Gizmo_Translation",		"Assets/Models/Gizmo_Translation.obj"); //TODO: we load it as a seperate asset for laziness
-	AssetSystem::LoadEditorAsset("Gizmo_Rotation",			"Assets/Models/Gizmo_Rotation.obj");
-	AssetSystem::LoadEditorAsset("Gizmo_Scale",				"Assets/Models/Gizmo_Scale.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Crate",			"Assets/Models/Wabble_Crate.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Chair",			"Assets/Models/Wabble_Chair.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Table",			"Assets/Models/Wabble_Table.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Revolver",			"Assets/Models/Wabble_Revolver.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Rifle",			"Assets/Models/Wabble_Rifle.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Shotgun",			"Assets/Models/Wabble_Shotgun.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss",		"Assets/Models/Wabble_Blunderbuss.obj");
-
-	//= Collision ======================
-
-	AssetSystem::LoadEditorAsset("Wabble_Table_Collision",			"Assets/Collision/Collision_Wabble_Table.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Chair_Collision",			"Assets/Collision/Collision_Wabble_Chair.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Shotgun_Collision",		"Assets/Collision/Collision_Wabble_Shotgun.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Rifle_Collision",			"Assets/Collision/Collision_Wabble_Rifle.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Revolver_Collision",		"Assets/Collision/Collision_Wabble_Revolver.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Blunderbuss_Collision",	"Assets/Collision/Collision_Wabble_Blunderbuss.obj");
-	AssetSystem::LoadEditorAsset("Wabble_Crate_Collision",			"Assets/Collision/Collision_Wabble_Crate.obj");
-
-
-	//Assign Collisions to meshes
-
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Table")->GetMesh(0)->m_CollisionName = "Wabble_Table_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Chair")->GetMesh(0)->m_CollisionName = "Wabble_Chair_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Shotgun")->GetMesh(0)->m_CollisionName = "Wabble_Shotgun_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Rifle")->GetMesh(0)->m_CollisionName = "Wabble_Rifle_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Revolver")->GetMesh(0)->m_CollisionName = "Wabble_Revolver_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Blunderbuss")->GetMesh(0)->m_CollisionName = "Wabble_Blunderbuss_Collision";
-	AssetSystem::GetAsset<MeshAsset>("Wabble_Crate")->GetMesh(0)->m_CollisionName = "Wabble_Crate_Collision";
-
-	//= Textures =
-
-	AssetSystem::LoadEditorAsset("Wabble_Props", "Assets/Textures/Wabble_Props.png");
-	AssetSystem::LoadEditorAsset("Wabble_Weapons", "Assets/Textures/Wabble_Weapons.png");
-	AssetSystem::LoadEditorAsset("Wabble_Wood", "Assets/Textures/Wabble_Wood.png");
-	AssetSystem::LoadEditorAsset("Wabble_Sand", "Assets/Textures/Wabble_Sand.png");
-	AssetSystem::LoadEditorAsset("SkyCube_Test", "Assets/Textures/TestCubeMap2.png");
-
-	//= Icons =
-
-	AssetSystem::LoadEditorAsset("Icon_SelectionTool", "Assets/Images/SelectionTool.png");
-	AssetSystem::LoadEditorAsset("Icon_Play", "Assets/Images/Icon_Play.png");
-	AssetSystem::LoadEditorAsset("Icon_Pause", "Assets/Images/Icon_Pause.png");
-	AssetSystem::LoadEditorAsset("Icon_Stop", "Assets/Images/Icon_Stop.png");
-
-
-	//= Shaders =
-	AssetSystem::LoadEditorAsset("TexturedLightVS", "Source/Flow/Rendering/Core/Shaders/TexturedPerPixelVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedLightPS", "Source/Flow/Rendering/Core/Shaders/TexturedPerPixelPS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPhongPS", "Source/Flow/Rendering/Core/Shaders/TexturedPhongPS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPhongVS", "Source/Flow/Rendering/Core/Shaders/TexturedPhongVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedVS", "Source/Flow/Rendering/Core/Shaders/TextureVS.cso");
-	AssetSystem::LoadEditorAsset("TexturedPS", "Source/Flow/Rendering/Core/Shaders/TexturePS.cso");
-	AssetSystem::LoadEditorAsset("SolidColourVS", "Source/Flow/Rendering/Core/Shaders/SolidColorVS.cso");
-	AssetSystem::LoadEditorAsset("SolidColourPS", "Source/Flow/Rendering/Core/Shaders/SolidColourPS.cso");
-	AssetSystem::LoadEditorAsset("LineShaderP", "Source/Flow/Rendering/Core/Shaders/LineShaderP.cso");
-	AssetSystem::LoadEditorAsset("LineShaderV", "Source/Flow/Rendering/Core/Shaders/LineShaderV.cso");
-	AssetSystem::LoadEditorAsset("LineColourP", "Source/Flow/Rendering/Core/Shaders/LineColour_PS.cso");
-	AssetSystem::LoadEditorAsset("LineColourV", "Source/Flow/Rendering/Core/Shaders/LineColour_VS.cso");
+	AssetSystem::Startup();
 
 	//= Materials =
 	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
@@ -185,8 +122,8 @@ void Application::InitialiseApplication()
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
 	Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
 	SkyMat->SetTexture("SkyCube_Test");
-	SkyMat->SetPixelShader("TexturedPS");
-	SkyMat->SetVertexShader("TexturedVS");
+	SkyMat->SetPixelShader("TexturePS");
+	SkyMat->SetVertexShader("TextureVS");
 
 	m_Layer_Game = new GameLayer();
 

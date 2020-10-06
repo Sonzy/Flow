@@ -12,6 +12,7 @@ public:
 								ShaderAsset();
 
 	virtual bool				ImportAsset(const std::string& AssetPath) override;
+	virtual bool				LoadAsset(const std::string& AssetPath) override;
 	const std::string&			GetPath() const;
 
 private:

@@ -1,12 +1,15 @@
 #include "Flowpch.h"
 #include "MenuBar.h"
 #include "ThirdParty/ImGui/imgui.h"
-#include "Flow/Application.h"
-#include "Flow/Editor/Editor.h"
-#include "Flow/GameFramework/World.h"
+#include "Application.h"
+#include "Editor/Editor.h"
+#include "GameFramework/World.h"
 #include "Bullet\LinearMath\btIDebugDraw.h"
 
-#include "Flow/Editor/Tools/SelectionTool.h"
+#include "Editor/Tools/SelectionTool.h"
+
+//TODO: Remove
+#include "Assets/AssetSystem.h"
 
 MenuBar::MenuBar(Editor* EditorPointer)
 	: m_Editor(EditorPointer)
@@ -27,16 +30,24 @@ ImVec2 MenuBar::Draw()
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("New Level"))
+			{
 				m_Editor->Open_NewLevelWindow();//TODO: Open new levels
+			}
 
 			if (ImGui::MenuItem("Save"))
+			{
 				Application::SaveLevel();
+			}
 
 			if (ImGui::MenuItem("Load"))
+			{
 				Application::LoadLevel();
+			}
 
 			if (ImGui::MenuItem("Quit"))
+			{
 				Application::Shutdown();
+			}
 
 			ImGui::EndMenu();
 		}

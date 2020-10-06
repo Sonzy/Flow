@@ -30,7 +30,6 @@ bool MeshAsset::ImportAsset(const std::string& LocalPath)
 	Converted.replace_extension(".fMesh");
 	if (std::filesystem::exists(Converted))
 	{
-		FLOW_ENGINE_LOG("Loading FMesh");
 		return LoadAsset(Converted.string());
 	}
 
@@ -134,8 +133,6 @@ bool MeshAsset::SaveAsset(const std::string& AssetName)
 		}
 	}
 
-	FLOW_ENGINE_LOG("FileSize: {0} {1}", OutStream.tellp(), AssetName);
-
 	OutStream.close();
 
 	return true;
@@ -152,15 +149,6 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 		FLOW_ENGINE_ERROR("Failed to open file {0}", AssetName);
 		return false;
 	}
-
-	//TODO: Remove
-	{
-		int startSpot = InputStream.tellg();
-		InputStream.seekg(0, std::ios::end);
-		int file_size = InputStream.tellg();
-		FLOW_ENGINE_LOG("FileSize: {0} {1}", InputStream.tellg(), AssetName);
-		InputStream.seekg(0, std::ios::beg);
-	}
 	
 	size_t MeshCount;
 	InputStream.read(reinterpret_cast<char*>(&MeshCount), sizeof(size_t));
@@ -170,8 +158,6 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 		FLOW_ENGINE_LOG("File was empty");
 		return false;
 	}
-
-
 	
 	for(size_t it = 0; it < MeshCount; it++)
 	{
@@ -179,8 +165,6 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 		Mesh NewMesh = Mesh(this, static_cast<int>(m_Meshes.size()));
 		size_t NVertices = 0;
 		size_t NFaces = 0;
-
-		FLOW_ENGINE_ERROR("CAP: {0}", NewMesh.m_Vertices.capacity());
 	
 		// Collision Name
 
@@ -202,9 +186,6 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 			return false;
 		}
 	
-		FLOW_ENGINE_ERROR("CAP: {0}", NewMesh.m_Vertices.capacity());
-
-
 		NewMesh.m_Vertices.reserve(NVertices);
 		NewMesh.m_Normals.reserve(NVertices);
 		NewMesh.m_TexCoords.reserve(NVertices);

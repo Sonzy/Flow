@@ -5,11 +5,14 @@
 #include <filesystem>
 
 #include "Asset.h"
-#include "Flow\Assets\Materials\MaterialAsset.h"
-#include "Flow\Assets\Shaders\ShaderAsset.h"
-#include "Flow\Assets\Textures\TextureAsset.h"
-#include "Flow\Assets\Materials\MaterialAsset.h"
+#include "Assets\Materials\MaterialAsset.h"
+#include "Assets\Shaders\ShaderAsset.h"
+#include "Assets\Textures\TextureAsset.h"
+#include "Assets\Materials\MaterialAsset.h"
 
+//TODO: Reload the collision meshes, might need to import
+//TODO: Implement loading of shader files
+//TODO: Implement loading of textures/images
 
 /* Asset management class used for managing all assets in the engine */
 class FLOW_API AssetSystem
@@ -21,8 +24,9 @@ public:
 	static Asset*								CreateAsset(Asset::Type Type);
 	/* Loads an asset from the specified path, and stores it in the system so it can be accessed by the name. Editor asset
 	flag will search for the file from the default editor directory. */
-	static bool									LoadAsset(const std::string& AssetName, const std::string& FilePath, bool EditorAsset = false, bool AbsolutePath = false);
-	static bool									LoadEditorAsset(const std::string& AssetName, const std::string& FilePath, bool AbsolutePath = false);
+	static bool									LoadAsset(const std::string& FilePath);
+	static bool									ImportAsset(const std::string& FilePath);
+	//static bool								LoadEditorAsset(const std::string& AssetName, const std::string& FilePath, bool AbsolutePath = false);
 	static Asset*								GetAsset(const std::string& AssetPath);
 
 	template <typename T>
@@ -42,6 +46,7 @@ public:
 	/* Renders an IMGUI window showing current asset system memory usage. */
 	static void									RenderDebugWindow(bool Render);
 
+	static void									Startup();
 	static void									Shutdown();
 
 	/* Temp: Used to create a new material at runtime, templated on the material class */
@@ -61,12 +66,18 @@ public:
 	}
 
 private:
+	//TODO: Remove
+	friend class MenuBar;
 
 	//= Private Functions ==============================
 
 	AssetSystem();
 	AssetSystem(const AssetSystem&) = delete;
 	~AssetSystem();
+
+	bool										SaveAssetMap();
+	void										LoadAssetsFromAssetMap(const std::filesystem::path& filepath, bool Editor);
+	static AssetSystem&							Get()					{ return *sm_AssetSystem; };
 
 private:
 	//= Private Static Variables =========================
