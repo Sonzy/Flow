@@ -97,7 +97,7 @@ public:
 												MeshAsset();
 	virtual										~MeshAsset();
 
-	virtual bool								ImportAsset(const std::string& LocalPath) override;
+	virtual bool								ImportAsset(const std::string& FilePath, const std::string& SavePath) override;
 	virtual bool								SaveAsset(const std::string& AssetName) override;
 	virtual bool								LoadAsset(const std::string& AssetName) override;
 

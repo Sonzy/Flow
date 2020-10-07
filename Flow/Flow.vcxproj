@@ -169,6 +169,7 @@
     <ClInclude Include="Source\Flow\Maths\Vector4.h" />
     <ClInclude Include="Source\Flow\Typedefs.h" />
     <ClInclude Include="Source\Flow\Utils\BulletDebugDrawing.h" />
+    <ClInclude Include="Source\Flow\Utils\FileSystem.h" />
     <ClInclude Include="Source\Flow\Utils\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Utils\ImGuiHelper.h" />
     <ClInclude Include="Source\Flow\Maths\Rotator.h" />

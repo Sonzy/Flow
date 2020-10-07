@@ -63,7 +63,6 @@ void Inspector::RenderInspector()
 
 		ImGui::Separator(); //==========================================
 
-
 		if (m_FocusedComponent)
 		{
 			ImGui::TextColored(IMGUI_YELLOW, "Component Transform");

@@ -13,7 +13,7 @@ void Log::InitialiseEngineLogger()
 
 	if (sm_EngineLogger)
 	{
-		FLOW_ENGINE_LOG("Engine Logger (Flow) Initialised");
+		FLOW_ENGINE_LOG("Logger Flow Initialised");
 	}
 	else
 	{

@@ -39,6 +39,8 @@ public:
 
 	static IntVector2			GetAdjustedWindowSize();
 
+	bool						OpenFile(std::string& outPath);
+
 private:
 
 	//= Private Structs ==================================

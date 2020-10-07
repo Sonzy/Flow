@@ -3,7 +3,7 @@
 #include "Flow\Assets\Asset.h"
 #include "DXTex\DirectXTex.h"
 
-#define TIME_TEXTURE_CONVERSION 1
+
 
 class FLOW_API TextureAsset : public Asset
 {
@@ -15,7 +15,7 @@ public:
 									TextureAsset() {};
 									~TextureAsset();
 
-	virtual bool					ImportAsset(const std::string& FilePath) override;
+	virtual bool					ImportAsset(const std::string& FilePath, const std::string& SavePath) override;
 	virtual bool					SaveAsset(const std::string& FilePath) override;
 	virtual bool					LoadAsset(const std::string& FilePath) override;
 

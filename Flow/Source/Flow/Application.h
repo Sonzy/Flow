@@ -8,13 +8,10 @@
 //= Event Includes =
 #include "Events/ApplicationEvent.h"
 
-
 //= Helper Includes =
 #include "UserInterface/imgui/ImGuiLayer.h"
-#include "Flow\Utils\Timer.h"
-
-//= STL Includes =
-#include <filesystem>
+#include "Utils/Timer.h"
+#include "Utils/FileSystem.h"
 
 //= Forward Declarations ===============================
 
@@ -46,6 +43,9 @@ public:
 	static void							SavePlayState();
 	static void							LoadPlayState();
 
+	static fs::path						GetEnginePath() { return Get().m_EngineDirectory; };
+	static fs::path						GetGamePath()	{ return Get().m_GameDirectory; };
+
 	//= Public Functions =======================================
 
 										Application(const std::string& AppName);
@@ -65,12 +65,12 @@ public:
 	Window&								GetWindow();
 
 #if WITH_EDITOR
-	Editor*						GetEditor()				{ return m_Layer_Editor; };
+	Editor*								GetEditor()				{ return m_Layer_Editor; };
 #endif
 
-	static bool StartGame();
-	static bool PauseGame();
-	static bool StopGame();
+	static bool							StartGame();
+	static bool							PauseGame();
+	static bool							StopGame();
 
 	ClassFactory&						GetClassFactory()		{ return *m_ClassFactory; }
 
@@ -103,7 +103,7 @@ private:
 	ImGuiLayer*							m_Layer_ImGui;
 	GameLayer*							m_Layer_Game;
 #if WITH_EDITOR
-	Editor*						m_Layer_Editor;
+	Editor*								m_Layer_Editor;
 #endif
 
 	bool								m_Running;
@@ -126,6 +126,7 @@ private:
 
 	//= Paths =================
 
-	std::filesystem::path				m_ApplicationPath;
+	fs::path							m_EngineDirectory;
+	fs::path							m_GameDirectory;
 };
 

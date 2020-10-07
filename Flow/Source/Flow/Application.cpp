@@ -47,7 +47,6 @@ Application::Application(const std::string& AppName)
 	, m_DrawCollision(false)
 	, m_GameWorld(nullptr)
 	, m_ClassFactory(nullptr)
-	, m_ApplicationPath()
 
 #if WITH_EDITOR
 	, m_RenderEditor(true)
@@ -61,10 +60,13 @@ void Application::InitialiseApplication()
 {
 	Instrumentor::Get().BeginSession("Application Startup", "Saved/Profiling-Startup.json");
 
+	FLOW_ENGINE_LOG("================ Initialising Engine ======================");
+
 	PROFILE_FUNCTION();
 
 	sm_Application = this;
-	m_ApplicationPath = std::filesystem::current_path();
+	m_EngineDirectory = std::filesystem::current_path().parent_path().append("Flow");
+	m_GameDirectory = std::filesystem::current_path();
 
 	//Create the main window
 	m_MainWindow = Window::Create(Window::Properties(m_ApplicationName, 1280u, 720u));
@@ -125,6 +127,8 @@ void Application::InitialiseApplication()
 	SkyMat->SetPixelShader("TexturePS");
 	SkyMat->SetVertexShader("TextureVS");
 
+	FLOW_ENGINE_LOG("================ Initialising Game ======================");
+
 	m_Layer_Game = new GameLayer();
 
 	//Create the game world
@@ -141,6 +145,8 @@ void Application::InitialiseApplication()
 #if WITH_EDITOR
 	PushLayer(m_Layer_Editor);
 #endif
+
+	FLOW_ENGINE_LOG("================ Initialisation Complete ==================");
 }
 
 Application::~Application()

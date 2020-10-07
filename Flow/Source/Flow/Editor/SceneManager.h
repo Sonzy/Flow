@@ -9,6 +9,7 @@
 
 class EditorCamera;
 class ToolBar;
+class Texture;
 
 //= Class Declaration ===============================
 
@@ -45,4 +46,5 @@ private:
 	EditorCamera*		m_EditorCam;
 
 	ToolBar*			m_Toolbar;
+
 };

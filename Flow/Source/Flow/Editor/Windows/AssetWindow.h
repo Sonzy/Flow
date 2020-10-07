@@ -1,5 +1,14 @@
 #pragma once
-#include <filesystem>
+
+//= Includes ==============================================
+
+#include "Utils/FileSystem.h"
+
+//= Forward Declaration ==============================================
+
+class Texture;
+
+//= Class Definition ==============================================
 
 class AssetWindow
 {
@@ -14,11 +23,24 @@ private:
 
 	//= Private Functions =================================
 
-	void DrawDirectory(const std::filesystem::path& CurrentPath);
+	void DrawDirectory(const FilePath& CurrentPath);
 
 private:
 	//= Private Variables =================================
 
-	std::filesystem::path				m_SelectedDirectory;
-	std::filesystem::path				m_CurrentParentDirectory;
+	bool								m_EditorMode;
+	FilePath							m_SelectedEditorDirectory;
+	FilePath							m_SelectedDirectory;
+	FilePath							m_CurrentParentDirectory;
+	
+	Texture*							m_Icon_Mesh;
+	Texture*							m_Icon_Shader;
+	Texture*							m_Icon_Texture;
+	Texture*							m_Icon_Folder;
+
+	//= Formatting =
+
+	float								m_IconSize;
+	float								m_IconSpacing;
+	float								m_YSpacing;
 };

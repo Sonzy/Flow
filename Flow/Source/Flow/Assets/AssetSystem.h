@@ -2,17 +2,15 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include <filesystem>
 
 #include "Asset.h"
 #include "Assets\Materials\MaterialAsset.h"
 #include "Assets\Shaders\ShaderAsset.h"
 #include "Assets\Textures\TextureAsset.h"
 #include "Assets\Materials\MaterialAsset.h"
+#include "Utils/FileSystem.h"
 
 //TODO: Reload the collision meshes, might need to import
-//TODO: Implement loading of shader files
-//TODO: Implement loading of textures/images
 
 /* Asset management class used for managing all assets in the engine */
 class FLOW_API AssetSystem
@@ -25,9 +23,12 @@ public:
 	/* Loads an asset from the specified path, and stores it in the system so it can be accessed by the name. Editor asset
 	flag will search for the file from the default editor directory. */
 	static bool									LoadAsset(const std::string& FilePath);
-	static bool									ImportAsset(const std::string& FilePath);
+	static bool									ImportAsset(const std::string& FilePath, const std::string& ImportDirectory);
 	//static bool								LoadEditorAsset(const std::string& AssetName, const std::string& FilePath, bool AbsolutePath = false);
 	static Asset*								GetAsset(const std::string& AssetPath);
+	static bool 								DoesAssetExist(const std::string& AssetPath);
+
+	static void									UpdateAssetName(const std::string& Old, const std::string& New);
 
 	template <typename T>
 	static T*									GetAsset(const std::string& AssetPath)
@@ -35,11 +36,8 @@ public:
 		return dynamic_cast<T*>(GetAsset(AssetPath));
 	}
 
-	static std::filesystem::path				GetRootDirectory(bool EditorPath = false);
-	static std::string							GetRootDirectoryString(bool EditorPath = false);
-
-	static std::filesystem::path				GetAssetDirectory(bool EditorPath = false);
-	static std::string							GetAssetDirectoryString(bool EditorPath = false);
+	static fs::path								GetEngineAssetDirectory();
+	static fs::path								GetGameAssetDirectory();
 
 	static Asset::Type							GetAssetTypeFromFileExtension(const std::string& AssetPath);
 
@@ -48,6 +46,10 @@ public:
 
 	static void									Startup();
 	static void									Shutdown();
+
+	static bool									HasExtension(const char* File, const char* Extension);
+
+	//= Public Static Template Functions =====================================================
 
 	/* Temp: Used to create a new material at runtime, templated on the material class */
 	template <typename T>
@@ -76,6 +78,7 @@ private:
 	~AssetSystem();
 
 	bool										SaveAssetMap();
+	bool										SaveEditorAssetMap();
 	void										LoadAssetsFromAssetMap(const std::filesystem::path& filepath, bool Editor);
 	static AssetSystem&							Get()					{ return *sm_AssetSystem; };
 

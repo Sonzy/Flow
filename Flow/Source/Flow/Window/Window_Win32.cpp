@@ -243,20 +243,31 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 		e = &Event;
 		break;
 	}
-
-
 	default:
 		bHandled = false;
 	}
 
+	if (e == nullptr)
+	{
+		if (bHandled == true)
+		{
+			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: Error was nullptr (Message: {0})", msg);
+		}
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+
+	if (m_WindowData.EventCallback == nullptr)
+	{
+		if (const bool ThrowError = false)
+		{
+			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: No callback assigned (Message: {0})", msg);
+		}
+
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
 
 	//If we have a handled event, call the callback
-	if (e && m_WindowData.EventCallback)
-		m_WindowData.EventCallback(*e);
-	else if (bHandled)
-	{
-		FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: Event was nullptr or the window has no callback assigned");
-	}
+	m_WindowData.EventCallback(*e);
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
@@ -292,6 +303,32 @@ IntVector2 Window_Win32::GetAdjustedWindowSize()
 	RECT rect;
 	::GetClientRect(Win->GetWindowHandle(), &rect);
 	return IntVector2(float(rect.right - rect.left), float(rect.bottom - rect.top));
+}
+
+bool Window_Win32::OpenFile(std::string& outPath)
+{
+	//TODO: Actually configure the settings, works with these defaults for now
+	OPENFILENAME ofn = { 0 };
+	TCHAR szFile[260] = { 0 };
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = GetWindowHandle();
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = ".FMESH\0\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	if (GetOpenFileName(&ofn) == TRUE)
+	{
+		outPath = ofn.lpstrFile;
+		return true;
+	}
+
+	return false;
 }
 
 //= Window Class ===========================

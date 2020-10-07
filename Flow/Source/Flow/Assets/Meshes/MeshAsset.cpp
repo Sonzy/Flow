@@ -23,10 +23,10 @@ MeshAsset::~MeshAsset()
 	m_Meshes.clear();
 }
 
-bool MeshAsset::ImportAsset(const std::string& LocalPath)
+bool MeshAsset::ImportAsset(const std::string& FilePath, const std::string& SavePath)
 {
 	//TODO: Testing local saving
-	std::filesystem::path Converted = LocalPath;
+	std::filesystem::path Converted = FilePath;
 	Converted.replace_extension(".fMesh");
 	if (std::filesystem::exists(Converted))
 	{
@@ -34,12 +34,12 @@ bool MeshAsset::ImportAsset(const std::string& LocalPath)
 	}
 
 	Assimp::Importer Importer;
-	const aiScene* Scene = Importer.ReadFile(LocalPath,
+	const aiScene* Scene = Importer.ReadFile(FilePath,
 		aiProcess_Triangulate | 
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded);
 	
-	CHECK_RETURN_FALSE(!Scene, ("MeshAsset::LoadAsset: Failed to load model from path ({0}) {1}", LocalPath, Importer.GetErrorString()));
+	CHECK_RETURN_FALSE(!Scene, ("MeshAsset::LoadAsset: Failed to load model from path ({0}) {1}", FilePath, Importer.GetErrorString()));
 
 	//TODO: FBX doesnt load right
 	aiNode* Root = Scene->mRootNode;
@@ -79,9 +79,9 @@ bool MeshAsset::ImportAsset(const std::string& LocalPath)
 
 	//= Save the imported asset =
 
-	std::filesystem::path SavePath = LocalPath;
-	SavePath.replace_extension(".fMesh");
-	SaveAsset(SavePath.string());
+	fs::path ConvertedPath = SavePath;
+	ConvertedPath.replace_extension(".fmesh");
+	SaveAsset(ConvertedPath.string());
 
 	return true;
 }
@@ -217,7 +217,7 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 	
 			InputStream.read(reinterpret_cast<char*>(&NewFace.m_NumIndices), sizeof(int));
 
-			for (int j = 0; j < NewFace.m_NumIndices; j++)
+			for (unsigned int j = 0; j < NewFace.m_NumIndices; j++)
 			{
 				int LoadedIndex;
 				InputStream.read(reinterpret_cast<char*>(&LoadedIndex), sizeof(int));

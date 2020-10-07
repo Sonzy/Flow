@@ -20,7 +20,6 @@ SceneManager::SceneManager()
 	m_MouseOverScene(false),
 	m_EditorCam(nullptr)
 {
-
 	m_Toolbar = new ToolBar();
 }
 

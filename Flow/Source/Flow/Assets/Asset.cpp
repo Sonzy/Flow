@@ -7,7 +7,7 @@ bool Asset::LoadAsset(const std::string& LocalPath)
 	return false;
 }
 
-bool Asset::ImportAsset(const std::string& LocalPath)
+bool Asset::ImportAsset(const std::string& FilePath, const std::string& SavePath)
 {
 	FLOW_ENGINE_WARNING("Asset::ImportAsset: Load definition not found.");
 	return false;

@@ -26,18 +26,17 @@ public:
 
 	struct MetaData
 	{
-		std::string		m_AssetPath;
+		std::string		m_OriginalPath;
+		std::string		m_GamePath;
+		std::size_t		m_IDHash;
 		bool			m_EditorAsset;
 	};
 
 	//= Public Functions ===============================
 
-	virtual bool			ImportAsset(const std::string& LocalPath);
+	virtual bool			ImportAsset(const std::string& FilePath, const std::string& SavePath);
 	virtual bool			SaveAsset(const std::string& AssetName);
 	virtual bool			LoadAsset(const std::string& AssetName);
-
-	void					SetEditorAsset(bool EditorAsset)				{ m_Metadata.m_EditorAsset = EditorAsset; }
-	void					SetAssetPath(const std::string& Path)			{ m_Metadata.m_AssetPath = Path; }
 
 	void					SetAssetName(const std::string& Name)			{ m_AssetName = Name; }
 	const std::string&		GetAssetName() const							{ return m_AssetName; }
@@ -46,7 +45,8 @@ public:
 	// Returns a string with the asset size
 	std::string				GetFormattedSize() const;
 
-	const Asset::MetaData& GetMetaData() const								{ return m_Metadata; }
+	const Asset::MetaData&	GetMetaData() const								{ return m_Metadata; }
+	Asset::MetaData&		GetMetaData() 									{ return m_Metadata; }
 protected:
 
 	//= Protected Functions ==========================

@@ -215,7 +215,7 @@ void World::InitialisePhysics()
 	m_PhysicsWorld = new btDiscreteDynamicsWorld(m_Dispatcher, m_OverlappingPairCache, m_Solver, m_CollisionConfig);
 
 	/* Initialise Physics world properties */
-	m_PhysicsWorld->setGravity(btVector3(0, -9.81, 0));
+	m_PhysicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
 	m_PhysicsWorld->setDebugDrawer(&m_DebugDrawer);
 	m_PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
