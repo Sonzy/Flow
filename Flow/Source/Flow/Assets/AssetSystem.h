@@ -38,6 +38,8 @@ public:
 
 	static fs::path								GetEngineAssetDirectory();
 	static fs::path								GetGameAssetDirectory();
+	static fs::path								GetEngineAssetParentDirectory();
+	static fs::path								GetGameAssetParentDirectory();
 
 	static Asset::Type							GetAssetTypeFromFileExtension(const std::string& AssetPath);
 
@@ -65,6 +67,23 @@ public:
 		sm_AssetSystem->m_MemoryUsage += NewAsset->GetAssetSize();
 
 		return (bool)NewAsset;
+	}
+
+	// Returns a vector of all assets of this type
+	template <typename T>
+	static std::vector<const char*>				BuildAssetList()
+	{
+		std::vector<const char*> OutList;
+
+		for (std::pair<size_t, Asset*> asset : sm_AssetSystem->m_LoadedAssets)
+		{
+			if (typeid(*asset.second) == typeid(T))
+			{
+				OutList.push_back(asset.second->GetAssetName().c_str());
+			}
+		}
+
+		return OutList;
 	}
 
 private:

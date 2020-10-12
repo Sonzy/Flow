@@ -39,64 +39,35 @@ void AssetWindow::DrawWindow()
 		{
 			if (ImGui::BeginTabItem("Editor"))
 			{
-				if (ImGui::Button("Back"))
-				{
-					//TODO: Safety check so you cant go out of the project
-					if (m_SelectedEditorDirectory != AssetSystem::GetEngineAssetDirectory())
-					{
-						m_SelectedEditorDirectory = m_SelectedEditorDirectory.parent_path();
-					}
-				}
+				DrawDirectoryBar(m_SelectedEditorDirectory, true);
 
-				m_EditorMode = true;
-				DrawDirectory(m_SelectedEditorDirectory);
+				if (ImGui::BeginChild("EditorBrowser", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar))
+				{
+					m_EditorMode = true;
+					DrawDirectory(m_SelectedEditorDirectory);
+				}
+				ImGui::EndChild();
+
 				ImGui::EndTabItem();
 			}
 
 			if (ImGui::BeginTabItem("Game"))
 			{
-				if (ImGui::Button("Back"))
+				DrawDirectoryBar(m_SelectedDirectory, false);
+
+				if(ImGui::BeginChild("Browser", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar))
 				{
-					//TODO: Safety check so you cant go out of the project
-					if (m_SelectedDirectory != AssetSystem::GetGameAssetDirectory())
-					{
-						m_SelectedDirectory = m_SelectedDirectory.parent_path();
-					}
+					m_EditorMode = false;
+					DrawDirectory(m_SelectedDirectory);
 				}
-
-				m_EditorMode = false;
-				DrawDirectory(m_SelectedDirectory);
-				ImGui::EndTabItem();
-			}
-
-			static bool open = false;
-			if (ImGui::BeginTabItem("Options"))
-			{		
-				ImGui::Checkbox("Popout", &open);
-
-				ImGui::InputFloat("Icon Size", &m_IconSize);
-				ImGui::InputFloat("Icon Spacing", &m_IconSpacing);
-				ImGui::InputFloat("Y Spacing", &m_YSpacing);
-				ImGui::InputFloat("Text Y Offset", &m_TextYOffset);
-				ImGui::InputFloat("Name Textbox Height", &m_NameBoxHeight);
-				ImGui::InputInt("Max Name Lines", &m_MaxNameLines);
+				ImGui::EndChild();
 
 				ImGui::EndTabItem();
 			}
+			
 			ImGui::EndTabBar();
-
-			if (open && ImGui::Begin("Popout"))
-			{
-				ImGui::InputFloat("Icon Size", &m_IconSize);
-				ImGui::InputFloat("Icon Spacing", &m_IconSpacing);
-				ImGui::InputFloat("Y Spacing", &m_YSpacing);
-				ImGui::InputFloat("Text Y Offset", &m_TextYOffset);
-				ImGui::InputFloat("Name Textbox Height", &m_NameBoxHeight);
-				ImGui::InputInt("Max Name Lines", &m_MaxNameLines);
-
-				ImGui::End();
-			}
 		}
+
 
 		if (ImGui::BeginPopupContextWindow("AssetWindowContext"))
 		{
@@ -115,7 +86,6 @@ void AssetWindow::DrawWindow()
 				}
 
 			}
-
 			ImGui::EndPopup();
 		}
 	}
@@ -320,4 +290,74 @@ const Texture* AssetWindow::GetTextureForExtension(const FilePath& FileName) con
 void AssetWindow::AddToRenameQueue(const FilePath& ParentDirectory, const std::string& OldFilename, const std::string& NewFilename, std::vector<std::pair<FilePath, FilePath>>& OutRenameList)
 {
 	OutRenameList.emplace_back(ParentDirectory.string() + "\\" + OldFilename, ParentDirectory.string() + "\\" + NewFilename);
+}
+
+void AssetWindow::DrawDirectoryBar(const FilePath Parent, bool Editor)
+{
+	//Get the start location relative to the parent folder
+	std::string StringDirectory = Parent.string();
+	std::string ParentStringDirectory = Editor ? AssetSystem::GetEngineAssetDirectory().string() : AssetSystem::GetGameAssetDirectory().string();
+	size_t Position = StringDirectory.find(ParentStringDirectory);
+
+	fs::path Start = Parent;
+	if (Position != -1)
+	{																						//Moving back to allow /Assets/ TODO: Dont hardcode this?
+		Start = fs::path(StringDirectory.begin() + Position + ParentStringDirectory.length() - 6, StringDirectory.end());
+	}
+
+	//Start the iterator from the Asset Directory
+	fs::path::iterator it(Start.begin());
+	fs::path::iterator it_next(Start.begin()); it_next++;
+	fs::path::iterator it_end(Start.end());
+	fs::path current;
+
+	//If we have no subdirectories, skip a line
+	if (it == it_end)
+	{
+		ImGui::NewLine();
+	}
+
+	//Draw the Path
+	for (; it != it_end; it++)
+	{
+		std::string pathString = it->string();
+
+		//Skip any caught / paths
+		if (strcmp("/", pathString.c_str()) == 0 || strcmp("\\", pathString.c_str()) == 0)
+		{
+			it_next++;
+			continue;
+		}
+
+		current /= *it;
+
+		if (ImGui::Button(pathString.c_str()))
+		{
+			if (Editor)
+			{
+				if (m_SelectedEditorDirectory != AssetSystem::GetEngineAssetDirectory())
+				{
+					m_SelectedEditorDirectory = AssetSystem::GetEngineAssetParentDirectory() / current;
+					break;
+				}
+			}
+			else
+			{
+				if (m_SelectedDirectory != AssetSystem::GetGameAssetDirectory())
+				{
+					m_SelectedDirectory = AssetSystem::GetGameAssetParentDirectory() / current;
+					break;
+				}
+			}
+
+		}
+
+		if (it_next != it_end)
+		{
+			ImGui::SameLine();
+			ImGui::Text("/");
+			ImGui::SameLine();
+			it_next++;
+		}
+	}
 }

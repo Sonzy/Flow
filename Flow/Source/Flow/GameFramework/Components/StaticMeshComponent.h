@@ -97,4 +97,10 @@ protected:
 	std::string					m_MaterialIdentifier;
 	Material*					m_Material;
 
+private:
+
+	//= Private Functions ====================================
+
+	void						DrawMeshSelector();
+	void						DrawMaterialSelector();
 };

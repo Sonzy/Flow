@@ -39,8 +39,7 @@ public:
 			: m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
 		{}
 
-		Vector3				m_ObjectHighlightColour;
-		std::string			m_StartingLevel;
+		Vector3 m_ObjectHighlightColour;
 	};
 
 public:

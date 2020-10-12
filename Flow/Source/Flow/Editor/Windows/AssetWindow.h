@@ -34,6 +34,8 @@ private:
 	//TODO: Better renaming
 	void					AddToRenameQueue(const FilePath& ParentDirectory, const std::string& OldFilename, const std::string& NewFilename, std::vector<std::pair<FilePath, FilePath>>& OutRenameList);
 
+	void					DrawDirectoryBar(const FilePath Parent, bool Editor);
+
 private:
 	//= Private Variables =================================
 

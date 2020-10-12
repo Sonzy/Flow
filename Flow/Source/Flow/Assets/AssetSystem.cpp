@@ -387,3 +387,13 @@ fs::path AssetSystem::GetGameAssetDirectory()
 {
 	return Application::GetGamePath().append("Assets");
 }
+
+fs::path AssetSystem::GetEngineAssetParentDirectory()
+{
+	return Application::GetEnginePath();
+}
+
+fs::path AssetSystem::GetGameAssetParentDirectory()
+{
+	return Application::GetGamePath();
+}

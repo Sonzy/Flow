@@ -343,47 +343,19 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();
 
-	if(m_Techniques.size() >= 2) //TODO: better system for this
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Static Mesh Component");
+
+	if (m_Techniques.size() >= 2) //TODO: better system for this
+	{
 		ImGui::Checkbox("Draw Outline", &m_Techniques[1].GetWriteAccessToActive());
-
-	std::string MeshNameTemp = m_MeshIdentifier;
-	std::string MatNameTemp = m_MaterialIdentifier;
-
-	if (m_MeshIdentifier.empty())	m_MeshIdentifier = "None";
-	if (m_MaterialIdentifier.empty())	m_MaterialIdentifier = "None";
-
-	if (ImGui::InputText("Mesh Identifier", &MeshNameTemp, ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		//Format the string correctly.
-		std::string::iterator it = std::remove(MeshNameTemp.begin(), MeshNameTemp.end(), ' ');
-		MeshNameTemp.erase(it, MeshNameTemp.end());
-
-		MeshAsset* FoundMesh = AssetSystem::GetAsset<MeshAsset>(MeshNameTemp);
-		if (!FoundMesh)
-		{
-			FLOW_ENGINE_ERROR("StaticMeshComponent::DrawComponentDetailsWindow: Failed to find mesh with name {0}.", MeshNameTemp);
-			return;
-		}
-
-		m_MeshIdentifier = MeshNameTemp;
-		SetStaticMesh(FoundMesh);
-		InitialisePhysics();
 	}
+
+	DrawMeshSelector();
+	DrawMaterialSelector();
 																									
-	if (ImGui::InputText("Material Identifier", &MatNameTemp, ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MatNameTemp);
-		if (!FoundMat)
-		{
-			FLOW_ENGINE_ERROR("StaticMeshComponent::DrawComponentDetailsWindow: Failed to find material with name {0}", MatNameTemp);
-			return;
-		}
-
-		m_MaterialIdentifier = MatNameTemp;
-		SetMaterial(FoundMat);
-	}
-
 	ImGui::Checkbox("Draw Without Depth", &m_DrawWithoutDepth);
+
+	ImGui::Separator();
 }
 
 void StaticMeshComponent::GenerateCollision()
@@ -401,7 +373,6 @@ void StaticMeshComponent::GenerateCollision()
 	Transform trans = GetWorldTransform();
 	m_CollisionShape->setLocalScaling(btVector3(trans.m_Scale.x, trans.m_Scale.y, trans.m_Scale.z));
 }
-
 
 void StaticMeshComponent::InitialisePhysics()
 {
@@ -450,4 +421,63 @@ void StaticMeshComponent::SetStencilMode(StencilMode NewMode)
 	//_StencilMode = NewMode;
 
 	RefreshBinds();
+}
+
+void StaticMeshComponent::DrawMeshSelector()
+{
+	std::vector<const char*> Assets = AssetSystem::BuildAssetList<MeshAsset>();
+	static int CurrentItem = 0;
+	const char* currentItem = m_MeshIdentifier.c_str();
+	if (ImGui::BeginCombo("Mesh Selector", currentItem, 0)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < Assets.size(); n++)
+		{
+			bool is_selected = (currentItem == Assets[n]);
+
+			if (ImGui::Selectable(Assets[n], is_selected))
+			{
+				currentItem = Assets[n];
+
+				m_MeshIdentifier = currentItem;
+				SetStaticMesh(currentItem);
+				InitialisePhysics();
+			}
+
+			// Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void StaticMeshComponent::DrawMaterialSelector()
+{
+	std::vector<const char*> Assets = AssetSystem::BuildAssetList<MaterialAsset>();
+	static int CurrentItem = 0;
+	const char* currentItem = m_MaterialIdentifier.c_str();
+	if (ImGui::BeginCombo("Material Selector", currentItem, 0)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < Assets.size(); n++)
+		{
+			bool is_selected = (currentItem == Assets[n]);
+
+			if (ImGui::Selectable(Assets[n], is_selected))
+			{
+				currentItem = Assets[n];
+
+				m_MaterialIdentifier = currentItem;
+				SetMaterial(currentItem);
+			}
+
+			// Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 }
