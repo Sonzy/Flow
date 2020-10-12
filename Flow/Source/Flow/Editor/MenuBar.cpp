@@ -152,13 +152,13 @@ void MenuBar::Window_BulletDebugDrawSettings()
 	if (ImGui::Begin("Bullet Physics Debug Colours", &m_Visible_BulletConfiguration))
 	{
 		btIDebugDraw::DefaultColors& Colors = Application::GetWorld()->GetPhysicsDebugDrawer().GetDebugColors();
-		ImGui::ColorPicker3("Active Objects", Colors.m_activeObject.m_floats);
-		ImGui::ColorPicker3("Deactivated Objects", Colors.m_deactivatedObject.m_floats);
-		ImGui::ColorPicker3("AABBs", Colors.m_aabb.m_floats);
-		ImGui::ColorPicker3("Contact Points", Colors.m_contactPoint.m_floats);
-		ImGui::ColorPicker3("Disabled Deactivation Objects", Colors.m_disabledDeactivationObject.m_floats);
-		ImGui::ColorPicker3("Disabled Simulation Objects", Colors.m_disabledSimulationObject.m_floats);
-		ImGui::ColorPicker3("Wants Deactivation Objects", Colors.m_wantsDeactivationObject.m_floats);
+		ImGui::ColorEdit3("Active Objects", Colors.m_activeObject.m_floats);
+		ImGui::ColorEdit3("Deactivated Objects", Colors.m_deactivatedObject.m_floats);
+		ImGui::ColorEdit3("AABBs", Colors.m_aabb.m_floats);
+		ImGui::ColorEdit3("Contact Points", Colors.m_contactPoint.m_floats);
+		ImGui::ColorEdit3("Disabled Deactivation Objects", Colors.m_disabledDeactivationObject.m_floats);
+		ImGui::ColorEdit3("Disabled Simulation Objects", Colors.m_disabledSimulationObject.m_floats);
+		ImGui::ColorEdit3("Wants Deactivation Objects", Colors.m_wantsDeactivationObject.m_floats);
 	}
 	ImGui::End();
 }

@@ -9,7 +9,7 @@
 ToolBar::ToolBar()
 {
 	//If we crash here, the texture asset probably doesnt exist
-	m_Icon_SelectionTool = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_SelectionTool"), 1);
+	m_Icon_SelectionTool = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Tool_Selection"), 1);
 	m_Icon_Play = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Play"), 1);
 	m_Icon_Pause = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Pause"), 1);
 	m_Icon_Stop = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Stop"), 1);

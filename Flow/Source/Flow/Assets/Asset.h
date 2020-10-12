@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
 
+//= Forward Declarations ==============================
+
+class Texture;
+
 /* Base class for assets. Manages naming and asset types */
 class FLOW_API Asset
 {
@@ -47,11 +51,19 @@ public:
 
 	const Asset::MetaData&	GetMetaData() const								{ return m_Metadata; }
 	Asset::MetaData&		GetMetaData() 									{ return m_Metadata; }
+
 protected:
 
-	//= Protected Functions ==========================
+	//= Protected Variables ===================================
+
+	virtual void					CreateThumbnail() {};
+
+protected:
+
+	//= Protected Functions ===================================
 	std::string				m_AssetName;
 	size_t					m_AssetSize = 0;
 	Asset::Type				m_AssetType = Asset::Type::None;
 	Asset::MetaData			m_Metadata;
+	Texture*				m_Thumbnail = nullptr;
 };

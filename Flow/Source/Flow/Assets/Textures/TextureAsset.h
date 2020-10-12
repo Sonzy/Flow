@@ -26,6 +26,13 @@ public:
 	uint8_t*						GetBufferPtr() const { return m_Image.GetPixels(); }
 	const std::string&				GetAssetPath() const { return m_AssetPath; }
 
+	const Texture*					GetThumbnail() const { return m_Thumbnail; }
+
+protected:
+	//= Protected Functions ===================================
+
+	virtual void					CreateThumbnail() override;
+
 protected:
 
 	//= Protected Variables ===================================
@@ -33,4 +40,6 @@ protected:
 	DirectX::ScratchImage			m_Image;
 	static constexpr DXGI_FORMAT	m_Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM; //Windows default format
 	std::string						m_AssetPath;
+	DirectX::ScratchImage			m_ThumbnailImage;
+	Texture*						m_Thumbnail;
 };

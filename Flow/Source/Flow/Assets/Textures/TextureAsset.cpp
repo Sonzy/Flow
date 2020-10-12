@@ -7,6 +7,8 @@
 #include "Utils/Timer.h"
 #include "Utils/FileSystem.h"
 
+#include "Rendering/Core/Bindables/Texture.h"
+
 //= PreProcessor Macro Definitions ===================================
 
 #define TIME_TEXTURE_CONVERSION 0
@@ -15,6 +17,7 @@
 
 TextureAsset::~TextureAsset()
 {
+	delete m_Thumbnail;
 }
 
 bool TextureAsset::ImportAsset(const std::string& FilePath, const std::string& SavePath)
@@ -60,6 +63,10 @@ bool TextureAsset::ImportAsset(const std::string& FilePath, const std::string& S
 	fs::path ConvertedPath = SavePath;
 	ConvertedPath.replace_extension(".png");
 	SaveAsset(ConvertedPath.string());
+
+	//TODO: Save the thumbnail?
+	// Create the thumbnail
+	CreateThumbnail();
 
 	return true;
 }
@@ -111,5 +118,16 @@ bool TextureAsset::LoadAsset(const std::string& FilePath)
 	m_AssetType = Asset::Type::Texture;
 	m_AssetPath = FilePath;
 
+	//Create thumbnail
+	CreateThumbnail();
+
 	return true;
+}
+
+void TextureAsset::CreateThumbnail()
+{
+	HRESULT ResultHandle;
+
+	CATCH_ERROR_DX(DirectX::Resize(*m_Image.GetImage(0, 0, 0), 128, 128, DirectX::TEX_FILTER_DEFAULT, m_ThumbnailImage));
+	m_Thumbnail = new Texture(m_ThumbnailImage, 0, m_AssetName + "_Thumnail");
 }

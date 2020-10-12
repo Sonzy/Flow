@@ -21,6 +21,8 @@ public:
 	//= Public Functions =========================================================
 
 											Texture(TextureAsset* Asset, UINT slot);
+											Texture(const DirectX::ScratchImage& Asset, UINT slot, const std::string& AssetName);
+
 	void									Bind() override;
 	ID3D11ShaderResourceView*				GetTextureView() const { return m_TextureView.Get(); } //TODO: being lazy, can go out of scope whilst in use
 
