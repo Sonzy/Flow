@@ -107,6 +107,17 @@ bool Actor::CollisionEnabled()
 	return m_RootComponent ? m_RootComponent->HasCollision() : false;
 }
 
+void Actor::DestroyPhysics()
+{
+	//TODO: Check more than the root component
+	if (m_RootComponent == nullptr)
+	{
+		return;
+	}
+
+	m_RootComponent->DestroyPhysics();
+}
+
 void Actor::DrawDetailsWindow(bool bDontUpdate)
 {
 	ImGui::Checkbox("Is Visible", &m_Visible);

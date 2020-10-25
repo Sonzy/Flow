@@ -21,7 +21,7 @@ void PixelShader::Bind()
 {
 	RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 }
-std::shared_ptr<Bindable> PixelShader::Resolve(const std::string& LocalPath)
+Bindable* PixelShader::Resolve(const std::string& LocalPath)
 {
 	return BindableCodex::Resolve<PixelShader>(LocalPath);
 }

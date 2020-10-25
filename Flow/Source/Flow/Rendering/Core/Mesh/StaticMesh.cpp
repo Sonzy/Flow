@@ -44,7 +44,7 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 		MaterialOverride->BindMaterial(&MainStep, MeshLayout);
 
-		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+		MainStep.AddBindable(new TransformConstantBuffer(this));
 
 		Standard.AddStep(std::move(MainStep));
 	}

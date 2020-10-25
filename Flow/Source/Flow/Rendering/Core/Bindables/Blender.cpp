@@ -38,7 +38,7 @@ void Blender::Bind()
 	RenderCommand::DX11GetContext()->OMSetBlendState(m_Blender.Get(), nullptr, 0xFFFFFFFFu);
 }
 
-std::shared_ptr<Blender> Blender::Resolve(bool Blending)
+Blender* Blender::Resolve(bool Blending)
 {
 	return BindableCodex::Resolve<Blender>(Blending);
 }

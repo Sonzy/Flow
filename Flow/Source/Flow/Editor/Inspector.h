@@ -38,7 +38,7 @@ public:
 	static WorldComponent*			GetSelectedComponent();
 
 	void							SetFocus(WorldComponent* NewFocus)		{ m_FocusedComponent = NewFocus; };
-	void							ClearFocus(WorldComponent* NewFocus)	{ m_FocusedComponent = nullptr; }
+	void							ClearFocus()							{ m_FocusedComponent = nullptr; }
 
 private:
 

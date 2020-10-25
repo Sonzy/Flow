@@ -22,7 +22,7 @@ class Stencil : public Bindable
 public:
 
 	//= Public Static Functions ========================================
-	static std::shared_ptr<Bindable>					Resolve(StencilMode mode);
+	static Bindable*					Resolve(StencilMode mode);
 	static std::string									GenerateUID(StencilMode mode);
 	static std::string									GetModeAsString(StencilMode mode);
 

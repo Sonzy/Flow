@@ -37,7 +37,7 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 
 		m_Material->BindMaterial(&MainStep, MeshLayout);
 
-		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+		MainStep.AddBindable(new TransformConstantBuffer(this)); //TODO: need to clean this up
 		Standard.AddStep(MainStep);
 	}
 	AddTechnique(Standard);

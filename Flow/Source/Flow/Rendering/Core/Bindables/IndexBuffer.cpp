@@ -33,7 +33,7 @@ UINT IndexBuffer::GetCount() const
 	return m_Count;
 }
 
-std::shared_ptr<Bindable> IndexBuffer::Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices)
+Bindable* IndexBuffer::Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices)
 {
 	return BindableCodex::Resolve<IndexBuffer>(Tag, Indices);
 }

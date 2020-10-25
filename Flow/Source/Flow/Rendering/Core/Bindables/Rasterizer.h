@@ -21,7 +21,7 @@ public:
 
 	//= Public Static Functions ===============================
 
-	static std::shared_ptr<Rasterizer>				Resolve(CullMode CullMode);
+	static Rasterizer*								Resolve(CullMode CullMode);
 	static std::string								GenerateUID(CullMode CullMode);
 
 public:

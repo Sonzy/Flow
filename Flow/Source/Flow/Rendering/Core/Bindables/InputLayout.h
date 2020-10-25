@@ -14,7 +14,7 @@ public:
 
 	//= Public Static Functions ========================================
 
-	static std::shared_ptr<Bindable>		Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
+	static Bindable*		Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
 	static std::string						GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode = nullptr);
 
 	//= Public Functions ===============================================

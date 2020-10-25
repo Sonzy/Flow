@@ -1,26 +1,27 @@
 #include "Flowpch.h"
 #include "Editor.h"
-#include "Flow/Events/MouseEvent.h"
-#include "Flow\Editor\Inspector.h"
-#include "Flow\Application.h"
+#include "Events/MouseEvent.h"
+#include "Editor\Inspector.h"
+#include "Application.h"
 
-#include "Flow\Editor\SelectionGizmo.h"
-#include "Flow/GameFramework/World.h"
-#include "Flow/Editor/MenuBar.h"
-#include "Flow/Editor/Windows/AssetWindow.h"
+#include "Editor\SelectionGizmo.h"
+#include "GameFramework/World.h"
+#include "Editor/MenuBar.h"
+#include "Editor/Windows/AssetWindow.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 
 #include <Psapi.h> //memory debug
+#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
 
-#include "Flow/Rendering/Other/FrameBuffer.h"
-#include "Flow/Editor/EditorCamera.h"
-#include "Flow/Editor/LevelManager.h"
-#include "Flow/Editor/Windows/SpawnWindow.h"
+#include "Rendering/Other/FrameBuffer.h"
+#include "Editor/EditorCamera.h"
+#include "Editor/LevelManager.h"
+#include "Editor/Windows/SpawnWindow.h"
 
-#include "Flow/Editor/Toolbar.h"
-#include "Flow/Editor/Tools/Tool.h"
-#include "Flow/Editor/Tools/SelectionTool.h"
+#include "Editor/Toolbar.h"
+#include "Editor/Tools/Tool.h"
+#include "Editor/Tools/SelectionTool.h"
 
 #define DISPATCH_TO_TOOL(ClassName)																				\
 	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseButtonPressed));	\
@@ -38,6 +39,7 @@ Editor::Editor()
 	: Layer("Editor Layer")
 	, m_EditorViewportSize(0,0)
 	, m_Initialised(false)
+	, m_ShowSettingsWindow(false)
 {
 
 }
@@ -73,6 +75,15 @@ void Editor::OnAttach()
 {
 	m_ApplicationPointer = &Application::Get();
 	m_Inspector->SetCurrentWorld(World::Get());
+
+	LoadEditorSettings();
+
+	//TODO:
+	//if (m_Settings.m_StartingLevel.length() > 0)
+	//{
+	//	World::Get()->LoadLevel(m_Settings.m_StartingLevel);
+	//}
+	World::Get()->LoadLevel();
 }
 
 void Editor::OnDetach()
@@ -112,7 +123,12 @@ void Editor::OnImGuiRender(bool DrawEditor)
 		if (m_DrawDemoWindow)
 		{
 			ImGui::ShowDemoWindow(&m_DrawDemoWindow);
-		}			
+		}		
+
+		if (m_ShowSettingsWindow)
+		{
+			m_SettingsWindow.Draw(m_Settings, *this);
+		}
 	}
 }
 
@@ -146,9 +162,9 @@ void Editor::OnUpdate(float DeltaTime)
 	m_FrameDeltaTime = DeltaTime;
 
 	if (!m_EditorCam)
-		m_EditorCam = std::dynamic_pointer_cast<EditorCamera>(RenderCommand::GetMainCamera());
-
-	//_SelectionGizmo->Render();
+	{
+		m_EditorCam = dynamic_cast<EditorCamera*>(RenderCommand::GetMainCamera());
+	}
 
 	UpdateTools(DeltaTime);
 	RenderTools();
@@ -168,6 +184,60 @@ void Editor::RenderTools()
 	{
 		tool->RenderTool();
 	}
+}
+
+void Editor::SaveEditorSettings()
+{
+	PROFILE_FUNCTION();
+
+	fs::path SettingsPath = Application::GetEnginePath() / "Editor/Settings.txt";
+	std::ofstream OutStream = std::ofstream(SettingsPath, std::ios::out | std::ios::trunc);
+
+	if (OutStream.is_open() == false)
+	{
+		FLOW_ENGINE_ERROR("Editor::SaveEditorSettings: Failed to save settings {0}", SettingsPath);
+		return;
+	}
+
+	// Starting level name
+	size_t size = m_Settings.m_StartingLevel.length();
+	OutStream << size;
+	//OutStream << m_Settings.m_StartingLevel;
+
+	//OutStream.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
+	OutStream.write(m_Settings.m_StartingLevel.c_str(), sizeof(char) * size);
+
+	// Colors
+	OutStream.write(reinterpret_cast<const char*>(&m_Settings.m_ObjectHighlightColour), sizeof(Vector3));
+
+	OutStream.close();
+}
+
+void Editor::LoadEditorSettings()
+{
+	PROFILE_FUNCTION();
+
+	std::ifstream InputStream = std::ifstream(Application::GetEnginePath() / "Editor/Settings.txt", std::ios::in);
+
+	if (InputStream.is_open() == false)
+	{
+		FLOW_ENGINE_ERROR("Editor::LoadEditorSettings: Failed to editor settings");
+		return;
+	}
+
+	// Starting level name
+	size_t size;
+	char buffer[128] = { '\0' };
+
+	InputStream >> size;
+	//InputStream.read(reinterpret_cast<char*>(&size), sizeof(size_t));
+	InputStream.read(buffer, sizeof(char) * size);
+	m_Settings.m_StartingLevel = buffer;
+
+	// Colors
+	InputStream.read(reinterpret_cast<char*>(&m_Settings.m_ObjectHighlightColour), sizeof(Vector3));
+
+	InputStream.close();
 }
 
 void Editor::RegisterTool(Tool* newTool)
@@ -317,8 +387,6 @@ void Editor::UpdateCollisionEditor()
 	//ImGui::End();
 }
 
-
-
 void Editor::InitialiseDockspace(ImVec2 Offset)
 {
 	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
@@ -343,8 +411,6 @@ void Editor::InitialiseDockspace(ImVec2 Offset)
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags, nullptr);
 	ImGui::End();
 }
-
-#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
 
 void Editor::RenderApplicationDebug(float DeltaTime)
 {
@@ -385,4 +451,36 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 		ImGui::Checkbox("Pass 5", &Queue->m_Pass5Enabled);
 	}
 	ImGui::End();
+}
+
+//= Settings Window ======================================================
+
+void Editor::SettingsWindow::Draw(Editor::Settings& EditorSettings, Editor& EditorRef)
+{
+	if (EditorRef.m_ShowSettingsWindow && ImGui::Begin("Editor Settings"))
+	{
+		ImGui::Text("Colors");
+		ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
+
+		ImGui::Separator();
+
+		ImGui::Text("Levels");
+		if (ImGui::InputText("Starting Level Name", m_StartingNameBuffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			EditorSettings.m_StartingLevel = m_StartingNameBuffer;
+		}
+
+
+		if (ImGui::Button("Save and Close"))
+		{
+			//Grab settings from buffers
+			EditorSettings.m_StartingLevel = m_StartingNameBuffer;
+
+			//Save
+			EditorRef.SaveEditorSettings();
+			EditorRef.m_ShowSettingsWindow = false;
+		}
+
+		ImGui::End();
+	}
 }

@@ -40,11 +40,11 @@ private:
 	//= Private Functions =======================================================
 
 	void											BindAll();
-	void											AddBind(std::shared_ptr<Bindable> NewBind);
+	void											AddBind(Bindable* NewBind);
 	 
 	//= Private Variables =======================================================
 
-	std::vector<std::shared_ptr<Bindable>>			m_Binds;													
+	std::vector<Bindable*>			m_Binds;													
 	VertexBuffer*									m_VertexBuffer;
 	BindableVertexBuffer*							m_BindableVertexBuffer;
 	VertexLayout*									m_VertexLayout;													

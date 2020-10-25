@@ -15,7 +15,7 @@ CameraActor::CameraActor(const std::string& Name)
 {
 	m_CameraComponent = CreateComponent<CameraComponent>("Camera");
 
-	m_RootComponent = m_CameraComponent.get();
+	m_RootComponent = m_CameraComponent;
 }
 
 void CameraActor::OnControlled(Controller* OwningController)

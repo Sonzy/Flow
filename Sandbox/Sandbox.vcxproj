@@ -92,19 +92,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Content\Crate.cpp" />
-    <ClCompile Include="Source\Content\Wall.cpp" />
-    <ClCompile Include="Source\Content\WorldObjects\Car.cpp" />
-    <ClCompile Include="Source\Content\WorldObjects\MeshWorldObject.cpp" />
-    <ClCompile Include="Source\Content\WorldObjects\ExampleWorldObject.cpp" />
     <ClCompile Include="Source\SandboxApplication.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\Content\Crate.h" />
-    <ClInclude Include="Source\Content\Wall.h" />
-    <ClInclude Include="Source\Content\WorldObjects\Car.h" />
-    <ClInclude Include="Source\Content\WorldObjects\MeshWorldObject.h" />
-    <ClInclude Include="Source\Content\WorldObjects\ExampleWorldObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

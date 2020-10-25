@@ -35,12 +35,12 @@ void Step::InitialiseParentReferences(const Renderable& Drawable)
 	}
 }
 
-void Step::AddBindable(std::shared_ptr<Bindable> NewBind)
+void Step::AddBindable(Bindable* NewBind)
 {
 	m_Bindables.push_back(std::move(NewBind));
 }
 
-void Step::AddBindables(std::vector<std::shared_ptr<Bindable>> Binds)
+void Step::AddBindables(std::vector<Bindable*> Binds)
 {
 	//TODO: Ensure this is bug free
 	m_Bindables.insert(m_Bindables.end(), Binds.begin(), Binds.end());

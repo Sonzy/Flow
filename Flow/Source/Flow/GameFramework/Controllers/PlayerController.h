@@ -19,12 +19,12 @@ public:
 
 									PlayerController();
 									PlayerController(const std::string& Name);
-	void							SetCamera(std::shared_ptr<CameraBase> NewCamera);
+	void							SetCamera(CameraBase* NewCamera);
 
 protected:
 
 	//= Protected Variables =====================
 
-	std::shared_ptr<CameraBase>		m_Camera;
-	std::shared_ptr<WorldObject>	m_Pawn;
+	CameraBase*						m_Camera;
+	WorldObject*					m_Pawn;
 };

@@ -21,6 +21,7 @@
 #include "Flow/Editor/Inspector.h"
 
 SelectionTool::SelectionTool()
+	: m_SelectedComponent(nullptr)
 {
 	m_Gizmo = new SelectionGizmo();
 	m_InspectorWindow = Editor::GetEditor()->GetInspector();
@@ -114,82 +115,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 		HitActor = HitComponent->GetParentActor();
 	}
 
-	bool SelectedObjectChanged = false;
-	//Pass on the onclicked event
-	if (m_SelectedActor != HitActor)
-	{
-		SelectedObjectChanged = true;
-
-		if (m_SelectedActor)
-		{
-			m_SelectedActor->OnViewportDeselected();
-		}
-
-		m_SelectedActor = HitActor;
-
-		if (m_SelectedActor)
-		{
-			m_SelectedActor->OnViewportSelected();
-		}
-	}
-	//Pass on the on clicked event
-	if (m_SelectedComponent != HitComponent)
-	{
-		SelectedObjectChanged = true;
-
-		if (m_SelectedComponent)
-		{
-			m_SelectedComponent->OnViewportDeselected();
-		}
-
-		m_SelectedComponent = HitComponent;
-
-		if (m_SelectedComponent)
-		{
-			m_SelectedComponent->OnViewportSelected();			
-		}
-
-		m_InspectorWindow->SetFocus(m_SelectedComponent);
-	}
-
-	//If we didnt hit anything, reset the gizmo
-	if (!m_SelectedActor)
-	{
-		if (m_SelectedComponent)
-		{
-			m_SelectedComponent->OnViewportDeselected();
-			m_SelectedComponent = nullptr;
-		}
-
-		m_Gizmo->OnDeselected();
-		m_Gizmo->OnNewComponentSelected(nullptr);
-
-		//Hide Gizmo
-		if (m_Gizmo->IsVisible())
-		{
-			m_Gizmo->RemoveCollidersFromWorld(World::Get());
-			m_Gizmo->SetVisibility(false);
-		}
-	}
-	//Otherwise add it to the world
-	else
-	{
-		//Show Gizmo
-		if (!m_Gizmo->IsVisible())
-		{
-			m_Gizmo->AddCollidersToWorld(World::Get());
-			m_Gizmo->SetVisibility(true);
-		}
-
-		m_Gizmo->OnNewComponentSelected(HitComponent);
-		m_Gizmo->UpdatePosition(HitActor->GetLocation());
-
-		if (SelectedObjectChanged)
-		{
-			//TODO: Try keep it uniform in screen space
-			m_Gizmo->SetScale(Vector3(1.5f, 1.5f, 1.5f));
-		}
-	}
+	SelectComponent(HitComponent);
 
 	return false;
 }
@@ -198,16 +124,21 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 {
 	if (e.GetKeyCode() == KEY_DELETE && m_SelectedActor)
 	{
-		//std::shared_ptr<Actor> ActorPtr(_FocusedItem);
-		//World::Get()->DestroyActor(ActorPtr);
-
-		World::Get()->DestroyActor(m_SelectedActor);
-
-		//_FocusedItem = nullptr;
-
+		//Deselect and delete component
 		if (m_SelectedComponent)
+		{
 			m_SelectedComponent->OnViewportDeselected();
-		m_SelectedComponent = nullptr;
+			m_SelectedComponent = nullptr;
+		}
+		m_Gizmo->OnNewComponentSelected(nullptr);
+
+		//Deselect and delete actor
+		if (m_SelectedActor)
+		{
+			m_SelectedActor->OnViewportDeselected();
+			World::Get()->DestroyActor(m_SelectedActor);
+			m_SelectedActor = nullptr;
+		}
 
 		//TODO: implement in toool
 		//_Selector->SetScale(Vector3(1.0f, 1.0f, 1.0f));
@@ -219,6 +150,7 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		//	_Selector->RemoveCollidersFromWorld(World::Get());
 		//	_Selector->SetVisibility(false);
 		//}
+
 		return true;
 	}
 
@@ -266,4 +198,77 @@ void SelectionTool::DrawConfigWindow()
 		ImGui::ColorEdit3("Debug Line Color", reinterpret_cast<float*>(&m_DebugLineColor));//, ImGuiColorEditFlags_NoInputs);		
 	}
 	ImGui::End();
+}
+
+void SelectionTool::SelectComponent(WorldComponent* NewComponent)
+{
+	Actor* Parent = NewComponent != nullptr ? NewComponent->GetParentActor() : nullptr;
+
+	//Pass on the onclicked event
+	if (m_SelectedActor != Parent)
+	{
+		if (m_SelectedActor)
+		{
+			m_SelectedActor->OnViewportDeselected();
+		}
+
+		m_SelectedActor = Parent;
+
+		if (m_SelectedActor)
+		{
+			m_SelectedActor->OnViewportSelected();
+		}
+	}
+
+	//Pass on the on clicked event
+	if (m_SelectedComponent != NewComponent)
+	{
+		if (m_SelectedComponent)
+		{
+			m_SelectedComponent->OnViewportDeselected();
+		}
+
+		m_SelectedComponent = NewComponent;
+
+		if (m_SelectedComponent)
+		{
+			m_SelectedComponent->OnViewportSelected();
+		}
+
+		m_InspectorWindow->SetFocus(m_SelectedComponent);
+	}
+
+	//If we didnt hit anything, reset the gizmo
+	if (!m_SelectedActor)
+	{
+		if (m_SelectedComponent)
+		{
+			m_SelectedComponent->OnViewportDeselected();
+			m_SelectedComponent = nullptr;
+		}
+
+		m_Gizmo->OnDeselected();
+		m_Gizmo->OnNewComponentSelected(nullptr);
+
+		//Hide Gizmo
+		if (m_Gizmo->IsVisible())
+		{
+			m_Gizmo->RemoveCollidersFromWorld(World::Get());
+			m_Gizmo->SetVisibility(false);
+		}
+	}
+	//Otherwise add it to the world
+	else
+	{
+		//Show Gizmo
+		if (!m_Gizmo->IsVisible())
+		{
+			m_Gizmo->AddCollidersToWorld(World::Get());
+			m_Gizmo->SetVisibility(true);
+		}
+
+		m_Gizmo->OnNewComponentSelected(NewComponent);
+		m_Gizmo->UpdatePosition(Parent->GetLocation());
+		m_Gizmo->SetScale(Vector3(1.5f, 1.5f, 1.5f));
+	}
 }

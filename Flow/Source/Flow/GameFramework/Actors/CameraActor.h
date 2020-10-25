@@ -29,7 +29,7 @@ protected:
 
 	//= Protected Variables ======================
 
-	std::shared_ptr<CameraComponent>	m_CameraComponent;
+	CameraComponent*					m_CameraComponent;
 	IntVector2							m_LastMousePosition;
 
 	float								m_CameraMovementSpeed;

@@ -33,8 +33,8 @@ public:
 	//= General =
 
 	static RenderAPI::API				GetAPI();
-	static std::shared_ptr<CameraBase>	GetMainCamera();
-	static void							SetMainCamera(std::shared_ptr<CameraBase> NewCamera);
+	static CameraBase*					GetMainCamera();
+	static void							SetMainCamera(CameraBase* NewCamera);
 
 	static void							Resize(int Width, int Height);
 	static void							SetClearColour(float R, float G, float B, float A);

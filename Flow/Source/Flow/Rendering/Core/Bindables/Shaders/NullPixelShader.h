@@ -13,7 +13,7 @@ public:
 	
 	//= Public Static Functions =============================================
 
-	static std::shared_ptr<NullPixelShader> Resolve();
+	static NullPixelShader*					Resolve();
 	static std::string						GenerateUID();
 
 	//= Public Functions ====================================================

@@ -266,7 +266,7 @@ void StaticMeshComponent::RefreshBinds()
 			if (m_Material)
 				m_Material->BindMaterial(&MainStep, MeshLayout);
 
-			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+			MainStep.AddBindable(new TransformConstantBuffer(this));
 
 			Standard.AddStep(std::move(MainStep));
 		}
@@ -287,7 +287,7 @@ void StaticMeshComponent::RefreshBinds()
 			if (m_Material)
 				m_Material->BindMaterial(&MainStep, MeshLayout);
 
-			MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+			MainStep.AddBindable(new TransformConstantBuffer(this));
 
 			StandardNoDepthPass.AddStep(std::move(MainStep));
 		}
@@ -305,7 +305,7 @@ void StaticMeshComponent::RefreshBinds()
 		Masking.AddBindable(std::move(VS));
 
 		Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		Masking.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+		Masking.AddBindable(new TransformConstantBuffer(this));
 
 		Outline.AddStep(std::move(Masking));
 	}
@@ -318,7 +318,7 @@ void StaticMeshComponent::RefreshBinds()
 		DrawOutline.AddBindable(std::move(VS));
 		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorPS")->GetPath()));
 		DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		DrawOutline.AddBindable(std::make_shared<ScaledTransformConstantBuffer>(this));
+		DrawOutline.AddBindable(new TransformConstantBuffer(this));
 
 		Outline.AddStep(DrawOutline);
 	}
@@ -376,7 +376,7 @@ void StaticMeshComponent::GenerateCollision()
 
 void StaticMeshComponent::InitialisePhysics()
 {
-	if (!m_StaticMesh)
+	if (m_StaticMesh == nullptr)
 	{
 		FLOW_ENGINE_WARNING("StaticMeshComponent::InitialisePhysics: StaticMesh was nullptr, skipped init");
 		return;
@@ -404,15 +404,20 @@ void StaticMeshComponent::InitialisePhysics()
 	}
 
 	CurrentWorld->AddPhysicsObject(m_RigidBody);
+
+	//FLOW_ENGINE_LOG("Physics initialised for object {0}", m_ObjectName);
 }
 
 void StaticMeshComponent::DestroyPhysics()
 {
-	if (!m_RigidBody)
+	if (m_RigidBody == nullptr)
+	{
 		return;
+	}
 
 	World::Get()->GetPhysicsWorld()->removeRigidBody(m_RigidBody);
 	delete m_RigidBody;
+	m_RigidBody = nullptr;
 }
 
 void StaticMeshComponent::SetStencilMode(StencilMode NewMode)

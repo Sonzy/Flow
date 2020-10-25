@@ -15,7 +15,7 @@ public:
 
 	//= Bindable Interface =
 
-	static std::shared_ptr<Bindable>		Resolve(D3D11_PRIMITIVE_TOPOLOGY type);
+	static Bindable*		Resolve(D3D11_PRIMITIVE_TOPOLOGY type);
 	static std::string						GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type);
 	std::string								GetUID() const override;
 public:

@@ -18,8 +18,12 @@ WorldComponent::WorldComponent()
 }
 
 WorldComponent::WorldComponent(const std::string& Name)
-	: Component(Name), m_ParentComponent(nullptr), m_RigidBody(nullptr), m_CollisionShape(nullptr),
-	m_MotionState(nullptr), m_CollisionEnabled(true)
+	: Component(Name)
+	, m_ParentComponent(nullptr)
+	, m_RigidBody(nullptr)
+	, m_CollisionShape(nullptr)
+	, m_MotionState(nullptr)
+	, m_CollisionEnabled(true)
 {
 }
 
@@ -27,9 +31,13 @@ WorldComponent::~WorldComponent()
 {
 	m_Children.clear();
 
-	delete m_RigidBody;
-	delete m_CollisionShape;
-	delete m_MotionState;
+	if (m_RigidBody != nullptr)			delete m_RigidBody;
+	if (m_CollisionShape != nullptr)	delete m_CollisionShape;
+	if (m_MotionState != nullptr)		delete m_MotionState;
+
+	m_RigidBody = nullptr;
+	m_CollisionShape = nullptr;
+	m_MotionState = nullptr;
 }
 
 #if WITH_EDITOR
@@ -360,8 +368,10 @@ void WorldComponent::CreateRigidBody()
 
 void WorldComponent::UpdateAABB()
 {
-	if(m_RigidBody)
+	if (m_RigidBody)
+	{
 		World::GetPhysicsWorld()->updateSingleAabb(m_RigidBody);
+	}
 }
 
 btRigidBody* WorldComponent::GetRigidBody() const

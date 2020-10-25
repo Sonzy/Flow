@@ -199,7 +199,7 @@ bool ImGuiLayer::OnKeyReleased(KeyReleasedEvent& e)
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.KeysDown[e.GetKeyCode()] = false;
 
-	if (IO.WantCaptureMouse && !Editor::GetEditor()->IsSceneWindowFocused())
+	if (IO.WantCaptureKeyboard && !Editor::GetEditor()->IsSceneWindowFocused())
 		return true;
 
 	IO.KeyCtrl = !IO.KeysDown[VK_LCONTROL] && !IO.KeysDown[VK_RCONTROL];

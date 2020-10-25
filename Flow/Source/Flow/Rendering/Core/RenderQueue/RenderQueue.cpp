@@ -90,7 +90,7 @@ void RenderQueue::Execute()
 		Stencil::Resolve(StencilMode::Mask)->Bind();
 
 		CBT_Colour ColourBuffer = CBT_Colour(Colour.x, Colour.y, Colour.z, 1.0f);
-		auto PXCB = std::static_pointer_cast<PixelConstantBuffer<CBT_Colour>>(PixelConstantBuffer<CBT_Colour>::Resolve(ColourBuffer, 2u));
+		auto PXCB = static_cast<PixelConstantBuffer<CBT_Colour>*>(PixelConstantBuffer<CBT_Colour>::Resolve(ColourBuffer, 2u));
 		PXCB->Update(ColourBuffer);
 		PXCB->Bind();
 

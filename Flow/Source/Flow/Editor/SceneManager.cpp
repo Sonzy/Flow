@@ -30,7 +30,7 @@ SceneManager::~SceneManager()
 void SceneManager::Update(float DeltaTime)
 {
 	if (!m_EditorCam)
-		m_EditorCam = static_cast<EditorCamera*>(RenderCommand::GetMainCamera().get());
+		m_EditorCam = static_cast<EditorCamera*>(RenderCommand::GetMainCamera());
 }
 
 void SceneManager::DrawWindow_Scene()

@@ -102,7 +102,7 @@ void LineBatcher::BindAll()
 	}
 }
 
-void LineBatcher::AddBind(std::shared_ptr<Bindable> NewBind)
+void LineBatcher::AddBind(Bindable* NewBind)
 {
 	m_Binds.push_back(std::move(NewBind));
 }

@@ -30,13 +30,12 @@ RenderAPI::API RenderCommand::GetAPI()
 	return sm_RendererAPI->GetAPI();
 }
 
-std::shared_ptr<CameraBase> RenderCommand::GetMainCamera()
+CameraBase* RenderCommand::GetMainCamera()
 {
 	return sm_RendererAPI->GetMainCamera();
-		//Application::GetWorld()->GetLocalController()->GetCamera();
 }
 
-void RenderCommand::SetMainCamera(std::shared_ptr<CameraBase> NewCamera)
+void RenderCommand::SetMainCamera(CameraBase* NewCamera)
 {
 	sm_RendererAPI->SetMainCamera(NewCamera);
 }

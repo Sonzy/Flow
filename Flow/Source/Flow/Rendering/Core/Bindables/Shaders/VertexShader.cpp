@@ -25,7 +25,7 @@ ID3DBlob* VertexShader::GetByteCode() const
 {
 	return m_Blob.Get();
 }
-std::shared_ptr<Bindable> VertexShader::Resolve(const std::string& LocalPath)
+Bindable* VertexShader::Resolve(const std::string& LocalPath)
 {
 	return BindableCodex::Resolve<VertexShader>(LocalPath);
 }

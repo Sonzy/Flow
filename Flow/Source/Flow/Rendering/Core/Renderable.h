@@ -37,8 +37,8 @@ protected:
 
 	//= Protected Variables =============================
 
-	std::shared_ptr<IndexBuffer>			m_IndexBuffer;
-	std::shared_ptr<BindableVertexBuffer>	m_VertexBuffer;
-	std::shared_ptr<Topology>				m_Topology;
+	IndexBuffer*							m_IndexBuffer;
+	BindableVertexBuffer*					m_VertexBuffer;
+	Topology*								m_Topology;
 	std::vector<Technique>					m_Techniques;
 };

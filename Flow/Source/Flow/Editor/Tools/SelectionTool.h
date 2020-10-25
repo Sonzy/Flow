@@ -28,6 +28,8 @@ public:
 
 	virtual void								DrawConfigWindow() override;
 
+	void										SelectComponent(WorldComponent* NewComponent);
+
 private:
 
 	WorldComponent*								m_SelectedComponent;

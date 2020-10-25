@@ -28,15 +28,15 @@ public:
 	void									DispatchEditorBeginPlay();
 #endif
 	void									Tick(float DeltaTime);
-	void									SetTickEnabled(std::shared_ptr<Actor> Actor, bool Enable);
+	void									SetTickEnabled(Actor* Actor, bool Enable);
 
-	std::vector<std::shared_ptr<Actor>>&	GetActors() { return m_Actors; }
+	std::vector<Actor*>&	GetActors()		{ return m_Actors; }
 
 private:
 
 	//= Private Variables ==========
 
 	std::string								m_Name;
-	std::vector<std::shared_ptr<Actor>>		m_Actors;
-	std::vector<std::shared_ptr<Actor>>		m_TickList;
+	std::vector<Actor*>						m_Actors;
+	std::vector<Actor*>						m_TickList;
 };

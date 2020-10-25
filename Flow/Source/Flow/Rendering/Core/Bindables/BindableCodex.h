@@ -18,7 +18,7 @@ public:
 
 	/* Static Wrapper - See Resolve_Internal() */
 	template<class T, typename ...Params>
-	static std::shared_ptr<T> Resolve(Params&&...P)
+	static T* Resolve(Params&&...P)
 	{
 		//TODO: Ensure T is a bindable
 		return Get().Resolve_Internal<T>(std::forward<Params>(P)...); //TODO: Learn more about this stuff
@@ -34,21 +34,21 @@ private:
 
 	/* If a bindable instance exists, will return the instance, otherwise will create an instance */
 	template<class T, typename ...Params>
-	std::shared_ptr<T> Resolve_Internal(Params&&...P)
+	T* Resolve_Internal(Params&&...P)
 	{
 		//Generate the UID for this asset
 		const auto GeneratedKey = T::GenerateUID(std::forward<Params>(P)...);
-		const auto FoundIndex = _Binds.find(GeneratedKey);
+		const auto FoundIndex = m_Binds.find(GeneratedKey);
 
 		//If we didnt find it, create a new one
-		if (FoundIndex == _Binds.end())
+		if (FoundIndex == m_Binds.end())
 		{
-			auto Bind = std::make_shared<T>(std::forward<Params>(P)...);
-			_Binds[GeneratedKey] = Bind;
+			auto Bind = new T(std::forward<Params>(P)...);
+			m_Binds[GeneratedKey] = Bind;
 			return Bind;
 		}
 		else
-			return std::static_pointer_cast<T>(FoundIndex->second);
+			return static_cast<T*>(FoundIndex->second);
 	}
 
 
@@ -62,5 +62,5 @@ private:
 
 	//= Private Variables =============================================
 
-	std::unordered_map<std::string, std::shared_ptr<Bindable>> _Binds;
+	std::unordered_map<std::string, Bindable*> m_Binds;
 };

@@ -32,7 +32,7 @@ void BindableVertexBuffer::Bind()
 	const UINT offset = 0u;
 	RenderCommand::DX11GetContext()->IASetVertexBuffers(0u, 1u, m_Buffer.GetAddressOf(), &m_Stride, &offset);
 }
-std::shared_ptr<Bindable> BindableVertexBuffer::Resolve(const std::string& Tag, const VertexBuffer& Buffer)
+Bindable* BindableVertexBuffer::Resolve(const std::string& Tag, const VertexBuffer& Buffer)
 {
 	return BindableCodex::Resolve<BindableVertexBuffer>(Tag, Buffer);
 }

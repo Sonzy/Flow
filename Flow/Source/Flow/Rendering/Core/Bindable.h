@@ -27,7 +27,7 @@ public:
 
 	//= Template interface for bindable codex. =======
 
-	//static std::shared_ptr<Bindable> Resolve();
+	//static Bindable* Resolve();
 	/* Generates the Unique ID for this bindable without an instance of the bindable */
 	//static std::string GenerateUID();
 	/* Returns the Unique ID of an existing bindable instance*/

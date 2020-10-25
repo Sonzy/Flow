@@ -38,7 +38,7 @@ public:
 private:
 
 	//= Private Functions ========================================
-	void						AddBind(std::shared_ptr<Bindable> bind);
+	void						AddBind(Bindable* bind);
 	void						BindAll();
 
 private:
@@ -46,7 +46,7 @@ private:
 	//= Private Static Variables =================================
 
 	static VertexLayout								m_VertexLayout;
-	static std::vector<std::shared_ptr<Bindable>>	m_Binds;
+	static std::vector<Bindable*>	m_Binds;
 	static IndexBuffer*								m_IndexBuffer;
 
 

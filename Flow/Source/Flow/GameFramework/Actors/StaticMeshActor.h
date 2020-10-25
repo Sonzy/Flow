@@ -26,5 +26,5 @@ protected:
 
 	//= Protected Variables ====================
 
-	std::shared_ptr<StaticMeshComponent>	m_MeshComponent;
+	StaticMeshComponent*					m_MeshComponent;
 };

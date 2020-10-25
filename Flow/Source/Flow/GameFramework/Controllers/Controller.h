@@ -8,6 +8,7 @@
 
 class Pawn;
 class CameraBase;
+class WorldComponent;
 
 //= Class Definitions ===============================
 
@@ -23,8 +24,8 @@ public:
 
 	virtual void				ControlObject(Pawn* Obj);
 	virtual void				RemoveControl(Pawn* Obj);
-	void						SetCamera(std::shared_ptr<CameraBase> NewCamera);
-	std::shared_ptr<CameraBase> GetCamera() const;
+	void						SetCamera(CameraBase* NewCamera);
+	CameraBase*					GetCamera() const;
 	bool						IsLocalController() const;
 	unsigned int				GetControllerIndex() const;
 
@@ -33,8 +34,10 @@ protected:
 	//= Protected Variables ====================
 
 	Pawn*						m_ControlledObject;
-	std::shared_ptr<CameraBase> m_Camera;
+	CameraBase*					m_Camera;
 								
 	bool						m_LocalController = true;
 	unsigned int				m_ControllerIndex = 0;
+
+	WorldComponent*				m_Root;
 };

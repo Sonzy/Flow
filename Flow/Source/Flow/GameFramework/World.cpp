@@ -52,11 +52,21 @@ void World::LoadLevel()
 	std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
 
 	//Clear Physics World State
+	if (m_PhysicsWorld != nullptr)
+	{
+		btCollisionObjectArray objs = m_PhysicsWorld->getCollisionObjectArray();
+		for (int i = 0; i < objs.size(); i++)
+		{
+			m_PhysicsWorld->removeCollisionObject(objs[i]);
+		}
+	}
+
 	delete m_CollisionConfig;
 	delete m_Dispatcher;
 	delete m_Solver;
 	delete m_PhysicsWorld;
 	delete m_OverlappingPairCache;
+
 	InitialisePhysics();
 
 	m_MainLevel->Load(InStream);
@@ -132,29 +142,26 @@ void World::Render()
 void World::InitialiseWorld()
 {
 #if WITH_EDITOR
-	m_EditorCam = std::make_shared<EditorCamera>();
-	RenderCommand::SetMainCamera(std::shared_ptr<EditorCamera>(m_EditorCam));
+	m_EditorCam = new EditorCamera();
+	RenderCommand::SetMainCamera(m_EditorCam);
 #endif
 
 	InitialisePhysics();
 
-	std::shared_ptr<PlayerController> NewLocalController = SpawnActor<PlayerController>("NewLocalController");
+	PlayerController* NewLocalController = SpawnActor<PlayerController>("NewLocalController");
 	m_RegisteredControllers.push_back(NewLocalController);
 }
 
 void World::StartEditor()
 {
-	m_WorldState = WorldState::Editor;
-	m_MainLevel->DispatchEditorBeginPlay();
+	if (m_WorldState != WorldState::Editor)
+	{
+		m_WorldState = WorldState::Editor;
+		m_MainLevel->DispatchEditorBeginPlay();
+	}
 }
 
 void World::AddDefaultInitialisedActor(Actor* NewActor)
-{
-	auto Ownership = std::shared_ptr<Actor>(NewActor);
-	AddDefaultInitialisedActor(Ownership);
-}
-
-void World::AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor)
 {
 	if (!NewActor)
 	{
@@ -205,8 +212,30 @@ LineBatcher& World::GetLineBatcher_S()
 	return Application::GetWorld()->sm_LineBatcher;
 }
 
-void World::InitialisePhysics()
+void World::PrintAllPhysicsObjects() const
 {
+	int i = m_PhysicsWorld->getNumCollisionObjects();
+	FLOW_ENGINE_LOG("There are {0} physics objects", i);
+	for (i = i - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
+	}
+}
+
+void World::InitialisePhysics(bool Force)
+{
+	if (m_PhysicsWorld && Force == false)
+	{
+		FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Already Initialised");
+		return;
+	}
+
+	delete m_CollisionConfig;
+	delete m_Dispatcher;
+	delete m_OverlappingPairCache;
+	delete m_Solver;
+	delete m_PhysicsWorld;
+
 	/* Create the physics world with default settings */
 	m_CollisionConfig = new btDefaultCollisionConfiguration();
 	m_Dispatcher = new btCollisionDispatcher(m_CollisionConfig);
@@ -219,28 +248,8 @@ void World::InitialisePhysics()
 
 	m_PhysicsWorld->setDebugDrawer(&m_DebugDrawer);
 	m_PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-}
 
-void World::DestroyActor(std::shared_ptr<Actor> Act)
-{
-	if(!Act)
-	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete nullptr actor");
-		return;
-	}
-
-	auto& ActorArry = m_MainLevel->GetActors();
-	auto Iterator = std::find(ActorArry.begin(), ActorArry.end(), Act);
-
-	if (Iterator == ActorArry.end())
-	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array {0}", Act->GetName());
-		return;
-	}
-
-	ActorArry.erase(Iterator);
-
-	//TODO: actually need to destroy all actor stuff
+	FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Initialised");
 }
 
 void World::DestroyActor(Actor* Act)
@@ -251,8 +260,23 @@ void World::DestroyActor(Actor* Act)
 		return;
 	}
 
+	//Remove physics
+	Act->DestroyPhysics();
+
+#if WITH_EDITOR
+
+	Inspector* Insp = Editor::GetEditor()->GetInspector();
+	if (WorldComponent* WC = Insp->GetSelectedComponent())
+	{
+		if (WC->GetParentActor() == Act)
+		{
+			Insp->ClearFocus();
+		}
+	}
+#endif
+
 	auto& ActorArry = m_MainLevel->GetActors();
-	auto Iterator = std::find_if(ActorArry.begin(), ActorArry.end(), [&Act](const std::shared_ptr<Actor>& Actor) { return Actor.get() == Act; });
+	auto Iterator = std::find_if(ActorArry.begin(), ActorArry.end(), [&Act](const Actor* Actor) { return Actor == Act; });
 
 	if (Iterator == ActorArry.end())
 	{
@@ -268,15 +292,19 @@ void World::Tick(float DeltaTime)
 	{
 		PROFILE_CURRENT_SCOPE("Update Physics World");
 
-		if(m_WorldState == WorldState::InGame)
+		if (m_WorldState == WorldState::InGame)
+		{
 			m_PhysicsWorld->stepSimulation(DeltaTime, 0);
+		}
 	}
 
 	{
 
 #if WITH_EDITOR
-		if(m_EditorCam)
-		m_EditorCam->Update(DeltaTime);
+		if (m_EditorCam)
+		{
+			m_EditorCam->Update(DeltaTime);
+		}
 #endif
 
 		PROFILE_CURRENT_SCOPE("Tick Objects");
@@ -316,13 +344,13 @@ void World::AddCollisionObject(btCollisionObject* Obj)
 	m_PhysicsWorld->addCollisionObject(Obj);
 }
 
-void World::RegisterController(std::shared_ptr<Controller> NewController)
+void World::RegisterController(Controller* NewController)
 {
 	CHECK_RETURN(!NewController, "Layer::DeRegisterController: Tried to register null controller");
 	m_RegisteredControllers.push_back(NewController);
 }
 
-void World::DeRegisterController(std::shared_ptr<Controller> OldController)
+void World::DeRegisterController(Controller* OldController)
 {
 	CHECK_RETURN(!OldController, "Layer::DeRegisterController: Tried to deregister null controller");
 
@@ -339,7 +367,9 @@ Controller* World::GetLocalController() const
 	for (auto& Controller : m_RegisteredControllers)
 	{
 		if (Controller->IsLocalController())
-			return Controller.get();
+		{
+			return Controller;
+		}
 	}
 
 	return nullptr;

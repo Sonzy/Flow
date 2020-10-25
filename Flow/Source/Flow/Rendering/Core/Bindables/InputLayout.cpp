@@ -25,7 +25,7 @@ void InputLayout::Bind()
 {
 	RenderCommand::DX11GetContext()->IASetInputLayout(m_InputLayout.Get());
 }
-std::shared_ptr<Bindable> InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
+Bindable* InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 {
 	return BindableCodex::Resolve<InputLayout>(Layout, vertexShaderByteCode);
 }

@@ -2,27 +2,28 @@
 #include "Inspector.h"
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
-#include "Flow\GameFramework\World.h"
+#include "GameFramework\World.h"
 
-#include "Flow\GameFramework\Actor.h"
-#include "Flow\Editor\SelectionGizmo.h"
+#include "GameFramework\Actor.h"
+#include "Editor\SelectionGizmo.h"
 
 #include "Bullet/btBulletCollisionCommon.h"
 #include "Bullet/btBulletDynamicsCommon.h"
 
-#include "Flow\Rendering\RenderCommand.h"
-#include "Flow\Input\Input.h"
+#include "Rendering\RenderCommand.h"
+#include "Input\Input.h"
 
-#include "Flow\Application.h"
-#include "Flow\GameFramework\World.h"
+#include "Application.h"
+#include "GameFramework\World.h"
 
-#include "Flow\GameFramework\Components\WorldComponent.h"
-#include "Flow\GameFramework\Components\StaticMeshComponent.h"
-#include "Flow\GameFramework\Components\CameraComponent.h"
+#include "GameFramework\Components\WorldComponent.h"
+#include "GameFramework\Components\StaticMeshComponent.h"
+#include "GameFramework\Components\CameraComponent.h"
 
-#include "Flow/Events/KeyEvent.h"
+#include "Events/KeyEvent.h"
 
-#include "Flow/Editor/Editor.h"
+#include "Editor/Editor.h"
+#include "Editor/Tools/SelectionTool.h"
 
 
 Inspector::Inspector()
@@ -90,38 +91,25 @@ void Inspector::RenderInspector()
 
 void Inspector::RenderHeirarchy()
 {
-	if (ImGui::Begin("Scene Heirarchy"))
+	if (ImGui::Begin("Scene Hierarchy"))
 	{
 		ImGui::Text(std::string("Level: " + m_CurrentWorld->GetName()).c_str());
 
 		ImGui::Separator();
 
-		for (auto Object : m_CurrentWorld->GetActors())
+		char Buffer[256] = { '\0' };
+		int Counter = 0;
+		for (Actor* Object : m_CurrentWorld->GetActors())
 		{
-			bool NodeOpen = ImGui::TreeNode(Object->GetName().c_str());
-
-			if (ImGui::IsItemClicked())
+			sprintf_s(Buffer, "%s###%d", Object->GetName().c_str(), Counter);
+			if (ImGui::Selectable(Buffer, m_FocusedComponent ? m_FocusedComponent->GetParentActor() == Object : false))
 			{
-				//TODO:
-				SetFocus(Object.get()->GetRootComponent());
-
-				//_FocusedItem = Object.get();
-				//_FocusedItemChanged = true;
-				//_FocusedComponent = _FocusedItem->GetRootComponent();
-
-				//TODO: Make select obj function
-						//TODO: implement in toool
-				//if (!_Selector->IsVisible())
-				//{
-				//	_Selector->AddCollidersToWorld(World::Get());
-				//	_Selector->SetVisibility(true);
-				//}
-				//_Selector->OnNewComponentSelected(Object->GetRootComponent());
-				//_Selector->UpdatePosition(Object->GetLocation());
+				SetFocus(Object->GetRootComponent());
+				Editor::GetEditor()->GetTool<SelectionTool>()->SelectComponent(Object->GetRootComponent());
+				ImGui::GetIO().WantCaptureKeyboard = false;
 			}
 
-			if(NodeOpen)
-				ImGui::TreePop();
+			Counter++;
 		}
 	}
 	ImGui::End();
@@ -139,63 +127,25 @@ bool Inspector::OnMouseClicked(MouseButtonPressedEvent& e)
 
 bool Inspector::OnMouseReleased(MouseButtonReleasedEvent& e)
 {
-	//TODO: implement in tool
-	//if (_Selector->GetSelectedAxis() != SelectedAxis::None)
-	//{
-	//	_Selector->OnDeselected();
-	//	return true;
-	//}
-
 	return false;
 }
 
 bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 {
-	//if (e.GetKeyCode() == FLOW_KEY_DELETE && _FocusedItem)
-	//{
-	//	//std::shared_ptr<Actor> ActorPtr(_FocusedItem);
-	//	//World::Get()->DestroyActor(ActorPtr);
-	//
-	//	World::Get()->DestroyActor(_FocusedItem);
-	//
-	//	//_FocusedItem = nullptr;
-	//
-	//	if (_FocusedComponent)
-	//		_FocusedComponent->OnViewportDeselected();
-	//	_FocusedComponent = nullptr;
-	//
-	//	//TODO: implement in toool
-	//	//_Selector->SetScale(Vector3(1.0f, 1.0f, 1.0f));
-	//	//_Selector->OnDeselected();
-	//	//_Selector->OnNewComponentSelected(nullptr);
-	//	//
-	//	//if (_Selector->IsVisible())
-	//	//{
-	//	//	_Selector->RemoveCollidersFromWorld(World::Get());
-	//	//	_Selector->SetVisibility(false);
-	//	//}
-	//	return true;
-	//}
-
 	return false;
 }
 
 void Inspector::UpdateSelectedComponent(WorldComponent* NewComp)
 {
-	//Editor::GetEditor()->GetInspector()->_FocusedComponent = NewComp;
 }
 
 WorldComponent* Inspector::GetSelectedComponent()
 {
-	//return Editor::GetEditor()->GetInspector()->_FocusedComponent;
-	return nullptr;
+	return Editor::GetEditor()->GetInspector()->m_FocusedComponent;
 }
 
 void Inspector::Update()
 {
-	//_Selector->UpdateSelection();
-
-	//_FocusedItemChanged = false;
 }
 
 void Inspector::Render()

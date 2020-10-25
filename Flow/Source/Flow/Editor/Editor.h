@@ -43,6 +43,21 @@ public:
 		std::string			m_StartingLevel;
 	};
 
+	class SettingsWindow
+	{
+	public:
+
+		//= Public Functions ==========================
+
+		void				Draw(Editor::Settings& EditorSettings, Editor& EditorRef);
+
+	private:
+
+		//= Private Variables =========================
+
+		char				m_StartingNameBuffer[128] = { '\0' };
+	};
+
 public:
 
 	//= Public Functions =========================================
@@ -66,7 +81,8 @@ public:
 	static Editor::Settings&	GetEditorSettings();
 	Inspector*					GetInspector() const;
 	MenuBar*					GetMenuBar() const;
-	bool						IsInitialised() const { return m_Initialised; }
+	bool						IsInitialised() const				{ return m_Initialised; }
+	void						ShowSettingsWindow(bool Show)		{ m_ShowSettingsWindow = Show; }
 
 	void						SetDemoWindowVisible(bool Enabled);
 	void						ToggleImGuiDemoWindow();
@@ -101,7 +117,7 @@ public:
 	}
 
 
-protected:
+private:
 
 	//= Protected Functions ============================================
 
@@ -124,10 +140,16 @@ protected:
 	void							UpdateTools(float DeltaTime);
 	void							RenderTools();
 
+	//= Saving/Loading =
+
+	void							SaveEditorSettings();
+	void							LoadEditorSettings();
+
 	//= Protected Variables ============================================
 
 
 	bool							m_Initialised;
+	bool							m_ShowSettingsWindow;
 	Inspector*						m_Inspector;
 	MenuBar*						m_MenuBar;
 	AssetWindow* 					m_AssetWindow;
@@ -136,10 +158,12 @@ protected:
 	Editor::Settings				m_Settings;
 	SceneManager					m_SceneManager;
 	ToolBar*						m_Toolbar;
-	std::shared_ptr<EditorCamera>	m_EditorCam;
+	EditorCamera*					m_EditorCam;
 	Console							m_Console;
 	LevelManager*					m_LevelManager;
 	SpawnWindow*					m_SpawnWindow;
+
+	Editor::SettingsWindow			m_SettingsWindow;
 
 	std::vector<Tool*>				m_Tools;
 

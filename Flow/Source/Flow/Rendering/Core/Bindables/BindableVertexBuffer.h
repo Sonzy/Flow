@@ -14,7 +14,7 @@ public:
 
 	//= Public Static Functions ================================================
 
-	static std::shared_ptr<Bindable>		Resolve(const std::string& Tag, const VertexBuffer& Buffer);
+	static Bindable*		Resolve(const std::string& Tag, const VertexBuffer& Buffer);
 
 	/* Calls GenerateUID_Internal without passing the VBuffer */
 	template<typename ...Ignore>

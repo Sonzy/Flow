@@ -23,5 +23,5 @@ public:
 
 	//= Public Variables ===========================
 	
-	std::shared_ptr<SkyboxComponent>	m_Skybox;
+	SkyboxComponent*					m_Skybox;
 };

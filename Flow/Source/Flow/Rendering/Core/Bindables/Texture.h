@@ -13,7 +13,7 @@ public:
 
 	//= Public Static Functions ==================================================
 
-	static std::shared_ptr<Bindable>		Resolve(TextureAsset* Asset, UINT slot);
+	static Bindable*		Resolve(TextureAsset* Asset, UINT slot);
 	static std::string						GenerateUID(TextureAsset* Asset, UINT slot);
 
 public:

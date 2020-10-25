@@ -12,7 +12,7 @@ public:
 
 	//= Public Static Functions ===========================================
 
-	static std::shared_ptr<Blender>		Resolve(bool Blending);
+	static Blender*						Resolve(bool Blending);
 	static std::string					GenerateUID(bool Blending);
 
 public:

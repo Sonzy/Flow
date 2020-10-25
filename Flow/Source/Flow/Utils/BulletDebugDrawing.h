@@ -41,6 +41,8 @@ public:
 	virtual btIDebugDraw::DefaultColors		getDefaultColors() const override;
 	void									SetDebugColor(DebugColor Option, Vector3 Colour);
 	btIDebugDraw::DefaultColors&			GetDebugColors();
+	void									EnableDrawingLogging(bool Log)	{ m_LogDebug = Log; };
+	bool									IsLoggingDrawing()				{ return m_LogDebug; };
 
 private:
 
@@ -48,4 +50,5 @@ private:
 
 	int					m_DebugMode;
 	DefaultColors		m_DebugColors;
+	bool				m_LogDebug;
 };

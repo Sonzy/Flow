@@ -18,7 +18,7 @@ void Topology::Bind() noexcept
 	RenderCommand::DX11GetContext()->IASetPrimitiveTopology(m_Topology);
 }
 
-std::shared_ptr<Bindable> Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY type)
+Bindable* Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY type)
 {
 	return BindableCodex::Resolve<Topology>(type);
 }

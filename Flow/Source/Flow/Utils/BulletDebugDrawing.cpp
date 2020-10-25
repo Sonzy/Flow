@@ -5,11 +5,17 @@
 
 void BulletDebugDraw::Init()
 {
+	m_LogDebug = false;
 }
 
 void BulletDebugDraw::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
 	World::GetLineBatcher_S().AddLine(Vector3(from.x(), from.y(), from.z()), Vector3(to.x(), to.y(), to.z()), Vector3(color.x(), color.y(), color.z()));
+
+	if (m_LogDebug)
+	{
+		FLOW_ENGINE_LOG("Drawing from Coords {0} to {1}", from, to);
+	}
 }
 void BulletDebugDraw::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
 {

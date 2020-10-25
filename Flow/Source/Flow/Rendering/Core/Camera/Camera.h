@@ -69,5 +69,6 @@ protected:
 
 	bool									m_CacheDirty = false;
 	Vector3									m_LastKnownCameraPos;
+	Vector3									m_Forward;
 	float									m_FieldOfView = 90;
 };

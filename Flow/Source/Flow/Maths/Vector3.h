@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <DirectXMath.h>
+#include <iostream>
 #include "spdlog/fmt/ostr.h"
 #include "Bullet/LinearMath/btVector3.h"
 #include "Vector2.h"
@@ -31,6 +32,13 @@ public:
 	{
 		x = Input.x;
 		y = Input.y;
+	}
+
+	Vector3(DirectX::XMFLOAT3 Input)
+	{
+		x = Input.x;
+		y = Input.y;
+		z = Input.z;
 	}
 
 	Vector3(Vector4 Input);
@@ -121,6 +129,11 @@ public:
 	friend OStream& operator<<(OStream& os, const Vector3& c)
 	{
 		return os << c.x << "," << c.y << "," << c.z;
+	}
+
+	friend std::istream& operator>>(std::istream& input, Vector3& c)
+	{
+		return input >> c.x >> c.y >> c.z;
 	}
 
 	float x;

@@ -27,12 +27,12 @@ public:
 
 	//= Bindable Interface =
 
-	static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot, const std::string& Tag)
+	static Bindable* Resolve(const C& Consts, UINT Slot, const std::string& Tag)
 	{
 		return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, Tag);
 	}
 
-	static std::shared_ptr<Bindable> Resolve(const C& Consts, UINT Slot)
+	static Bindable* Resolve(const C& Consts, UINT Slot)
 	{
 		return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, "");
 	}

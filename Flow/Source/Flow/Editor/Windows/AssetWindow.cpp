@@ -97,7 +97,6 @@ void AssetWindow::DrawDirectory(const FilePath& CurrentPath)
 	std::vector<std::pair<FilePath, FilePath>> Renames;
 	m_WindowWidth = ImGui::GetContentRegionAvailWidth();
 	m_CursorInitialX = ImGui::GetCursorPosX();
-	char buffer[128];
 	int Count = 0;
 
 	//Draw folders first
@@ -170,7 +169,7 @@ void AssetWindow::DrawFolder(const FilePath& CurrentPath, int UniqueID, std::vec
 
 	//Draw the centred filename text - TODO: Cleanup
 	ImVec2 ItemSize = ImGui::CalcTextSize(FilenameString.c_str());
-	int LineCount = ceil(ItemSize.x / m_IconSize);
+	int LineCount = static_cast<int>(ceil(ItemSize.x / m_IconSize));
 	float centreOffset = (ItemSize.x > m_IconSize) ? ImGui::GetStyle().FramePadding.x : ((m_IconSize - ItemSize.x) / 2.0f) + ImGui::GetStyle().FramePadding.x;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centreOffset);
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + m_IconSize);

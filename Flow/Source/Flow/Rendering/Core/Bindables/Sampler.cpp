@@ -29,7 +29,7 @@ void Sampler::Bind()
 {
 	RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
 }
-std::shared_ptr<Bindable> Sampler::Resolve()
+Bindable* Sampler::Resolve()
 {
 	return BindableCodex::Resolve<Sampler>();
 }

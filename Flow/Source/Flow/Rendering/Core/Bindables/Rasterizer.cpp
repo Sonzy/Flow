@@ -23,7 +23,7 @@ void Rasterizer::Bind()
 	RenderCommand::DX11GetContext()->RSSetState(m_Rasterizer.Get());
 }
 
-std::shared_ptr<Rasterizer> Rasterizer::Resolve(CullMode CullMode)
+Rasterizer* Rasterizer::Resolve(CullMode CullMode)
 {
 	return BindableCodex::Resolve<Rasterizer>(CullMode);
 }

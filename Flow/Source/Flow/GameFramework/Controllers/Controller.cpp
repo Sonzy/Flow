@@ -1,6 +1,7 @@
 #include "Flowpch.h"
 #include "Controller.h"
 #include "Flow\GameFramework\Pawn.h"
+#include "Flow/GameFramework/Components/WorldComponent.h"
 
 Controller::Controller()
 	: Controller("Controller")
@@ -12,6 +13,8 @@ Controller::Controller(const std::string& Name)
 	, m_ControlledObject(nullptr)
 	, m_Camera(nullptr)
 {
+	m_Root = CreateComponent<WorldComponent>("Root Component");
+	m_RootComponent = m_Root;
 }
 
 void Controller::ControlObject(Pawn* Obj)
@@ -31,13 +34,13 @@ void Controller::RemoveControl(Pawn* Obj)
 	m_ControlledObject->RemoveControl();
 }
 
-void Controller::SetCamera(std::shared_ptr<CameraBase> NewCamera)
+void Controller::SetCamera(CameraBase* NewCamera)
 {
 	CHECK_RETURN(!NewCamera, "Controller::SetCamera: Tried to remove control when no object is being controlled");
 	m_Camera = NewCamera;
 }
 
-std::shared_ptr<CameraBase> Controller::GetCamera() const
+CameraBase* Controller::GetCamera() const
 {
 	return m_Camera;
 }

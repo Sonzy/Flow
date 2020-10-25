@@ -73,12 +73,9 @@ ImVec2 MenuBar::Draw()
 
 		if (ImGui::BeginMenu("Options"))
 		{
-			if (ImGui::BeginMenu("Editor Settings"))
+			if (ImGui::MenuItem("Editor Settings"))
 			{
-				if (ImGui::MenuItem("Colour Settings"))
-				{
-					m_Visible_EditorSettings = true;
-				}
+				Editor::GetEditor()->ShowSettingsWindow(true);
 
 				if (ImGui::BeginMenu("Tools"))
 				{
@@ -93,19 +90,30 @@ ImVec2 MenuBar::Draw()
 
 					ImGui::EndMenu();
 				}
-
-				ImGui::EndMenu();
 			}
 
 			if (ImGui::BeginMenu("Bullet Physics"))
 			{
+				//TODO: Move this to seperate file
 				if (ImGui::MenuItem("Configure Debug Colours"))
 				{
 					m_Visible_BulletConfiguration = true;
 				}
 
+				if (ImGui::MenuItem("Log all debug drawing"))
+				{
+					BulletDebugDraw& drawer = Application::GetWorld()->GetPhysicsDebugDrawer();
+					drawer.EnableDrawingLogging(!drawer.IsLoggingDrawing());
+				}
+
+				if (ImGui::MenuItem("Print physics state"))
+				{
+					Application::GetWorld()->PrintAllPhysicsObjects();
+				}
+
 				ImGui::EndMenu();
 			}
+
 			ImGui::EndMenu();
 		}
 
@@ -137,9 +145,9 @@ ImVec2 MenuBar::Draw()
 
 
 	if (m_Visible_BulletConfiguration)
+	{
 		Window_BulletDebugDrawSettings();
-	if (m_Visible_EditorSettings)
-		Window_EditorSettings();
+	}
 
 	return MenuSize;
 #endif
@@ -159,15 +167,6 @@ void MenuBar::Window_BulletDebugDrawSettings()
 		ImGui::ColorEdit3("Disabled Deactivation Objects", Colors.m_disabledDeactivationObject.m_floats);
 		ImGui::ColorEdit3("Disabled Simulation Objects", Colors.m_disabledSimulationObject.m_floats);
 		ImGui::ColorEdit3("Wants Deactivation Objects", Colors.m_wantsDeactivationObject.m_floats);
-	}
-	ImGui::End();
-}
-
-void MenuBar::Window_EditorSettings()
-{
-	if (ImGui::Begin("Editor Settings", &m_Visible_EditorSettings))
-	{ 
-		ImGui::ColorPicker3("Selected Object Highlight Colour", reinterpret_cast<float*>(&Editor::GetEditorSettings().m_ObjectHighlightColour));
 	}
 	ImGui::End();
 }

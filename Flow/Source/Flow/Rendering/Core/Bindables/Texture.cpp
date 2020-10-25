@@ -98,7 +98,7 @@ void Texture::Bind()
 {
 	RenderCommand::DX11GetContext()->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
 }
-std::shared_ptr<Bindable> Texture::Resolve(TextureAsset* Asset, UINT Slot)
+Bindable* Texture::Resolve(TextureAsset* Asset, UINT Slot)
 {
 	return BindableCodex::Resolve<Texture>(Asset, Slot);
 }

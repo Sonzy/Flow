@@ -53,7 +53,7 @@ void Stencil::Bind()
 	RenderCommand::DX11GetContext()->OMSetDepthStencilState(m_Stencil.Get(), 0xFF);
 }
 
-std::shared_ptr<Bindable> Stencil::Resolve(StencilMode mode)
+Bindable* Stencil::Resolve(StencilMode mode)
 {
 	return BindableCodex::Resolve<Stencil>(mode);
 }

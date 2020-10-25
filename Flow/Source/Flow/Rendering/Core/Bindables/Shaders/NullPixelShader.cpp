@@ -14,7 +14,7 @@ void NullPixelShader::Bind()
 	RenderCommand::DX11GetContext()->PSSetShader(nullptr, nullptr, 0u);
 }
 
-std::shared_ptr<NullPixelShader> NullPixelShader::Resolve()
+NullPixelShader* NullPixelShader::Resolve()
 {
 	return BindableCodex::Resolve<NullPixelShader>();
 }

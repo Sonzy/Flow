@@ -2,6 +2,7 @@
 #include "Level.h"
 #include "Actor.h"
 #include "Flow/GameFramework/Other/ClassFactory.h"
+#include "Assets/AssetSystem.h"
 
 Level::Level(const std::string& LevelName)
 	: m_Name(LevelName)
@@ -12,10 +13,11 @@ void Level::Save(std::ofstream& Output)
 {
 	PROFILE_FUNCTION();
 
-	std::ofstream OutStream = std::ofstream("Saved/SaveFile.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
-	if (!OutStream)
+	fs::path SavePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.flvl";
+	std::ofstream OutStream = std::ofstream(SavePath, std::ios::out | std::ios::trunc | std::ios::binary);
+	if (OutStream.is_open() == false)
 	{
-		FLOW_ENGINE_LOG("Failed to create save file");
+		FLOW_ENGINE_ERROR("Failed to create save file");
 		return;
 	}
 
@@ -78,8 +80,8 @@ void Level::Load(std::ifstream& Input)
 		InputStream.read(ActorClassID, sizeof(char) * 32);
 
 		//Spawn an instance of the class
-		std::shared_ptr<Actor> NewActor = std::shared_ptr<Actor>(ClassFactory::Get().CreateObjectFromID<Actor>(std::string(ActorClassID)));
-		if (!NewActor)
+		Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(std::string(ActorClassID));
+		if (NewActor == nullptr)
 		{
 			FLOW_ENGINE_ERROR("Tried to load an actor of class {0} and failed.", ActorClassID);
 			continue;
@@ -123,7 +125,7 @@ void Level::Tick(float DeltaTime)
 	}
 }
 
-void Level::SetTickEnabled(std::shared_ptr<Actor> TickActor, bool Enable)
+void Level::SetTickEnabled(Actor* TickActor, bool Enable)
 {
 	if (!TickActor)
 	{

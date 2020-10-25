@@ -24,7 +24,6 @@ private:
 	//= Private Functions ========================================
 
 	void			Window_BulletDebugDrawSettings();
-	void			Window_EditorSettings();
 
 private:
 

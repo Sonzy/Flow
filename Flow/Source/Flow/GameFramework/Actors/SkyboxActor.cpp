@@ -11,5 +11,5 @@ SkyboxActor::SkyboxActor(const std::string& Name)
 	: Actor(Name)
 {
 	m_Skybox = CreateComponent<SkyboxComponent>("Skybox");
-	m_RootComponent = m_Skybox.get();
+	m_RootComponent = m_Skybox;
 }

@@ -10,7 +10,7 @@
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
 VertexLayout								Line::m_VertexLayout = VertexLayout();
-std::vector<std::shared_ptr<Bindable>>		Line::m_Binds = std::vector<std::shared_ptr<Bindable>>();
+std::vector<Bindable*>		Line::m_Binds = std::vector<Bindable*>();
 IndexBuffer*								Line::m_IndexBuffer = nullptr;
 int											Line::m_Count = 0;
 
@@ -86,13 +86,13 @@ DirectX::XMMATRIX Line::GetTransformXM() const
 	return DirectX::XMMATRIX();
 }
 
-void Line::AddBind(std::shared_ptr<Bindable> bind)
+void Line::AddBind(Bindable* bind)
 {
 	//If index buffer, only allow single bind.
 	if (typeid(*bind) == typeid(IndexBuffer))
 	{
 		assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-		m_IndexBuffer = static_cast<IndexBuffer*>(bind.get());
+		m_IndexBuffer = static_cast<IndexBuffer*>(bind);
 	}
 
 	m_Binds.push_back(std::move(bind));

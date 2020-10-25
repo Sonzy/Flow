@@ -40,9 +40,9 @@ public:
 	//= Public Template Functions ===================
 
 	template<typename T>
-	std::shared_ptr<T>	SpawnActor(const std::string& Name)
+	T* SpawnActor(const std::string& Name)
 	{
-		std::shared_ptr<T> NewObject = std::make_shared<T>(Name);
+		T* NewObject = new T(Name);
 		m_MainLevel->GetActors().push_back(NewObject);
 
 		return NewObject;
@@ -70,9 +70,7 @@ public:
 
 	/* Adds an actor to the world that was default created, takes ownership*/
 	void												AddDefaultInitialisedActor(Actor* NewActor);
-	void												AddDefaultInitialisedActor(std::shared_ptr<Actor> NewActor);
 
-	void												DestroyActor(std::shared_ptr<Actor> Act);
 	void												DestroyActor(Actor* Act);
 
 	const std::string&									GetName();
@@ -87,8 +85,8 @@ public:
 
 	//= Controllers ========
 
-	void												RegisterController(std::shared_ptr<Controller> NewController);
-	void												DeRegisterController(std::shared_ptr<Controller> OldController);
+	void												RegisterController(Controller* NewController);
+	void												DeRegisterController(Controller* OldController);
 	Controller*											GetLocalController() const;
 
 
@@ -96,9 +94,11 @@ public:
 	LineBatcher&										GetLineBatcher() const { return sm_LineBatcher; };
 	static LineBatcher&									GetLineBatcher_S();
 	BulletDebugDraw&									GetPhysicsDebugDrawer() { return m_DebugDrawer; }
-	std::vector<std::shared_ptr<Actor>>&				GetActors(){ return m_MainLevel->GetActors(); }
+	std::vector<Actor*>&								GetActors(){ return m_MainLevel->GetActors(); }
 
 	WorldState											GetWorldState() const { return m_WorldState; }
+
+	void												PrintAllPhysicsObjects() const;
 protected:
 	friend class Application;
 
@@ -107,7 +107,7 @@ protected:
 	void												StartGame();
 	void												PauseGame();
 	void												StopGame();
-	void												InitialisePhysics();
+	void												InitialisePhysics(bool Force = false);
 
 private:
 	friend class Inspector;
@@ -140,10 +140,10 @@ private:
 	//= Editor =========
 
 #if WITH_EDITOR
-	 std::shared_ptr<class EditorCamera>				m_EditorCam;
+	class EditorCamera*									m_EditorCam;
 #endif
 
 	//= Controllers =======
 
-	std::vector<std::shared_ptr<Controller>>			m_RegisteredControllers;
+	std::vector<Controller*>							m_RegisteredControllers;
 };

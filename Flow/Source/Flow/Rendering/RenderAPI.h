@@ -49,8 +49,8 @@ public:
 
 	virtual API						GetAPI() = 0;
 
-	void							SetMainCamera(std::shared_ptr<CameraBase> Camera) { m_MainCamera = Camera;	}
-	std::shared_ptr<CameraBase>		GetMainCamera() const { return m_MainCamera; }
+	void							SetMainCamera(CameraBase* Camera) { m_MainCamera = Camera;	}
+	CameraBase*						GetMainCamera() const { return m_MainCamera; }
 
 	virtual void					BindBackBuffer() = 0;
 	virtual void					BindFrameBuffer(FrameBuffer* Buffer) = 0;
@@ -62,7 +62,7 @@ protected:
 	//= Protected Variables ===================================
 
 	float							m_BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
-	std::shared_ptr<CameraBase>		m_MainCamera;
+	CameraBase*						m_MainCamera;
 									
 	IntVector2						m_ViewportSize;
 	IntVector2						m_AdjustedViewportSize;

@@ -11,5 +11,5 @@ PointLightActor::PointLightActor(const std::string& Name)
 	: Actor(Name)
 {
 	m_PointLight = CreateComponent<PointLightComponent>("Point Light");
-	m_RootComponent = m_PointLight.get();
+	m_RootComponent = m_PointLight;
 }

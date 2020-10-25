@@ -113,6 +113,7 @@
     <ClInclude Include="Source\Flow\Application.h" />
     <ClInclude Include="Source\Flow\Assets\Asset.h" />
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
+    <ClInclude Include="Source\Flow\Assets\Levels\LevelAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
@@ -329,6 +330,7 @@
     <ClCompile Include="Source\Flow\Application.cpp" />
     <ClCompile Include="Source\Flow\Assets\Asset.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Levels\LevelAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />

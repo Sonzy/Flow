@@ -11,15 +11,17 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 	: Actor(NewName)
 {
 	m_MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
-	m_RootComponent = m_MeshComponent.get();
+	m_RootComponent = m_MeshComponent;
 }
 
 StaticMeshActor::~StaticMeshActor()
 {
 	FLOW_ENGINE_LOG("StaticMeshActor::~StaticMeshActor");
+
+	delete m_MeshComponent;
 }
 
 StaticMeshComponent* StaticMeshActor::GetMeshComponent() const
 {
-	return m_MeshComponent.get();
+	return m_MeshComponent;
 }

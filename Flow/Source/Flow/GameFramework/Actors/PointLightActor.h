@@ -23,5 +23,5 @@ protected:
 
 	//= Protected Variables ==================
 
-	std::shared_ptr<PointLightComponent> m_PointLight;
+	PointLightComponent* m_PointLight;
 };

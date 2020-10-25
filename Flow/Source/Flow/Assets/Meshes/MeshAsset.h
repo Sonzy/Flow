@@ -58,10 +58,10 @@ public:
 	const std::vector<Mesh::Face>&				GetFaces() const { return m_Faces; };
 	const size_t								GetNumFaces() const { return m_Faces.size(); };
 	std::vector<Mesh::Vertex>					GetVertices() const;
-	std::shared_ptr<IndexBuffer>				GetIndexBuffer() const;
+	const IndexBuffer*							GetIndexBuffer() const;
 
 	/* Creates and returns a vector of all binds required from this mesh */
-	std::vector<std::shared_ptr<Bindable>>		GenerateBinds(VertexLayout& OutVertexLayout);
+	std::vector<Bindable*>		GenerateBinds(VertexLayout& OutVertexLayout);
 
 	//= Public Variables =================================
 
@@ -76,12 +76,12 @@ public:
 	std::vector<Mesh::Face>						m_Faces;
 
 	//const IndexBuffer* _IndexBuffer;
-	std::vector<std::shared_ptr<Bindable>>		m_Binds;
+	std::vector<Bindable*>		m_Binds;
 
 	//TODO: Clean up, these are the necessary binds for the mesh specifically
-	std::shared_ptr<BindableVertexBuffer>		m_BindableVBuffer;
-	std::shared_ptr<IndexBuffer>				m_IndexBuffer;
-	std::shared_ptr<Topology>					m_Topology;
+	BindableVertexBuffer*						m_BindableVBuffer;
+	IndexBuffer*								m_IndexBuffer;
+	Topology*									m_Topology;
 	VertexLayout								m_VertexLayout;
 
 	// Asset this mesh belongs to

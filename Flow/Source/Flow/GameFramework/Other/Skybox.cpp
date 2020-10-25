@@ -35,7 +35,7 @@ Skybox::Skybox()
 		MainStep.AddBindables(m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout));
 		m_Material->BindMaterial(&MainStep, MeshLayout);
 
-		MainStep.AddBindable(std::make_shared<TransformConstantBuffer>(this));
+		MainStep.AddBindable(new TransformConstantBuffer(this));
 	}
 	AddTechnique(Standard);
 }

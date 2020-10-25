@@ -12,7 +12,7 @@ public:
 
 	//= PubliC Static Functions ====================================
 
-	static std::shared_ptr<Bindable>		Resolve(const std::string& LocalPath);
+	static Bindable*		Resolve(const std::string& LocalPath);
 	static std::string						GenerateUID(const std::string& LocalPath);
 
 	//= Public Functions ===========================================
