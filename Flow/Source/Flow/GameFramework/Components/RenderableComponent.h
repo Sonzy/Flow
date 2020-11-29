@@ -32,5 +32,5 @@ protected:
 
 	//= Protected Functions =======================
 
-	virtual void RefreshBinds();
+	virtual void				RefreshBinds();
 };

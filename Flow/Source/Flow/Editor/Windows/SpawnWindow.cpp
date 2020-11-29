@@ -1,16 +1,28 @@
 #include "Flowpch.h"
 #include "SpawnWindow.h"
 #include "ThirdParty/ImGui/imgui.h"
-#include "Flow/GameFramework/World.h"
+#include "GameFramework/World.h"
 
-#include "Flow/GameFramework/Actors/StaticMeshActor.h"
-#include "Flow/GameFramework/Actors/PointLightActor.h"
-#include "Flow/GameFramework/Actors/SkyboxActor.h"
-#include "Flow/GameFramework/Actors/CameraActor.h"
+#include "GameFramework/Actors/StaticMeshActor.h"
+#include "GameFramework/Actors/PointLightActor.h"
+#include "GameFramework/Actors/SkyboxActor.h"
+#include "GameFramework/Actors/CameraActor.h"
+#include "GameFramework/Actors/SpriteActor.h"
 
-#include "Flow/GameFramework/Components/StaticMeshComponent.h"
+#include "GameFramework/Components/StaticMeshComponent.h"
+#include "GameFramework/Components/SpriteComponent.h"
+#include "GameFramework/Components/PointLightComponent.h"
+#include "GameFramework/Components/CameraComponent.h"
+#include "GameFramework/Other/ClassFactory.h"
 
-#include "Flow/GameFramework/Other/ClassFactory.h"
+#include "Utils/ComponentHelper.h"
+
+#define DRAW_COMPONENT_SPAWNER(ComponentClass) \
+	if (ImGui::MenuItem("Add "#ComponentClass)) \
+	{	\
+		NewComponent = ComponentHelper::CreateFreeComponent<ComponentClass>(#ComponentClass);\
+		NewComponent->DefaultInitialise();\
+	}
 
 SpawnWindow::SpawnWindow(World* WorldReference)
 	: m_WorldReference(WorldReference)
@@ -21,6 +33,7 @@ SpawnWindow::SpawnWindow(World* WorldReference)
 	RegisterActorClass<PointLightActor>("Point Light Actor");
 	RegisterActorClass<SkyboxActor>("Skybox Actor");
 	RegisterActorClass<CameraActor>("Camera Actor");
+	RegisterActorClass<SpriteActor>("Sprite Actor");
 }
 
 void SpawnWindow::Draw()
@@ -50,18 +63,9 @@ void SpawnWindow::Draw()
 		// Initialise the spawned actor if we spawned one
 		if (SpawnedActor)
 		{
-			//Transform CameraTrans = RenderCommand::GetMainCamera()->GetCameraTransform();
-			//Vector3 ForwardVector = static_cast<Vector3>(CameraTrans.m_Rotation).Normalize();
-
 			//TODO: Not working right
 			Transform CameraTrans = RenderCommand::GetMainCamera()->GetCameraTransform();
-			Rotator CameraRot = CameraTrans.m_Rotation;
-			const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-			const auto lookVector = DirectX::XMVector3Transform(Forward, DirectX::XMMatrixRotationRollPitchYaw(CameraRot.Pitch, CameraRot.Yaw, CameraRot.Roll));
-			Vector3 forward;
-			DirectX::XMStoreFloat3(reinterpret_cast<DirectX::XMFLOAT3*>(&forward), lookVector);
-
-			SpawnedActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position +	(forward * m_SpawnDistance));
+			SpawnedActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position +	(CameraTrans.m_Rotation.GetForwardVector() * m_SpawnDistance));
 
 			switch (m_WorldReference->GetWorldState())
 			{
@@ -72,4 +76,33 @@ void SpawnWindow::Draw()
 		}
 	}
 	ImGui::End();
+}
+
+void SpawnWindow::DrawSpawnContextWindow(Actor* Parent)
+{
+	if (ImGui::BeginMenu("Add Component"))
+	{
+		WorldComponent* NewComponent = nullptr;
+
+		DRAW_COMPONENT_SPAWNER(StaticMeshComponent);
+		DRAW_COMPONENT_SPAWNER(SpriteComponent);
+		DRAW_COMPONENT_SPAWNER(CameraComponent);
+		DRAW_COMPONENT_SPAWNER(PointLightComponent);
+
+		if (NewComponent != nullptr)
+		{
+			NewComponent->SetParent(Parent);
+
+			if (WorldComponent* Root = Parent->GetRootComponent())
+			{
+				Root->AddChild(NewComponent);
+			}
+			else
+			{
+				Parent->SetRootComponent(NewComponent);
+			}
+		}
+
+		ImGui::EndMenu();
+	}
 }

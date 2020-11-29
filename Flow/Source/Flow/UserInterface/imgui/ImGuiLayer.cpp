@@ -132,7 +132,7 @@ bool ImGuiLayer::OnMouseButtonPressed(MouseButtonEvent& e)
 	IO.MouseDown[e.GetMouseButton()] = true;
 
 	
-	if (IO.WantCaptureMouse && !Editor::GetEditor()->IsMouseOverScene())
+	if (IO.WantCaptureMouse && !Editor::Get().IsMouseOverScene())
 		return true;
 
 	return false;
@@ -166,7 +166,7 @@ bool ImGuiLayer::OnMouseScrolled(MouseScrolledEvent& e)
 	IO.MouseWheelH += e.GetXOffset();
 	IO.MouseWheel += e.GetYOffset();
 
-	if (IO.WantCaptureMouse && !Editor::GetEditor()->IsSceneWindowFocused())
+	if (IO.WantCaptureMouse && !Editor::Get().IsSceneWindowFocused())
 		return true;
 
 	return false;
@@ -177,8 +177,16 @@ bool ImGuiLayer::OnKeyPressed(KeyPressedEvent& e)
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.KeysDown[e.GetKeyCode()] = true;
 
-	if (IO.WantCaptureMouse && !Editor::GetEditor()->IsSceneWindowFocused())
+	//TODO: Find a proper way to do this
+	//Pass to editor
+#if WITH_EDITOR
+	Editor::Get().OnKeyPressed(e);
+#endif
+
+	if (IO.WantCaptureMouse && !Editor::Get().IsSceneWindowFocused())
+	{
 		return true;
+	}
 
 	IO.KeyCtrl = IO.KeysDown[VK_LCONTROL] || IO.KeysDown[VK_RCONTROL];
 	IO.KeyShift = IO.KeysDown[VK_LSHIFT] || IO.KeysDown[VK_RSHIFT];
@@ -199,8 +207,17 @@ bool ImGuiLayer::OnKeyReleased(KeyReleasedEvent& e)
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.KeysDown[e.GetKeyCode()] = false;
 
-	if (IO.WantCaptureKeyboard && !Editor::GetEditor()->IsSceneWindowFocused())
+	//TODO: Find a proper way to do this
+	//Pass to editor
+#if WITH_EDITOR
+	Editor::Get().OnKeyReleased(e);
+
+#endif
+	if (IO.WantCaptureKeyboard && !Editor::Get().IsSceneWindowFocused())
+	{
 		return true;
+	}
+
 
 	IO.KeyCtrl = !IO.KeysDown[VK_LCONTROL] && !IO.KeysDown[VK_RCONTROL];
 	IO.KeyShift = !IO.KeysDown[VK_LSHIFT] && !IO.KeysDown[VK_RSHIFT];

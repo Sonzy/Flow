@@ -7,28 +7,29 @@
 
 //= Input Includes =
 #include "Events/ApplicationEvent.h"
-#include "Flow/Input/Input.h"
+#include "Input/Input.h"
 #include "ThirdParty\ImGui\imgui.h"
 
 //= Editor Includes =
 #if WITH_EDITOR
-#include "Flow\Editor\Inspector.h"
-#include "Flow/Editor/Editor.h"
+#include "Editor/UIComponents/Inspector.h"
+#include "Editor/Editor.h"
 #endif
 
 //= Asset Includes =
-#include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Materials\Mat_FlatColour.h"
-#include "Flow\Assets\Materials\Mat_TexturedPhong.h"
-#include "Flow\Assets\Meshes\MeshAsset.h"
+#include "Assets\AssetSystem.h"
+#include "Assets\Materials\Mat_FlatColour.h"
+#include "Assets\Materials\ColorMaterial2D.h"
+#include "Assets\Materials\Mat_TexturedPhong.h"
+#include "Assets\Meshes\MeshAsset.h"
 
 //= Helper Inclues =
-#include "Flow\Utils\Profiling.h"
-#include "Flow/GameFramework/Other/ClassFactory.h"
+#include "Utils\Profiling.h"
+#include "GameFramework/Other/ClassFactory.h"
 
 //= Game Framework includes =
-#include "Flow\GameFramework\World.h"
-#include "Flow/Layers/GameLayer.h"
+#include "GameFramework\World.h"
+#include "Layers/GameLayer.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 
@@ -126,6 +127,14 @@ void Application::InitialiseApplication()
 	SkyMat->SetTexture("SkyCube_Test");
 	SkyMat->SetPixelShader("TexturePS");
 	SkyMat->SetVertexShader("TextureVS");
+
+	//= 2D Materials =
+
+	AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D");
+	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White2D")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+	AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D");
+	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green2D")->GetMaterial())->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+
 
 	FLOW_ENGINE_LOG("================ Initialising Game ======================");
 
@@ -264,6 +273,7 @@ void Application::OnEvent(Event& e)
 	EventDispatcher Dispatcher(e);
 	Dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowClosed));
 	Dispatcher.Dispatch<WindowResizedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowResized));
+	Dispatcher.Dispatch<WindowMinimizedEvent>(BIND_EVENT_FUNCTION(&Application::OnWindowMinimized));
 
 	for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin();)
 	{
@@ -294,7 +304,24 @@ bool Application::OnWindowClosed(WindowClosedEvent& e)
 
 bool Application::OnWindowResized(WindowResizedEvent& e)
 {
+	if (RenderCommand::IsMinimized())
+	{
+		RenderCommand::SetMinimized(false);
+	}
+
 	RenderCommand::Resize(e.GetWidth(), e.GetHeight());
+	return false;
+}
+
+bool Application::OnWindowMinimized(WindowMinimizedEvent& e)
+{
+	RenderCommand::SetMinimized(true);
+	return false;
+}
+
+bool Application::OnWindowRestored(WindowRestoredEvent& e)
+{
+	RenderCommand::SetMinimized(false);
 	return false;
 }
 

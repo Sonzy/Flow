@@ -28,7 +28,7 @@ StaticMesh::StaticMesh(const std::string& LocalPath)
 void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride)
 {
 	MeshAsset* m_MeshAsset = reinterpret_cast<MeshAsset*>(AssetSystem::GetAsset(LocalPath));
-	CHECK_RETURN(!m_MeshAsset, ("StaticMesh::StaticMesh: Failed to get asset ({0})", LocalPath));
+	CHECK_RETURN(!m_MeshAsset, ("StaticMesh::StaticMesh: Failed to get asset (%s)", LocalPath.c_str()));
 	Mesh* m_Mesh = m_MeshAsset->GetMesh(0);
 	VertexLayout MeshLayout;
 

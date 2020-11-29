@@ -2,20 +2,22 @@
 #include "World.h"
 #include "Actor.h"
 
-#include "Flow\Application.h"
+#include "Application.h"
 
 #include "Bullet\LinearMath\btIDebugDraw.h"
 
-#include "Flow\GameFramework\Other\Skybox.h"
+#include "GameFramework\Other\Skybox.h"
 
-#include "Flow\GameFramework\Controllers\Controller.h"
-#include "Flow\GameFramework\Controllers\PlayerController.h"
+#include "GameFramework\Controllers\Controller.h"
+#include "GameFramework\Controllers\PlayerController.h"
+
+#include "Utils/DebugDraw.h"
 
 #if WITH_EDITOR
-#include "Flow/Editor/EditorCamera.h"
-#include "Flow/Editor/Editor.h"
-#include "Flow/Editor/Inspector.h"
-#include "Flow/Editor/SelectionGizmo.h"
+#include "Editor/EditorCamera.h"
+#include "Editor/Editor.h"
+#include "Editor/UIComponents/Inspector.h"
+#include "Editor/SelectionGizmo.h"
 #endif
 
 LineBatcher World::sm_LineBatcher = LineBatcher();
@@ -105,9 +107,6 @@ void World::LoadPlayState()
 
 	}
 
-	//TODO:
-	//Editor::GetEditor()->GetInspector()->GetSelector()->Reset();
-
 	m_MainLevel->Load(InStream);
 
 	InStream.close();
@@ -147,7 +146,8 @@ void World::InitialiseWorld()
 #endif
 
 	InitialisePhysics();
-
+	
+	//TODO: Dont spawn one till the start?
 	PlayerController* NewLocalController = SpawnActor<PlayerController>("NewLocalController");
 	m_RegisteredControllers.push_back(NewLocalController);
 }
@@ -215,7 +215,7 @@ LineBatcher& World::GetLineBatcher_S()
 void World::PrintAllPhysicsObjects() const
 {
 	int i = m_PhysicsWorld->getNumCollisionObjects();
-	FLOW_ENGINE_LOG("There are {0} physics objects", i);
+	FLOW_ENGINE_LOG("There are %d physics objects", i);
 	for (i = i - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
@@ -263,24 +263,25 @@ void World::DestroyActor(Actor* Act)
 	//Remove physics
 	Act->DestroyPhysics();
 
-#if WITH_EDITOR
-
-	Inspector* Insp = Editor::GetEditor()->GetInspector();
-	if (WorldComponent* WC = Insp->GetSelectedComponent())
-	{
-		if (WC->GetParentActor() == Act)
-		{
-			Insp->ClearFocus();
-		}
-	}
-#endif
+//TODO: Delete if we dont run into issues here
+//#if WITH_EDITOR
+//
+//	Inspector* Insp = Editor::Get().GetInspector();
+//	if (WorldComponent* WC = Insp->GetSelectedComponent())
+//	{
+//		if (WC->GetParentActor() == Act)
+//		{
+//			Insp->ClearFocus();
+//		}
+//	}
+//#endif
 
 	auto& ActorArry = m_MainLevel->GetActors();
 	auto Iterator = std::find_if(ActorArry.begin(), ActorArry.end(), [&Act](const Actor* Actor) { return Actor == Act; });
 
 	if (Iterator == ActorArry.end())
 	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array {0}", Act->GetName());
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array %s", Act->GetName().c_str());
 		return;
 	}
 

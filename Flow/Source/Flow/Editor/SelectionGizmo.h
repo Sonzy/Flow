@@ -47,6 +47,12 @@ public:
 
 public:
 
+	//= Public Static Functions ====================
+
+	static Axis					TagToAxis(const std::string& Tag);
+
+public:
+
 	//= Public Functions ===========================
 
 								SelectionGizmo();
@@ -80,6 +86,8 @@ public:
 
 	SelectionGizmo::Transform	GetTransformationMode() const				{ return m_TransformMode; }
 	void						SetTransformationMode(SelectionGizmo::Transform newMode);
+
+
 
 private:
 

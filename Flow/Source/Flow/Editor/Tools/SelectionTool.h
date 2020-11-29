@@ -30,11 +30,12 @@ public:
 
 	void										SelectComponent(WorldComponent* NewComponent);
 
+	WorldComponent* const						GetSelectedComponent() { return m_SelectedComponent; }
+
 private:
 
 	WorldComponent*								m_SelectedComponent;
 	Actor*										m_SelectedActor;
-	Inspector*									m_InspectorWindow;
 
 	SelectionGizmo*								m_Gizmo;
 

@@ -28,6 +28,32 @@ private:
 	unsigned int m_Height;
 };
 
+class FLOW_API WindowRestoredEvent : public Event
+{
+public:
+
+	//= Public Functions ==========================
+	WindowRestoredEvent() {};
+
+	std::string ToString() const override;
+
+	EVENT_CLASS_TYPE(WindowRestored)
+	EVENT_CLASS_CATEGORY(Event::Category::App)
+};
+
+class FLOW_API WindowMinimizedEvent : public Event
+{
+public:
+
+	//= Public Functions ==========================
+	WindowMinimizedEvent() {};
+
+	std::string ToString() const override;
+
+	EVENT_CLASS_TYPE(WindowMinimized) //TODO: dont break
+	EVENT_CLASS_CATEGORY(Event::Category::App)
+};
+
 class FLOW_API WindowClosedEvent : public Event
 {
 public:

@@ -41,7 +41,7 @@ public:
 
 		if (Iterator == m_FactoryMap.end())
 		{
-			FLOW_ENGINE_ERROR("ClassFactory::CreateObjectFromID: Failed to find class {0} in map", HashedName);
+			FLOW_ENGINE_ERROR("ClassFactory::CreateObjectFromID: Failed to find class %s in map", HashedName.c_str());
 			return nullptr;
 		}
 

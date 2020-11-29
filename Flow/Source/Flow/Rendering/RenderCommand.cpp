@@ -103,6 +103,16 @@ IntVector2 RenderCommand::GetWindowSize()
 	return sm_RendererAPI->GetWindowSize();
 }
 
+void RenderCommand::SetMinimized(bool Minimized)
+{
+	sm_RendererAPI->SetWindowMinimized(Minimized);
+}
+
+bool RenderCommand::IsMinimized()
+{
+	return sm_RendererAPI->IsWindowMinimized();
+}
+
 Vector3 RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	return sm_RendererAPI->GetScreenToWorldDirection(X, Y, WindowSize, Origin);

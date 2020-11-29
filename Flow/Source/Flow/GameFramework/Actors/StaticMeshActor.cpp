@@ -16,8 +16,6 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 
 StaticMeshActor::~StaticMeshActor()
 {
-	FLOW_ENGINE_LOG("StaticMeshActor::~StaticMeshActor");
-
 	delete m_MeshComponent;
 }
 

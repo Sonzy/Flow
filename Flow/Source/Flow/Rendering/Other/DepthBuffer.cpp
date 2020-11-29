@@ -9,8 +9,8 @@ DepthBuffer::DepthBuffer(unsigned int Width, unsigned int Height)
 
 DepthBuffer::~DepthBuffer()
 {
-	m_DepthTexture->Release();
-	m_DepthTextureView->Release();
+	m_DepthTexture.Reset();
+	m_DepthTextureView.Reset();
 }
 
 void DepthBuffer::Resize(unsigned int Width, unsigned int Height)

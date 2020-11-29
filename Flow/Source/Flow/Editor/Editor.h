@@ -5,6 +5,7 @@
 
 //= Forward Declarations ================================
 
+class UIComponent;
 class Inspector;
 class MenuBar;
 class ToolBar;
@@ -26,13 +27,14 @@ class KeyReleasedEvent;
 class WindowResizedEvent;
 class KeyTypedEvent;
 
-//= Class Declaration =========================================
+// Class Declaration ///////////////////////////////////////////////
 
 class Editor : public Layer
 {
+	friend class ImGuiLayer;
 public:
 
-	//= Public Structs =========================================
+	// Public Structs ///////////////////////////////////////////////
 	struct Settings
 	{
 		Settings()
@@ -47,20 +49,20 @@ public:
 	{
 	public:
 
-		//= Public Functions ==========================
+		// Public Functions ///////////////////////////////////////////////
 
 		void				Draw(Editor::Settings& EditorSettings, Editor& EditorRef);
 
 	private:
 
-		//= Private Variables =========================
+		// Private Variables ///////////////////////////////////////////////
 
 		char				m_StartingNameBuffer[128] = { '\0' };
 	};
 
 public:
 
-	//= Public Functions =========================================
+	// Public Functions ///////////////////////////////////////////////
 
 								Editor();
 								~Editor();
@@ -77,9 +79,8 @@ public:
 
 	//=
 
-	static Editor*				GetEditor();
+	static Editor&				Get();
 	static Editor::Settings&	GetEditorSettings();
-	Inspector*					GetInspector() const;
 	MenuBar*					GetMenuBar() const;
 	bool						IsInitialised() const				{ return m_Initialised; }
 	void						ShowSettingsWindow(bool Show)		{ m_ShowSettingsWindow = Show; }
@@ -98,9 +99,8 @@ public:
 
 	Console&					GetConsole();
 
-	void						RegisterTool(Tool* newTool);
 
-	//= Public Template Functions =========================================
+	// Public Template Functions ///////////////////////////////////////////////
 
 	template<typename T>
 	T* GetTool() const
@@ -116,10 +116,53 @@ public:
 		return nullptr;
 	}
 
+	template<typename T>
+	T* GetUIComponent() const
+	{
+		for (auto& component : m_UIComponents)
+		{
+			if (T* casted = dynamic_cast<T*>(component))
+			{
+				return casted;
+			}
+		}
+
+		return nullptr;
+	}
+
+	template<typename T>
+	void RegisterTool()
+	{
+		static_assert(std::is_base_of<Tool, T>::value, "Tried to create a component templated with a non-component type");
+
+		if (GetTool<T>() != nullptr)
+		{
+			FLOW_ENGINE_WARNING("Editor::RegisterTool: Already registered tool");
+			return;
+		}
+
+		m_Tools.push_back(new T());
+	}
+
+	template<typename T>
+	void						RegisterUIComponent()
+	{
+		static_assert(std::is_base_of<UIComponent, T>::value, "Tried to create a component templated with a non-component type");
+
+		if (GetUIComponent<T>() != nullptr)
+		{
+			FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered UI Component");
+			return;
+		}
+
+		T* NewUIComponent = new T();
+		NewUIComponent->m_Editor = this;
+		m_UIComponents.push_back(NewUIComponent);
+	}
 
 private:
 
-	//= Protected Functions ============================================
+	// Protected Functions ///////////////////////////////////////////////
 
 	/* Create my own dockspace that takes into account the offset of the main menu bar.
 	An almost-copy of the logic for creating a default dockstate.*/
@@ -145,19 +188,16 @@ private:
 	void							SaveEditorSettings();
 	void							LoadEditorSettings();
 
-	//= Protected Variables ============================================
+	// Protected Variables ///////////////////////////////////////////////
 
 
 	bool							m_Initialised;
 	bool							m_ShowSettingsWindow;
-	Inspector*						m_Inspector;
 	MenuBar*						m_MenuBar;
-	AssetWindow* 					m_AssetWindow;
 	bool							m_DrawDemoWindow = false;
 	Application*					m_ApplicationPointer;
 	Editor::Settings				m_Settings;
 	SceneManager					m_SceneManager;
-	ToolBar*						m_Toolbar;
 	EditorCamera*					m_EditorCam;
 	Console							m_Console;
 	LevelManager*					m_LevelManager;
@@ -166,6 +206,7 @@ private:
 	Editor::SettingsWindow			m_SettingsWindow;
 
 	std::vector<Tool*>				m_Tools;
+	std::vector<UIComponent*>		m_UIComponents;
 
 
 	//App Statistics

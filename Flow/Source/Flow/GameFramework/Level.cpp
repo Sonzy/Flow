@@ -28,7 +28,7 @@ void Level::Save(std::ofstream& Output)
 
 
 	//Write the number of actors in the file
-	int NumberOfActors = m_Actors.size();
+	int NumberOfActors = static_cast<int>(m_Actors.size());
 	OutStream.write(reinterpret_cast<const char*>(&NumberOfActors), sizeof(int));
 
 	for (auto Object : m_Actors)
@@ -53,7 +53,7 @@ void Level::Load(std::ifstream& Input)
 	std::ifstream InputStream = std::ifstream(SavePath, std::ios::in | std::ios::binary);
 	if (!InputStream)
 	{
-		FLOW_ENGINE_ERROR("Failed to load save file at path: {0}", SavePath);
+		FLOW_ENGINE_ERROR("Failed to load save file at path: %s", SavePath.c_str());
 		return;
 	}
 
@@ -69,7 +69,7 @@ void Level::Load(std::ifstream& Input)
 	//Load actor data
 	if (ActorNumber < 0)
 	{
-		FLOW_ENGINE_ERROR("Failed to load actor number: {0}", SavePath);
+		FLOW_ENGINE_ERROR("Failed to load actor number: %s", SavePath.c_str());
 		return;
 	}
 
@@ -83,7 +83,7 @@ void Level::Load(std::ifstream& Input)
 		Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(std::string(ActorClassID));
 		if (NewActor == nullptr)
 		{
-			FLOW_ENGINE_ERROR("Tried to load an actor of class {0} and failed.", ActorClassID);
+			FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", ActorClassID);
 			continue;
 		}
 		
@@ -135,7 +135,7 @@ void Level::SetTickEnabled(Actor* TickActor, bool Enable)
 
 	if (TickActor->IsTickEnabled() == Enable)
 	{
-		FLOW_ENGINE_WARNING("Level::SetTickEnabled: Tick is already correctly set on actor {0}", TickActor->GetName());
+		FLOW_ENGINE_WARNING("Level::SetTickEnabled: Tick is already correctly set on actor %s", TickActor->GetName().c_str());
 		return;
 	}
 

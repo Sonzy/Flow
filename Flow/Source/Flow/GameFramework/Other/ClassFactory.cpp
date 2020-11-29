@@ -5,12 +5,14 @@
 #include "Flow/GameFramework/Components/WorldComponent.h"
 #include "Flow/GameFramework/Components/StaticMeshComponent.h"
 #include "Flow/GameFramework/Components/SkyboxComponent.h"
+#include "Flow/GameFramework/Components/PointLightComponent.h"
+#include "Flow/GameFramework/Components/SpriteComponent.h"
 
 #include "Flow/GameFramework/Actors/StaticMeshActor.h"
 #include "Flow/GameFramework/Actors/PointLightActor.h"
 #include "Flow/GameFramework/Actors/SkyboxActor.h"
 #include "Flow/GameFramework/Actors/CameraActor.h"
-
+#include "Flow/GameFramework/Actors/SpriteActor.h"
 
 ClassFactory::ClassFactory()
 {
@@ -23,11 +25,14 @@ void ClassFactory::RegisterClassUIDs()
 	ClassFactory::Get().RegisterFactoryClass<WorldComponent>();
 	ClassFactory::Get().RegisterFactoryClass<StaticMeshComponent>();
 	ClassFactory::Get().RegisterFactoryClass<SkyboxComponent>();
+	ClassFactory::Get().RegisterFactoryClass<PointLightComponent>();
+	ClassFactory::Get().RegisterFactoryClass<SpriteComponent>();
 
 	ClassFactory::Get().RegisterFactoryClass<StaticMeshActor>();
 	ClassFactory::Get().RegisterFactoryClass<PointLightActor>();
 	ClassFactory::Get().RegisterFactoryClass<SkyboxActor>();
 	ClassFactory::Get().RegisterFactoryClass<CameraActor>();
+	ClassFactory::Get().RegisterFactoryClass<SpriteActor>();
 }
 
 ClassFactory& ClassFactory::Get()

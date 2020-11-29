@@ -1,26 +1,28 @@
 #pragma once
 
-//= Includes ============================================
+// Includes //////////////////////////////////
 
+#include "UIComponent.h"
 #include "Flow/Rendering/Core/Bindables/Texture.h"
 
-//= Class Definition ====================================
+// Class Definition //////////////////////////////////
 
 // Editor toolbar that contains the playstate controls for the scene window.
-class ToolBar
+class ToolBar : public UIComponent
 {
 public:
 
-	//= Public Functions ================================
+	// Public Function //////////////////////////////////
 
 							ToolBar();
 							~ToolBar();
 							ToolBar(ToolBar&) = delete;
 							ToolBar(ToolBar&&) = delete;
 
-	void					DrawWindow();
+	virtual void			Update() override;
+	virtual void			Render() override;
 
-	//= Public Variables ================================
+	// Public Variables /////////////////////////////////
 
 	Texture*				m_Icon_SelectionTool;
 

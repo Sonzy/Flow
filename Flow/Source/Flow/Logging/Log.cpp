@@ -35,15 +35,15 @@ std::shared_ptr<spdlog::logger> Log::InitialiseLogger(const std::string& LoggerN
 {
 	auto NewLogger = spdlog::stdout_color_mt(LoggerName);
 
-	if (sm_EngineLogger)
+	if (sm_EngineLogger != nullptr)
 	{
-		if (NewLogger)
+		if (NewLogger != nullptr)
 		{
-			FLOW_ENGINE_LOG_NO_EDITOR("Logger {0} Initialised.", LoggerName);
+			FLOW_ENGINE_LOG("Logger %s Initialised.", LoggerName.c_str());
 		}
 		else
 		{
-			FLOW_ENGINE_ERROR_NO_EDITOR("Failed to initialise logger ({0})", LoggerName);
+			FLOW_ENGINE_ERROR("Failed to initialise logger (%s)", LoggerName.c_str());
 		}
 	}
 

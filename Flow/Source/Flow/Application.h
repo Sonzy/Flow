@@ -61,6 +61,8 @@ public:
 
 	bool								OnWindowClosed(WindowClosedEvent& e);
 	bool								OnWindowResized(WindowResizedEvent& e);
+	bool								OnWindowMinimized(WindowMinimizedEvent& e);
+	bool								OnWindowRestored(WindowRestoredEvent& e);
 
 	Window&								GetWindow();
 

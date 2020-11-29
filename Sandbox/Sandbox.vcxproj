@@ -92,7 +92,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Assets\Gamemodes\TestGamemode.cpp" />
     <ClCompile Include="Source\SandboxApplication.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Assets\Gamemodes\TestGamemode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,13 +1,13 @@
 #include "Flowpch.h"
 #include "Editor.h"
 #include "Events/MouseEvent.h"
-#include "Editor\Inspector.h"
+#include "Editor/UIComponents/Inspector.h"
 #include "Application.h"
 
 #include "Editor\SelectionGizmo.h"
 #include "GameFramework/World.h"
 #include "Editor/MenuBar.h"
-#include "Editor/Windows/AssetWindow.h"
+#include "Editor/UIComponents/AssetBrowser.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 
@@ -19,21 +19,11 @@
 #include "Editor/LevelManager.h"
 #include "Editor/Windows/SpawnWindow.h"
 
-#include "Editor/Toolbar.h"
+#include "Editor/UIComponents/Toolbar.h"
 #include "Editor/Tools/Tool.h"
 #include "Editor/Tools/SelectionTool.h"
 
-#define DISPATCH_TO_TOOL(ClassName)																				\
-	Dispatcher.Dispatch<MouseButtonPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseButtonPressed));	\
-	Dispatcher.Dispatch<MouseButtonReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseButtonReleased));	\
-	Dispatcher.Dispatch<MouseMovedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseMoved));					\
-	Dispatcher.Dispatch<MouseScrolledEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnMouseScrolled));				\
-	Dispatcher.Dispatch<KeyPressedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyPressed));					\
-	Dispatcher.Dispatch<KeyTypedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyTyped));						\
-	Dispatcher.Dispatch<KeyReleasedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnKeyReleased));					\
-	Dispatcher.Dispatch<WindowResizedEvent>(FLOW_BIND_EVENT_FUNCTION(ClassName::OnWindowResized));			
-
-#define REGISTER_TOOL(NewTool) RegisterTool(new NewTool);
+#define PASS_KEY_EVENT(MemberName) 	if (MemberName != nullptr && MemberName->OnKeyPressed(e)) { return true; }
 
 Editor::Editor()
 	: Layer("Editor Layer")
@@ -52,13 +42,13 @@ Editor::~Editor()
 void Editor::Initialise()
 {
 	m_MenuBar = new MenuBar(this);
-	m_Inspector = new Inspector();
-	m_AssetWindow = new AssetWindow();
 	m_LevelManager = new LevelManager();
 	m_SpawnWindow = new SpawnWindow(World::Get());
-	m_Toolbar = new ToolBar();
 
-	REGISTER_TOOL(SelectionTool);
+	RegisterTool<SelectionTool>();
+
+	RegisterUIComponent<AssetBrowser>();
+	RegisterUIComponent<Inspector>();
 
 	m_Initialised = true;
 }
@@ -74,7 +64,6 @@ void Editor::BeginPlay()
 void Editor::OnAttach()
 {
 	m_ApplicationPointer = &Application::Get();
-	m_Inspector->SetCurrentWorld(World::Get());
 
 	LoadEditorSettings();
 
@@ -93,23 +82,19 @@ void Editor::OnDetach()
 
 void Editor::OnImGuiRender(bool DrawEditor)
 {
-	//NEED TO DRAW TOOLBAR FIRST - Otherwise the toolbar gets overlapped by the dockspace.
+	//Draw the menu bar first to avoid it being included in the DockSpace.
 	ImVec2 Offset = m_MenuBar->Draw();
 
 	InitialiseDockspace(Offset);
 
-	m_Inspector->Update();
 	if (DrawEditor)
 	{
-		m_Inspector->Render();
 		RenderApplicationDebug(m_FrameDeltaTime);
 		UpdateCollisionEditor();
-		m_AssetWindow->DrawWindow();
 		m_SceneManager.DrawWindow_Scene();
 		m_LevelManager->DrawWindows();
 		m_SpawnWindow->Draw();
 		//m_Console.Draw();
-		
 
 		//Draw configuration UI
 		for (auto& tool : m_Tools)
@@ -118,6 +103,12 @@ void Editor::OnImGuiRender(bool DrawEditor)
 			{
 				tool->DrawConfigWindow();
 			}
+		}
+
+		// Draw UI Components
+		for (auto& uiComponent : m_UIComponents)
+		{
+			uiComponent->Render();
 		}
 
 		if (m_DrawDemoWindow)
@@ -168,6 +159,11 @@ void Editor::OnUpdate(float DeltaTime)
 
 	UpdateTools(DeltaTime);
 	RenderTools();
+	
+	for (UIComponent* uiComponent : m_UIComponents)
+	{
+		uiComponent->Update();
+	}
 }
 
 void Editor::UpdateTools(float DeltaTime)
@@ -195,7 +191,7 @@ void Editor::SaveEditorSettings()
 
 	if (OutStream.is_open() == false)
 	{
-		FLOW_ENGINE_ERROR("Editor::SaveEditorSettings: Failed to save settings {0}", SettingsPath);
+		FLOW_ENGINE_ERROR("Editor::SaveEditorSettings: Failed to save settings %s", SettingsPath.string().c_str());
 		return;
 	}
 
@@ -240,29 +236,14 @@ void Editor::LoadEditorSettings()
 	InputStream.close();
 }
 
-void Editor::RegisterTool(Tool* newTool)
+Editor& Editor::Get()
 {
-	if (std::find(m_Tools.begin(), m_Tools.end(), newTool) != m_Tools.end())
-	{
-		FLOW_ENGINE_WARNING("Editor::RegisterTool: Already registered tool");
-	}
-
-	m_Tools.push_back(newTool);
-}
-
-Editor* Editor::GetEditor()
-{
-	return Application::Get().GetEditor();
+	return *Application::Get().GetEditor();
 }
 
 Editor::Settings& Editor::GetEditorSettings()
 {
-	return Editor::GetEditor()->m_Settings;
-}
-
-Inspector* Editor::GetInspector() const
-{
-	return m_Inspector;
+	return Editor::Get().m_Settings;
 }
 
 MenuBar* Editor::GetMenuBar() const
@@ -316,19 +297,12 @@ bool Editor::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 	CONSUMES_INPUT(m_EditorCam, m_EditorCam->OnMouseButtonPressed(e));
 
-	if (m_Inspector && m_Inspector->OnMouseClicked(e))
-		return true;
-
 	return false;
 }
 
 bool Editor::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
-	if (m_EditorCam && m_EditorCam->OnMouseButtonReleased(e))
-		return true;
-
-	if (m_Inspector && m_Inspector->OnMouseReleased(e))
-		return true;
+	CONSUMES_INPUT(m_EditorCam, m_EditorCam->OnMouseButtonReleased(e));
 
 	return false;
 }
@@ -340,19 +314,24 @@ bool Editor::OnMouseMoved(MouseMovedEvent& e)
 
 bool Editor::OnMouseScrolled(MouseScrolledEvent& e)
 {
-	if (m_EditorCam && m_EditorCam->OnMouseScrolled(e))
-		return true;
+	CONSUMES_INPUT(m_EditorCam, m_EditorCam->OnMouseScrolled(e));
 
 	return false;
 }
 
 bool Editor::OnKeyPressed(KeyPressedEvent& e)
 {
-	if (m_EditorCam && m_EditorCam->OnKeyPressed(e))
-		return true;
+	PASS_KEY_EVENT(m_EditorCam);
 
-	if (m_Inspector && m_Inspector->OnKeyPressed(e))
-		return true;
+	for (Tool* tool : m_Tools)
+	{
+		PASS_KEY_EVENT(tool);
+	}
+
+	for (UIComponent* component : m_UIComponents)
+	{
+		PASS_KEY_EVENT(component);
+	}
 
 	return false;
 }
@@ -442,13 +421,25 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 
 	if (ImGui::Begin("Rendering Configuration"))
 	{
-		RenderQueue* Queue = RenderQueue::Get();
-		ImGui::Checkbox("Pass 0", &Queue->m_Pass0Enabled);
-		ImGui::Checkbox("Pass 1", &Queue->m_Pass1Enabled);
-		ImGui::Checkbox("Pass 2", &Queue->m_Pass2Enabled);
-		ImGui::Checkbox("Pass 3", &Queue->m_Pass3Enabled);
-		ImGui::Checkbox("Pass 4", &Queue->m_Pass4Enabled);
-		ImGui::Checkbox("Pass 5", &Queue->m_Pass5Enabled);
+		if (ImGui::BeginChild("Pass Config", ImVec2(0, 0), true))
+		{			
+			float freeSpace = ImGui::GetContentRegionAvailWidth() - ImGui::CalcTextSize("Enabled Render Passes").x;
+			float centreOffset = freeSpace / 2.0f;
+			ImGui::SetCursorPosX(centreOffset);
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Enabled Render Passes");
+
+			RenderQueue* Queue = RenderQueue::Get();
+			ImGui::Checkbox("Main Pass (Back Culled)", &Queue->m_Pass0Enabled);
+			ImGui::Checkbox("Main Pass (Forward Culled)", &Queue->m_Pass1Enabled);
+			ImGui::Checkbox("Main Pass (Two Sided)", &Queue->m_Pass2Enabled);
+			ImGui::Checkbox("Mask Pass", &Queue->m_Pass3Enabled);
+			ImGui::Checkbox("Outline Pass", &Queue->m_Pass4Enabled);
+			ImGui::Checkbox("No Depth Pass", &Queue->m_Pass5Enabled);
+			ImGui::Checkbox("2D Pass", &Queue->m_Pass6Enabled);
+			ImGui::Checkbox("UI Pass", &Queue->m_Pass7Enabled);
+		}
+		ImGui::EndChild();
+
 	}
 	ImGui::End();
 }

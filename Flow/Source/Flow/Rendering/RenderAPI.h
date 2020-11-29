@@ -57,6 +57,9 @@ public:
 
 	IntVector2						GetWindowSize() { return m_ViewportSize; }
 
+	void							SetWindowMinimized(bool Minimized)	{ m_WindowMinimised = Minimized; }
+	bool							IsWindowMinimized() const			{ return m_WindowMinimised; }
+
 protected:
 
 	//= Protected Variables ===================================
@@ -69,4 +72,6 @@ protected:
 									
 	float							m_NearPlane;
 	float							m_FarPlane;
+
+	bool							m_WindowMinimised;
 };

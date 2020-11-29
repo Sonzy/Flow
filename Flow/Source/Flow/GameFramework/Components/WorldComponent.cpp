@@ -1,16 +1,19 @@
 #include "Flowpch.h"
 #include "WorldComponent.h"
-#include "Flow\GameFramework\Actor.h"
+
 #include "ThirdParty\ImGui\imgui.h"
-#include "Flow\Editor\Inspector.h"
 
 #include "Bullet/btBulletCollisionCommon.h"
 #include "Bullet/btBulletDynamicsCommon.h"
-#include "Flow/Physics/MotionState.h"
+#include "Physics/MotionState.h"
 
-#include "Flow/GameFramework/World.h"
+#include "GameFramework\Actor.h"
+#include "GameFramework/World.h"
+#include "GameFramework/Other/ClassFactory.h"
 
-#include "Flow/GameFramework/Other/ClassFactory.h"
+#include "Editor/UIComponents/Inspector.h"
+#include "Editor/Editor.h"
+#include "Editor/Tools\SelectionTool.h"
 
 WorldComponent::WorldComponent()
 	: WorldComponent("Unnamed WorldComponent")
@@ -201,8 +204,8 @@ void WorldComponent::SetWorldScale(Vector3 NewScale)
 	WorldComponent* PointedComp = GetParentComponent();
 	while (PointedComp)
 	{
-		CurrentParentWorld *= PointedComp->m_RelativeTransform.m_Scale;
-		PointedComp = PointedComp->GetParentComponent();
+	CurrentParentWorld *= PointedComp->m_RelativeTransform.m_Scale;
+	PointedComp = PointedComp->GetParentComponent();
 	}
 
 	m_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;
@@ -262,41 +265,35 @@ Vector3* WorldComponent::GetWriteableScale()
 {
 	return &m_RelativeTransform.m_Scale;
 }
-void WorldComponent::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
-{
-	const ImVec2 ButtonSize = ImVec2(100, 12);
-	const float RightOffset = 20;
 
-	if (DontOpenTree)
-		ImGui::SetNextItemOpen(false);
-
-	bool NodeOpen = ImGui::TreeNode(GetName().c_str());
-
-	if (ImGui::IsItemClicked())
-		Inspector::UpdateSelectedComponent(this);
-
-	if (!DontOpenTree && CurrentInspectedComponent == this)
-	{
-		ImGui::SameLine();
-		ImGui::TextColored(IMGUI_GREEN, "Selected");
-	}
-
-	if (NodeOpen)
-	{
-		ImVec2 pos = ImGui::GetCursorScreenPos();
-		ImU32 col = ImColor(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
-
-		for (auto& Child : m_Children)
-		{
-			Child->DrawInspectionTree(CurrentInspectedComponent, DontOpenTree);
-		}
-		ImGui::TreePop();
-	}
-
-}
 void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 {
 }
+
+void WorldComponent::DrawComponentInActorTreeRecursive()
+{
+	//TODO: Need to use some GUIDs
+	if (ImGui::TreeNodeEx(m_ObjectName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (ImGui::IsItemClicked())
+		{
+			Editor::Get().GetTool<SelectionTool>()->SelectComponent(this);
+		}
+
+		if (Editor::Get().GetTool<SelectionTool>()->GetSelectedComponent() == this)
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(IMGUI_GREEN, "Selected");
+		}
+
+		for (WorldComponent* Child : m_Children)
+		{
+			Child->DrawComponentInActorTreeRecursive();
+		}
+		ImGui::TreePop();
+	}
+}
+
 std::vector<WorldComponent*> WorldComponent::GetChildren() const
 {
 	return m_Children;
@@ -307,10 +304,25 @@ WorldComponent* WorldComponent::GetChildByName(const std::string& ChildName)
 	for (auto& Comp : m_Children)
 	{
 		if (Comp->GetName() == ChildName)
+		{
 			return Comp;
+		}
 	}
 
 	return nullptr;
+}
+
+void WorldComponent::BuildChildTree(std::vector<WorldComponent*>& Container, bool IncludeSelf)
+{
+	if (IncludeSelf == true)
+	{
+		Container.push_back(this);
+	}
+
+	for (WorldComponent* Component : m_Children)
+	{
+		BuildChildTree(Container);
+	}
 }
 
 void WorldComponent::SetVisibility(bool Visible)
@@ -343,6 +355,7 @@ void WorldComponent::CreateRigidBody()
 	Rotator Rot = Rotator::AsRadians(GetWorldRotation());
 	Rotation.setEulerZYX(Rot.Roll, Rot.Yaw, Rot.Pitch);
 
+	//TODO: Manage memory, currently leaking
 	//FOR NOW WE ASSUME THAT THE PHYSICS COMPONENT IS THE ROOT COMPONENT
 	MotionState* motionState = new MotionState(&m_RelativeTransform.m_Position, &m_RelativeTransform.m_Rotation);
 
@@ -460,11 +473,14 @@ void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	std::string CompNameStr(ComponentName);
 	if (CompNameStr != "None")
 	{
-		auto Comp = NewParent->GetComponentByName(ComponentName);
-
-		Comp ?
-			SetParentComponent(dynamic_cast<WorldComponent*>(Comp)) :
-			FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name {0}", ComponentName);
+		if (Component* Comp = NewParent->GetComponentByName(ComponentName))
+		{
+			SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
+		}
+		else
+		{
+			FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name %s", ComponentName);
+		}
 	}
 
 	//Load Component Transform
@@ -485,4 +501,6 @@ void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParen
 	}
 }
 
-
+void WorldComponent::DefaultInitialise()
+{
+}

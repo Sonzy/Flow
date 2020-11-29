@@ -56,6 +56,8 @@ public:
 	static void							BindBackBuffer();
 
 	static IntVector2					GetWindowSize();
+	static void							SetMinimized(bool Minimized);
+	static bool							IsMinimized();
 
 	//= Helper =
 

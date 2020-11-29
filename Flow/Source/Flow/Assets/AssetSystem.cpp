@@ -162,7 +162,7 @@ bool AssetSystem::LoadAsset(const std::string& FilePath)
 	std::string FullPath = std::filesystem::current_path().parent_path().append(FilePath).string();
 	if (NewAsset->LoadAsset(FullPath) == false)
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset at path {0}", FullPath);
+		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset at path %s", FullPath.c_str());
 		return false;
 	}
 
@@ -198,7 +198,7 @@ bool AssetSystem::ImportAsset(const std::string& FilePath, const std::string& In
 
 	if (NewAsset->ImportAsset(FilePath, InputDirectory) == false)
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset at path {0}", FilePath);
+		FLOW_ENGINE_ERROR("AssetSystem::LoadAsset: Failed to load asset at path %s", FilePath.c_str());
 		return false;
 	}
 
@@ -244,7 +244,7 @@ void AssetSystem::UpdateAssetName(const std::string& Old, const std::string& New
 	Asset* FoundAsset = GetAsset(fpOld.stem().string());
 	if (FoundAsset == nullptr)
 	{
-		FLOW_ENGINE_ERROR("Failed to update asset with name {0}", Old);
+		FLOW_ENGINE_ERROR("Failed to update asset with name %s", Old.c_str());
 		return;
 	}
 
@@ -271,7 +271,7 @@ Asset* AssetSystem::GetAsset(const std::string& AssetName)
 	//Error if the path doesnt exist in the system
 	if (sm_AssetSystem->m_LoadedAssets.find(HashedName) == sm_AssetSystem->m_LoadedAssets.end())
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path ({0}) and failed", AssetName.c_str());
+		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path (%s) and failed", AssetName.c_str());
 		return nullptr;
 	}
 
@@ -300,7 +300,7 @@ Asset::Type AssetSystem::GetAssetTypeFromFileExtension(const std::string& AssetP
 		return Asset::Type::Shader;
 	}
 
-	FLOW_ENGINE_ERROR("Failed to get extension for {0}", Extension);
+	FLOW_ENGINE_ERROR("Failed to get extension for %s", Extension.string().c_str());
 	return Asset::Type::None;
 }
 

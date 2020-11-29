@@ -136,7 +136,7 @@ void SelectionGizmo::UpdateSelection()
 
 	//Fire a ray from the current mouse position.
 	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.x, MousePosition.y, Editor::GetEditor()->GetSceneWindowSize(), Editor::GetEditor()->GetSceneWindowPosition());
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(MousePosition.x, MousePosition.y, Editor::Get().GetSceneWindowSize(), Editor::Get().GetSceneWindowPosition());
 
 	switch (m_TransformMode)
 	{
@@ -352,7 +352,7 @@ void SelectionGizmo::OnSelected(Axis Axis, WorldComponent* Object)
 
 
 	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.x, m_MouseLastUpdate.y, Editor::GetEditor()->GetSceneWindowSize(), Editor::GetEditor()->GetSceneWindowPosition());
+	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector(m_MouseLastUpdate.x, m_MouseLastUpdate.y, Editor::Get().GetSceneWindowSize(), Editor::Get().GetSceneWindowPosition());
 
 	float SelectionAxisClosestScale;
 	float RayClosestScale;
@@ -431,6 +431,24 @@ void SelectionGizmo::SetTransformationMode(SelectionGizmo::Transform newMode)
 	physWorld->addCollisionObject(m_YGhost);
 	physWorld->addCollisionObject(m_ZGhost);
 
+}
+
+Axis SelectionGizmo::TagToAxis(const std::string& Tag)
+{
+	if (Tag._Equal("ArrowX"))
+	{
+		return Axis::X;
+	}
+	else if (Tag._Equal("ArrowY"))
+	{
+		return Axis::Y;
+	}
+	else if (Tag._Equal("ArrowZ"))
+	{
+		return Axis::Z;
+	}
+
+	return Axis::None;
 }
 
 void SelectionGizmo::GenerateCollision()

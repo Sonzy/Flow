@@ -29,22 +29,19 @@ void Console::Draw()
 
 Console& Console::Get()
 {
-	return Editor::GetEditor()->GetConsole();
+	return Editor::Get().GetConsole();
 }
 
 Console* Console::GetSafe()
 {
-	if (Editor* Editor = Editor::GetEditor())
-	{
-		if (Editor->IsInitialised() == false)
-		{
-			return nullptr;
-		}
+	Editor& Editor = Editor::Get();
 
-		return &Editor->GetConsole();
+	if (Editor.IsInitialised() == false)
+	{
+		return nullptr;
 	}
 
-	return nullptr;
+	return &Editor.GetConsole();
 }
 
 void Console::LogMessage(const Console::Message& newMessage)

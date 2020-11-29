@@ -62,11 +62,12 @@ public:
 	Rotator*						GetWriteableRotation();
 	Vector3*						GetWriteableScale();
 
-	void							DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree = false);
 	virtual void					DrawDetailsWindow(bool bDontUpdate) override;
+	void							DrawComponentInActorTreeRecursive();
 
 	std::vector<WorldComponent*>	GetChildren() const;
 	WorldComponent*					GetChildByName(const std::string& ChildName);
+	void							BuildChildTree(std::vector<WorldComponent*>& Container, bool IncludeSelf = true); //Gets all components in the hierarchy tree
 
 	void							SetVisibility(bool Visible);
 	bool							IsVisible() const;
@@ -90,11 +91,13 @@ public:
 
 	//= Serialization =
 
-	virtual							std::string GetClassSerializationUID(std::ofstream* Archive);
+	virtual std::string				GetClassSerializationUID(std::ofstream* Archive);
 	virtual void					Serialize(std::ofstream* Archive);
 	void							SerializeChildren(std::ofstream* Archive);
 	virtual void					Deserialize(std::ifstream* Archive, Actor* NewParent);
 	void							DeserializeChildren(std::ifstream* Archive, Actor* NewParent);
+
+	virtual void					DefaultInitialise();
 
 public:
 

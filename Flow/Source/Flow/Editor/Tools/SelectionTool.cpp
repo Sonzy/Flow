@@ -18,13 +18,10 @@
 
 #include "Flow/GameFramework/Actor.h"
 
-#include "Flow/Editor/Inspector.h"
-
 SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
 {
 	m_Gizmo = new SelectionGizmo();
-	m_InspectorWindow = Editor::GetEditor()->GetInspector();
 }
 
 SelectionTool::~SelectionTool()
@@ -62,8 +59,8 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector( 	//TODO: normalise direction
 		MousePosition.x,
 		MousePosition.y,
-		Editor::GetEditor()->GetSceneWindowSize(),
-		Editor::GetEditor()->GetSceneWindowPosition());
+		Editor::Get().GetSceneWindowSize(),
+		Editor::Get().GetSceneWindowPosition());
 	Vector3 End = Start + (Direction * 1000.0f);
 
 	if (m_DrawSelectionLines)
@@ -75,15 +72,18 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	//Raytrace into the world 
 	Physics::TraceResultMulti result = Physics::RayTraceMulti(Start, End);
 
-
 	//Store the hit objects
 	WorldComponent* HitComponent = nullptr;
 	Actor* HitActor = nullptr;
-	bool HitAnything = result.hasHit();
-	if (HitAnything)
+
+	if (result.hasHit())
 	{
+		WorldComponent*		FoundComponent = nullptr;
+		Actor*				FoundActor = nullptr; //Only check for a gizmo if this is true
+
 		//TODO: Move this check to check the object that last drew the pixel
 		//Check if we hit a selection gimzo
+		//for (int i = result.m_collisionObjects.size() - 1; i >= 0; i--)
 		for (int i = 0; i < result.m_collisionObjects.size(); i++)
 		{
 			WorldComponent* comp = reinterpret_cast<WorldComponent*>(result.m_collisionObjects[i]->getUserPointer());
@@ -91,15 +91,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 			if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(actor))
 			{
-				Axis Axis = Axis::None;
-
-				if (comp->m_Tag._Equal("ArrowX"))
-					Axis = Axis::X;
-				else if (comp->m_Tag._Equal("ArrowY"))
-					Axis = Axis::Y;
-				else if (comp->m_Tag._Equal("ArrowZ"))
-					Axis = Axis::Z;
-
+				Axis Axis = SelectionGizmo::TagToAxis(comp->m_Tag);
 				if (Axis == Axis::None)
 				{
 					FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
@@ -109,9 +101,15 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 				Gizmo->OnSelected(Axis, m_SelectedComponent);
 				return true;
 			}
+
+			if (FoundComponent == nullptr && comp != nullptr && actor != nullptr)
+			{
+				FoundComponent = comp;
+				FoundActor = actor;
+			}
 		}
 
-		HitComponent = reinterpret_cast<WorldComponent*>(result.m_collisionObject->getUserPointer());
+		HitComponent = FoundComponent;
 		HitActor = HitComponent->GetParentActor();
 	}
 
@@ -234,8 +232,6 @@ void SelectionTool::SelectComponent(WorldComponent* NewComponent)
 		{
 			m_SelectedComponent->OnViewportSelected();
 		}
-
-		m_InspectorWindow->SetFocus(m_SelectedComponent);
 	}
 
 	//If we didnt hit anything, reset the gizmo

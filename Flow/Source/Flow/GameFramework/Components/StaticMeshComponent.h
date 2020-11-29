@@ -50,6 +50,8 @@ public:
 	virtual void				Serialize(std::ofstream* Archive) override;
 	virtual void				Deserialize(std::ifstream* Archive, Actor* NewParent) override;
 
+	virtual void				DefaultInitialise() override;
+
 	//= Rendering ==========
 
 	virtual void				Render() override;

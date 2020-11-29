@@ -81,6 +81,7 @@ public:
 		return Vector3(Pitch, Roll, Yaw);
 	}
 
+	//Presumes the rotation is in degrees
 	Vector3 GetForwardVector() const
 	{
 		Rotator Radians = Rotator::AsRadians(*this);

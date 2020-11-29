@@ -43,6 +43,8 @@ public:
 	bool					m_Pass3Enabled = true;
 	bool					m_Pass4Enabled = true;
 	bool					m_Pass5Enabled = true;
+	bool					m_Pass6Enabled = true;
+	bool					m_Pass7Enabled = true;
 
 private:
 

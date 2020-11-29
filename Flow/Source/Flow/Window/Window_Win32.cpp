@@ -162,8 +162,27 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	}
 	case WM_SIZE:
 	{
-		WindowResizedEvent Event(LOWORD(lParam), HIWORD(lParam));
-		e = &Event;
+		int ResizeType = static_cast<int>(wParam);
+		switch (ResizeType)
+		{
+		case SIZE_MAXIMIZED:
+		case SIZE_RESTORED:
+		{
+			WindowResizedEvent Event(LOWORD(lParam), HIWORD(lParam));
+			e = &Event;
+			break;
+		}
+		case SIZE_MINIMIZED:
+		{
+			WindowMinimizedEvent Event = WindowMinimizedEvent();
+			e = &Event;
+			break;
+		}
+		default:
+			FLOW_ENGINE_WARNING("Unhandled Resize type %d", ResizeType);
+			break;
+		}
+
 		break;
 	}
 
@@ -251,7 +270,7 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	{
 		if (bHandled == true)
 		{
-			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: Error was nullptr (Message: {0})", msg);
+			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: Error was nullptr (Message: %d)", msg);
 		}
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
@@ -260,7 +279,7 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	{
 		if (const bool ThrowError = false)
 		{
-			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: No callback assigned (Message: {0})", msg);
+			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: No callback assigned (Message: %d)", msg);
 		}
 
 		return DefWindowProc(hWnd, msg, wParam, lParam);

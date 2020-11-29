@@ -5,14 +5,16 @@
 
 FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer)
 	: m_HasDepthBuffer(CreateDepthBuffer)
+	, m_Texture(nullptr)
+	, m_TextureView(nullptr)
 {
 	Resize(Width, Height);
 }
 
 FrameBuffer::~FrameBuffer()
 {
-	m_Texture->Release();
-	m_TextureView->Release();
+	m_Texture.Reset();
+	m_TextureView.Reset();
 }//
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)

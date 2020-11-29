@@ -75,13 +75,13 @@ ImVec2 MenuBar::Draw()
 		{
 			if (ImGui::MenuItem("Editor Settings"))
 			{
-				Editor::GetEditor()->ShowSettingsWindow(true);
+				Editor::Get().ShowSettingsWindow(true);
 
 				if (ImGui::BeginMenu("Tools"))
 				{
 					if (ImGui::MenuItem("Selection Tool"))
 					{
-						if (SelectionTool* tool = Editor::GetEditor()->GetTool<SelectionTool>())
+						if (SelectionTool* tool = Editor::Get().GetTool<SelectionTool>())
 						{
 							tool->OpenConfigWindow();
 						}						

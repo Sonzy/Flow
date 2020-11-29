@@ -25,6 +25,24 @@ std::string WindowResizedEvent::ToString() const
 	return ss.str();
 }
 
+WindowClosedEvent::WindowClosedEvent()
+{
+}
+
+std::string WindowMinimizedEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowMinimizedEvent";
+	return ss.str();
+}
+
+std::string WindowRestoredEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowRestoredEvent";
+	return ss.str();
+}
+
 //= Application Events =========================
 
 
@@ -37,9 +55,5 @@ ApplicationUpdateEvent::ApplicationUpdateEvent()
 }
 
 ApplicationRenderEvent::ApplicationRenderEvent()
-{
-}
-
-WindowClosedEvent::WindowClosedEvent()
 {
 }

@@ -18,13 +18,21 @@ ToolBar::ToolBar()
 ToolBar::~ToolBar()
 {
 	delete m_Icon_SelectionTool;
+	delete m_Icon_Play;
+	delete m_Icon_Pause;
+	delete m_Icon_Stop;
 }
 
-void ToolBar::DrawWindow()
+void ToolBar::Update()
 {
-	if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvailWidth(), 32)))
+
+}
+
+void ToolBar::Render()
+{
+	if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvailWidth(), 32), false, ImGuiWindowFlags_NoScrollbar))
 	{
-		if (m_Icon_SelectionTool)
+		if (m_Icon_SelectionTool != nullptr)
 		{
 			auto tex = m_Icon_SelectionTool->GetTextureView();
 			ImGui::ImageButton(tex, ImVec2(28,28));
@@ -32,7 +40,7 @@ void ToolBar::DrawWindow()
 
 		ImGui::SameLine();
 
-		if (m_Icon_Play)
+		if (m_Icon_Play != nullptr)
 		{
 			auto tex = m_Icon_Play->GetTextureView();
 
@@ -45,7 +53,7 @@ void ToolBar::DrawWindow()
 
 		ImGui::SameLine();
 
-		if (m_Icon_Pause)
+		if (m_Icon_Pause != nullptr)
 		{
 			auto tex = m_Icon_Pause->GetTextureView();
 			if (ImGui::ImageButton(tex, ImVec2(28, 28)))
@@ -56,7 +64,7 @@ void ToolBar::DrawWindow()
 
 		ImGui::SameLine();
 
-		if (m_Icon_Stop)
+		if (m_Icon_Stop != nullptr)
 		{
 			auto tex = m_Icon_Stop->GetTextureView();
 			if (ImGui::ImageButton(tex, ImVec2(28, 28)))

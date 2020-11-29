@@ -14,11 +14,15 @@ public:
 
 	//= Public Functions ======================================
 
-	PointLightComponent();
-	PointLightComponent(const std::string& ComponentName);
+										PointLightComponent();
+										PointLightComponent(const std::string& ComponentName);
 
-	virtual void Render() override;
-	virtual void DrawComponentDetailsWindow() override;
+	virtual void						Render() override;
+	virtual void						DrawComponentDetailsWindow() override;
+
+	virtual std::string					GetClassSerializationUID(std::ofstream* Archive);
+	virtual void						Serialize(std::ofstream* Archive) override;
+	virtual void						Deserialize(std::ifstream* Archive, Actor* NewParent) override;
 
 private:
 

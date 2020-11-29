@@ -9,18 +9,17 @@
 
 #include "Flow/Rendering/Other/FrameBuffer.h"
 
-#include "Toolbar.h"
+#include "Editor/UIComponents/Toolbar.h"
 
 SceneManager::SceneManager()
-	:
-	m_CachedWindowSize(0, 0),
-	m_SceneWindowPosition(0, 0),
-	m_SceneWindowSize(0, 0),
-	m_SceneFocused(false),
-	m_MouseOverScene(false),
-	m_EditorCam(nullptr)
+	: m_CachedWindowSize(0, 0)
+	, m_SceneWindowPosition(0, 0)
+	, m_SceneWindowSize(0, 0)
+	, m_SceneFocused(false)
+	, m_MouseOverScene(false)
+	, m_EditorCam(nullptr)
+	, m_Toolbar(new ToolBar())
 {
-	m_Toolbar = new ToolBar();
 }
 
 SceneManager::~SceneManager()
@@ -48,7 +47,7 @@ void SceneManager::DrawWindow_Scene()
 
 	if (ImGui::Begin(WindowName.c_str()))
 	{
-		m_Toolbar->DrawWindow();
+		m_Toolbar->Render();
 
 		m_SceneFocused = ImGui::IsWindowFocused();
 
@@ -63,8 +62,8 @@ void SceneManager::DrawWindow_Scene()
 		m_SceneWindowSize = IntVector2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
 		m_MouseOverScene = ImGui::IsWindowHovered();
 
-		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, 1920); //TODO: Make max texture size not fixed
-		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, 1080); //TODO: Make max texture size not fixed
+		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, 2560); //TODO: Make max texture size not fixed
+		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, 1440); //TODO: Make max texture size not fixed
 
 		if (*reinterpret_cast<Vector2*>(&m_SceneWindowSize) != m_CachedWindowSize)//TODO: Stop being naughty
 		{

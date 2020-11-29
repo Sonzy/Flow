@@ -25,6 +25,8 @@ RenderQueue::RenderQueue()
 	m_Passes.emplace_back(new Pass()); //Mask Pass
 	m_Passes.emplace_back(new Pass()); //Outline Draw Pass
 	m_Passes.emplace_back(new Pass()); //No Depth
+	m_Passes.emplace_back(new Pass()); //2D
+	m_Passes.emplace_back(new Pass()); //User Interface
 }
 
 RenderQueue::~RenderQueue()
@@ -103,6 +105,18 @@ void RenderQueue::Execute()
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		Rasterizer::Resolve(CullMode::Back)->Bind();
 		Queue->m_Passes[5]->Execute();
+	}
+
+	//= 2D Rendering =
+	if (Queue->m_Pass6Enabled)
+	{
+		Queue->m_Passes[6]->Execute();
+	}
+
+	//= User Interface = 
+	if (Queue->m_Pass7Enabled)
+	{
+		Queue->m_Passes[7]->Execute();
 	}
 }
 

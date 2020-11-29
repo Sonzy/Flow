@@ -146,7 +146,7 @@ bool MeshAsset::LoadAsset(const std::string& AssetName)
 	
 	if (InputStream.is_open() == false)
 	{
-		FLOW_ENGINE_ERROR("Failed to open file {0}", AssetName);
+		FLOW_ENGINE_ERROR("Failed to open file %s", AssetName.c_str());
 		return false;
 	}
 	

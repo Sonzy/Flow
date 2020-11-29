@@ -1,12 +1,14 @@
 #include "Flowpch.h"
+
 #include "Actor.h"
 #include "Components\WorldComponent.h"
+
 #include "ThirdParty\ImGui\imgui.h"
-
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
-#include "Flow\GameFramework\World.h"
 
-//#include "Flow/GameFramework/Other/ClassFactory.h"
+#include "GameFramework\World.h"
+#include "Editor/UIComponents/Inspector.h"
+#include "Editor/Windows/SpawnWindow.h"
 
 Actor::Actor()
 	: m_RootComponent(nullptr)
@@ -29,7 +31,7 @@ void Actor::BeginPlay()
 {
 	if (!m_RootComponent)
 	{
-		FLOW_ENGINE_WARNING("Actor::BeginPlay: Actor ' {0} ' has no root component", GetName());
+		FLOW_ENGINE_WARNING("Actor::BeginPlay: Actor ' %s ' has no root component", GetName().c_str());
 		return;
 	}
 	m_RootComponent->BeginPlay();
@@ -39,7 +41,7 @@ void Actor::EditorBeginPlay()
 {
 	if (!m_RootComponent)
 	{
-		FLOW_ENGINE_WARNING("Actor::EditorBeginPlay: Actor ' {0} ' has no root component", GetName());
+		FLOW_ENGINE_WARNING("Actor::EditorBeginPlay: Actor ' %s ' has no root component", GetName().c_str());
 		return;
 	}
 	m_RootComponent->EditorBeginPlay();
@@ -59,6 +61,12 @@ void Actor::Tick(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->Tick(DeltaTime);
+}
+WorldComponent* Actor::SetRootComponent(WorldComponent* NewRoot)
+{
+	WorldComponent* OldRoot = m_RootComponent;
+	m_RootComponent = NewRoot;
+	return OldRoot;
 }
 WorldComponent* Actor::GetRootComponent() const
 {
@@ -94,7 +102,9 @@ void Actor::Render()
 	PROFILE_FUNCTION();
 
 	if (m_RootComponent && m_Visible)
+	{
 		m_RootComponent->Render();
+	}
 }
 
 bool Actor::IsSimulatingPhysics()
@@ -126,6 +136,19 @@ void Actor::DrawDetailsWindow(bool bDontUpdate)
 void Actor::SetVisibility(bool Visible)
 {
 	m_Visible = Visible;
+}
+
+std::vector<WorldComponent*> Actor::GetComponents() const
+{
+	//TODO: Remove this
+	std::vector<WorldComponent*> Components;
+
+	if (m_RootComponent != nullptr)
+	{
+		m_RootComponent->BuildChildTree(Components);
+	}
+
+	return Components;
 }
 
 Component* Actor::GetComponentByName(const std::string& Name) const
@@ -174,8 +197,10 @@ void Actor::Deserialize(std::ifstream* Archive)
 	bool HasRoot = false;
 	Archive->read(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
 
-	if(HasRoot)
+	if (HasRoot == true)
+	{
 		DeserializeComponents(Archive);
+	}
 }
 
 void Actor::DeserializeComponents(std::ifstream* Archive)
@@ -196,3 +221,37 @@ void Actor::DeserializeComponents(std::ifstream* Archive)
 	NewRoot->DeserializeChildren(Archive, this);
 }
 
+void Actor::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
+{
+	const ImVec2 ButtonSize = ImVec2(100, 12);
+	const float RightOffset = 20;
+
+	bool Popped = false;
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.0f);
+
+	if (ImGui::BeginChild("Component Details", ImVec2(0.0f, 100.0f), true))
+	{
+		Popped = true;
+		ImGui::PopStyleVar();
+
+		//Add new component
+		if (ImGui::BeginPopupContextWindow())
+		{
+			SpawnWindow::DrawSpawnContextWindow(this);
+
+			ImGui::EndPopup();
+		}
+
+		//Draw other components
+		if (m_RootComponent != nullptr)
+		{
+			m_RootComponent->DrawComponentInActorTreeRecursive();
+		}
+	}
+	ImGui::EndChild();
+
+	if (Popped != true)
+	{
+		ImGui::PopStyleVar();
+	}
+}

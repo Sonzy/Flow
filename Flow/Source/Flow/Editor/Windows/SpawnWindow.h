@@ -4,6 +4,7 @@
 //= Forward Declarations ====================================
 
 class World;
+class Actor;
 
 //= Class Definitions =======================================
 
@@ -15,6 +16,7 @@ public:
 
 													SpawnWindow(World* WorldRef);
 	void											Draw();
+	static void										DrawSpawnContextWindow(Actor* Parent);
 
 	//= Public Template Functions ===========================
 

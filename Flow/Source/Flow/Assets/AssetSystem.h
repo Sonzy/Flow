@@ -86,6 +86,24 @@ public:
 		return OutList;
 	}
 
+
+	// Returns a vector of all assets of this type
+	template <typename T>
+	static std::vector<const Asset*>				BuildAssetDataList()
+	{
+		std::vector<const char*> OutList;
+
+		for (std::pair<size_t, Asset*> asset : sm_AssetSystem->m_LoadedAssets)
+		{
+			if (typeid(*asset.second) == typeid(T))
+			{
+				OutList.push_back(asset.second->GetAssetName().c_str());
+			}
+		}
+
+		return OutList;
+	}
+
 private:
 	//TODO: Remove
 	friend class MenuBar;

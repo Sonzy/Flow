@@ -1,19 +1,19 @@
 #include "Flowpch.h"
 #include "StaticMeshComponent.h"
-#include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Meshes\MeshAsset.h"
-#include "Flow\Rendering\Renderer.h"
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
-#include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Flow/Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
+#include "Assets\AssetSystem.h"
+#include "Assets\Meshes\MeshAsset.h"
+#include "Rendering\Renderer.h"
+#include "Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
-#include "Flow/Utils/ImGuiHelper.h"
+#include "Utils/ImGuiHelper.h"
 
-#include "Flow\GameFramework\World.h"
+#include "GameFramework\World.h"
 
-#include "Flow/GameFramework/Actor.h"
+#include "GameFramework/Actor.h"
 
 #include <algorithm>
 
@@ -27,8 +27,10 @@ StaticMeshComponent::StaticMeshComponent(const std::string& Name, const std::str
 	, m_StaticMesh(nullptr)
 	, m_Material(nullptr)
 {
-	if(!MeshName.empty() && !MaterialName.empty())
+	if (!MeshName.empty() && !MaterialName.empty())
+	{
 		SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
+	}
 }
 
 StaticMeshComponent::~StaticMeshComponent()
@@ -76,7 +78,7 @@ void StaticMeshComponent::OnViewportSelected()
 
 void StaticMeshComponent::OnViewportDeselected()
 {
-	RenderableComponent::OnViewportSelected();
+	RenderableComponent::OnViewportDeselected();
 
 	//TODO: dont hard code
 	if(m_Techniques.size() >= 2)
@@ -90,7 +92,7 @@ void StaticMeshComponent::SetMeshAndMaterial(const std::string& MeshName, const 
 	MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MaterialName);
 	if (!FoundMat)
 	{
-		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", MaterialName);
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name %s", MaterialName.c_str());
 		return;
 	}
 	m_Material = FoundMat->GetMaterial();
@@ -131,7 +133,7 @@ void StaticMeshComponent::SetMaterial(const std::string& MaterialName)
 	MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(MaterialName);
 	if (!FoundMat)
 	{
-		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", MaterialName);
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name %s", MaterialName.c_str());
 		return;
 	}
 	m_Material = FoundMat->GetMaterial();
@@ -145,7 +147,7 @@ void StaticMeshComponent::SetMeshAndMaterial(MeshAsset* NewMesh, MaterialAsset* 
 	if (!NewMaterial)
 	{
 		m_MaterialIdentifier = "None";
-		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMeshAndMaterial: Failed to find material with name %s", NewMaterial->GetAssetName().c_str());
 		return;
 	}
 	m_Material = NewMaterial->GetMaterial();
@@ -197,7 +199,7 @@ void StaticMeshComponent::SetMaterial(MaterialAsset* NewMaterial)
 {
 	if (!NewMaterial)
 	{
-		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name {0}", NewMaterial->GetAssetName());
+		FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name %s", NewMaterial->GetAssetName().c_str());
 		return;
 	}
 	m_Material = NewMaterial->GetMaterial();
@@ -232,6 +234,18 @@ void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
 	Archive->read(MaterialName, sizeof(char) * 32);
 	Archive->read(reinterpret_cast<char*>(&MeshIndex), sizeof(int));
 	SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
+}
+
+void StaticMeshComponent::DefaultInitialise()
+{
+	SetMeshAndMaterial("Box", "Mat_FlatColour_White");
+
+	switch (World::Get()->GetWorldState())
+	{
+	case WorldState::Editor: EditorBeginPlay(); break;
+	case WorldState::Paused:
+	case WorldState::InGame: BeginPlay(); break;
+	}
 }
 
 void StaticMeshComponent::Render()
@@ -393,7 +407,7 @@ void StaticMeshComponent::InitialisePhysics()
 	}
 
 	GenerateCollision();
-	CreateRigidBody();
+	CreateRigidBody(); //TODO: Handle non-root component objects
 
 	World* CurrentWorld = World::Get();
 
@@ -438,16 +452,16 @@ void StaticMeshComponent::DrawMeshSelector()
 		for (int n = 0; n < Assets.size(); n++)
 		{
 			bool is_selected = (currentItem == Assets[n]);
-
+	
 			if (ImGui::Selectable(Assets[n], is_selected))
 			{
 				currentItem = Assets[n];
-
+	
 				m_MeshIdentifier = currentItem;
 				SetStaticMesh(currentItem);
 				InitialisePhysics();
 			}
-
+	
 			// Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 			if (is_selected)
 			{

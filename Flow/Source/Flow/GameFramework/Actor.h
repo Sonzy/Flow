@@ -39,6 +39,8 @@ public:
 #endif
 	virtual void			Tick(float DeltaTime) override;
 
+	WorldComponent*			SetRootComponent(WorldComponent* NewRoot);
+
 	WorldComponent*			GetRootComponent() const;
 	Vector3					GetLocation();
 	Vector3					GetScale();
@@ -55,6 +57,7 @@ public:
 	void					SetVisibility(bool Visible);
 	bool					IsTickEnabled() { return m_TickEnabled; }
 
+	std::vector<WorldComponent*> GetComponents() const;
 	Component*				GetComponentByName(const std::string& Name) const;
 
 	virtual void			Serialize(std::ofstream* Archive);
@@ -70,10 +73,12 @@ public:
 
 		Out.write(Name.c_str(), sizeof(char) * 32);
 		std::streampos Pos = Out.tellp();
-		FLOW_ENGINE_LOG("Offset: {0}", static_cast<int>(Pos));
+		FLOW_ENGINE_LOG("Offset: %d", static_cast<int>(Pos));
 
 		Out << Object.GetRootComponent();
 	}
+
+	void DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree = false);
 
 protected:
 
@@ -102,5 +107,6 @@ protected:
 	int						m_Tag;
 	bool					m_Visible = true;
 	Controller*				m_CurrentController;
+
 };
 

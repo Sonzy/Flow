@@ -114,6 +114,7 @@
     <ClInclude Include="Source\Flow\Assets\Asset.h" />
     <ClInclude Include="Source\Flow\Assets\AssetSystem.h" />
     <ClInclude Include="Source\Flow\Assets\Levels\LevelAsset.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\ColorMaterial2D.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
@@ -123,15 +124,16 @@
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
-    <ClInclude Include="Source\Flow\Editor\Inspector.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\LevelManager.h" />
     <ClInclude Include="Source\Flow\Editor\SceneManager.h" />
     <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\MenuBar.h" />
-    <ClInclude Include="Source\Flow\Editor\Toolbar.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\Toolbar.h" />
     <ClInclude Include="Source\Flow\Editor\Tools\SelectionTool.h" />
     <ClInclude Include="Source\Flow\Editor\Tools\Tool.h" />
-    <ClInclude Include="Source\Flow\Editor\Windows\AssetWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\AssetBrowser.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\UIComponent.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\Console.h" />
     <ClInclude Include="Source\Flow\Editor\Windows\SpawnWindow.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
@@ -146,14 +148,18 @@
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\PointLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\SkyboxActor.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\SpriteActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\StaticMeshActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\PointLightComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\SkyboxComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\SpriteComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\WorldComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Gamemode.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Gamestate.h" />
     <ClInclude Include="Source\Flow\GameFramework\Other\ClassFactory.h" />
     <ClInclude Include="Source\Flow\GameFramework\Pawn.h" />
     <ClInclude Include="Source\Flow\GameFramework\Controllers\Controller.h" />
@@ -170,6 +176,8 @@
     <ClInclude Include="Source\Flow\Maths\Vector4.h" />
     <ClInclude Include="Source\Flow\Typedefs.h" />
     <ClInclude Include="Source\Flow\Utils\BulletDebugDrawing.h" />
+    <ClInclude Include="Source\Flow\Utils\ComponentHelper.h" />
+    <ClInclude Include="Source\Flow\Utils\DebugDraw.h" />
     <ClInclude Include="Source\Flow\Utils\FileSystem.h" />
     <ClInclude Include="Source\Flow\Utils\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Utils\ImGuiHelper.h" />
@@ -331,6 +339,7 @@
     <ClCompile Include="Source\Flow\Assets\Asset.cpp" />
     <ClCompile Include="Source\Flow\Assets\AssetSystem.cpp" />
     <ClCompile Include="Source\Flow\Assets\Levels\LevelAsset.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\ColorMaterial2D.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />
@@ -338,15 +347,16 @@
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Inspector.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\LevelManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\SceneManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\MenuBar.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Toolbar.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\Toolbar.cpp" />
     <ClCompile Include="Source\Flow\Editor\Tools\SelectionTool.cpp" />
     <ClCompile Include="Source\Flow\Editor\Tools\Tool.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Windows\AssetWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\AssetBrowser.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\UIComponent.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\Console.cpp" />
     <ClCompile Include="Source\Flow\Editor\Windows\SpawnWindow.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
@@ -361,14 +371,18 @@
     <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\PointLightActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\SkyboxActor.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Actors\SpriteActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\StaticMeshActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\PointLightComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\SkyboxComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\SpriteComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\WorldComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Gamemode.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Gamestate.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Other\ClassFactory.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Pawn.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Controllers\Controller.cpp" />
@@ -380,6 +394,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Actor.cpp" />
     <ClCompile Include="Source\Flow\Maths\Maths.cpp" />
     <ClCompile Include="Source\Flow\Utils\BulletDebugDrawing.cpp" />
+    <ClCompile Include="Source\Flow\Utils\DebugDraw.cpp" />
     <ClCompile Include="Source\Flow\Utils\Profiling.cpp" />
     <ClCompile Include="Source\Flow\Utils\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />
@@ -475,6 +490,18 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SkyboxTemp.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColor2DPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColor2DVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Flow\Source\Flow\Rendering\Core\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColorVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
