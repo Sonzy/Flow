@@ -125,8 +125,8 @@
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Inspector.h" />
-    <ClInclude Include="Source\Flow\Editor\LevelManager.h" />
-    <ClInclude Include="Source\Flow\Editor\SceneManager.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\LevelManager.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\SceneManager.h" />
     <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\MenuBar.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Toolbar.h" />
@@ -134,8 +134,8 @@
     <ClInclude Include="Source\Flow\Editor\Tools\Tool.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\AssetBrowser.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\UIComponent.h" />
-    <ClInclude Include="Source\Flow\Editor\Windows\Console.h" />
-    <ClInclude Include="Source\Flow\Editor\Windows\SpawnWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\Console.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\SpawnWindow.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\ErrorHelpers.h" />
@@ -348,8 +348,8 @@
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Inspector.cpp" />
-    <ClCompile Include="Source\Flow\Editor\LevelManager.cpp" />
-    <ClCompile Include="Source\Flow\Editor\SceneManager.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\LevelManager.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\SceneManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\MenuBar.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Toolbar.cpp" />
@@ -357,8 +357,8 @@
     <ClCompile Include="Source\Flow\Editor\Tools\Tool.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\AssetBrowser.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\UIComponent.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Windows\Console.cpp" />
-    <ClCompile Include="Source\Flow\Editor\Windows\SpawnWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\Console.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\SpawnWindow.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />

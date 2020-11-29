@@ -5,8 +5,9 @@
 #include "Flow/Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
+
 #if WITH_EDITOR
-	#include "Flow/Editor/Windows/Console.h"
+	#include "Editor/UIComponents/Console.h"
 #endif
 
 //= Class Definition ===========================
@@ -29,11 +30,22 @@ public:
 	inline static spdlog::logger* const				GetEngineLogger() { return sm_EngineLogger.get(); };
 	inline static spdlog::logger* const				GetApplicationLogger() { return sm_AppLogger.get(); };
 
+#if WITH_EDITOR
+	static void										InitConsole(Console* const console) { sm_Console = console; };
+#endif
+
 	template<typename... T>
 	static void Message(spdlog::logger* Logger, const char* Format, T&&... args)
 	{
 		sprintf_s(g_PrintFBuffer, MAX_LOG_SIZE, Format, std::forward<T>(args)...);
 		Logger->info(g_PrintFBuffer);
+
+#if WITH_EDITOR
+		if (sm_Console)
+		{
+			Console::Get().PushMessage(Console::MessageType::Log, g_PrintFBuffer);
+		}
+#endif
 	}
 
 	template<typename... T>
@@ -41,6 +53,13 @@ public:
 	{
 		sprintf_s(g_PrintFBuffer, MAX_LOG_SIZE, Format, std::forward<T>(args)...);
 		Logger->error(g_PrintFBuffer);
+
+#if WITH_EDITOR
+		if (sm_Console)
+		{
+			sm_Console->PushMessage(Console::MessageType::Error, g_PrintFBuffer);
+		}
+#endif
 	}
 
 	template<typename... T>
@@ -48,6 +67,13 @@ public:
 	{
 		sprintf_s(g_PrintFBuffer, MAX_LOG_SIZE, Format, std::forward<T>(args)...);
 		Logger->warn(g_PrintFBuffer);
+
+#if WITH_EDITOR
+		if (sm_Console)
+		{
+			sm_Console->PushMessage(Console::MessageType::Warning, g_PrintFBuffer);
+		}
+#endif
 	}
 
 	template<typename... T>
@@ -55,6 +81,13 @@ public:
 	{
 		sprintf_s(g_PrintFBuffer, MAX_LOG_SIZE, Format, std::forward<T>(args)...);
 		Logger->trace(g_PrintFBuffer);
+
+#if WITH_EDITOR
+		if (sm_Console)
+		{
+			sm_Console->PushMessage(Console::MessageType::Log, g_PrintFBuffer);
+		}
+#endif
 	}
 
 private:
@@ -63,11 +96,14 @@ private:
 
 	static std::shared_ptr<spdlog::logger>			sm_EngineLogger;
 	static std::shared_ptr<spdlog::logger>			sm_AppLogger;
+
+#if WITH_EDITOR
+	static Console* sm_Console;
+#endif
 };
 
 //= Macro Definitions ==============================
 
-//#if WITH_EDITOR
 #define LOGGING_ENABLED 1
 #if LOGGING_ENABLED
 #define FLOW_ENGINE_ERROR(FormatString, ...)	Log::Error(Log::GetEngineLogger(), FormatString, __VA_ARGS__);

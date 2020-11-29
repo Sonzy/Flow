@@ -150,7 +150,7 @@ void AssetSystem::Shutdown()
 
 bool AssetSystem::HasExtension(const char* File, const char* Extension)
 {
-	return stricmp(File, Extension) == 0;
+	return _stricmp(File, Extension) == 0;
 }
 
 bool AssetSystem::LoadAsset(const std::string& FilePath)

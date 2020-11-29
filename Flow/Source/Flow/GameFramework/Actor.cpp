@@ -8,7 +8,7 @@
 
 #include "GameFramework\World.h"
 #include "Editor/UIComponents/Inspector.h"
-#include "Editor/Windows/SpawnWindow.h"
+#include "Editor/UIComponents/SpawnWindow.h"
 
 Actor::Actor()
 	: m_RootComponent(nullptr)

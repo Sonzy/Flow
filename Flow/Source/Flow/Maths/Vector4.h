@@ -3,6 +3,7 @@
 //= Includes ===========================================
 
 #include "Vector3.h"
+#include "ThirdParty/ImGui/imgui.h"
 
 //= Forward Declarations ==============================
 
@@ -32,11 +33,18 @@ public:
 		: x(Input.z), y(Input.y), z(Input.z), w(0)
 	{}
 
+	Vector4(ImVec4 Input)
+		: x(Input.x), y(Input.y), z(Input.z), w(Input.w)
+	{}
+
 	Vector4(IntVector4 Input);
 
 	//= Operators =========================================================
 
-
+	operator ImVec4() const
+	{
+		return ImVec4(x, y, z, w);
+	}
 
 	//= Public Variables ===========================
 

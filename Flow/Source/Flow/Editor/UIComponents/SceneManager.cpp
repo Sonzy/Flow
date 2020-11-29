@@ -1,15 +1,13 @@
 #include "Flowpch.h"
 #include "SceneManager.h"
 
+#include "GameFramework/World.h"
+#include "Editor/EditorCamera.h"
+#include "Rendering/RenderCommand.h"
+#include "Rendering/Other/FrameBuffer.h"
+#include "Toolbar.h"
+
 #include "ThirdParty/ImGui/imgui.h"
-
-#include "Flow/GameFramework/World.h"
-
-#include "Flow/Editor/EditorCamera.h"
-
-#include "Flow/Rendering/Other/FrameBuffer.h"
-
-#include "Editor/UIComponents/Toolbar.h"
 
 SceneManager::SceneManager()
 	: m_CachedWindowSize(0, 0)
@@ -26,13 +24,15 @@ SceneManager::~SceneManager()
 {
 }
 
-void SceneManager::Update(float DeltaTime)
+void SceneManager::Update()
 {
-	if (!m_EditorCam)
+	if (m_EditorCam == nullptr)
+	{
 		m_EditorCam = static_cast<EditorCamera*>(RenderCommand::GetMainCamera());
+	}
 }
 
-void SceneManager::DrawWindow_Scene()
+void SceneManager::Render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
@@ -40,9 +40,9 @@ void SceneManager::DrawWindow_Scene()
 	std::string WindowName;
 	switch (State)
 	{
-	case WorldState::Paused: WindowName = "Scene - Paused###Scene"; break;
-	case WorldState::Editor: WindowName = "Scene###Scene"; break;
-	case WorldState::InGame: WindowName = "Scene - Playing###Scene"; break;
+	case WorldState::Paused: WindowName = "Scene - Paused###Scene";		break;
+	case WorldState::Editor: WindowName = "Scene###Scene";				break;
+	case WorldState::InGame: WindowName = "Scene - Playing###Scene";	break;
 	}
 
 	if (ImGui::Begin(WindowName.c_str()))
@@ -53,7 +53,9 @@ void SceneManager::DrawWindow_Scene()
 
 		//TODO: should only push input if the scene is focused, rather than the camera blocking
 		if (m_EditorCam)
+		{
 			m_EditorCam->m_CanUpdate = m_SceneFocused ? true : !ImGui::IsAnyItemActive();
+		}
 
 		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
 
@@ -62,10 +64,11 @@ void SceneManager::DrawWindow_Scene()
 		m_SceneWindowSize = IntVector2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
 		m_MouseOverScene = ImGui::IsWindowHovered();
 
-		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, 2560); //TODO: Make max texture size not fixed
-		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, 1440); //TODO: Make max texture size not fixed
+		IntVector2 WindowSize = RenderCommand::GetWindowSize();
+		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, WindowSize.x);
+		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, WindowSize.y);
 
-		if (*reinterpret_cast<Vector2*>(&m_SceneWindowSize) != m_CachedWindowSize)//TODO: Stop being naughty
+		if (*reinterpret_cast<Vector2*>(&m_SceneWindowSize) != m_CachedWindowSize)
 		{
 			Buff->Resize(m_SceneWindowSize.x, m_SceneWindowSize.y);
 			m_CachedWindowSize = *reinterpret_cast<Vector2*>(&m_SceneWindowSize);

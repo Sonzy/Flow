@@ -138,17 +138,6 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 			m_SelectedActor = nullptr;
 		}
 
-		//TODO: implement in toool
-		//_Selector->SetScale(Vector3(1.0f, 1.0f, 1.0f));
-		//_Selector->OnDeselected();
-		//_Selector->OnNewComponentSelected(nullptr);
-		//
-		//if (_Selector->IsVisible())
-		//{
-		//	_Selector->RemoveCollidersFromWorld(World::Get());
-		//	_Selector->SetVisibility(false);
-		//}
-
 		return true;
 	}
 

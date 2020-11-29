@@ -1,6 +1,8 @@
 #pragma once
 #include <unordered_map>
 
+#include "UIComponent.h"
+
 //= Forward Declarations ====================================
 
 class World;
@@ -8,15 +10,19 @@ class Actor;
 
 //= Class Definitions =======================================
 
-class SpawnWindow
+class SpawnWindow : public UIComponent
 {
 public:
 
 	//= Public Functions ====================================
 
-													SpawnWindow(World* WorldRef);
-	void											Draw();
-	static void										DrawSpawnContextWindow(Actor* Parent);
+						SpawnWindow();
+
+	virtual void		Update() override;
+	virtual void		Render() override;
+
+	// Renders a popup context menu with a dropdown for spawning a component
+	static void			DrawSpawnContextWindow(Actor* Parent);
 
 	//= Public Template Functions ===========================
 

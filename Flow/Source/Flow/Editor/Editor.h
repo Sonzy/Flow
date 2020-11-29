@@ -1,17 +1,14 @@
 #pragma once
-#include "Flow/Layers/Layer.h"
-#include "Flow/Events/MouseEvent.h"
-#include "Flow/Editor/SceneManager.h"
+#include "Layers/Layer.h"
+#include "Events/MouseEvent.h"
+#include "Editor/UIComponents/SceneManager.h"
 
 //= Forward Declarations ================================
 
 class UIComponent;
-class Inspector;
 class MenuBar;
-class ToolBar;
 class Application;
 struct ImVec2;
-class AssetWindow;
 class EditorCamera;
 class LevelManager;
 class SpawnWindow;
@@ -97,15 +94,12 @@ public:
 	//Open Windows
 	void						Open_NewLevelWindow();
 
-	Console&					GetConsole();
-
-
 	// Public Template Functions ///////////////////////////////////////////////
 
 	template<typename T>
 	T* GetTool() const
 	{
-		for (auto& tool : m_Tools)
+		for (Tool* tool : m_Tools)
 		{
 			if (T* casted = dynamic_cast<T*>(tool))
 			{
@@ -119,7 +113,7 @@ public:
 	template<typename T>
 	T* GetUIComponent() const
 	{
-		for (auto& component : m_UIComponents)
+		for (UIComponent* component : m_UIComponents)
 		{
 			if (T* casted = dynamic_cast<T*>(component))
 			{
@@ -197,17 +191,17 @@ private:
 	bool							m_DrawDemoWindow = false;
 	Application*					m_ApplicationPointer;
 	Editor::Settings				m_Settings;
-	SceneManager					m_SceneManager;
 	EditorCamera*					m_EditorCam;
-	Console							m_Console;
 	LevelManager*					m_LevelManager;
-	SpawnWindow*					m_SpawnWindow;
+
+	//= Cached UI Components =
+
+	SceneManager*					m_SceneManager;
 
 	Editor::SettingsWindow			m_SettingsWindow;
 
 	std::vector<Tool*>				m_Tools;
 	std::vector<UIComponent*>		m_UIComponents;
-
 
 	//App Statistics
 	float							m_TimeSinceFrameUpdate = 0.0f;

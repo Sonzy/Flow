@@ -43,6 +43,10 @@ SelectionGizmo::SelectionGizmo()
 	m_ArrowY->SetCollisionEnabled(false);
 	m_ArrowZ->SetCollisionEnabled(false);
 
+	m_ArrowX->SetStaticMesh(m_MeshTranslate);
+	m_ArrowY->SetStaticMesh(m_MeshTranslate);
+	m_ArrowZ->SetStaticMesh(m_MeshTranslate);
+
 	m_ArrowX->m_Tag = "ArrowX";
 	m_ArrowY->m_Tag = "ArrowY";
 	m_ArrowZ->m_Tag = "ArrowZ";
@@ -60,16 +64,10 @@ SelectionGizmo::SelectionGizmo()
 	m_ArrowY->SetWorldRotation(m_Translation_Y_Rot);
 	m_ArrowZ->SetWorldRotation(m_Translation_Z_Rot);
 
-	//Init the transform
 	const float Scale = 1.0f;
 	m_ArrowX->SetWorldScale(Scale);
 	m_ArrowY->SetWorldScale(Scale);
 	m_ArrowZ->SetWorldScale(Scale);
-
-	//Initialise the meshes
-	m_ArrowX->RefreshBinds();
-	m_ArrowY->RefreshBinds();
-	m_ArrowZ->RefreshBinds();
 
 	m_ArrowX->SetStencilMode(StencilMode::AlwaysOnTop);
 	m_ArrowY->SetStencilMode(StencilMode::AlwaysOnTop);
@@ -83,9 +81,15 @@ SelectionGizmo::SelectionGizmo()
 	m_YGhost = new btGhostObject();
 	m_ZGhost = new btGhostObject();
 
-	m_Visible = false;
-
 	GenerateCollision();
+
+	//Initialise the meshes
+	m_ArrowX->RefreshBinds();
+	m_ArrowY->RefreshBinds();
+	m_ArrowZ->RefreshBinds();
+
+	m_TransformMode = Transform::Translation;
+	m_Visible = false;
 }
 
 SelectionGizmo::~SelectionGizmo()
@@ -101,6 +105,7 @@ SelectionGizmo::~SelectionGizmo()
 
 void SelectionGizmo::InitialisePhysics()
 {
+
 }
 
 void SelectionGizmo::UpdateSelection()

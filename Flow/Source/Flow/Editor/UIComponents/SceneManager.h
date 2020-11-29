@@ -2,6 +2,7 @@
 
 //= Includes ========================================
 
+#include "UIComponent.h"
 #include "Maths/Vector2.h"
 #include "Maths/IntVector2.h"
 
@@ -13,7 +14,7 @@ class Texture;
 
 //= Class Declaration ===============================
 
-class SceneManager
+class SceneManager : public UIComponent
 {
 public:
 
@@ -25,8 +26,8 @@ public:
 						SceneManager(SceneManager&) = delete;
 						SceneManager(SceneManager&&) = delete;
 
-	void				Update(float DeltaTime);
-	void				DrawWindow_Scene();
+	virtual void		Update() override;
+	virtual void		Render() override;
 
 	bool				IsSceneWindowFocused() const { return m_SceneFocused; }
 	bool				IsMouseOverScene() const { return m_MouseOverScene; }

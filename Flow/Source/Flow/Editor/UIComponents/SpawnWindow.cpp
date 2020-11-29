@@ -24,8 +24,8 @@
 		NewComponent->DefaultInitialise();\
 	}
 
-SpawnWindow::SpawnWindow(World* WorldReference)
-	: m_WorldReference(WorldReference)
+SpawnWindow::SpawnWindow()
+	: m_WorldReference(World::Get())
 {
 	m_SpawnDistance = 20.0f;
 
@@ -36,7 +36,12 @@ SpawnWindow::SpawnWindow(World* WorldReference)
 	RegisterActorClass<SpriteActor>("Sprite Actor");
 }
 
-void SpawnWindow::Draw()
+void SpawnWindow::Update()
+{
+
+}
+
+void SpawnWindow::Render()
 {
 	if (ImGui::Begin("Actor Spawner"))
 	{
@@ -45,8 +50,8 @@ void SpawnWindow::Draw()
 		//Initialise a cube mesh actor
 		if (ImGui::Button("Cube"))
 		{
-			auto MeshActor = m_WorldReference->SpawnActor<StaticMeshActor>("Cube");
-			auto MeshComponent = MeshActor->GetMeshComponent();
+			StaticMeshActor* MeshActor = m_WorldReference->SpawnActor<StaticMeshActor>("Cube");
+			StaticMeshComponent* MeshComponent = MeshActor->GetMeshComponent();
 			MeshComponent->SetMeshAndMaterial("Box", "Mat_FlatColour_White");
 			SpawnedActor = MeshActor;
 		}

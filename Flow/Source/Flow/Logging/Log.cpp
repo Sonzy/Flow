@@ -4,6 +4,7 @@
 
 std::shared_ptr<spdlog::logger> Log::sm_EngineLogger;
 std::shared_ptr<spdlog::logger> Log::sm_AppLogger;
+Console* Log::sm_Console = nullptr;
 
 void Log::InitialiseEngineLogger()
 {

@@ -12,6 +12,7 @@ class KeyPressedEvent;
 class KeyReleasedEvent;
 class WindowResizedEvent;
 class KeyTypedEvent;
+class Editor;
 
 // Class Definition ///////////////////////
 

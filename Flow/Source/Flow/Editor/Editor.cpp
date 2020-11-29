@@ -16,8 +16,9 @@
 
 #include "Rendering/Other/FrameBuffer.h"
 #include "Editor/EditorCamera.h"
-#include "Editor/LevelManager.h"
-#include "Editor/Windows/SpawnWindow.h"
+#include "Editor/UIComponents/LevelManager.h"
+#include "Editor/UIComponents/SpawnWindow.h"
+#include "Editor/UIComponents/Console.h"
 
 #include "Editor/UIComponents/Toolbar.h"
 #include "Editor/Tools/Tool.h"
@@ -42,13 +43,17 @@ Editor::~Editor()
 void Editor::Initialise()
 {
 	m_MenuBar = new MenuBar(this);
-	m_LevelManager = new LevelManager();
-	m_SpawnWindow = new SpawnWindow(World::Get());
 
 	RegisterTool<SelectionTool>();
 
 	RegisterUIComponent<AssetBrowser>();
 	RegisterUIComponent<Inspector>();
+	RegisterUIComponent<SceneManager>();
+	RegisterUIComponent<SpawnWindow>();
+	RegisterUIComponent<LevelManager>();
+	RegisterUIComponent<Console>();
+
+	m_SceneManager = GetUIComponent<SceneManager>();
 
 	m_Initialised = true;
 }
@@ -77,7 +82,6 @@ void Editor::OnAttach()
 
 void Editor::OnDetach()
 {
-	//TODO: Actually need to release all heap stuff, will do later since this persists through the entire program lifecycle
 }
 
 void Editor::OnImGuiRender(bool DrawEditor)
@@ -91,9 +95,7 @@ void Editor::OnImGuiRender(bool DrawEditor)
 	{
 		RenderApplicationDebug(m_FrameDeltaTime);
 		UpdateCollisionEditor();
-		m_SceneManager.DrawWindow_Scene();
-		m_LevelManager->DrawWindows();
-		m_SpawnWindow->Draw();
+
 		//m_Console.Draw();
 
 		//Draw configuration UI
@@ -266,29 +268,24 @@ void Editor::Open_NewLevelWindow()
 	m_LevelManager->Open_NewLevelWindow();
 }
 
-Console& Editor::GetConsole()
-{
-	return m_Console;
-}
-
 bool Editor::IsSceneWindowFocused() const
 {
-	return m_SceneManager.IsSceneWindowFocused();
+	return m_SceneManager->IsSceneWindowFocused();
 }
 
 bool Editor::IsMouseOverScene() const
 {
-	return m_SceneManager.IsMouseOverScene();
+	return m_SceneManager->IsMouseOverScene();
 }
 
 IntVector2 Editor::GetSceneWindowSize() const
 {
-	return m_SceneManager.GetSceneWindowSize();
+	return m_SceneManager->GetSceneWindowSize();
 }
 
 IntVector2 Editor::GetSceneWindowPosition() const
 {
-	return m_SceneManager.GetSceneWindowPosition();
+	return m_SceneManager->GetSceneWindowPosition();
 }
 
 bool Editor::OnMouseButtonPressed(MouseButtonPressedEvent& e)
@@ -448,7 +445,12 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 
 void Editor::SettingsWindow::Draw(Editor::Settings& EditorSettings, Editor& EditorRef)
 {
-	if (EditorRef.m_ShowSettingsWindow && ImGui::Begin("Editor Settings"))
+	if (EditorRef.m_ShowSettingsWindow == false)
+	{
+		return;
+	}
+
+	if (ImGui::Begin("Editor Settings"))
 	{
 		ImGui::Text("Colors");
 		ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
@@ -471,7 +473,6 @@ void Editor::SettingsWindow::Draw(Editor::Settings& EditorSettings, Editor& Edit
 			EditorRef.SaveEditorSettings();
 			EditorRef.m_ShowSettingsWindow = false;
 		}
-
-		ImGui::End();
 	}
+	ImGui::End();
 }
