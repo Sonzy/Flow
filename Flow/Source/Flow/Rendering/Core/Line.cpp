@@ -32,8 +32,8 @@ void Line::Initialise()
 	LineObj->AddBind(IndexBuffer::Resolve("Line", indices));
 
 	//Material
-	LineObj->AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShaderP")->GetPath()));
-	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShaderV")->GetPath());
+	LineObj->AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_P")->GetPath()));
+	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_V")->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	LineObj->AddBind(std::move(vShader));
 	LineObj->AddBind(InputLayout::Resolve(m_VertexLayout, vShaderByteCode));

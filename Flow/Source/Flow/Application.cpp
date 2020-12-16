@@ -101,32 +101,32 @@ void Application::InitialiseApplication()
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
 	Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
 	PropsMat->SetTexture("Wabble_Props");
-	PropsMat->SetPixelShader("TexturedPhongPS");
-	PropsMat->SetVertexShader("TexturedPhongVS");
+	PropsMat->SetPixelShader("TexturedPhong_PS");
+	PropsMat->SetVertexShader("TexturedPhong_VS");
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons");
 	Mat_TexturedPhong* WeaponsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Weapons")->GetMaterial());
 	WeaponsMat->SetTexture("Wabble_Weapons");
-	WeaponsMat->SetPixelShader("TexturedPhongPS");
-	WeaponsMat->SetVertexShader("TexturedPhongVS");
+	WeaponsMat->SetPixelShader("TexturedPhong_PS");
+	WeaponsMat->SetVertexShader("TexturedPhong_VS");
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
 	Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
 	WoodMat->SetTexture("Wabble_Wood");
-	WoodMat->SetPixelShader("TexturedPhongPS");
-	WoodMat->SetVertexShader("TexturedPhongVS");
+	WoodMat->SetPixelShader("TexturedPhong_PS");
+	WoodMat->SetVertexShader("TexturedPhong_VS");
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand");
 	Mat_TexturedPhong* SandMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Sand")->GetMaterial());
 	SandMat->SetTexture("Wabble_Sand");
-	SandMat->SetPixelShader("TexturedPhongPS");
-	SandMat->SetVertexShader("TexturedPhongVS");
+	SandMat->SetPixelShader("TexturedPhong_PS");
+	SandMat->SetVertexShader("TexturedPhong_VS");
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
 	Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
 	SkyMat->SetTexture("SkyCube_Test");
-	SkyMat->SetPixelShader("TexturePS");
-	SkyMat->SetVertexShader("TextureVS");
+	SkyMat->SetPixelShader("Texture_PS");
+	SkyMat->SetVertexShader("Texture_VS");
 
 	//= 2D Materials =
 

@@ -314,7 +314,7 @@ void StaticMeshComponent::RefreshBinds()
 	{
 		Step Masking(3);
 
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorVS")->GetPath());
+		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
 		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
 		Masking.AddBindable(std::move(VS));
 
@@ -326,11 +326,11 @@ void StaticMeshComponent::RefreshBinds()
 	{
 		Step DrawOutline(4);
 
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorVS")->GetPath());
+		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
 		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
 
 		DrawOutline.AddBindable(std::move(VS));
-		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorPS")->GetPath()));
+		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_PS")->GetPath()));
 		DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
 		DrawOutline.AddBindable(new TransformConstantBuffer(this));
 

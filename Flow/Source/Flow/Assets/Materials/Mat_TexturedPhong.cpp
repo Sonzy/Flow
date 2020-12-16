@@ -13,8 +13,8 @@
 Mat_TexturedPhong::Mat_TexturedPhong()
 {
 	SetTexture("Wabble_Props");
-	SetPixelShader("TexturedPhongPS");
-	SetVertexShader("TexturedPhongVS");
+	SetPixelShader("TexturedPhong_PS");
+	SetVertexShader("TexturedPhong_VS");
 
 	m_LightCBuffer =
 	{

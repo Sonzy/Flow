@@ -20,8 +20,8 @@ ColorMaterial2D::ColorMaterial2D()
 {
 	m_Color = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 
-	SetVertexShader("SolidColor2DVS");
-	SetPixelShader("SolidColor2DPS");
+	SetVertexShader("SolidColor2D_VS");
+	SetPixelShader("SolidColor2D_PS");
 }
 
 void ColorMaterial2D::SetColour(Vector3 NewColour)
