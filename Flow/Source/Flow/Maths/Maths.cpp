@@ -12,6 +12,16 @@ float Maths::DegreesToRadians(float Source)
 	return Source * (PI / 180.0f);
 }
 
+Rotator Maths::RadiansToDegrees(const Rotator& Source)
+{
+	return Source * (180.0f / PI);
+}
+
+float Maths::RadiansToDegrees(float Source)
+{
+	return Source * (180.0f / PI);
+}
+
 Vector3 Maths::GetClosestDistanceBetweenLines(const Physics::Ray& R1, const Physics::Ray& R2, float& OutR1Scale, float& OutR2Scale)
 {
 	Vector3 Distance = R2.m_Origin - R1.m_Origin;
@@ -38,6 +48,27 @@ Vector3 Maths::GetClosestDistanceBetweenLines(const Physics::Ray& R1, const Phys
 		const Vector3 a = Vector3::Cross(Distance, R1.m_Direction);
 		return std::sqrt(Vector3::Dot(a, a) / v12);
 	}
+}
+
+float Maths::Distance(Vector3 V1, Vector3 V2)
+{
+	return 	sqrtf(DistanceSquared(V1, V2));
+}
+
+float Maths::DistanceSquared(Vector3 V1, Vector3 V2)
+{
+	return 	pow(V2.x - V1.x, 2) + pow(V2.y - V1.y, 2) + pow(V2.z - V1.z, 2);;
+}
+
+Rotator Maths::FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition)
+{
+	//TODO: Make it work lmao
+	float xdis = EndPosition.x - StartPosition.x;
+	float ydis = EndPosition.z - StartPosition.z;
+	float zdis = EndPosition.y - StartPosition.y;
+	float xzdis = sqrtf(xdis * xdis + zdis * zdis);
+
+	return Rotator(RadiansToDegrees(-atan2f(ydis, xzdis)), RadiansToDegrees(-(atan2f(-xdis, zdis))), 0);
 }
 
 FLOW_API Vector3::Vector3(Vector4 v)

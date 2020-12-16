@@ -27,6 +27,10 @@ public:
 
 	Vector2(IntVector2 v);
 
+	Vector2(DirectX::XMFLOAT2 Input)
+		: x(Input.x), y(Input.y)
+	{}
+
 	//= Operator ====================================================
 
 	Vector2 operator+(const Vector2 Other) const
@@ -39,7 +43,7 @@ public:
 		return Vector2(x - Other.x, y - Other.y);
 	}
 
-	Vector2 operator-() const 
+	Vector2 operator-() const
 	{
 		return Vector2(-x, -y);
 	}

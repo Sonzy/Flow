@@ -120,7 +120,7 @@ void Editor::OnImGuiRender(bool DrawEditor)
 
 		if (m_ShowSettingsWindow)
 		{
-			m_SettingsWindow.Draw(m_Settings, *this);
+			m_SettingsWindow.Render(m_Settings, *this);
 		}
 	}
 }
@@ -246,11 +246,6 @@ Editor& Editor::Get()
 Editor::Settings& Editor::GetEditorSettings()
 {
 	return Editor::Get().m_Settings;
-}
-
-MenuBar* Editor::GetMenuBar() const
-{
-	return m_MenuBar;
 }
 
 void Editor::SetDemoWindowVisible(bool Enabled)
@@ -443,7 +438,7 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 
 //= Settings Window ======================================================
 
-void Editor::SettingsWindow::Draw(Editor::Settings& EditorSettings, Editor& EditorRef)
+void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& EditorRef)
 {
 	if (EditorRef.m_ShowSettingsWindow == false)
 	{

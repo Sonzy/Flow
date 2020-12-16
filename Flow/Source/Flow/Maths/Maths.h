@@ -37,11 +37,16 @@ namespace Maths
 
 	//= Functions ===========================
 
-	Rotator DegreesToRadians(const Rotator& Source);
-	float DegreesToRadians(float Source);
+	Rotator			DegreesToRadians(const Rotator& Source);
+	float			DegreesToRadians(float Source);
+	Rotator			RadiansToDegrees(const Rotator& Source);
+	float			RadiansToDegrees(float Source);
 
 	/* Returns scales along each line for closest point between them */
-	Vector3 GetClosestDistanceBetweenLines(const Physics::Ray& R1, const Physics::Ray& R2, float& OutR1Scale, float& OutR2Scale);
+	Vector3			GetClosestDistanceBetweenLines(const Physics::Ray& R1, const Physics::Ray& R2, float& OutR1Scale, float& OutR2Scale);
 
+	float			Distance(Vector3 V1, Vector3 V2);
+	float			DistanceSquared(Vector3 V1, Vector3 V2);
 
+	Rotator			FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition);
 }

@@ -48,7 +48,7 @@ public:
 
 		// Public Functions ///////////////////////////////////////////////
 
-		void				Draw(Editor::Settings& EditorSettings, Editor& EditorRef);
+		void				Render(Editor::Settings& EditorSettings, Editor& EditorRef);
 
 	private:
 
@@ -58,6 +58,11 @@ public:
 	};
 
 public:
+
+	// Public Static Functions ///////////////////////////////////////////////
+
+	static Editor&				Get();
+	static Editor::Settings&	GetEditorSettings();
 
 	// Public Functions ///////////////////////////////////////////////
 
@@ -74,25 +79,26 @@ public:
 	void						OnEvent(Event& e) override;
 	virtual void				OnUpdate(float DeltaTime) override;
 
-	//=
+	//= Scene Window =
 
-	static Editor&				Get();
-	static Editor::Settings&	GetEditorSettings();
-	MenuBar*					GetMenuBar() const;
-	bool						IsInitialised() const				{ return m_Initialised; }
-	void						ShowSettingsWindow(bool Show)		{ m_ShowSettingsWindow = Show; }
+	bool						IsSceneWindowFocused() const;
+	bool						IsMouseOverScene() const;
+	IntVector2					GetSceneWindowSize() const;
+	IntVector2					GetSceneWindowPosition() const;
+
+	//= Window visibility=
+
+	void						Open_NewLevelWindow();
+
+	//= ImGui Testing =
 
 	void						SetDemoWindowVisible(bool Enabled);
 	void						ToggleImGuiDemoWindow();
 
-	bool						IsSceneWindowFocused() const;
-	bool						IsMouseOverScene() const;
+	//= Miscellanious =
 
-	IntVector2					GetSceneWindowSize() const;
-	IntVector2					GetSceneWindowPosition() const;
-
-	//Open Windows
-	void						Open_NewLevelWindow();
+	bool						IsInitialised() const { return m_Initialised; }
+	void						ShowSettingsWindow(bool Show) { m_ShowSettingsWindow = Show; }
 
 	// Public Template Functions ///////////////////////////////////////////////
 
