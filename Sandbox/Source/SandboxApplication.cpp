@@ -30,8 +30,8 @@ public:
 		AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
 		Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
 		WoodMat->SetTexture("Wabble_Wood");
-		WoodMat->SetPixelShader("TexturedPhongPS");
-		WoodMat->SetVertexShader("TexturedPhongVS");
+		WoodMat->SetPixelShader("TexturedPhong_PS");
+		WoodMat->SetVertexShader("TexturedPhong_VS");
 	}
 };
 

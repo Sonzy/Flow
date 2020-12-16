@@ -19,7 +19,7 @@ public:
 	
 	//= Public Functions ==================================================
 
-								TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 0);
+								TransformConstantBuffer(Renderable* Parent, UINT VertexSlot = 3u);
 	void						Bind() override;
 
 protected:

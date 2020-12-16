@@ -108,16 +108,20 @@ void RenderQueue::Execute()
 	}
 
 	//= 2D Rendering =
-	if (Queue->m_Pass6Enabled)
-	{
-		Queue->m_Passes[6]->Execute();
-	}
-
-	//= User Interface = 
-	if (Queue->m_Pass7Enabled)
-	{
-		Queue->m_Passes[7]->Execute();
-	}
+	//if (Queue->m_Pass6Enabled)
+	//{
+	//	//TODO: 2D
+	//
+	//	//Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane
+	//	RenderCommand::GetMainCamera()->SetProjectionMatrix(DirectX::XMMatrixOrthographicLH(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y, RenderCommand::GetNearPlane(), RenderCommand::GetFarPlane()));
+	//	Queue->m_Passes[6]->Execute();
+	//}
+	//
+	////= User Interface = 
+	//if (Queue->m_Pass7Enabled)
+	//{
+	//	Queue->m_Passes[7]->Execute();
+	//}
 }
 
 RenderQueue* RenderQueue::Get()

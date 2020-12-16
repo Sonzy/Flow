@@ -113,6 +113,16 @@ bool RenderCommand::IsMinimized()
 	return sm_RendererAPI->IsWindowMinimized();
 }
 
+float RenderCommand::GetNearPlane()
+{
+	return sm_RendererAPI->GetNearPlane();
+}
+
+float RenderCommand::GetFarPlane()
+{
+	return sm_RendererAPI->GetFarPlane();
+}
+
 Vector3 RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	return sm_RendererAPI->GetScreenToWorldDirection(X, Y, WindowSize, Origin);

@@ -13,8 +13,8 @@
 Mat_TexturedPhong::Mat_TexturedPhong()
 {
 	SetTexture("Wabble_Props");
-	SetPixelShader("TexturedPhongPS");
-	SetVertexShader("TexturedPhongVS");
+	SetPixelShader("TexturedPhong_PS");
+	SetVertexShader("TexturedPhong_VS");
 
 	m_LightCBuffer =
 	{
@@ -36,5 +36,5 @@ void Mat_TexturedPhong::BindMaterial(Step* RenderingStep, const VertexLayout& Ve
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
 
-	RenderingStep->AddBindable(PixelConstantBuffer<ObjectLightBuffer>::Resolve(m_LightCBuffer, 1u));
+	RenderingStep->AddBindable(PixelConstantBuffer<ObjectLightBuffer>::Resolve(m_LightCBuffer, 2u));
 }

@@ -1,5 +1,5 @@
 
-cbuffer PointLightCBuf
+cbuffer PointLightCBuf : register(b1)
 {
 	float3 LightPos;
 	float3 Ambient;
@@ -9,6 +9,12 @@ cbuffer PointLightCBuf
 	float AttenuationLinear;
 	float AttenuationQuadratic;
 };
+
+cbuffer TransformConstantBuffer : register(b3)
+{
+    matrix modelView;
+    matrix modelViewProj;
+}
 
 struct LightVectorData
 {

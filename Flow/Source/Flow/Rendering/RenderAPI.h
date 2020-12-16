@@ -60,6 +60,9 @@ public:
 	void							SetWindowMinimized(bool Minimized)	{ m_WindowMinimised = Minimized; }
 	bool							IsWindowMinimized() const			{ return m_WindowMinimised; }
 
+	float							GetNearPlane() const				{ return m_NearPlane; }
+	float							GetFarPlane() const				{ return m_FarPlane; }
+
 protected:
 
 	//= Protected Variables ===================================

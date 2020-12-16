@@ -1,6 +1,6 @@
-#include "ShaderHelpers.hlsli"
+#include "ShaderHelpers3D.hlsli"
 
-cbuffer ObjectCBuf
+cbuffer ObjectCBuf : register(b2)
 {
 	float3 specularColor;
 	float specularWeight;

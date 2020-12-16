@@ -3,15 +3,20 @@
 #include "ThirdParty/ImGui/imgui.h"
 #include <iostream>
 
+#if WITH_EDITOR
+#include "Editor/Editor.h"
+#include "Editor/Other/IconBatcher.h"
+#endif
+
 PointLightComponent::PointLightComponent()
-	: RenderableComponent("Unnamed Point Light Component")
-	, m_PixelCB(0)
+	: PointLightComponent("Unnamed Point Light Component")
 {
 }
 
 PointLightComponent::PointLightComponent(const std::string& ComponentName)
 	: RenderableComponent(ComponentName)
-	, m_PixelCB(0)
+	, m_PixelCB(1)
+	, m_IconMaterial(nullptr)
 {
 	m_CB = {
 	{ 1.5f,100.0f,-4.5f },
@@ -22,10 +27,16 @@ PointLightComponent::PointLightComponent(const std::string& ComponentName)
 	0.045f,
 	0.0075f,
 	};
+
+	IconData data;
+	data.m_Position = Vector2(300.0f, 300.0f);
+	data.m_Tint = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+	Editor::Get().GetIconBatcher().PushIcon(data);
 }
 
 void PointLightComponent::Render()
 {
+	//TODO: Update on light movement
 	//Update from component position
 	m_CB.m_Position = GetWorldPosition();
 

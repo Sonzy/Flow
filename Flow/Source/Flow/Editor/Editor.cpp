@@ -38,6 +38,7 @@ Editor::Editor()
 Editor::~Editor()
 {
 	m_Tools.clear();
+	m_UIComponents.clear();
 }
 
 void Editor::Initialise()
@@ -120,7 +121,7 @@ void Editor::OnImGuiRender(bool DrawEditor)
 
 		if (m_ShowSettingsWindow)
 		{
-			m_SettingsWindow.Draw(m_Settings, *this);
+			m_SettingsWindow.Render(m_Settings, *this);
 		}
 	}
 }
@@ -166,6 +167,8 @@ void Editor::OnUpdate(float DeltaTime)
 	{
 		uiComponent->Update();
 	}
+
+	m_IconBatcher.RenderIcons();
 }
 
 void Editor::UpdateTools(float DeltaTime)
@@ -248,9 +251,19 @@ Editor::Settings& Editor::GetEditorSettings()
 	return Editor::Get().m_Settings;
 }
 
-MenuBar* Editor::GetMenuBar() const
+bool Editor::IsInitialised() const
 {
-	return m_MenuBar;
+	return m_Initialised;
+}
+
+void Editor::ShowSettingsWindow(bool Show)
+{
+	m_ShowSettingsWindow = Show;
+}
+
+IconBatcher& Editor::GetIconBatcher()
+{
+	return m_IconBatcher;
 }
 
 void Editor::SetDemoWindowVisible(bool Enabled)
@@ -443,14 +456,14 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 
 //= Settings Window ======================================================
 
-void Editor::SettingsWindow::Draw(Editor::Settings& EditorSettings, Editor& EditorRef)
+void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& EditorRef)
 {
 	if (EditorRef.m_ShowSettingsWindow == false)
 	{
 		return;
 	}
 
-	if (ImGui::Begin("Editor Settings"))
+	if (ImGui::Begin("Editor Settings", &EditorRef.m_ShowSettingsWindow))
 	{
 		ImGui::Text("Colors");
 		ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));

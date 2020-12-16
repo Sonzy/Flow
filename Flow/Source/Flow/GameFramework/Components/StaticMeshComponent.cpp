@@ -3,9 +3,13 @@
 #include "Assets\AssetSystem.h"
 #include "Assets\Meshes\MeshAsset.h"
 #include "Rendering\Renderer.h"
-#include "Rendering\Core\Vertex\VertexLayout.h"
-#include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
+
+
+#include "Rendering/Core/Vertex/VertexLayout.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/Shaders/VertexShader.h"
 
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
@@ -253,7 +257,7 @@ void StaticMeshComponent::Render()
 	PROFILE_FUNCTION();
 
 	Renderer::Submit(this);
-
+	
 	WorldComponent::Render();
 }
 
@@ -309,35 +313,35 @@ void StaticMeshComponent::RefreshBinds()
 	}
 
 
-	Technique Outline = Technique("StaticMeshComponent_Outline");
-	Outline.Deactivate();
-	{
-		Step Masking(3);
-
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorVS")->GetPath());
-		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
-		Masking.AddBindable(std::move(VS));
-
-		Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		Masking.AddBindable(new TransformConstantBuffer(this));
-
-		Outline.AddStep(std::move(Masking));
-	}
-	{
-		Step DrawOutline(4);
-
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorVS")->GetPath());
-		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
-
-		DrawOutline.AddBindable(std::move(VS));
-		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColorPS")->GetPath()));
-		DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		DrawOutline.AddBindable(new TransformConstantBuffer(this));
-
-		Outline.AddStep(DrawOutline);
-	}
-
-	AddTechnique(Outline);
+	//Technique Outline = Technique("StaticMeshComponent_Outline");
+	//Outline.Deactivate();
+	//{
+	//	Step Masking(3);
+	//
+	//	auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
+	//	auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
+	//	Masking.AddBindable(std::move(VS));
+	//
+	//	Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+	//	Masking.AddBindable(new TransformConstantBuffer(this));
+	//
+	//	Outline.AddStep(std::move(Masking));
+	//}
+	//{
+	//	Step DrawOutline(4);
+	//
+	//	auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
+	//	auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
+	//
+	//	DrawOutline.AddBindable(std::move(VS));
+	//	DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_PS")->GetPath()));
+	//	DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+	//	DrawOutline.AddBindable(new TransformConstantBuffer(this));
+	//
+	//	Outline.AddStep(DrawOutline);
+	//}
+	//
+	//AddTechnique(Outline);
 }
 
 DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
@@ -390,6 +394,11 @@ void StaticMeshComponent::GenerateCollision()
 
 void StaticMeshComponent::InitialisePhysics()
 {
+	if (m_SimulatePhysics == false)
+	{
+		return;
+	}
+
 	if (m_StaticMesh == nullptr)
 	{
 		FLOW_ENGINE_WARNING("StaticMeshComponent::InitialisePhysics: StaticMesh was nullptr, skipped init");

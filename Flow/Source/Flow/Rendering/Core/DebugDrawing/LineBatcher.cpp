@@ -43,8 +43,8 @@ void LineBatcher::Initialise()
 
 	m_VertexBuffer = new VertexBuffer(*m_VertexLayout);
 
-	AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColorPS")->GetPath()));
-	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColorVS")->GetPath());
+	AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColor_PS")->GetPath()));
+	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineColor_VS")->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 	AddBind(std::move(vShader));
 	AddBind(InputLayout::Resolve(*m_VertexLayout, vShaderByteCode));
@@ -68,6 +68,9 @@ void LineBatcher::AddLine(Vector3 From, Vector3 To, Vector3 Colour)
 
 void LineBatcher::DrawLines()
 {
+	//TODO: Remove
+	return;
+
 	if (m_Lines == 0)
 		return;
 
@@ -96,6 +99,9 @@ void LineBatcher::FlushLines()
 
 void LineBatcher::BindAll()
 {
+	//TODO: Remove
+	return;
+
 	for (const auto& Bind : m_Binds)
 	{
 		Bind->Bind();

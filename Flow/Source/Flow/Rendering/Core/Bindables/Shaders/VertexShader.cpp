@@ -25,15 +25,17 @@ ID3DBlob* VertexShader::GetByteCode() const
 {
 	return m_Blob.Get();
 }
-Bindable* VertexShader::Resolve(const std::string& LocalPath)
+VertexShader* VertexShader::Resolve(const std::string& LocalPath)
 {
 	return BindableCodex::Resolve<VertexShader>(LocalPath);
 }
+
 std::string VertexShader::GenerateUID(const std::string& LocalPath)
 {
 	using namespace std::string_literals;
 	return typeid(VertexShader).name() + "#"s + LocalPath;
 }
+
 std::string VertexShader::GetUID() const
 {
 	return GenerateUID(m_ShaderPath);

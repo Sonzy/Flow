@@ -24,6 +24,7 @@ public:
 
 	virtual void				RefreshBinds() override;
 	virtual void				BeginPlay() override;
+	virtual void				Tick(float DeltaTime) override;
 	virtual void				Render() override;
 	virtual void				InitialisePhysics() override;
 
@@ -55,4 +56,5 @@ private:
 	Vector4						m_Tint;
 	Material*					m_Material;
 	bool						m_DoubleSided;
+	bool						m_Billboard;
 };

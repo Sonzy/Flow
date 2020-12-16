@@ -508,8 +508,8 @@ void SelectionGizmo::GenerateCollision()
 	m_ZGhost->setWorldTransform(Transform);
 	m_ZGhost->setUserPointer(m_ArrowZ);
 
-
-	m_XGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
-	m_YGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
-	m_ZGhost->setCollisionFlags(btGhostObject::CF_NO_CONTACT_RESPONSE);
+	int CollisionFlags = btGhostObject::CF_NO_CONTACT_RESPONSE | btGhostObject::CF_STATIC_OBJECT;
+	m_XGhost->setCollisionFlags(CollisionFlags);
+	m_YGhost->setCollisionFlags(CollisionFlags);
+	m_ZGhost->setCollisionFlags(CollisionFlags);
 }

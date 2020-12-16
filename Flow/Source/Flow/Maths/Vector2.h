@@ -27,6 +27,10 @@ public:
 
 	Vector2(IntVector2 v);
 
+	Vector2(DirectX::XMFLOAT2 Input)
+		: x(Input.x), y(Input.y)
+	{}
+
 	//= Operator ====================================================
 
 	Vector2 operator+(const Vector2 Other) const

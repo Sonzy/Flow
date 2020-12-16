@@ -10,7 +10,7 @@
 //= Class (PointLight) Definition ================================
 
 PointLight::PointLight(float LightRadius)
-	:  m_PixelConstantBuffer(0)
+	:  m_PixelConstantBuffer(1)
 {
 	Reset();
 }

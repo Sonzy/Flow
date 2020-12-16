@@ -25,6 +25,7 @@ SpriteComponent::SpriteComponent()
 SpriteComponent::SpriteComponent(const std::string& Name)
 	: RenderableComponent(Name)
 	, m_DoubleSided(false)
+	, m_Billboard(false)
 {
 	//TODO: Dont hard code
 	m_Material = AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green2D")->GetMaterial();
@@ -93,6 +94,15 @@ void SpriteComponent::BeginPlay()
 	InitialisePhysics();
 }
 
+void SpriteComponent::Tick(float DeltaTime)
+{
+	//TODO: Do this properly and not in tick
+	if (m_Billboard)
+	{
+		SetWorldRotation(Maths::FindLookAtRotation(GetWorldPosition(), RenderCommand::GetMainCamera()->GetCameraPosition()));
+	}
+}
+
 void SpriteComponent::Render()
 {
 	PROFILE_FUNCTION();
@@ -153,6 +163,7 @@ void SpriteComponent::DrawComponentDetailsWindow()
 	bool PropertiesChanged = false;
 
 	PropertiesChanged |= ImGui::Checkbox("Double Sided", &m_DoubleSided);
+	PropertiesChanged |= ImGui::Checkbox("Billboard (Not yet supported properly)", &m_Billboard);
 
 	ImGui::Separator();
 

@@ -1,7 +1,9 @@
 #pragma once
 #include "Layers/Layer.h"
 #include "Events/MouseEvent.h"
+
 #include "Editor/UIComponents/SceneManager.h"
+#include "Editor/Other/IconBatcher.h"
 
 //= Forward Declarations ================================
 
@@ -48,7 +50,7 @@ public:
 
 		// Public Functions ///////////////////////////////////////////////
 
-		void				Draw(Editor::Settings& EditorSettings, Editor& EditorRef);
+		void				Render(Editor::Settings& EditorSettings, Editor& EditorRef);
 
 	private:
 
@@ -59,7 +61,14 @@ public:
 
 public:
 
-	// Public Functions ///////////////////////////////////////////////
+// Public Static Functions ///////////////////////////////////////////
+
+	static Editor& Get();
+	static Editor::Settings& GetEditorSettings();
+
+public:
+
+// Public Functions ///////////////////////////////////////////////
 
 								Editor();
 								~Editor();
@@ -74,25 +83,32 @@ public:
 	void						OnEvent(Event& e) override;
 	virtual void				OnUpdate(float DeltaTime) override;
 
-	//=
+	//= Scene Window =
 
-	static Editor&				Get();
-	static Editor::Settings&	GetEditorSettings();
-	MenuBar*					GetMenuBar() const;
-	bool						IsInitialised() const				{ return m_Initialised; }
-	void						ShowSettingsWindow(bool Show)		{ m_ShowSettingsWindow = Show; }
+	bool						IsSceneWindowFocused() const;
+	bool						IsMouseOverScene() const;
+	IntVector2					GetSceneWindowSize() const;
+	IntVector2					GetSceneWindowPosition() const;
+
+	//= Window Visibilty =
+
+	void						Open_NewLevelWindow();
+
+	//= ImGui Testing =
 
 	void						SetDemoWindowVisible(bool Enabled);
 	void						ToggleImGuiDemoWindow();
 
-	bool						IsSceneWindowFocused() const;
-	bool						IsMouseOverScene() const;
+	//= Miscellanious =
 
-	IntVector2					GetSceneWindowSize() const;
-	IntVector2					GetSceneWindowPosition() const;
+	bool						IsInitialised() const;
+	void						ShowSettingsWindow(bool Show);
 
-	//Open Windows
-	void						Open_NewLevelWindow();
+	//= Custom Tools =
+
+	IconBatcher&				GetIconBatcher();
+
+public:
 
 	// Public Template Functions ///////////////////////////////////////////////
 
@@ -193,6 +209,7 @@ private:
 	Editor::Settings				m_Settings;
 	EditorCamera*					m_EditorCam;
 	LevelManager*					m_LevelManager;
+	IconBatcher						m_IconBatcher;
 
 	//= Cached UI Components =
 

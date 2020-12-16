@@ -45,4 +45,9 @@ private:
 
 	LightCB							m_CB;
 	PixelConstantBuffer<LightCB>	m_PixelCB;
+
+
+	//TODO: Testing
+
+	class Material* m_IconMaterial;
 };

@@ -12,7 +12,7 @@ public:
 
 	//= Public Static Functions ======================================
 
-	static Bindable*		Resolve();
+	static Sampler*							Resolve();
 	static std::string						GenerateUID();
 public:
 

@@ -59,6 +59,9 @@ public:
 	static void							SetMinimized(bool Minimized);
 	static bool							IsMinimized();
 
+	static float						GetNearPlane();
+	static float						GetFarPlane();
+
 	//= Helper =
 
 	static Vector3						GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0,0));

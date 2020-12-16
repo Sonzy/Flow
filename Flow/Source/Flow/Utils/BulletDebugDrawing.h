@@ -4,7 +4,6 @@
 
 #include "Bullet\LinearMath\btIDebugDraw.h"
 #include "Flow/Rendering/Core/Bindables/IndexBuffer.h"
-#include "Flow\Rendering\Core\Line.h"
 
 //= Class Definitions ===============================
 

@@ -21,15 +21,18 @@ void PixelShader::Bind()
 {
 	RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 }
-Bindable* PixelShader::Resolve(const std::string& LocalPath)
+
+PixelShader* PixelShader::Resolve(const std::string& LocalPath)
 {
 	return BindableCodex::Resolve<PixelShader>(LocalPath);
 }
+
 std::string PixelShader::GenerateUID(const std::string& LocalPath)
 {
 	using namespace std::string_literals;
 	return typeid(PixelShader).name() + "#"s + LocalPath;
 }
+
 std::string PixelShader::GetUID() const
 {
 	return GenerateUID(m_ShaderPath);

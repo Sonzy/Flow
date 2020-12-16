@@ -14,7 +14,7 @@ public:
 
 	//= Public Static Functions ================================================
 
-	static Bindable*		Resolve(const std::string& Tag, const VertexBuffer& Buffer);
+	static BindableVertexBuffer*		Resolve(const std::string& Tag, const VertexBuffer& Buffer);
 
 	/* Calls GenerateUID_Internal without passing the VBuffer */
 	template<typename ...Ignore>

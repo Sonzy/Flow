@@ -70,25 +70,26 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 	//TODO: Filter out other objects that arent world components
 	//Raytrace into the world 
-	Physics::TraceResultMulti result = Physics::RayTraceMulti(Start, End);
 
+	Physics::TraceResultMulti result = Physics::RayTraceMulti(Start, End);
+	
 	//Store the hit objects
 	WorldComponent* HitComponent = nullptr;
 	Actor* HitActor = nullptr;
 
 	if (result.hasHit())
 	{
+		float ClosestDistance = 99999999.0f;
 		WorldComponent*		FoundComponent = nullptr;
 		Actor*				FoundActor = nullptr; //Only check for a gizmo if this is true
 
 		//TODO: Move this check to check the object that last drew the pixel
-		//Check if we hit a selection gimzo
-		//for (int i = result.m_collisionObjects.size() - 1; i >= 0; i--)
 		for (int i = 0; i < result.m_collisionObjects.size(); i++)
 		{
 			WorldComponent* comp = reinterpret_cast<WorldComponent*>(result.m_collisionObjects[i]->getUserPointer());
 			Actor* actor = comp->GetParentActor();
 
+			//Check if we hit a selection gimzo
 			if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(actor))
 			{
 				Axis Axis = SelectionGizmo::TagToAxis(comp->m_Tag);
@@ -102,8 +103,11 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 				return true;
 			}
 
-			if (FoundComponent == nullptr && comp != nullptr && actor != nullptr)
+			//Store the closest found one.
+			float DistanceSquared = Maths::DistanceSquared(Start, comp->GetWorldPosition());
+			if (DistanceSquared < ClosestDistance)
 			{
+				ClosestDistance = DistanceSquared;
 				FoundComponent = comp;
 				FoundActor = actor;
 			}

@@ -8,7 +8,8 @@
 //= Class (InputLayout) Definition =============
 
 InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
-	: m_VertexLayout(std::move(Layout))
+	//: m_VertexLayout(std::move(Layout))
+	: m_VertexLayout(Layout)
 {
 	CREATE_RESULT_HANDLE();
 
@@ -25,15 +26,18 @@ void InputLayout::Bind()
 {
 	RenderCommand::DX11GetContext()->IASetInputLayout(m_InputLayout.Get());
 }
-Bindable* InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
+
+InputLayout* InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 {
 	return BindableCodex::Resolve<InputLayout>(Layout, vertexShaderByteCode);
 }
+
 std::string InputLayout::GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 {
 	using namespace std::string_literals;
 	return typeid(InputLayout).name() + "#"s + Layout.GetCode();
 }
+
 std::string InputLayout::GetUID() const
 {
 	return GenerateUID(m_VertexLayout);

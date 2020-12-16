@@ -12,7 +12,7 @@ public:
 
 	//= Public Static Functions ======================================
 
-	static Bindable*			Resolve(const std::string& LocalPath);
+	static PixelShader*							Resolve(const std::string& LocalPath);
 	static std::string							GenerateUID(const std::string& LocalPath);
 
 public:

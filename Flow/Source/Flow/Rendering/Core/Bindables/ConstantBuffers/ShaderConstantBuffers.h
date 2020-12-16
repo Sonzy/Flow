@@ -27,7 +27,7 @@ public:
 
 	//= Bindable Interface =
 
-	static Bindable* Resolve(const C& Consts, UINT Slot, const std::string& Tag)
+	static PixelConstantBuffer<C>* Resolve(const C& Consts, UINT Slot, const std::string& Tag)
 	{
 		return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, Tag);
 	}
@@ -61,6 +61,7 @@ class VertexConstantBuffer : public ConstantBuffer<C>
 	//These allow you to access parent class stuff in a template child class
 	using ConstantBuffer<C>::m_ConstantBuffer;
 	using ConstantBuffer<C>::m_Slot;
+	using ConstantBuffer<C>::m_Tag;
 public:
 
 	//= Public Typedefs ==================================================
@@ -73,19 +74,20 @@ public:
 
 	//= Bindable Interface =
 
-	static std::shared_ptr<VertexConstantBuffer> Resolve()
+	static VertexConstantBuffer<C>* Resolve(const C& Consts, UINT Slot, const std::string& Tag)
 	{
-		BindableCodex::Resolve<VertexConstantBuffer>();
+		return BindableCodex::Resolve<VertexConstantBuffer<C>>(Consts, Slot, Tag);
 	}
 
-	static std::string GenerateUID()
+	static Bindable* Resolve(const C& Consts, UINT Slot)
 	{
-		return typeid(VertexConstantBuffer).name();
+		return BindableCodex::Resolve<VertexConstantBuffer<C>>(Consts, Slot, "");
 	}
 
-	std::string GetUID() const
+	static std::string GenerateUID(const C& Consts, UINT Slot, const std::string& Tag)
 	{
-		return GenerateUID();
+		using namespace std::string_literals;
+		return typeid(VertexConstantBuffer<C>).name() + "#"s + Tag;
 	}
 
 public:

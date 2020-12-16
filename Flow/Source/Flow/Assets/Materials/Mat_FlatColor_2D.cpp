@@ -1,5 +1,5 @@
 #include "Flowpch.h"
-#include "ColorMaterial2D.h"
+#include "Mat_FlatColor_2D.h"
 
 #include "Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Rendering/Core/Bindables/Shaders/PixelShader.h"
@@ -16,20 +16,19 @@
 
 #include "Rendering/Core/RenderQueue/Step.h"
 
-ColorMaterial2D::ColorMaterial2D()
+Mat_FlatColor_2D::Mat_FlatColor_2D()
 {
 	m_Color = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 
-	SetVertexShader("SolidColor_VS");
-	SetPixelShader("SolidColor_PS");
+	SetVertexShader("SolidColor2D_VS");
+	SetPixelShader("SolidColor2D_PS");
 }
 
-void ColorMaterial2D::SetColour(Vector3 NewColour)
+void Mat_FlatColor_2D::SetColour(Vector3 NewColor)
 {
-	m_Color = { DirectX::XMFLOAT4(NewColour.x, NewColour.y, NewColour.z, 1.0f) };
 }
 
-void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
+void Mat_FlatColor_2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
 {
 	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
@@ -40,12 +39,11 @@ void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& Vert
 	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(m_Color, 2u, GenerateTag()));
 }
 
-std::string ColorMaterial2D::GenerateTag()
+std::string Mat_FlatColor_2D::GenerateTag()
 {
-	return std::string("FlatColour") +
-		std::to_string(m_Color.Colour.x) +
-		std::to_string(m_Color.Colour.y) +
-		std::to_string(m_Color.Colour.z) +
-		std::to_string(m_Color.Colour.w);
+	return std::string("FlatColour2D") +
+		std::to_string(m_Color.Color.x) +
+		std::to_string(m_Color.Color.y) +
+		std::to_string(m_Color.Color.z) +
+		std::to_string(m_Color.Color.w);
 }
-

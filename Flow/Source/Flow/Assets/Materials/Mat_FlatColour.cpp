@@ -20,8 +20,8 @@ Mat_FlatColour::Mat_FlatColour()
 {
 	m_Color = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 
-	SetVertexShader("SolidColorVS");
-	SetPixelShader("SolidColorPS");
+	SetVertexShader("SolidColor_VS");
+	SetPixelShader("SolidColor_PS");
 }
 
 void Mat_FlatColour::SetColour(Vector3 NewColour)
