@@ -9,6 +9,8 @@
 #include "Application.h"
 #include "Window/Window_Win32.h"
 
+#include "Editor/Editor.h"
+
 //= Class Definition - AssetBrowser ==============================
 
 AssetBrowser::AssetBrowser()
@@ -45,6 +47,18 @@ void AssetBrowser::Update()
 void AssetBrowser::Render()
 {
 	PROFILE_FUNCTION();
+
+	static float previousFrameWindowHeight = 0.0f;
+
+	//TODO: Make centralised
+	Editor::Settings& editorSettings = Editor::GetEditorSettings();
+	if (editorSettings.m_DockFloatingWindows == true)
+	{
+		//Bottom Left
+		Vector2 position = Editor::Get().GetSceneWindowPosition();
+		position.y += Editor::Get().GetSceneWindowSize().y;
+		ImGui::SetNextWindowPos(ImVec2(position.x + editorSettings.m_DockPadding.x, position.y - editorSettings.m_DockPadding.y - previousFrameWindowHeight));
+	}
 
 	if (ImGui::Begin("Asset Browser Editor", nullptr, ImGuiWindowFlags_NoScrollbar))
 	{
@@ -101,6 +115,8 @@ void AssetBrowser::Render()
 			}
 			ImGui::EndPopup();
 		}
+
+		previousFrameWindowHeight = ImGui::GetWindowSize().y;
 	}
 	ImGui::End();
 }

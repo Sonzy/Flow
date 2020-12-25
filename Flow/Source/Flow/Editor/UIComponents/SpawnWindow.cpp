@@ -17,6 +17,8 @@
 
 #include "Utils/ComponentHelper.h"
 
+#include "Editor/Editor.h"
+
 #define DRAW_COMPONENT_SPAWNER(ComponentClass) \
 	if (ImGui::MenuItem("Add "#ComponentClass)) \
 	{	\
@@ -43,6 +45,15 @@ void SpawnWindow::Update()
 
 void SpawnWindow::Render()
 {
+	//TODO: Make centralised
+	Editor::Settings& editorSettings = Editor::GetEditorSettings();
+	if (editorSettings.m_DockFloatingWindows == true)
+	{
+		//Top Left
+		Vector2 position = Editor::Get().GetSceneWindowPosition();
+		ImGui::SetNextWindowPos(ImVec2(position.x + editorSettings.m_DockPadding.x, position.y + editorSettings.m_DockPadding.y));
+	}
+
 	if (ImGui::Begin("Actor Spawner"))
 	{
 		Actor* SpawnedActor = nullptr;

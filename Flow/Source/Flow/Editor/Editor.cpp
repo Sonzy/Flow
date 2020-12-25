@@ -445,7 +445,7 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 		return;
 	}
 
-	if (ImGui::Begin("Editor Settings"))
+	if (ImGui::Begin("Editor Settings", &EditorRef.m_ShowSettingsWindow))
 	{
 		ImGui::Text("Colors");
 		ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
@@ -457,6 +457,9 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 		{
 			EditorSettings.m_StartingLevel = m_StartingNameBuffer;
 		}
+
+		ImGui::Text("Appearance");
+		ImGui::Checkbox("Enable docked scene tools", &EditorSettings.m_DockFloatingWindows);
 
 
 		if (ImGui::Button("Save and Close"))

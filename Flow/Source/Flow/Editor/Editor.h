@@ -35,11 +35,16 @@ public:
 	struct Settings
 	{
 		Settings()
-			: m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
+			: m_StartingLevel("")
+			, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
+			, m_DockFloatingWindows(true)
+			, m_DockPadding(10.0f, 10.0f)
 		{}
 
-		Vector3				m_ObjectHighlightColour;
 		std::string			m_StartingLevel;
+		Vector3				m_ObjectHighlightColour;
+		bool				m_DockFloatingWindows;
+		Vector2				m_DockPadding;
 	};
 
 	class SettingsWindow
