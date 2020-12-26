@@ -24,6 +24,10 @@ public:
 		: x(x), y(y), z(z)
 	{}
 
+	Vector3(int x, int y, int z)
+		: x(static_cast<float>(x)), y(static_cast<float>(y)), z(static_cast<float>(z))
+	{}
+
 	Vector3(float xyz)
 		: x(xyz), y(xyz), z(xyz)
 	{}
@@ -74,6 +78,13 @@ public:
 		return sqrt((x * x) + (y * y) + (z * z));
 	}
 
+	//= Public Functions =
+
+	float* Data()
+	{
+		return reinterpret_cast<float*>(this);
+	}
+
 	//= Operators =========================================================
 
 	operator DirectX::XMFLOAT3() const
@@ -84,6 +95,11 @@ public:
 	operator btVector3() const
 	{
 		return btVector3(x, y, z);
+	}
+
+	operator float*()
+	{
+		return reinterpret_cast<float*>(this);
 	}
 
 	void operator+=(const Vector3& Other)

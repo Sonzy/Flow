@@ -7,6 +7,7 @@
 #include "Actor.h"
 #include "Components/WorldComponent.h"
 
+#include "Utils/YamlSerializer.h"
 #include <yaml-cpp/yaml.h>
 
 Level::Level(const std::string& LevelName)
@@ -24,14 +25,20 @@ void Level::Save(YAML::Emitter& file)
 	file << YAML::Key << "LevelName";
 	file << YAML::Value << m_Name;
 
+	file << YAML::Key << "EditorCameraTransform";
+	file << YAML::Value << RenderCommand::GetMainCamera()->GetCameraTransform();
+
 	//= Serialise all actors =
 	file << YAML::Key << "Actors";
 	file << YAML::Value << YAML::BeginSeq;
 	for (const std::pair<FGUID, Actor*> actor : World::Get()->GetActorMap())
 	{
-		file << YAML::BeginMap;
-		actor.second->Serialize(file);
-		file << YAML::EndMap;
+		if (actor.second->IsOwned() == false)
+		{
+			file << YAML::BeginMap;
+			actor.second->Serialize(file);
+			file << YAML::EndMap;
+		}
 	}
 	file << YAML::EndSeq;
 
@@ -40,18 +47,26 @@ void Level::Save(YAML::Emitter& file)
 	file << YAML::Value << YAML::BeginSeq;
 	for (const std::pair<FGUID, Component*> component : World::Get()->GetComponentMap())
 	{
-		file << YAML::BeginMap;
-		component.second->Serialize(file);
-		file << YAML::EndMap;
+		if (component.second->IsOwned() == false)
+		{
+			file << YAML::BeginMap;
+			component.second->Serialize(file);
+			file << YAML::EndMap;
+		}
 	}
 	file << YAML::EndSeq;
 
 	file << YAML::EndMap;
 }
 
-void Level::Load(YAML::Node& Input)
+bool Level::Load(YAML::Node& Input)
 {
 	m_Name = Input["LevelName"].as<std::string>();
+
+	if (CameraBase* cam = RenderCommand::GetMainCamera())
+	{
+		cam->MoveCamera(Input["EditorCameraTransform"].as<Transform>());
+	}
 
 	auto actors = Input["Actors"];
 	if (actors.IsDefined())
@@ -94,6 +109,8 @@ void Level::Load(YAML::Node& Input)
 			NewComponent->Deserialize(componentNode);
 		}
 	}
+
+	return true;
 }
 
 void Level::InitialiseTickList()

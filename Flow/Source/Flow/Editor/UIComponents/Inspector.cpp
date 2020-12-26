@@ -130,7 +130,7 @@ void Inspector::RenderHeirarchy()
 					}
 				}
 				else
-				{
+				{					
 					ImGui::InputText("Name", &m_SelectedComponent->GetParentActor()->GetWritableName());
 				}
 

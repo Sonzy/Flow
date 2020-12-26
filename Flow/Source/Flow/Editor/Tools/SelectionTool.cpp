@@ -135,10 +135,10 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		m_Gizmo->OnNewComponentSelected(nullptr);
 
 		//Deselect and delete actor
-		if (m_SelectedActor)
+		if (m_SelectedActor != nullptr)
 		{
 			m_SelectedActor->OnViewportDeselected();
-			World::Get()->DestroyActor(m_SelectedActor);
+			World::Get()->DestroyActor(m_SelectedActor->GetGuid());
 			m_SelectedActor = nullptr;
 		}
 

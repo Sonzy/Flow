@@ -10,6 +10,7 @@
 #include "Editor/UIComponents/Inspector.h"
 #include "Editor/UIComponents/SpawnWindow.h"
 
+#include "Utils/YamlSerializer.h"
 #include <yaml-cpp/yaml.h>
 
 #include "Utils/ComponentHelper.h"
@@ -28,7 +29,7 @@ Actor::Actor(const std::string& Name)
 
 Actor::~Actor()
 {
-	FLOW_ENGINE_LOG("Actor::~Actor");
+	World::Get()->DestroyActor(GetGuid());
 }
 
 void Actor::BeginPlay()
@@ -77,7 +78,7 @@ WorldComponent* Actor::GetRootComponent() const
 	return m_RootComponent;
 }
 
-Vector3 Actor::GetLocation()
+Vector3 Actor::GetLocation() const
 {
 	if (!m_RootComponent)
 		return Vector3();
@@ -85,7 +86,7 @@ Vector3 Actor::GetLocation()
 	return m_RootComponent->GetRelativePosition();
 }
 
-Vector3 Actor::GetScale()
+Vector3 Actor::GetScale() const
 {
 	if (!m_RootComponent)
 		return Vector3();
@@ -93,12 +94,29 @@ Vector3 Actor::GetScale()
 	return m_RootComponent->GetRelativeScale();
 }
 
-Rotator Actor::GetRotation()
+Rotator Actor::GetRotation() const
 {
 	if (!m_RootComponent)
 		return Rotator();
 
 	return m_RootComponent->GetRelativeRotation();
+}
+
+Transform Actor::GetWorldTransform() const
+{
+	if (m_RootComponent == nullptr)
+	{
+		return Transform();
+	}
+	return m_RootComponent->GetRelativeTransform();
+}
+
+void Actor::SetWorldTransform(const Transform& transform)
+{
+	if (m_RootComponent != nullptr)
+	{
+		return m_RootComponent->SetWorldTransform(transform);
+	}
 }
 
 void Actor::Render()
@@ -172,6 +190,9 @@ void Actor::Serialize(YAML::Emitter& Archive)
 	Archive << YAML::Key << "Actor";
 	Archive << YAML::BeginMap;
 	{
+		Archive << YAML::Key << "Transform";
+		Archive << YAML::Value << GetWorldTransform();
+
 		Archive << YAML::Key << "Components";
 		Archive << YAML::Value << YAML::BeginSeq;
 		{
@@ -188,6 +209,8 @@ void Actor::Deserialize(YAML::Node& Archive)
 
 	if (YAML::Node actorNode = Archive["Actor"])
 	{
+		SetWorldTransform(actorNode["Transform"].as<Transform>());
+
 		if (YAML::Node node = actorNode["Components"])
 		{
 			//Check if we have already initialised children that havent had their parent set

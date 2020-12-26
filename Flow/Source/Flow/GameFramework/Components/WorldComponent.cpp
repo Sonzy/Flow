@@ -433,9 +433,14 @@ void WorldComponent::Serialize(YAML::Emitter& Archive)
 	Archive << YAML::Key << "WorldComponent";
 	Archive << YAML::BeginMap;
 	{
-		WorldComponent* parent = GetParentComponent();
+		Archive << YAML::Key << "ParentActor";
+		Archive << YAML::Value << (m_ParentObject != nullptr ? m_ParentObject->GetGuid() : -1);
+
+		Archive << YAML::Key << "IsRoot";
+		Archive << YAML::Value << (m_ParentObject != nullptr ? m_ParentObject->GetRootComponent() == this : false);
+
 		Archive << YAML::Key << "ParentComponent";
-		Archive << YAML::Value << (parent ? parent->GetGuid() : -1);
+		Archive << YAML::Value << (m_AttachedComponent ? m_AttachedComponent->GetGuid() : -1);
 
 		Archive << YAML::Key << "ComponentTransform";
 		Archive << YAML::Value << GetRelativeTransform();
@@ -460,6 +465,20 @@ void WorldComponent::Deserialize(YAML::Node& Archive)
 {
 	if (YAML::Node node = Archive["WorldComponent"])
 	{
+		SetParent(World::Get()->FindActor(node["ParentActor"].as<FGUID>()));
+
+		if (node["IsRoot"].as<bool>())
+		{
+			if (m_ParentObject != nullptr)
+			{
+				m_ParentObject->SetRootComponent(this);
+			}
+			else
+			{
+				FLOW_ENGINE_ERROR("Deserialised a component with a parent that cannot be found");
+			}
+		}
+
 		SetParentComponent(dynamic_cast<WorldComponent*>(World::Get()->FindComponent(node["ParentComponent"].as<FGUID>())));
 
 		SetRelativeTransform(node["ComponentTransform"].as<Transform>());

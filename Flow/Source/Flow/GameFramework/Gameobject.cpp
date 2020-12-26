@@ -11,6 +11,7 @@ GameObject::GameObject()
 GameObject::GameObject(const std::string& Name)
 	: m_name(Name)
 	, m_guid(-1)
+	, m_owned(false)
 {
 }
 

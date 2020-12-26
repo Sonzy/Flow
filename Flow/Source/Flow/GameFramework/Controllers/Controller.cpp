@@ -14,6 +14,7 @@ Controller::Controller(const std::string& Name)
 	, m_Camera(nullptr)
 {
 	m_Root = CreateComponent<WorldComponent>("Root Component");
+	m_Root->SetOwned(true);
 	m_RootComponent = m_Root;
 }
 

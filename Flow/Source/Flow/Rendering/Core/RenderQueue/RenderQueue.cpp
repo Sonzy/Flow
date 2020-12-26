@@ -86,7 +86,7 @@ void RenderQueue::Execute()
 	//TODO: Editor defs
 	if (Queue->m_Pass4Enabled)
 	{
-		Vector3 Colour = Editor::GetEditorSettings().m_ObjectHighlightColour;
+		Vector3 Colour = Editor::GetSettings().m_ObjectHighlightColour;
 
 		//= Outline Drawing Pass.
 		Stencil::Resolve(StencilMode::Mask)->Bind();

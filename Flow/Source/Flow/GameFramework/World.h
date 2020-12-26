@@ -74,7 +74,7 @@ public:
 
 	//= Actor manipulation = 
 
-	void												DestroyActor(Actor* Act);
+	void												DestroyActor(FGUID Act);
 
 	//= Object Management =
 	Actor*												FindActor(FGUID guid);

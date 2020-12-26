@@ -45,9 +45,12 @@ public:
 	WorldComponent*			SetRootComponent(WorldComponent* NewRoot);
 
 	WorldComponent*			GetRootComponent() const;
-	Vector3					GetLocation();
-	Vector3					GetScale();
-	Rotator					GetRotation();
+	Vector3					GetLocation() const;
+	Vector3					GetScale() const;
+	Rotator					GetRotation() const;
+	Transform				GetWorldTransform() const;
+
+	void					SetWorldTransform(const Transform& transform);
 
 	void					Render();
 

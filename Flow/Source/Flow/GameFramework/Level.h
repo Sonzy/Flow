@@ -23,7 +23,7 @@ public:
 											Level(const std::string& LevelName);
 
 	void									Save(YAML::Emitter& file);
-	void									Load(YAML::Node& Input);
+	bool									Load(YAML::Node& Input);
 
 	void									InitialiseTickList();
 	void									DispatchBeginPlay();

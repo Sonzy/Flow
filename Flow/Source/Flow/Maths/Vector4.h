@@ -39,6 +39,11 @@ public:
 
 	Vector4(IntVector4 Input);
 
+	float* Data()
+	{
+		return reinterpret_cast<float*>(this);
+	}
+
 	//= Operators =========================================================
 
 	operator ImVec4() const

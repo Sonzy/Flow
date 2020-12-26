@@ -24,6 +24,9 @@
 #include "Editor/Tools/Tool.h"
 #include "Editor/Tools/SelectionTool.h"
 
+#include <yaml-cpp/yaml.h>
+#include "Utils/YamlSerializer.h"
+
 #define PASS_KEY_EVENT(MemberName) 	if (MemberName != nullptr && MemberName->OnKeyPressed(e)) { return true; }
 
 Editor::Editor()
@@ -58,6 +61,11 @@ void Editor::Initialise()
 	m_Initialised = true;
 }
 
+void Editor::InitialiseEditor()
+{
+	World::Get()->LoadLevel();
+}
+
 void Editor::BeginPlay()
 {
 	for (Tool* tool : m_Tools)
@@ -71,13 +79,6 @@ void Editor::OnAttach()
 	m_ApplicationPointer = &Application::Get();
 
 	LoadEditorSettings();
-
-	//TODO:
-	//if (m_Settings.m_StartingLevel.length() > 0)
-	//{
-	//	World::Get()->LoadLevel(m_Settings.m_StartingLevel);
-	//}
-	World::Get()->LoadLevel();
 }
 
 void Editor::OnDetach()
@@ -188,26 +189,72 @@ void Editor::SaveEditorSettings()
 {
 	PROFILE_FUNCTION();
 
-	fs::path SettingsPath = Application::GetEnginePath() / "Editor/Settings.txt";
-	std::ofstream OutStream = std::ofstream(SettingsPath, std::ios::out | std::ios::trunc);
+	YAML::Emitter file;
 
-	if (OutStream.is_open() == false)
+	file << YAML::BeginMap;
 	{
-		FLOW_ENGINE_ERROR("Editor::SaveEditorSettings: Failed to save settings %s", SettingsPath.string().c_str());
-		return;
+		file << YAML::Key << "Levels";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "StartingLevelName";
+			file << YAML::Value << m_Settings.m_StartingLevel;
+		}
+		file << YAML::EndMap;
+
+		file << YAML::Key << "Docking";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "DockFloatingWindows";
+			file << YAML::Value << m_Settings.m_DockFloatingWindows;
+
+			file << YAML::Key << "DockPadding";
+			file << YAML::Value << m_Settings.m_DockPadding;
+		}
+		file << YAML::EndMap;
+
+		file << YAML::Key << "Console";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "LogColor";
+			file << YAML::Value << m_Settings.m_consoleLogColor;
+
+			file << YAML::Key << "WarningColor";
+			file << YAML::Value << m_Settings.m_consoleWarningColor;
+
+			file << YAML::Key << "ErrorColor";
+			file << YAML::Value << m_Settings.m_consoleErrorColor;
+		}
+		file << YAML::EndMap;
+
+		file << YAML::Key << "EditorCamera";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "Speed";
+			file << YAML::Value << m_Settings.m_cameraSpeed;
+
+			file << YAML::Key << "PanningSpeed";
+			file << YAML::Value << m_Settings.m_cameraPanningSpeed;
+
+			file << YAML::Key << "ScrollingSpeed";
+			file << YAML::Value << m_Settings.m_cameraScrollingSpeed;
+		}
+		file << YAML::EndMap;
+
+		file << YAML::Key << "Other";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "ObjectHighlightColor";
+			file << YAML::Value << m_Settings.m_ObjectHighlightColour;
+		}
+		file << YAML::EndMap;
+
+
 	}
+	file << YAML::EndMap;
 
-	// Starting level name
-	size_t size = m_Settings.m_StartingLevel.length();
-	OutStream << size;
-	//OutStream << m_Settings.m_StartingLevel;
-
-	//OutStream.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
-	OutStream.write(m_Settings.m_StartingLevel.c_str(), sizeof(char) * size);
-
-	// Colors
-	OutStream.write(reinterpret_cast<const char*>(&m_Settings.m_ObjectHighlightColour), sizeof(Vector3));
-
+	fs::path savePath = Application::GetEnginePath() / "Editor/Settings.yaml"; //.EngineSettings
+	std::ofstream OutStream = std::ofstream(savePath);
+	OutStream << file.c_str();
 	OutStream.close();
 }
 
@@ -215,27 +262,49 @@ void Editor::LoadEditorSettings()
 {
 	PROFILE_FUNCTION();
 
-	std::ifstream InputStream = std::ifstream(Application::GetEnginePath() / "Editor/Settings.txt", std::ios::in);
-
-	if (InputStream.is_open() == false)
+	fs::path savePath = Application::GetEnginePath() / "Editor/Settings.yaml"; //.EngineSettings
+	std::ifstream InStream = std::ifstream(savePath);
+	if (InStream.is_open() == false)
 	{
-		FLOW_ENGINE_ERROR("Editor::LoadEditorSettings: Failed to editor settings");
 		return;
 	}
 
-	// Starting level name
-	size_t size;
-	char buffer[128] = { '\0' };
+	std::stringstream stream;
+	stream << InStream.rdbuf();
 
-	InputStream >> size;
-	//InputStream.read(reinterpret_cast<char*>(&size), sizeof(size_t));
-	InputStream.read(buffer, sizeof(char) * size);
-	m_Settings.m_StartingLevel = buffer;
+	YAML::Node data = YAML::Load(stream.str());
 
-	// Colors
-	InputStream.read(reinterpret_cast<char*>(&m_Settings.m_ObjectHighlightColour), sizeof(Vector3));
+	YAML::Node levelData = data["Levels"];
+	{
+		m_Settings.m_StartingLevel = levelData["StartingLevelName"].as<std::string>();
+	}
 
-	InputStream.close();
+	YAML::Node dockingData = data["Docking"];
+	{
+		m_Settings.m_DockFloatingWindows = dockingData["DockFloatingWindows"].as<bool>();
+		m_Settings.m_DockPadding = dockingData["DockPadding"].as<Vector2>();
+	}
+
+	YAML::Node consoleData = data["Console"];
+	{
+		m_Settings.m_consoleLogColor = consoleData["LogColor"].as<Vector4>();
+		m_Settings.m_consoleWarningColor = consoleData["WarningColor"].as<Vector4>();
+		m_Settings.m_consoleErrorColor = consoleData["ErrorColor"].as<Vector4>();
+	}
+
+	YAML::Node editorCameraData = data["EditorCamera"];
+	{
+		m_Settings.m_cameraSpeed = editorCameraData["Speed"].as<float>();
+		m_Settings.m_cameraPanningSpeed = editorCameraData["PanningSpeed"].as<float>();
+		m_Settings.m_cameraScrollingSpeed = editorCameraData["ScrollingSpeed"].as<float>();
+	}
+
+	YAML::Node otherData = data["Other"];
+	{
+		m_Settings.m_ObjectHighlightColour = otherData["ObjectHighlightColor"].as<Vector3>();
+	}
+
+	InStream.close();
 }
 
 Editor& Editor::Get()
@@ -243,7 +312,7 @@ Editor& Editor::Get()
 	return *Application::Get().GetEditor();
 }
 
-Editor::Settings& Editor::GetEditorSettings()
+Editor::Settings& Editor::GetSettings()
 {
 	return Editor::Get().m_Settings;
 }
@@ -447,29 +516,54 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 
 	if (ImGui::Begin("Editor Settings", &EditorRef.m_ShowSettingsWindow))
 	{
-		ImGui::Text("Colors");
-		ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
-
-		ImGui::Separator();
+		bool updateFile = false;
 
 		ImGui::Text("Levels");
-		if (ImGui::InputText("Starting Level Name", m_StartingNameBuffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			EditorSettings.m_StartingLevel = m_StartingNameBuffer;
+			if (ImGui::InputText("Starting Level Name", m_StartingNameBuffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				updateFile = true;
+				EditorSettings.m_StartingLevel = m_StartingNameBuffer;
+			}
 		}
+		ImGui::Separator();
+		ImGui::NewLine();
 
-		ImGui::Text("Appearance");
-		ImGui::Checkbox("Enable docked scene tools", &EditorSettings.m_DockFloatingWindows);
-
-
-		if (ImGui::Button("Save and Close"))
+		ImGui::Text("Docking");
 		{
-			//Grab settings from buffers
-			EditorSettings.m_StartingLevel = m_StartingNameBuffer;
+			updateFile |= ImGui::Checkbox("Enable docked scene tools", &EditorSettings.m_DockFloatingWindows);
+			updateFile |= ImGui::InputFloat2("Docking padding", EditorSettings.m_DockPadding.Data());
+		}
+		ImGui::Separator();
+		ImGui::NewLine();
 
-			//Save
+		ImGui::Text("Console");
+		{
+			updateFile |= ImGui::ColorEdit4("Log Color", EditorSettings.m_consoleLogColor.Data());
+			updateFile |= ImGui::ColorEdit4("Warning Color", EditorSettings.m_consoleWarningColor.Data());
+			updateFile |= ImGui::ColorEdit4("Error Color", EditorSettings.m_consoleErrorColor.Data());
+		}
+		ImGui::Separator();
+		ImGui::NewLine();
+
+		ImGui::Text("Editor Camera");
+		{
+			updateFile |= ImGui::InputFloat("Speed", &EditorSettings.m_cameraSpeed);
+			updateFile |= ImGui::InputFloat("Panning Speed", &EditorSettings.m_cameraPanningSpeed);
+			updateFile |= ImGui::InputFloat("Scrolling Speed", &EditorSettings.m_cameraScrollingSpeed);
+		}
+		ImGui::Separator();
+		ImGui::NewLine();
+
+		ImGui::Text("Other");
+		{
+			updateFile |= ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
+		}
+		ImGui::Separator();
+
+		if (updateFile == true)
+		{
 			EditorRef.SaveEditorSettings();
-			EditorRef.m_ShowSettingsWindow = false;
 		}
 	}
 	ImGui::End();

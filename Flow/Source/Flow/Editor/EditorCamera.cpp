@@ -3,12 +3,13 @@
 #include "Flow/Input/Input.h"
 #include "Flow/Events/MouseEvent.h"
 #include "Flow/Events/KeyEvent.h"
+#include "Editor/Editor.h"
 
 EditorCamera::EditorCamera()
 	: m_Position(0)
 	, m_Rotation(0)
 	, m_MouseLastFrame(0)
-	, m_CameraSpeed(10.0f)
+	, m_mousePanning(false)
 {
 }
 
@@ -18,7 +19,7 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 	const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	Rotator WorldRotation = Rotator::AsRadians(m_Rotation);
-	Vector3 WorldPosition = m_Position;
+	const DirectX::XMFLOAT3 WorldPosition = m_Position;
 
 	//Get Camera Look Vector3
 	const auto lookVector = DirectX::XMVector3Transform(Forward,
@@ -36,7 +37,7 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 	//Return transformed Matrix with camera looking at a target
 	DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
-	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(WorldPosition));
+	DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition);
 
 	//Rotate the up vector
 	return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
@@ -58,30 +59,52 @@ Vector3 EditorCamera::GetCameraPosition() const
 	return m_Position;
 }
 
+bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e)
+{
+	Editor::Settings& settings = Editor::GetSettings();
+
+	Vector3 translation = Vector3(0.0f, 0.0f, e.GetYOffset());
+	m_Position += m_Rotation.RotateVector(translation * settings.m_cameraScrollingSpeed);
+	return false;
+}
+
 void EditorCamera::Update(float DeltaTime)
 {
 	if (!m_CanUpdate)
 		return;
 
+	Editor::Settings& settings = Editor::GetSettings();
+
 	IntVector2 MousePosition = Input::GetMousePosition();
 	Vector3 Translation(0.0f);
 
+	if (Input::IsMousePressed(MOUSE_MIDDLE))
+	{
+		Vector3 offset = Vector3(m_MouseLastFrame.x - MousePosition.x, MousePosition.y - m_MouseLastFrame.y, 0);
+		m_Position += m_Rotation.RotateVector(offset * DeltaTime * settings.m_cameraPanningSpeed);
+		m_mousePanning = true;
+	}
+	else
+	{
+		m_mousePanning = false;
+	}
+
 	//Camera rotation
-	if (Input::IsMousePressed(MOUSE_RIGHT))
+	if (m_mousePanning == false && Input::IsMousePressed(MOUSE_RIGHT))
 	{
 		if (Input::IsKeyPressed(KEY_W))
-			Translation.z += m_CameraSpeed;
+			Translation.z += settings.m_cameraSpeed;
 		if (Input::IsKeyPressed(KEY_A))
-			Translation.x += -m_CameraSpeed;
+			Translation.x += -settings.m_cameraSpeed;
 		if (Input::IsKeyPressed(KEY_S))
-			Translation.z += -m_CameraSpeed;
+			Translation.z += -settings.m_cameraSpeed;
 		if (Input::IsKeyPressed(KEY_D))
-			Translation.x += m_CameraSpeed;
+			Translation.x += settings.m_cameraSpeed;
 		if (Input::IsKeyPressed(KEY_SPACE))
-			Translation.y += m_CameraSpeed;
+			Translation.y += settings.m_cameraSpeed;
 		if (Input::IsKeyPressed(KEY_SHIFT))
 
-			Translation.y += -m_CameraSpeed;
+			Translation.y += -settings.m_cameraSpeed;
 		if (m_MouseLastFrame != MousePosition)
 		{
 			Vector3 Direction = m_MouseLastFrame - MousePosition;

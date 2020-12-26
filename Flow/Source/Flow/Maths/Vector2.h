@@ -31,8 +31,13 @@ public:
 		: x(Input.x), y(Input.y)
 	{}
 
-	//= Operator ====================================================
+	float* Data()
+	{
+		return reinterpret_cast<float*>(this);
+	}
 
+	//= Operator ====================================================
+	   
 	Vector2 operator+(const Vector2 Other) const
 	{
 		return Vector2(x + Other.x, y + Other.y);

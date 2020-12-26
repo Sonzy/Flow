@@ -21,6 +21,7 @@
 #endif
 
 #include "Utils/GUIDGenerator.h"
+#include "Utils/ComponentHelper.h"
 #include "Assets/AssetSystem.h"
 
 #include <yaml-cpp/yaml.h>
@@ -60,19 +61,28 @@ void World::SaveLevel()
 	OutStream.close();
 
 	//Check for errors
-	FLOW_ENGINE_ERROR("Error: %s", outFile.GetLastError().c_str());
+	if (outFile.GetLastError().empty())
+	{
+		FLOW_ENGINE_ERROR("Level saved to %s successfully", savePath.c_str());
+	}
+	else
+	{
+		FLOW_ENGINE_ERROR("Error saving level: %s", outFile.GetLastError().c_str());
+	}
+
 }
 
 void World::LoadLevel()
 {
 	InitialisePhysics(true);
 
-	//= Loading Testing =
-
 	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml";
+	FLOW_ENGINE_LOG("======== Loading level %s... ========", savePath.c_str());
+
 	std::ifstream InStream = std::ifstream(savePath);
 	if (InStream.is_open() == false)
 	{
+		FLOW_ENGINE_LOG("World::LoadLevel: Failed to open level save file");
 		return;
 	}
 
@@ -86,6 +96,19 @@ void World::LoadLevel()
 		return;
 	}
 
+	//Get all actors
+	std::vector<FGUID> actorsToDestroy;
+	for (const std::pair<FGUID, Actor*>& Act : m_actorMap)
+	{
+		actorsToDestroy.push_back(Act.first);
+	}
+
+	//Destroy them
+	for (FGUID guid : actorsToDestroy)
+	{
+		DestroyActor(guid);
+	}
+
 	m_MainLevel->Load(data);
 
 	//====================
@@ -94,6 +117,10 @@ void World::LoadLevel()
 	m_PhysicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
 	InStream.close();
+
+	//Check for errors
+
+	FLOW_ENGINE_LOG("======== Loaded  level %s... ========", savePath.c_str());
 
 #if WITH_EDITOR
 	//Reinitialise all actors for editor
@@ -174,10 +201,6 @@ void World::InitialiseWorld()
 #endif
 
 	InitialisePhysics();
-	
-	//TODO: Dont spawn one till the start?
-	PlayerController* NewLocalController = SpawnActor<PlayerController>("NewLocalController");
-	m_RegisteredControllers.push_back(NewLocalController);
 }
 
 void World::StartEditor()
@@ -193,6 +216,10 @@ void World::StartGame()
 {
 	m_WorldState = WorldState::InGame;
 	FLOW_ENGINE_LOG("World State set to InGame");
+
+	//TODO: Dont spawn one till the start?
+	PlayerController* NewLocalController = SpawnActor<PlayerController>("NewLocalController");
+	m_RegisteredControllers.push_back(NewLocalController);
 
 	m_MainLevel->InitialiseTickList();
 	m_MainLevel->DispatchBeginPlay();
@@ -280,22 +307,43 @@ void World::InitialisePhysics(bool Force)
 	FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Initialised");
 }
 
-void World::DestroyActor(Actor* Act)
+void World::DestroyActor(FGUID guid)
 {
-	if (!Act)
+	if (guid == -1)
 	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete nullptr actor");
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete invalid actor guid");
 		return;
 	}
 
-	//Remove physics
-	Act->DestroyPhysics();
-
-	auto Iterator = std::find_if(m_actorMap.begin(), m_actorMap.end(), [&Act](const std::pair<FGUID, Actor*> Actor) { return Actor.second == Act; });
+	auto Iterator = m_actorMap.find(guid);
 	if (Iterator == m_actorMap.end())
 	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array %s", Act->GetName().c_str());
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to find actor but had no actor with guid %d", guid);
 		return;
+	}
+
+	Actor* actor = m_actorMap[guid];
+
+	//Remove physics
+	actor->DestroyPhysics();
+
+	//Destroy the components
+	if (actor->GetRootComponent() != nullptr)
+	{
+		std::vector<WorldComponent*> components;
+		ComponentHelper::BuildComponentArray(actor->GetRootComponent(), components);
+
+		for (WorldComponent* component : components)
+		{
+			auto iterator = m_componentMap.find(component->GetGuid());
+			if (iterator == m_componentMap.end())
+			{
+				FLOW_ENGINE_ERROR("World::DestroyActor: Failed to destroy component");
+				continue;
+			}
+
+			m_componentMap.erase(iterator);
+		}
 	}
 
 	m_actorMap.erase(Iterator);
@@ -408,12 +456,16 @@ void World::RegisterActor(Actor* newActor)
 	{
 		newActor->SetGuid(GUIDGen::Generate());
 	}
+
 	m_actorMap[newActor->GetGuid()] = newActor;
 }
 
 void World::RegisterComponent(Component* newComponent)
 {
-	//TODO: Check its not already in here
-	newComponent->SetGuid(GUIDGen::Generate());
+	if (newComponent->GetGuid() == -1)
+	{
+		newComponent->SetGuid(GUIDGen::Generate());
+	}
+
 	m_componentMap[newComponent->GetGuid()] = newComponent;
 }

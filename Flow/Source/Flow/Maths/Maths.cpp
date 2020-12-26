@@ -92,5 +92,5 @@ FLOW_API Vector3::Vector3(IntVector2 v)
 {}
 
 FLOW_API Vector4::Vector4(IntVector4 v)
-	: x(static_cast<int>(v.x)), y(static_cast<int>(v.z)), z(static_cast<int>(v.y)), w(static_cast<int>(v.w))
+	: x(static_cast<float>(v.x)), y(static_cast<float>(v.z)), z(static_cast<float>(v.y)), w(static_cast<float>(v.w))
 {}

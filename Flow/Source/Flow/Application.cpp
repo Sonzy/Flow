@@ -174,6 +174,7 @@ void Application::Run()
 		m_GameWorld->InitialiseWorld();
 
 #if WITH_EDITOR
+		m_Layer_Editor->InitialiseEditor();
 		m_GameWorld->StartEditor();
 #else
 		StartGame();

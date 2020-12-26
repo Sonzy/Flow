@@ -1,15 +1,17 @@
 #pragma once
+#include <vector>
 #include <string>
+#include "GameFramework/Components/WorldComponent.h"
 
-// Class Definition
+// Class Definition ////////////////////////////////////////////
 
 class ComponentHelper
 {
 public:
 
-	// Public Functions //////////////////////////////////////
+	// Static Public Template Functions //////////////////////////////////////
 
-	/* Creates a new component */
+	/* Creates a new component. Make sure to register the component */
 	template <typename T>
 	static T* CreateFreeComponent(const std::string& NewName)
 	{
@@ -32,4 +34,8 @@ public:
 			ComponentRecursion(functor, child);
 		}
 	}
+
+	// Static Public Functions //////////////////////////////////////
+
+	static void BuildComponentArray(WorldComponent* Root, std::vector<WorldComponent*>& outArray);
 };

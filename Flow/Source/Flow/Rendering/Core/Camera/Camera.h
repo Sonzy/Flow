@@ -27,6 +27,7 @@ public:
 	N_DISC virtual DirectX::XMMATRIX		GetViewMatrix() const = 0;
 	virtual void							MoveCamera(const Transform& NewTransform) = 0;
 	virtual Transform						GetCameraTransform() const = 0;
+	virtual Vector3							GetCameraPosition() const = 0;
 
 	virtual bool							OnMouseButtonPressed(MouseButtonPressedEvent& e);
 	virtual bool							OnMouseButtonReleased(MouseButtonReleasedEvent& e);
@@ -43,7 +44,8 @@ public:
 	DirectX::XMMATRIX						GetTransposedCachedViewProjection();
 	DirectX::XMMATRIX						GetCachedView();
 	DirectX::XMMATRIX						GetProjectionMatrix() const;
-	virtual Vector3							GetCameraPosition() const = 0;
+
+
 
 	virtual void							SetFOV(float NewFOV)	{ m_FieldOfView = NewFOV; }
 	virtual float							GetFOV() const			{ return m_FieldOfView; };

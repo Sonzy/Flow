@@ -46,7 +46,7 @@ void SpawnWindow::Update()
 void SpawnWindow::Render()
 {
 	//TODO: Make centralised
-	Editor::Settings& editorSettings = Editor::GetEditorSettings();
+	Editor::Settings& editorSettings = Editor::GetSettings();
 	if (editorSettings.m_DockFloatingWindows == true)
 	{
 		//Top Left
@@ -117,6 +117,8 @@ void SpawnWindow::DrawSpawnContextWindow(Actor* Parent)
 			{
 				Parent->SetRootComponent(NewComponent);
 			}
+
+			World::Get()->RegisterComponent(NewComponent);
 		}
 
 		ImGui::EndMenu();

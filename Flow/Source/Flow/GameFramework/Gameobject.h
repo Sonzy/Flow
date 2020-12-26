@@ -52,10 +52,15 @@ public:
 
 	virtual const char*		GetClassNameID() const  { return typeid(GameObject).name(); }
 
+	// If this is owned, dont handle it's own saving and loading. Something else will manage it
+	bool					IsOwned() const			{ return m_owned; }
+	void					SetOwned(bool owned)	{ m_owned = owned; }
+
 protected:
 
 	// Protected Variables /////////////////////////////////////////////////
 
 	std::string				m_name;
 	FGUID					m_guid;
+	bool					m_owned;
 };

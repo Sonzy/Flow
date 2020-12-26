@@ -11,6 +11,7 @@ SpriteActor::SpriteActor(const std::string& NewName)
 	: Actor(NewName)
 {
 	m_SpriteComponent = CreateComponent<SpriteComponent>("Sprite Component");
+	m_SpriteComponent->SetOwned(true);
 	m_RootComponent = m_SpriteComponent;
 }
 

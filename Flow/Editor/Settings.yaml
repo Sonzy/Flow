@@ -1,0 +1,15 @@
+Levels:
+  StartingLevelName: ""
+Docking:
+  DockFloatingWindows: true
+  DockPadding: [10, 10]
+Console:
+  LogColor: [1, 1, 1, 1]
+  WarningColor: [1, 1, 0, 1]
+  ErrorColor: [1, 0, 0, 1]
+EditorCamera:
+  Speed: 10
+  PanningSpeed: 0.5
+  ScrollingSpeed: 0.5
+Other:
+  ObjectHighlightColor: [0, 1, 0]

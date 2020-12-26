@@ -36,15 +36,42 @@ public:
 	{
 		Settings()
 			: m_StartingLevel("")
-			, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
 			, m_DockFloatingWindows(true)
 			, m_DockPadding(10.0f, 10.0f)
+			, m_consoleLogColor(1.0f, 1.0f, 1.0f, 1.0f)
+			, m_consoleWarningColor(1.0f, 1.0f, 0.0f, 1.0f)
+			, m_consoleErrorColor(1.0f, 0.0f, 0.0f, 1.0f)
+			, m_cameraSpeed(10.0f)
+			, m_cameraPanningSpeed(0.5f)
+			, m_cameraScrollingSpeed(0.5f)
+			, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
 		{}
 
+		//= Levels =
+
 		std::string			m_StartingLevel;
-		Vector3				m_ObjectHighlightColour;
+
+		//= Docking =
+
 		bool				m_DockFloatingWindows;
 		Vector2				m_DockPadding;
+
+		//= Console =
+
+		Vector4				m_consoleLogColor;
+		Vector4				m_consoleWarningColor;
+		Vector4				m_consoleErrorColor;
+
+		//= Editor Camera =
+
+		float				m_cameraSpeed;
+		float				m_cameraPanningSpeed;
+		float				m_cameraScrollingSpeed;
+
+		//= Other =
+
+		Vector3				m_ObjectHighlightColour;
+
 	};
 
 	class SettingsWindow
@@ -67,7 +94,7 @@ public:
 	// Public Static Functions ///////////////////////////////////////////////
 
 	static Editor&				Get();
-	static Editor::Settings&	GetEditorSettings();
+	static Editor::Settings&	GetSettings();
 
 	// Public Functions ///////////////////////////////////////////////
 
@@ -77,6 +104,7 @@ public:
 	//= Layer interface =
 
 	void						Initialise();
+	void						InitialiseEditor(); //Called after world initialised
 	virtual void				BeginPlay() override;
 	virtual void				OnAttach() override;
 	virtual void				OnDetach() override;

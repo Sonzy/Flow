@@ -49,11 +49,13 @@ void Console::PushMessage(MessageType type, const char* Message)
 
 Vector4 Console::TypeToColor(MessageType Type)
 {
+	Editor::Settings& settings = Editor::GetSettings();
+
 	switch (Type)
 	{
-	case Console::Log:		return Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	case Console::Warning:	return Vector4(1.0f, 1.0f, 0.0f, 1.0f);
-	case Console::Error:	return Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	case Console::Log:		return settings.m_consoleLogColor;
+	case Console::Warning:	return settings.m_consoleWarningColor;
+	case Console::Error:	return settings.m_consoleErrorColor;
 	default:				return Vector4(0.5f, 0.5f, 0.5f, 1.0f);
 	}
 }

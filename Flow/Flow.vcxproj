@@ -396,6 +396,7 @@
     <ClCompile Include="Source\Flow\GameFramework\Actor.cpp" />
     <ClCompile Include="Source\Flow\Maths\Maths.cpp" />
     <ClCompile Include="Source\Flow\Utils\BulletDebugDrawing.cpp" />
+    <ClCompile Include="Source\Flow\Utils\ComponentHelper.cpp" />
     <ClCompile Include="Source\Flow\Utils\DebugDraw.cpp" />
     <ClCompile Include="Source\Flow\Utils\GUIDGenerator.cpp" />
     <ClCompile Include="Source\Flow\Utils\Profiling.cpp" />

@@ -51,7 +51,7 @@ void AssetBrowser::Render()
 	static float previousFrameWindowHeight = 0.0f;
 
 	//TODO: Make centralised
-	Editor::Settings& editorSettings = Editor::GetEditorSettings();
+	Editor::Settings& editorSettings = Editor::GetSettings();
 	if (editorSettings.m_DockFloatingWindows == true)
 	{
 		//Bottom Left

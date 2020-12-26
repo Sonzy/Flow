@@ -15,6 +15,7 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 {
 	m_MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
 	m_RootComponent = m_MeshComponent;
+	m_MeshComponent->SetOwned(true);
 }
 
 StaticMeshActor::~StaticMeshActor()
