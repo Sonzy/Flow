@@ -15,6 +15,8 @@ class FLOW_API CameraActor : public Pawn
 {
 public:
 
+	REGISTER_CLASS(CameraActor)
+
 	//= Public Functions ========================
 
 										CameraActor();

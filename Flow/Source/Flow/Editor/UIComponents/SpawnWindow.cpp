@@ -72,7 +72,7 @@ void SpawnWindow::Render()
 			if (ImGui::Button(ActorClass.second.c_str()) && !SpawnedActor)
 			{
 				SpawnedActor = ClassFactory::Get().CreateObjectFromID<Actor>(ActorClass.first);
-				World::Get()->AddDefaultInitialisedActor(SpawnedActor);
+				World::Get()->RegisterActor(SpawnedActor);
 			}
 		}
 

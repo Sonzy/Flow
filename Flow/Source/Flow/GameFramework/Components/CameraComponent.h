@@ -6,12 +6,18 @@
 #include <DirectXMath.h>
 #include "Flow\Rendering\Core\Camera\Camera.h"
 
+//= Forward Declarations ====================================================
+
+namespace YAML { class Emitter; }
+
 //= Class Definitions =======================================================
 
 /* Component wrapper around the camera interface. */
 class FLOW_API CameraComponent : public WorldComponent, public CameraBase
 {
 public:
+
+	REGISTER_CLASS(CameraComponent)
 	
 	//= Public Functions ========================================
 
@@ -27,5 +33,4 @@ public:
 
 	N_DISC virtual DirectX::XMMATRIX		GetViewMatrix() const override;
 	virtual Vector3							GetCameraPosition() const override;
-
 };

@@ -17,6 +17,8 @@
 
 #include <algorithm>
 
+#include <yaml-cpp/yaml.h>
+
 StaticMeshComponent::StaticMeshComponent()
 	: StaticMeshComponent("Unnamed StaticMesh Component")
 {
@@ -206,34 +208,43 @@ void StaticMeshComponent::SetMaterial(MaterialAsset* NewMaterial)
 	RefreshBinds();
 }
 
-std::string StaticMeshComponent::GetClassSerializationUID(std::ofstream* Archive)
+const std::string& StaticMeshComponent::GetMeshIdentifier() const
 {
-	return typeid(StaticMeshComponent).name();
+	return m_MeshIdentifier;
 }
 
-void StaticMeshComponent::Serialize(std::ofstream* Archive)
+const std::string& StaticMeshComponent::GetMaterialIdentifier() const
+{
+	return m_MaterialIdentifier;
+}
+
+void StaticMeshComponent::Serialize(YAML::Emitter& Archive)
 {
 	WorldComponent::Serialize(Archive);
 
-	//Save Mesh and material
-	Archive->write(m_MeshIdentifier.c_str(), sizeof(char) * 32);
-	Archive->write(m_MaterialIdentifier.c_str(), sizeof(char) * 32);
-	Archive->write(reinterpret_cast<char*>(&m_MeshIndex), sizeof(int));
+	Archive << YAML::Key << "StaticMeshComponent";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "MeshName";
+		Archive << YAML::Value << m_MeshIdentifier;
+
+		Archive << YAML::Key << "MaterialName";
+		Archive << YAML::Value << m_MaterialIdentifier;
+
+		Archive << YAML::Value << "MeshIndex";
+		Archive << YAML::Value << m_MeshIndex;
+	}
+	Archive << YAML::EndMap;
 }
 
-void StaticMeshComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
+void StaticMeshComponent::Deserialize(YAML::Node& Archive)
 {
-	WorldComponent::Deserialize(Archive, NewParent);
+	WorldComponent::Deserialize(Archive);
 
-	//Load Mesh and material
-	char MeshName[32];
-	char MaterialName[32];
-	int MeshIndex;
-
-	Archive->read(MeshName, sizeof(char) * 32);
-	Archive->read(MaterialName, sizeof(char) * 32);
-	Archive->read(reinterpret_cast<char*>(&MeshIndex), sizeof(int));
-	SetMeshAndMaterial(MeshName, MaterialName, MeshIndex);
+	if (YAML::Node node = Archive["StaticMeshComponent"])
+	{
+		SetMeshAndMaterial(node["MeshName"].as<std::string>(), node["MaterialName"].as<std::string>(), node["MeshIndex"].as<int>());
+	}
 }
 
 void StaticMeshComponent::DefaultInitialise()
@@ -419,7 +430,7 @@ void StaticMeshComponent::InitialisePhysics()
 
 	CurrentWorld->AddPhysicsObject(m_RigidBody);
 
-	//FLOW_ENGINE_LOG("Physics initialised for object {0}", m_ObjectName);
+	//FLOW_ENGINE_LOG("Physics initialised for object {0}", m_name);
 }
 
 void StaticMeshComponent::DestroyPhysics()

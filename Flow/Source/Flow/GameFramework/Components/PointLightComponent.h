@@ -12,6 +12,8 @@ class PointLightComponent : public RenderableComponent
 {
 public:
 
+	REGISTER_CLASS(PointLightComponent)
+
 	//= Public Functions ======================================
 
 										PointLightComponent();
@@ -20,9 +22,10 @@ public:
 	virtual void						Render() override;
 	virtual void						DrawComponentDetailsWindow() override;
 
-	virtual std::string					GetClassSerializationUID(std::ofstream* Archive);
-	virtual void						Serialize(std::ofstream* Archive) override;
-	virtual void						Deserialize(std::ifstream* Archive, Actor* NewParent) override;
+	//= Save/Load =
+
+	virtual void					Serialize(YAML::Emitter& Archive) override;
+	virtual void					Deserialize(YAML::Node& Archive)  override;
 
 private:
 

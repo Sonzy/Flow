@@ -14,6 +14,8 @@ class FLOW_API SpriteActor : public Actor
 {
 public:
 
+	REGISTER_CLASS(SpriteActor)
+
 	//= Public Functions =======================
 
 								SpriteActor();

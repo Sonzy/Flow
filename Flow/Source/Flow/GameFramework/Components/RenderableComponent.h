@@ -19,6 +19,8 @@ class FLOW_API RenderableComponent : public WorldComponent, public Renderable
 {
 public:
 
+	REGISTER_CLASS(RenderableComponent)
+
 	//= Public Functions ==========================
 
 								RenderableComponent();

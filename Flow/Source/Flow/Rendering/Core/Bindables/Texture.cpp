@@ -81,7 +81,7 @@ Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::strin
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
 	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
 
-	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset.GetPixels(), Asset.GetImage(0, 0, 0)->rowPitch, 0u);
+	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset.GetPixels(), static_cast<UINT>(Asset.GetImage(0, 0, 0)->rowPitch), 0u);
 
 	//Create a view to the texture
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};

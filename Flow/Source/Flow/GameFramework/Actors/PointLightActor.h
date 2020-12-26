@@ -14,6 +14,8 @@ class FLOW_API PointLightActor : public Actor
 {
 public:
 
+	REGISTER_CLASS(PointLightActor)
+
 	//= Public Functions =====================
 
 	PointLightActor();

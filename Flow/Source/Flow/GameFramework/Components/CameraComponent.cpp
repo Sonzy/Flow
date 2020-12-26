@@ -2,6 +2,8 @@
 #include "CameraComponent.h"
 #include "Flow\Input\Input.h"
 
+#include <yaml-cpp/yaml.h>
+
 CameraComponent::CameraComponent()
 	: CameraComponent("Camera Component")
 {

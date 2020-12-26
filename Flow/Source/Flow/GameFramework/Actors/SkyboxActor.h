@@ -13,6 +13,8 @@ class SkyboxComponent;
 class FLOW_API SkyboxActor : public Actor
 {
 public:
+
+	REGISTER_CLASS(SkyboxActor)
 	
 	//= Public Functions ===========================
 

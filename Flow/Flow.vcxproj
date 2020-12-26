@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -64,7 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -179,6 +179,7 @@
     <ClInclude Include="Source\Flow\Utils\ComponentHelper.h" />
     <ClInclude Include="Source\Flow\Utils\DebugDraw.h" />
     <ClInclude Include="Source\Flow\Utils\FileSystem.h" />
+    <ClInclude Include="Source\Flow\Utils\GUIDGenerator.h" />
     <ClInclude Include="Source\Flow\Utils\HelperMacros.h" />
     <ClInclude Include="Source\Flow\Utils\ImGuiHelper.h" />
     <ClInclude Include="Source\Flow\Maths\Rotator.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGuiLayer.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_DX11.h" />
     <ClInclude Include="Source\Flow\UserInterface\imgui\ImGui_Win32.h" />
+    <ClInclude Include="Source\Flow\Utils\YamlSerializer.h" />
     <ClInclude Include="Source\Flow\Window\Window.h" />
     <ClInclude Include="Source\Flow\Window\Window_Win32.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
@@ -395,6 +397,7 @@
     <ClCompile Include="Source\Flow\Maths\Maths.cpp" />
     <ClCompile Include="Source\Flow\Utils\BulletDebugDrawing.cpp" />
     <ClCompile Include="Source\Flow\Utils\DebugDraw.cpp" />
+    <ClCompile Include="Source\Flow\Utils\GUIDGenerator.cpp" />
     <ClCompile Include="Source\Flow\Utils\Profiling.cpp" />
     <ClCompile Include="Source\Flow\Utils\Timer.cpp" />
     <ClCompile Include="Source\Flow\Input\WindowsInput.cpp" />

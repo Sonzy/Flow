@@ -1,7 +1,12 @@
 #include "Flowpch.h"
+#include <iostream>
+#include "Maths/Vector3.h"
 #include "PointLightComponent.h"
 #include "ThirdParty/ImGui/imgui.h"
-#include <iostream>
+
+
+#include <yaml-cpp/yaml.h>
+#include "Utils/YamlSerializer.h"
 
 PointLightComponent::PointLightComponent()
 	: RenderableComponent("Unnamed Point Light Component")
@@ -52,33 +57,49 @@ void PointLightComponent::DrawComponentDetailsWindow()
 	ImGui::InputFloat("Attenuation Quadratic", reinterpret_cast<float*>(&m_CB.m_AttenuationQuadratic));				
 }
 
-std::string PointLightComponent::GetClassSerializationUID(std::ofstream* Archive)
-{
-	return typeid(PointLightComponent).name();
-}
-
-void PointLightComponent::Serialize(std::ofstream* Archive)
+void PointLightComponent::Serialize(YAML::Emitter& Archive)
 {
 	WorldComponent::Serialize(Archive);
 
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_Position), sizeof(DirectX::XMFLOAT3));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_Ambient), sizeof(DirectX::XMFLOAT3));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_Diffuse), sizeof(DirectX::XMFLOAT3));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_DiffuseIntensity), sizeof(float));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_AttenuationConstant), sizeof(float));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_AttenuationLinear), sizeof(float));
-	Archive->write(reinterpret_cast<char*>(&m_CB.m_AttenuationQuadratic), sizeof(float));
+	Archive << YAML::Key << "PointLightComponent";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "Position";
+		Archive << YAML::Value << static_cast<Vector3>(m_CB.m_Position);
+
+		Archive << YAML::Key << "Ambient";
+		Archive << YAML::Value << static_cast<Vector3>(m_CB.m_Ambient);
+
+		Archive << YAML::Key << "Diffuse";
+		Archive << YAML::Value << static_cast<Vector3>(m_CB.m_Diffuse);
+
+		Archive << YAML::Key << "DiffuseIntensity";
+		Archive << YAML::Value << m_CB.m_DiffuseIntensity;
+
+		Archive << YAML::Key << "AttenuationConstant";
+		Archive << YAML::Value << m_CB.m_AttenuationConstant;
+
+		Archive << YAML::Key << "AttenuationLinear";
+		Archive << YAML::Value << m_CB.m_AttenuationLinear;
+
+		Archive << YAML::Key << "AttenuationQuadratic";
+		Archive << YAML::Value << m_CB.m_AttenuationQuadratic;
+	}
+	Archive << YAML::EndMap;
 }
 
-void PointLightComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
+void PointLightComponent::Deserialize(YAML::Node& Archive)
 {
-	WorldComponent::Deserialize(Archive, NewParent);
+	WorldComponent::Deserialize(Archive);
 
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_Position), sizeof(DirectX::XMFLOAT3));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_Ambient), sizeof(DirectX::XMFLOAT3));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_Diffuse), sizeof(DirectX::XMFLOAT3));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_DiffuseIntensity), sizeof(float));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_AttenuationConstant), sizeof(float));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_AttenuationLinear), sizeof(float));
-	Archive->read(reinterpret_cast<char*>(&m_CB.m_AttenuationQuadratic), sizeof(float));
+	if (YAML::Node node = Archive["PointLightComponent"])
+	{
+		m_CB.m_Position = node["Position"].as<Vector3>();
+		m_CB.m_Ambient = node["Ambient"].as<Vector3>();
+		m_CB.m_Diffuse = node["Diffuse"].as<Vector3>();
+		m_CB.m_DiffuseIntensity = node["DiffuseIntensity"].as<float>();
+		m_CB.m_AttenuationConstant = node["AttenuationConstant"].as<float>();
+		m_CB.m_AttenuationLinear = node["AttenuationLinear"].as<float>();
+		m_CB.m_AttenuationQuadratic = node["AttenuationQuadratic"].as<float>();
+	}
 }

@@ -17,6 +17,9 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 
+#include <yaml-cpp/yaml.h>
+#include "Utils/YamlSerializer.h"
+
 SpriteComponent::SpriteComponent()
 	: SpriteComponent("Sprite Component")
 {
@@ -45,7 +48,6 @@ void SpriteComponent::RefreshBinds()
 	Technique Standard = Technique("SpriteComponent_Standard");
 	{
 		Step MainStep(0);
-
 
 		//Topology
 		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
@@ -162,24 +164,27 @@ void SpriteComponent::DrawComponentDetailsWindow()
 	}
 }
 
-std::string SpriteComponent::GetClassSerializationUID(std::ofstream* Archive)
-{
-	return typeid(SpriteComponent).name();
-}
-
-void SpriteComponent::Serialize(std::ofstream* Archive)
+void SpriteComponent::Serialize(YAML::Emitter& Archive)
 {
 	WorldComponent::Serialize(Archive);
 
-	//Save Mesh and material
-	Archive->write(reinterpret_cast<char*>(&m_DoubleSided), sizeof(bool));
+	Archive << YAML::Key << "SpriteComponent";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "DoubleSided";
+		Archive << YAML::Value << m_DoubleSided;
+	}
+	Archive << YAML::EndMap;
 }
 
-void SpriteComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
+void SpriteComponent::Deserialize(YAML::Node& Archive)
 {
-	WorldComponent::Deserialize(Archive, NewParent);
+	WorldComponent::Deserialize(Archive);
 
-	Archive->read(reinterpret_cast<char*>(&m_DoubleSided), sizeof(bool));
+	if (YAML::Node node = Archive["WorldComponent"])
+	{
+		m_DoubleSided = node["DoubleSided"].as<bool>();
+	}
 
 	RefreshBinds();
 }

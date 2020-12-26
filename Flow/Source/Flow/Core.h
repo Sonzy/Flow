@@ -24,3 +24,5 @@
 #define N_DISC [[nodiscard]]
 
 #define WITH_EDITOR 1
+
+#define REGISTER_CLASS(ClassName) virtual const char* GetClassNameID() const override { return typeid(ClassName).name(); }

@@ -115,16 +115,17 @@ void Inspector::RenderHeirarchy()
 		{
 			char Buffer[256] = { '\0' };
 			int Counter = 0;
-			for (Actor* Object : m_CurrentWorld->GetActors())
+			for (std::pair<FGUID, Actor*> Object : m_CurrentWorld->GetActorMap())
 			{
-				sprintf_s(Buffer, "%s###%d", Object->GetName().c_str(), Counter);
+				Actor* actor = Object.second;
+				sprintf_s(Buffer, "%s###%d", actor->GetName().c_str(), Counter);
 
 				if (m_Renaming == false)
 				{
-					const bool selected = m_SelectedComponent ? m_SelectedComponent->GetParentActor() == Object : false;
+					const bool selected = m_SelectedComponent ? m_SelectedComponent->GetParentActor() == actor : false;
 					if (ImGui::Selectable(Buffer, selected))
 					{
-						m_Editor->GetTool<SelectionTool>()->SelectComponent(Object->GetRootComponent());
+						m_Editor->GetTool<SelectionTool>()->SelectComponent(actor->GetRootComponent());
 						ImGui::GetIO().WantCaptureKeyboard = false;
 					}
 				}

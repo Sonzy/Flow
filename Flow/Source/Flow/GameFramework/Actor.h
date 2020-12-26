@@ -12,6 +12,7 @@
 #include "Flow\Logging\Log.h"
 #include "Gameobject.h"
 #include "Maths/Maths.h"
+#include "GameFramework/World.h"
 
 //= Forward Declarations ===================================
 
@@ -23,6 +24,8 @@ class Controller;
 class FLOW_API Actor : public GameObject
 {
 public:
+
+	REGISTER_CLASS(Actor)
 
 	//= Public Functions ============================
 
@@ -60,10 +63,10 @@ public:
 	std::vector<WorldComponent*> GetComponents() const;
 	Component*				GetComponentByName(const std::string& Name) const;
 
-	virtual void			Serialize(std::ofstream* Archive);
-	void					SerializeComponents(std::ofstream* Archive);
-	virtual void			Deserialize(std::ifstream* Archive);
-	void					DeserializeComponents(std::ifstream* Archive);
+	//= Save/Load =
+
+	virtual void			Serialize(YAML::Emitter& Archive) override;
+	virtual void			Deserialize(YAML::Node& Archive) override;
 
 	friend std::ofstream& operator<<(std::ofstream& Out, const Actor& Object)
 	{
@@ -91,8 +94,10 @@ protected:
 		static_assert(std::is_base_of<Component, T>::value, "Tried to create a component templated with a non-component type");
 
 		T* NewComponent = new T(NewName);
-		Component* Comp = static_cast<Component*>(NewComponent);
-		Comp->SetParent(this);
+		NewComponent->SetParent(this);
+
+		World::Get()->RegisterComponent(NewComponent);
+
 		return NewComponent;
 	}
 

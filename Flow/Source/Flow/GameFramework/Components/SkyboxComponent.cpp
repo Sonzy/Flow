@@ -59,8 +59,3 @@ void SkyboxComponent::Render()
 
 	WorldComponent::Render();
 }
-
-std::string SkyboxComponent::GetClassSerializationUID(std::ofstream* Archive)
-{
-	return typeid(SkyboxComponent).name();
-}

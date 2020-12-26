@@ -16,16 +16,16 @@ public:
 		: x(0), y(0), z(0), w(0)
 	{}
 
-	IntVector4(float x, float y, float z, float w)
+	IntVector4(int x, int y, int z, int w)
 		: x(x), y(y), z(z), w(w)
 	{}
 
-	IntVector4(float xyzw)
+	IntVector4(int xyzw)
 		: x(xyzw), y(xyzw), z(xyzw), w(xyzw)
 	{}
 
 	IntVector4(Vector4 Input)
-		: x(Input.z), y(Input.y), z(Input.z), w(0)
+		: x(static_cast<int>(Input.x)), y(static_cast<int>(Input.y)), z(static_cast<int>(Input.z)), w(static_cast<int>(Input.w))
 	{}
 
 	//= Operators =========================================================
@@ -34,10 +34,10 @@ public:
 
 	//= Public Variables ===========================
 
-	float x;
-	float y;
-	float z;
-	float w;
+	int x;
+	int y;
+	int z;
+	int w;
 };
 
 //= External Inline Functions =======================================

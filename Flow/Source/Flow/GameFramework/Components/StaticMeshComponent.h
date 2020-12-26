@@ -13,12 +13,15 @@ class MeshAsset;
 class MaterialAsset;
 class Material;
 class Mesh;
+namespace YAML { class Emitter; }
 
 //= Class Definitions ==================================================
 
 class FLOW_API StaticMeshComponent : public RenderableComponent
 {
 public:
+
+	REGISTER_CLASS(StaticMeshComponent)
 	
 	//= Public Functions ================================
 
@@ -44,11 +47,13 @@ public:
 	void						SetStaticMesh(MeshAsset* NewMesh);
 	void						SetMaterial(MaterialAsset* NewMaterial);
 
+	const std::string&			GetMeshIdentifier() const;
+	const std::string&			GetMaterialIdentifier() const;
+
 	//= Saving and loading ==========
 
-	virtual std::string			GetClassSerializationUID(std::ofstream* Archive) override;
-	virtual void				Serialize(std::ofstream* Archive) override;
-	virtual void				Deserialize(std::ifstream* Archive, Actor* NewParent) override;
+	virtual void				Serialize(YAML::Emitter& Archive) override;
+	virtual void				Deserialize(YAML::Node& Archive) override;
 
 	virtual void				DefaultInitialise() override;
 

@@ -10,6 +10,10 @@
 #include "Editor/UIComponents/Inspector.h"
 #include "Editor/UIComponents/SpawnWindow.h"
 
+#include <yaml-cpp/yaml.h>
+
+#include "Utils/ComponentHelper.h"
+
 Actor::Actor()
 	: m_RootComponent(nullptr)
 {
@@ -161,64 +165,45 @@ Component* Actor::GetComponentByName(const std::string& Name) const
 		return nullptr;
 }
 
-void Actor::Serialize(std::ofstream* Archive)
+void Actor::Serialize(YAML::Emitter& Archive)
 {
-	//Actor class
-	std::string ClassName = typeid(Actor).name();
-	Archive->write(ClassName.c_str(), sizeof(char) * 32);
-
-	//Name of actor (TODO: Max character length)
-	Archive->write(GetName().c_str(), sizeof(char) * 32);
-
-	//Save whether to load components
-	bool HasRoot = m_RootComponent;
-	Archive->write(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
-
-	SerializeComponents(Archive);
+	GameObject::Serialize(Archive);
+	
+	Archive << YAML::Key << "Actor";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "Components";
+		Archive << YAML::Value << YAML::BeginSeq;
+		{
+			ComponentHelper::ComponentRecursion([&Archive](WorldComponent* component){ Archive << component->GetGuid(); }, m_RootComponent);
+		}
+		Archive << YAML::EndSeq;
+	}
+	Archive << YAML::EndMap;
 }
 
-void Actor::SerializeComponents(std::ofstream* Archive)
+void Actor::Deserialize(YAML::Node& Archive)
 {
-	if (auto Root = GetRootComponent())
+	GameObject::Deserialize(Archive);
+
+	if (YAML::Node actorNode = Archive["Actor"])
 	{
-		Root->Serialize(Archive);
-		Root->SerializeChildren(Archive);
+		if (YAML::Node node = actorNode["Components"])
+		{
+			//Check if we have already initialised children that havent had their parent set
+			World* world = World::Get();
+			for (YAML::iterator::value_type child : node)
+			{
+				WorldComponent* childComponent = world->FindComponent<WorldComponent>(child.as<FGUID>());
+				if (childComponent == nullptr)
+				{
+					continue;
+				}
+
+				childComponent->SetParent(this);
+			}
+		}
 	}
-}
-
-void Actor::Deserialize(std::ifstream* Archive)
-{
-	//Set the actor name
-	char ActorName[32] = "";
-	Archive->read(ActorName, sizeof(char) * 32);
-	SetName(ActorName);
-
-	//Check if the actor had any components
-	bool HasRoot = false;
-	Archive->read(reinterpret_cast<char*>(&HasRoot), sizeof(bool));
-
-	if (HasRoot == true)
-	{
-		DeserializeComponents(Archive);
-	}
-}
-
-void Actor::DeserializeComponents(std::ifstream* Archive)
-{
-	//Get the UID for the class
-	char ActorClassID[32] = "";
-	Archive->read(ActorClassID, sizeof(char) * 32);
-
-	WorldComponent* NewRoot = ClassFactory::Get().CreateObjectFromID<WorldComponent>(std::string(ActorClassID));
-	if (!NewRoot)
-	{
-		FLOW_ENGINE_ERROR("Tried to load a component that had an invalid class");
-		return;
-	}
-
-	m_RootComponent = NewRoot;
-	NewRoot->Deserialize(Archive, this);
-	NewRoot->DeserializeChildren(Archive, this);
 }
 
 void Actor::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)

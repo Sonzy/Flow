@@ -15,6 +15,9 @@
 #include "Editor/Editor.h"
 #include "Editor/Tools\SelectionTool.h"
 
+#include <yaml-cpp/yaml.h>
+#include "Utils/YamlSerializer.h"
+
 WorldComponent::WorldComponent()
 	: WorldComponent("Unnamed WorldComponent")
 {
@@ -273,7 +276,7 @@ void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 void WorldComponent::DrawComponentInActorTreeRecursive()
 {
 	//TODO: Need to use some GUIDs
-	if (ImGui::TreeNodeEx(m_ObjectName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		if (ImGui::IsItemClicked())
 		{
@@ -423,81 +426,61 @@ void WorldComponent::UpdateCollisionScale()
 	World::GetPhysicsWorld()->updateSingleAabb(m_RigidBody);
 }
 
-std::string WorldComponent::GetClassSerializationUID(std::ofstream* Archive)
+void WorldComponent::Serialize(YAML::Emitter& Archive)
 {
-	return typeid(WorldComponent).name();
-}
+	GameObject::Serialize(Archive);
 
-void WorldComponent::Serialize(std::ofstream* Archive)
-{
-	//= Object Class ======
-	std::string ClassUID = GetClassSerializationUID(Archive);
-	Archive->write(ClassUID.c_str(), sizeof(char) * 32);
-
-	// Component Name (TODO: Decide on a fixed string size)
-	Archive->write(GetName().c_str(), sizeof(char) * 32);
-
-	// Name of parent component
-	auto Parent = GetParentComponent();
-	(Parent) ?	Archive->write(Parent->GetName().c_str(), sizeof(char) * 32) :	Archive->write("None", sizeof(char) * 32);
-	
-	// Write the component transform
-	Archive->write(reinterpret_cast<char*>(&GetRelativeTransform()), sizeof(Transform));
-
-	//= Physics ===
-	Archive->write(reinterpret_cast<char*>(&m_SimulatePhysics), sizeof(bool));
-}
-
-void WorldComponent::SerializeChildren(std::ofstream* Archive)
-{
-	//Write all child components
-	for (auto& Comp : GetChildren())
+	Archive << YAML::Key << "WorldComponent";
+	Archive << YAML::BeginMap;
 	{
-		Comp->Serialize(Archive);
-		Comp->SerializeChildren(Archive);
-	}
-}
+		WorldComponent* parent = GetParentComponent();
+		Archive << YAML::Key << "ParentComponent";
+		Archive << YAML::Value << (parent ? parent->GetGuid() : -1);
 
-void WorldComponent::Deserialize(std::ifstream* Archive, Actor* NewParent)
-{
-	// Component Name
-	char ComponentName[32] = "";
-	Archive->read(ComponentName, sizeof(char) * 32);
-	SetName(ComponentName);
+		Archive << YAML::Key << "ComponentTransform";
+		Archive << YAML::Value << GetRelativeTransform();
 
-	// Set the parent Actor
-	SetParent(NewParent);
+		Archive << YAML::Key << "SimulatingPhysics";
+		Archive << YAML::Value << m_SimulatePhysics;
 
-	// Load Component Parent
-	Archive->read(ComponentName, sizeof(char) * 32);
-	std::string CompNameStr(ComponentName);
-	if (CompNameStr != "None")
-	{
-		if (Component* Comp = NewParent->GetComponentByName(ComponentName))
+		Archive << YAML::Key << "Children";
+		Archive << YAML::Value << YAML::BeginSeq;
 		{
-			SetParentComponent(dynamic_cast<WorldComponent*>(Comp));
+			for (WorldComponent* Child : m_Children)
+			{
+				Archive << Child->GetGuid();
+			}
 		}
-		else
-		{
-			FLOW_ENGINE_ERROR("StaticMeshComponent::Deserialize: Failed to load component parent with name %s", ComponentName);
-		}
+		Archive << YAML::EndSeq;
 	}
-
-	//Load Component Transform
-	Transform NewTrans;
-	Archive->read(reinterpret_cast<char*>(&NewTrans), sizeof(Transform));
-	SetRelativeTransform(NewTrans);
-
-	//= Load Physics properties
-	Archive->read(reinterpret_cast<char*>(&m_SimulatePhysics), sizeof(bool));
+	Archive << YAML::EndMap;
 }
 
-void WorldComponent::DeserializeChildren(std::ifstream* Archive, Actor* NewParent)
+void WorldComponent::Deserialize(YAML::Node& Archive)
 {
-	for (auto& Comp : m_Children)
+	if (YAML::Node node = Archive["WorldComponent"])
 	{
-		Comp->Deserialize(Archive, NewParent);
-		Comp->DeserializeChildren(Archive, NewParent);
+		SetParentComponent(dynamic_cast<WorldComponent*>(World::Get()->FindComponent(node["ParentComponent"].as<FGUID>())));
+
+		SetRelativeTransform(node["ComponentTransform"].as<Transform>());
+
+		m_SimulatePhysics = node["SimulatingPhysics"].as<bool>();
+
+		if (YAML::Node node = Archive["Children"])
+		{
+			//Check if we have already initialised children that havent had their parent set
+			World* world = World::Get();			
+			for (YAML::iterator::value_type child : node)
+			{
+				WorldComponent* childComponent = world->FindComponent<WorldComponent>(child.as<FGUID>());
+				if (childComponent == nullptr)
+				{
+					continue;
+				}
+
+				childComponent->SetParentComponent(this);
+			}
+		}
 	}
 }
 

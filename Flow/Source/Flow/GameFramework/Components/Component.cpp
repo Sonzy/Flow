@@ -1,5 +1,9 @@
 #include "Flowpch.h"
 #include "Component.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/World.h"
+#include "Utils/GUIDGenerator.h"
+#include <yaml-cpp/yaml.h>
 
 Component::Component()
 	: Component("Unnamed Component")
@@ -47,6 +51,29 @@ void Component::Tick(float DeltaTime)
 
 void Component::DrawComponentDetailsWindow()
 {
+}
+
+void Component::Serialize(YAML::Emitter& Archive)
+{
+	GameObject::Serialize(Archive);
+
+	Archive << YAML::Key << "Component";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "ParentActor";
+		Archive << YAML::Value << (m_ParentObject != nullptr ? m_ParentObject->GetGuid() : -1);
+	}
+	Archive << YAML::EndMap;
+}
+
+void Component::Deserialize(YAML::Node& Archive)
+{
+	GameObject::Deserialize(Archive);
+
+	if (YAML::Node node = Archive["Component"])
+	{
+		m_ParentObject = World::Get()->FindActor(node["ParentActor"].as<FGUID>());
+	}
 }
 
 

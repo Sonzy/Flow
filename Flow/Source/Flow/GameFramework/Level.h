@@ -3,10 +3,13 @@
 //= Includes =================================
 
 #include <string>
+#include "Typedefs.h"
 
 //= Forward Declarations =====================
 
 class Actor;
+namespace YAML { class Emitter; }
+namespace YAML { class Node; }
 
 //= Class Definition =========================
 
@@ -19,8 +22,8 @@ public:
 											Level() = delete;
 											Level(const std::string& LevelName);
 
-	void									Save(std::ofstream& Output);
-	void									Load(std::ifstream& Input);
+	void									Save(YAML::Emitter& file);
+	void									Load(YAML::Node& Input);
 
 	void									InitialiseTickList();
 	void									DispatchBeginPlay();
@@ -30,13 +33,11 @@ public:
 	void									Tick(float DeltaTime);
 	void									SetTickEnabled(Actor* Actor, bool Enable);
 
-	std::vector<Actor*>&	GetActors()		{ return m_Actors; }
-
 private:
 
 	//= Private Variables ==========
 
 	std::string								m_Name;
-	std::vector<Actor*>						m_Actors;
+	std::unordered_map<FGUID, Actor*>		m_Actors;
 	std::vector<Actor*>						m_TickList;
 };

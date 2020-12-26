@@ -16,6 +16,8 @@ class SpriteComponent : public RenderableComponent
 {
 public:
 
+	REGISTER_CLASS(SpriteComponent)
+
 	// Public Functions ///////////////////////////////////////////
 
 								SpriteComponent();
@@ -37,9 +39,8 @@ public:
 
 	//= Saving and Loading =
 
-	virtual std::string			GetClassSerializationUID(std::ofstream* Archive) override;
-	virtual void				Serialize(std::ofstream* Archive) override;
-	virtual void				Deserialize(std::ifstream* Archive, Actor* NewParent) override;
+	virtual void				Serialize(YAML::Emitter& Archive) override;
+	virtual void				Deserialize(YAML::Node& Archive) override;
 
 private:
 

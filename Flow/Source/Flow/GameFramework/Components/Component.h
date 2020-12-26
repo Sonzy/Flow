@@ -17,6 +17,8 @@ class FLOW_API Component : public GameObject
 {
 public:
 
+	REGISTER_CLASS(Component)
+
 	//= Public Functions ===============================
 
 							Component();
@@ -33,6 +35,11 @@ public:
 	virtual void			Tick(float DeltaTime) override;
 
 	virtual void			DrawComponentDetailsWindow();
+
+	//= Save/Load =
+
+	virtual void			Serialize(YAML::Emitter& Archive) override;
+	virtual void			Deserialize(YAML::Node& Archive) override;
 
 protected:
 

@@ -13,6 +13,8 @@ class StaticMeshComponent;
 class FLOW_API StaticMeshActor : public Actor
 {
 public:
+
+	REGISTER_CLASS(StaticMeshActor)
 	
 	//= Public Functions =======================
 
@@ -21,6 +23,11 @@ public:
 	virtual									~StaticMeshActor();
 
 	StaticMeshComponent*					GetMeshComponent() const;
+
+	//= Save/Load =
+
+	virtual void							Serialize(YAML::Emitter& Archive) override;
+	virtual void							Deserialize(YAML::Node& Archive) override;
 
 protected:
 

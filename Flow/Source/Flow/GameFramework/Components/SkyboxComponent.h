@@ -14,6 +14,8 @@ class MeshAsset;
 class SkyboxComponent : public RenderableComponent
 {
 public:
+
+	REGISTER_CLASS(SkyboxComponent)
 	
 	//= Public Functions =================================
 
@@ -22,8 +24,6 @@ public:
 
 	virtual DirectX::XMMATRIX		GetTransformXM() const override;
 	virtual void					Render() override;
-
-	virtual std::string				GetClassSerializationUID(std::ofstream* Archive);
 
 protected:
 

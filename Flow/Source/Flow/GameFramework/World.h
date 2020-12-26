@@ -10,6 +10,7 @@
 #include "Rendering/Core/DebugDrawing/LineBatcher.h"
 #include "Maths/Vector3.h"
 #include "Utils\BulletDebugDrawing.h"
+#include "Typedefs.h"
 
 //= Forward Declarations =================================
 
@@ -21,6 +22,7 @@ class btDiscreteDynamicsWorld;
 class Actor;
 class Skybox;
 class Controller;
+class Component;
 
 //= Enum Definitions ====================================
 
@@ -42,10 +44,12 @@ public:
 	template<typename T>
 	T* SpawnActor(const std::string& Name)
 	{
-		T* NewObject = new T(Name);
-		m_MainLevel->GetActors().push_back(NewObject);
+		static_assert(std::is_base_of<Actor, T>::value, "Trying to spawn a class that isn't an actor");
 
-		return NewObject;
+		T* newActor = new T(Name);
+		RegisterActor(newActor);
+
+		return newActor;
 	}
 
 	//= Public Functions ============================
@@ -68,10 +72,25 @@ public:
 	void												StartEditor();
 #endif
 
-	/* Adds an actor to the world that was default created, takes ownership*/
-	void												AddDefaultInitialisedActor(Actor* NewActor);
+	//= Actor manipulation = 
 
 	void												DestroyActor(Actor* Act);
+
+	//= Object Management =
+	Actor*												FindActor(FGUID guid);
+	Component*											FindComponent(FGUID guid);
+
+	template<typename T>
+	T* FindActor(FGUID guid)
+	{
+		return dynamic_cast<T*>(FindActor(guid));
+	}
+
+	template<typename T>
+	T* FindComponent(FGUID guid)
+	{
+		return dynamic_cast<T*>(FindComponent(guid));
+	}
 
 	const std::string&									GetName();
 
@@ -89,14 +108,21 @@ public:
 	void												DeRegisterController(Controller* OldController);
 	Controller*											GetLocalController() const;
 
+	//= Registration =
+
+	void												RegisterActor(Actor* newActor);
+	void												RegisterComponent(Component* newActor);
+
 
 	//= Getters etc
-	LineBatcher&										GetLineBatcher() const { return sm_LineBatcher; };
+	LineBatcher&										GetLineBatcher() const	{ return sm_LineBatcher; };
 	static LineBatcher&									GetLineBatcher_S();
 	BulletDebugDraw&									GetPhysicsDebugDrawer() { return m_DebugDrawer; }
-	std::vector<Actor*>&								GetActors(){ return m_MainLevel->GetActors(); }
 
-	WorldState											GetWorldState() const { return m_WorldState; }
+	const std::unordered_map<FGUID, Actor*>&			GetActorMap()			{ return m_actorMap; }
+	const std::unordered_map<FGUID, Component*>&		GetComponentMap()		{ return m_componentMap; }
+
+	WorldState											GetWorldState() const	{ return m_WorldState; }
 
 	void												PrintAllPhysicsObjects() const;
 protected:
@@ -117,6 +143,11 @@ private:
 	std::string											m_WorldName;
 	Level*												m_MainLevel;
 	WorldState											m_WorldState;
+
+	//= Lookup =
+
+	std::unordered_map<FGUID, Actor*>					m_actorMap;
+	std::unordered_map<FGUID, Component*>				m_componentMap;
 
 	//=== World Physics ===
 

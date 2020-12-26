@@ -11,12 +11,15 @@
 class btRigidBody;
 class btCollisionShape;
 class MotionState;
+namespace YAML { class Emitter; }
 
 //= Class Definitions ===============================================
 
 class FLOW_API WorldComponent : public Component
 {
 public:
+
+	REGISTER_CLASS(WorldComponent)
 	
 	//= Public Functions ================================
 
@@ -89,13 +92,10 @@ public:
 
 	void							UpdateCollisionScale();
 
-	//= Serialization =
+	//= Save/Load =
 
-	virtual std::string				GetClassSerializationUID(std::ofstream* Archive);
-	virtual void					Serialize(std::ofstream* Archive);
-	void							SerializeChildren(std::ofstream* Archive);
-	virtual void					Deserialize(std::ifstream* Archive, Actor* NewParent);
-	void							DeserializeChildren(std::ifstream* Archive, Actor* NewParent);
+	virtual void					Serialize(YAML::Emitter& Archive) override;
+	virtual void					Deserialize(YAML::Node& Archive)  override;
 
 	virtual void					DefaultInitialise();
 

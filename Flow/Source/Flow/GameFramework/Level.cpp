@@ -1,119 +1,126 @@
 #include "Flowpch.h"
 #include "Level.h"
-#include "Actor.h"
+
 #include "Flow/GameFramework/Other/ClassFactory.h"
 #include "Assets/AssetSystem.h"
+
+#include "Actor.h"
+#include "Components/WorldComponent.h"
+
+#include <yaml-cpp/yaml.h>
 
 Level::Level(const std::string& LevelName)
 	: m_Name(LevelName)
 {
 }
 
-void Level::Save(std::ofstream& Output)
+void Level::Save(YAML::Emitter& file)
 {
 	PROFILE_FUNCTION();
 
-	fs::path SavePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.flvl";
-	std::ofstream OutStream = std::ofstream(SavePath, std::ios::out | std::ios::trunc | std::ios::binary);
-	if (OutStream.is_open() == false)
+	// Generate data
+	file << YAML::BeginMap;
+
+	file << YAML::Key << "LevelName";
+	file << YAML::Value << m_Name;
+
+	//= Serialise all actors =
+	file << YAML::Key << "Actors";
+	file << YAML::Value << YAML::BeginSeq;
+	for (const std::pair<FGUID, Actor*> actor : World::Get()->GetActorMap())
 	{
-		FLOW_ENGINE_ERROR("Failed to create save file");
-		return;
+		file << YAML::BeginMap;
+		actor.second->Serialize(file);
+		file << YAML::EndMap;
 	}
+	file << YAML::EndSeq;
 
-	//Save Level Name (TODO: Max character length - 32 for now)
-	OutStream.write(reinterpret_cast<const char*>(&m_Name), sizeof(char) * 32);
-
-	//Write level metadata
-
-
-	//Write the number of actors in the file
-	int NumberOfActors = static_cast<int>(m_Actors.size());
-	OutStream.write(reinterpret_cast<const char*>(&NumberOfActors), sizeof(int));
-
-	for (auto Object : m_Actors)
+	//= Serialise all components =
+	file << YAML::Key << "Components";
+	file << YAML::Value << YAML::BeginSeq;
+	for (const std::pair<FGUID, Component*> component : World::Get()->GetComponentMap())
 	{
-		Object->Serialize(&OutStream);
+		file << YAML::BeginMap;
+		component.second->Serialize(file);
+		file << YAML::EndMap;
 	}
+	file << YAML::EndSeq;
 
-	OutStream.close();
-
+	file << YAML::EndMap;
 }
 
-void Level::Load(std::ifstream& Input)
+void Level::Load(YAML::Node& Input)
 {
-	//TODO: Should probably just load the entire file in one go and then work on the buffered file
+	m_Name = Input["LevelName"].as<std::string>();
 
-	PROFILE_FUNCTION();
-
-	//TODO: Delete all actors in level
-	m_Actors.erase(m_Actors.begin(), m_Actors.end());
-
-	std::string SavePath = "Saved/SaveFile.flvl";
-	std::ifstream InputStream = std::ifstream(SavePath, std::ios::in | std::ios::binary);
-	if (!InputStream)
+	auto actors = Input["Actors"];
+	if (actors.IsDefined())
 	{
-		FLOW_ENGINE_ERROR("Failed to load save file at path: %s", SavePath.c_str());
-		return;
-	}
-
-	//Load Level Name
-	InputStream.read(reinterpret_cast<char*>(&m_Name), sizeof(char) * 32);
-
-	//Load Level Meta Data
-
-	//Get Number of actors
-	int ActorNumber = -1;
-	InputStream.read(reinterpret_cast<char*>(&ActorNumber), sizeof(int));
-
-	//Load actor data
-	if (ActorNumber < 0)
-	{
-		FLOW_ENGINE_ERROR("Failed to load actor number: %s", SavePath.c_str());
-		return;
-	}
-
-	for (int i = 0; i < ActorNumber; i++)
-	{
-		//Get the UID for the class
-		char ActorClassID[32] = "";
-		InputStream.read(ActorClassID, sizeof(char) * 32);
-
-		//Spawn an instance of the class
-		Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(std::string(ActorClassID));
-		if (NewActor == nullptr)
+		for (auto actor : actors)
 		{
-			FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", ActorClassID);
-			continue;
+			//Get Class Metadata
+			YAML::Node GameObject = actor["GameObject"];
+			std::string classID = GameObject["ClassName"].as<std::string>(); //TODO: Set the guid before generating a new one?
+
+			Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(classID);
+			if (NewActor == nullptr)
+			{
+				FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", classID);
+				continue;
+			}
+
+			World::Get()->RegisterActor(NewActor);
+			NewActor->Deserialize(actor);
 		}
-		
-		NewActor->Deserialize(&InputStream);
-		m_Actors.push_back(NewActor);
+	}
+
+	YAML::Node components = Input["Components"];
+	if (components.IsDefined())
+	{
+		for (YAML::iterator::value_type componentNode : components)
+		{
+			//Get Class Metadata
+			YAML::Node GameObject = componentNode["GameObject"];
+			std::string classID = GameObject["ClassName"].as<std::string>();
+
+			Component* NewComponent = ClassFactory::Get().CreateObjectFromID<Component>(classID);
+			if (NewComponent == nullptr)
+			{
+				FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", classID);
+				continue;
+			}
+
+			World::Get()->RegisterComponent(NewComponent);
+			NewComponent->Deserialize(componentNode);
+		}
 	}
 }
 
 void Level::InitialiseTickList()
 {
-	for (auto& BeginActor : m_Actors)
+	for (std::pair<FGUID, Actor*> pair : m_Actors)
 	{
-		if(BeginActor->IsTickEnabled())
-			m_TickList.push_back(BeginActor);
+		Actor* actor = pair.second;
+		if (actor->IsTickEnabled())
+		{
+			m_TickList.push_back(actor);
+		}
 	}
 }
 
 void Level::DispatchBeginPlay()
 {
-	for (auto& BeginActor : m_Actors)
+	for (std::pair<FGUID, Actor*> pair : m_Actors)
 	{
-		BeginActor->BeginPlay();
+		pair.second->BeginPlay();
 	}
 }
 
 void Level::DispatchEditorBeginPlay()
 {
-	for (auto& BeginActor : m_Actors)
+	for (std::pair<FGUID, Actor*> pair : m_Actors)
 	{
-		BeginActor->EditorBeginPlay();
+		pair.second->EditorBeginPlay();
 	}
 }
 

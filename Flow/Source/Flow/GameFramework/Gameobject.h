@@ -1,20 +1,29 @@
 #pragma once
 
-//= Includes ========================================
+// Includes /////////////////////////////////////////////////
 
+#include <string>
 #include "Flow\Core.h"
+#include "Typedefs.h"
 
-//= Class Definitons ================================
+// TypeDefs /////////////////////////////////////////////////
+
+namespace YAML { class Emitter; }
+namespace YAML { class Node; }
+
+// Class Definiton /////////////////////////////////////////////////
 
 class FLOW_API GameObject
 {
 public:
 
-	//= Public Functions =====================
+	// Public Functions /////////////////////////////////////////////////
 
 							GameObject();
 							GameObject(const std::string& Name);
 	virtual					~GameObject();
+
+	//= Editor Interface =
 
 #if WITH_EDITOR
 	virtual void			EditorBeginPlay() {};
@@ -32,8 +41,21 @@ public:
 	std::string&			GetWritableName();
 	void					SetName(const std::string& NewName);
 
+	FGUID					GetGuid() const			{ return m_guid; }
+	void					SetGuid(FGUID guid)		{ m_guid = guid; }
+
+
+	//= Serialisation =
+
+	virtual void			Serialize(YAML::Emitter& Archive);
+	virtual void			Deserialize(YAML::Node& Archive);
+
+	virtual const char*		GetClassNameID() const  { return typeid(GameObject).name(); }
+
 protected:
 
-	//= Protected Variables ==================
-	std::string				m_ObjectName;
+	// Protected Variables /////////////////////////////////////////////////
+
+	std::string				m_name;
+	FGUID					m_guid;
 };

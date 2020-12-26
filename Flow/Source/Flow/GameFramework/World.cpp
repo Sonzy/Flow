@@ -20,6 +20,11 @@
 #include "Editor/SelectionGizmo.h"
 #endif
 
+#include "Utils/GUIDGenerator.h"
+#include "Assets/AssetSystem.h"
+
+#include <yaml-cpp/yaml.h>
+
 LineBatcher World::sm_LineBatcher = LineBatcher();
 
 World::World()
@@ -44,34 +49,46 @@ World::~World()
 
 void World::SaveLevel()
 {
-	std::ofstream OutStream = std::ofstream("Saved/SaveFile.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
-	m_MainLevel->Save(OutStream);
+	YAML::Emitter outFile;
+	m_MainLevel->Save(outFile);
+
+	// Save to disk
+
+	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml"; //TODO: change file type
+	std::ofstream OutStream = std::ofstream(savePath);
+	OutStream << outFile.c_str();
 	OutStream.close();
+
+	//Check for errors
+	FLOW_ENGINE_ERROR("Error: %s", outFile.GetLastError().c_str());
 }
 
 void World::LoadLevel()
 {
-	std::ifstream InStream = std::ifstream("Saved/SaveFile.flvl", std::ios::in | std::ios::binary);
+	InitialisePhysics(true);
 
-	//Clear Physics World State
-	if (m_PhysicsWorld != nullptr)
+	//= Loading Testing =
+
+	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml";
+	std::ifstream InStream = std::ifstream(savePath);
+	if (InStream.is_open() == false)
 	{
-		btCollisionObjectArray objs = m_PhysicsWorld->getCollisionObjectArray();
-		for (int i = 0; i < objs.size(); i++)
-		{
-			m_PhysicsWorld->removeCollisionObject(objs[i]);
-		}
+		return;
 	}
 
-	delete m_CollisionConfig;
-	delete m_Dispatcher;
-	delete m_Solver;
-	delete m_PhysicsWorld;
-	delete m_OverlappingPairCache;
+	std::stringstream stream;
+	stream << InStream.rdbuf();
 
-	InitialisePhysics();
+	YAML::Node data = YAML::Load(stream.str());
+	if (data["LevelName"].IsDefined() == false)
+	{
+		FLOW_ENGINE_LOG("World::LoadLevel: Failed to read level save file");
+		return;
+	}
 
-	m_MainLevel->Load(InStream);
+	m_MainLevel->Load(data);
+
+	//====================
 
 	//TODO: Gravity has to be set after object are added to physics world
 	m_PhysicsWorld->setGravity(btVector3(0, -9.81f, 0));
@@ -80,42 +97,59 @@ void World::LoadLevel()
 
 #if WITH_EDITOR
 	//Reinitialise all actors for editor
-	for (auto& Act : m_MainLevel->GetActors())
+	for (std::pair<FGUID, Actor*> Act : m_actorMap)
 	{
-		Act->EditorBeginPlay();
+		Act.second->EditorBeginPlay();
 	}
 #endif
 }
 
 void World::SavePlayState()
 {
-	std::ofstream OutStream = std::ofstream("Saved/PlayState.flvl", std::ios::out | std::ios::trunc | std::ios::binary);
-	m_MainLevel->Save(OutStream);
-	OutStream.close();
+	YAML::Emitter file;
+	m_MainLevel->Save(file);
+	std::ofstream outFile = std::ofstream("Saved/PlayState.flvl");
+	outFile << file.c_str();
+	outFile.close();
 }
 
 void World::LoadPlayState()
 {
-	std::ifstream InStream = std::ifstream("Saved/PlayState.flvl", std::ios::in | std::ios::binary);
-
 	// Remove all collision objects from the world then delete and restart the physics world
 	for (int i = m_PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
 		m_PhysicsWorld->removeCollisionObject(obj);
-
-
 	}
 
-	m_MainLevel->Load(InStream);
+	//= Load File =
+	std::ifstream InStream = std::ifstream("Saved/SaveFile.ylvl");
+	if (InStream.is_open() == false)
+	{
+		return;
+	}
+
+	std::stringstream stream;
+	stream << InStream.rdbuf();
+
+	YAML::Node data = YAML::Load(stream.str());
+	if (data["LevelName"].IsDefined() == false)
+	{
+		FLOW_ENGINE_LOG("World::LoadPlayState: Failed to read level save file");
+		return;
+	}
+
+	m_MainLevel->Load(data);
 
 	InStream.close();
 
+	//=============
+
 #if WITH_EDITOR
 	//Reinitialise all actors for editor
-	for (auto& Act : m_MainLevel->GetActors())
+	for (auto Act : m_actorMap)
 	{
-		Act->EditorBeginPlay();
+		Act.second->EditorBeginPlay();
 	}
 #endif
 }
@@ -124,18 +158,12 @@ void World::Render()
 {
 	PROFILE_FUNCTION();
 
-	int Count = 0;
-
-
 	//Light->BindLight(RenderCommand::GetMainCamera()->GetViewMatrix());
-
 	//TODO: Move this stuff
-	for (auto& Actor : m_MainLevel->GetActors())
+	for (auto Act : m_actorMap)
 	{
-		Actor->Render();
+		Act.second->Render();
 	}
-
-
 }
 
 void World::InitialiseWorld()
@@ -159,16 +187,6 @@ void World::StartEditor()
 		m_WorldState = WorldState::Editor;
 		m_MainLevel->DispatchEditorBeginPlay();
 	}
-}
-
-void World::AddDefaultInitialisedActor(Actor* NewActor)
-{
-	if (!NewActor)
-	{
-		FLOW_ENGINE_ERROR("World::AddDefaultInitialisedActor: Actor was nullptr");
-		return;
-	}
-	m_MainLevel->GetActors().push_back(NewActor);
 }
 
 void World::StartGame()
@@ -230,6 +248,16 @@ void World::InitialisePhysics(bool Force)
 		return;
 	}
 
+	//Clear Physics World State
+	if (m_PhysicsWorld != nullptr)
+	{
+		btCollisionObjectArray objs = m_PhysicsWorld->getCollisionObjectArray();
+		for (int i = 0; i < objs.size(); i++)
+		{
+			m_PhysicsWorld->removeCollisionObject(objs[i]);
+		}
+	}
+
 	delete m_CollisionConfig;
 	delete m_Dispatcher;
 	delete m_OverlappingPairCache;
@@ -263,29 +291,26 @@ void World::DestroyActor(Actor* Act)
 	//Remove physics
 	Act->DestroyPhysics();
 
-//TODO: Delete if we dont run into issues here
-//#if WITH_EDITOR
-//
-//	Inspector* Insp = Editor::Get().GetInspector();
-//	if (WorldComponent* WC = Insp->GetSelectedComponent())
-//	{
-//		if (WC->GetParentActor() == Act)
-//		{
-//			Insp->ClearFocus();
-//		}
-//	}
-//#endif
-
-	auto& ActorArry = m_MainLevel->GetActors();
-	auto Iterator = std::find_if(ActorArry.begin(), ActorArry.end(), [&Act](const Actor* Actor) { return Actor == Act; });
-
-	if (Iterator == ActorArry.end())
+	auto Iterator = std::find_if(m_actorMap.begin(), m_actorMap.end(), [&Act](const std::pair<FGUID, Actor*> Actor) { return Actor.second == Act; });
+	if (Iterator == m_actorMap.end())
 	{
 		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete actor but couldnt find it in the array %s", Act->GetName().c_str());
 		return;
 	}
 
-	ActorArry.erase(Iterator);
+	m_actorMap.erase(Iterator);
+}
+
+Actor* World::FindActor(FGUID guid)
+{
+	auto iterator = m_actorMap.find(guid);
+	return iterator == m_actorMap.end() ? nullptr : iterator->second;
+}
+
+Component* World::FindComponent(FGUID guid)
+{
+	auto iterator = m_componentMap.find(guid);
+	return iterator == m_componentMap.end() ? nullptr : iterator->second;
 }
 
 void World::Tick(float DeltaTime)
@@ -374,4 +399,21 @@ Controller* World::GetLocalController() const
 	}
 
 	return nullptr;
+}
+
+void World::RegisterActor(Actor* newActor)
+{
+	//TODO: Check its not already in here
+	if (newActor->GetGuid() == -1)
+	{
+		newActor->SetGuid(GUIDGen::Generate());
+	}
+	m_actorMap[newActor->GetGuid()] = newActor;
+}
+
+void World::RegisterComponent(Component* newComponent)
+{
+	//TODO: Check its not already in here
+	newComponent->SetGuid(GUIDGen::Generate());
+	m_componentMap[newComponent->GetGuid()] = newComponent;
 }
