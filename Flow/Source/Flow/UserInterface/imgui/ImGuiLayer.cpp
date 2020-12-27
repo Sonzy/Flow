@@ -1,19 +1,19 @@
 #include "Flowpch.h"
 #include "ImGuiLayer.h"
-#include "Flow/Application.h"
+#include "Application.h"
 
-#include "Flow/UserInterface/imgui/ImGui_Win32.h"
-#include "Flow/UserInterface/imgui/ImGui_DX11.h"
+#include "UserInterface/imgui/ImGui_Win32.h"
+#include "UserInterface/imgui/ImGui_DX11.h"
+#include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
-#include "Flow/Input/KeyCodes.h"
+#include "Input/KeyCodes.h"
 
-#include "Flow/Events/MouseEvent.h"
+#include "Events/MouseEvent.h"
 
-#include "Flow/Window/Window_Win32.h"
-#include "Flow/Rendering/DX11/DX11RenderAPI.h"
+#include "Window/Window_Win32.h"
+#include "Rendering/DX11/DX11RenderAPI.h"
 
-#include "Flow/Editor/Editor.h"
-//#include "Flow/Editor/MenuBar.h"
+#include "Editor/Editor.h"
 
 ImGuiLayer::ImGuiLayer()
 	: Layer("ImGui Layer")
@@ -81,14 +81,12 @@ void ImGuiLayer::Begin()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGuizmo::BeginFrame();
 }
 
 void ImGuiLayer::End()
 {
-	//Application& app = Application::Get();
-	//ImGuiIO& io = ImGui::GetIO();
-	//io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
-
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

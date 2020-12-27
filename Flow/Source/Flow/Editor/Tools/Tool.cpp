@@ -17,6 +17,10 @@ void Tool::RenderTool()
 {
 }
 
+void Tool::RenderToolImGui()
+{
+}
+
 void Tool::BeginPlay()
 {
 }

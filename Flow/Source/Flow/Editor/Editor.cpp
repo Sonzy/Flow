@@ -114,6 +114,12 @@ void Editor::OnImGuiRender(bool DrawEditor)
 			uiComponent->Render();
 		}
 
+		// Draw tools
+		for (Tool* tool : m_Tools)
+		{
+			tool->RenderToolImGui();
+		}
+
 		if (m_DrawDemoWindow)
 		{
 			ImGui::ShowDemoWindow(&m_DrawDemoWindow);

@@ -1,6 +1,11 @@
 #pragma once
 
 #ifdef FLOW_PLATFORM_WINDOWS
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // NOMINMAX
+
 #include <Windows.h>
 #include "Flow/ErrorHandling/dxerr.h"
 #include <string>

@@ -30,6 +30,13 @@ public:
 
 	}
 
+	//= Public Functions
+
+	float* Data()
+	{
+		return reinterpret_cast<float*>(this);
+	}
+
 	//= Operators ======================================
 
 	void operator+=(const Rotator& Other)

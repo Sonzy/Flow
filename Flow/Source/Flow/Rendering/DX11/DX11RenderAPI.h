@@ -3,6 +3,11 @@
 //= Includes =======================================
 
 #include "Flow/Rendering/RenderAPI.h"
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // NOMINMAX
+
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl.h>

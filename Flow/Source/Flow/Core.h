@@ -1,5 +1,7 @@
 #pragma once
 
+#define NOMINMAX
+
 #ifdef FLOW_PLATFORM_WINDOWS
 	#ifdef FLOW_BUILD_DLL
 		#define FLOW_API __declspec(dllexport)

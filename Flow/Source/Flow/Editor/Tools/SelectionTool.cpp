@@ -1,22 +1,21 @@
-#define NOMINMAX
 #include "Flowpch.h"
 #include "SelectionTool.h"
-#include "Flow/Editor/Editor.h"
-#include "Flow/Input/Input.h"
+#include "Editor/Editor.h"
+#include "Input/Input.h"
 
-#include "Flow\Rendering\RenderCommand.h"
+#include "Rendering\RenderCommand.h"
 
-#include "Flow/Physics/Physics.h"
+#include "Physics/Physics.h"
 
-#include "Flow/GameFramework/Components/WorldComponent.h"
-#include "Flow/GameFramework/Components/StaticMeshComponent.h"
-#include "Flow/GameFramework/World.h"
+#include "GameFramework/Components/WorldComponent.h"
+#include "GameFramework/Components/StaticMeshComponent.h"
+#include "GameFramework/World.h"
 
-#include "Flow/Editor/SelectionGizmo.h"
-#include "Flow/Events/KeyEvent.h"
-#include "Flow/Events/MouseEvent.h"
+#include "Editor/SelectionGizmo.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 
-#include "Flow/GameFramework/Actor.h"
+#include "GameFramework/Actor.h"
 
 SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
@@ -48,10 +47,74 @@ void SelectionTool::BeginPlay()
 	m_Gizmo->InitialisePhysics();
 }
 
+void SelectionTool::RenderImGuiGizmo()
+{
+	//TODO: Do this properly instead of lazy
+	//TODO: Try cherno's compose/decompose to avoid the issues
+	if (m_SelectedComponent != nullptr)
+	{
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist(); //TODO: Put it in imgui
+
+		Editor& editor = Editor::Get();
+		Vector2 rectPos = editor.GetSceneWindowPosition();
+		Vector2 rectSize = editor.GetSceneWindowSize();
+		ImGuizmo::SetRect(rectPos.x, rectPos.y, rectSize.x, rectSize.y);
+
+		//Swap round the read order for rotation
+		const Rotator originalRotation = m_SelectedComponent->GetWorldRotation();
+		float inRot[3] = { originalRotation.Pitch, originalRotation.Yaw, originalRotation.Roll };
+
+		DirectX::XMFLOAT4X4 matrix;
+		DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity());
+
+		ImGuizmo::RecomposeMatrixFromComponents(
+			m_SelectedComponent->GetWorldPosition().Data(),
+			inRot,
+			m_SelectedComponent->GetWorldScale().Data(),
+			reinterpret_cast<float*>(&matrix)
+		);
+
+		//= Convert view matrix to valid format
+
+		DirectX::XMFLOAT4X4 fViewMatrix;
+		DirectX::XMStoreFloat4x4(&fViewMatrix, RenderCommand::GetMainCamera()->GetViewMatrix());
+
+		DirectX::XMFLOAT4X4 fProjectionMatrix;
+		DirectX::XMStoreFloat4x4(&fProjectionMatrix, RenderCommand::GetMainCamera()->GetProjectionMatrix());
+
+		ImGuizmo::Manipulate(
+			reinterpret_cast<float*>(&fViewMatrix),
+			reinterpret_cast<float*>(&fProjectionMatrix),
+			TranslateTransformation(m_transformationMode),
+			ImGuizmo::LOCAL,
+			reinterpret_cast<float*>(&matrix)
+		);
+
+		if (ImGuizmo::IsUsing())
+		{			
+			//= Convert back to basics =
+			float mTranslation[3];
+			float mRotation[3];
+			float mScale[3];
+			ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&matrix), mTranslation, mRotation, mScale);
+
+			m_SelectedComponent->SetWorldPosition(Vector3(mTranslation[0], mTranslation[1], mTranslation[2]));
+			m_SelectedComponent->SetWorldRotation(Rotator(mRotation[0], mRotation[2], mRotation[1]));
+			m_SelectedComponent->SetWorldScale(Vector3(mScale[0], mScale[1], mScale[2]));
+		}
+	}
+}
+
 bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
 	if (e.GetMouseButton() != MOUSE_LEFT)
 		return false;
+
+	if (ImGuizmo::IsOver())
+	{
+		return true;
+	}
 
 	//Calculate the ray bounds
 	IntVector2 MousePosition = Input::GetMousePosition();
@@ -147,16 +210,19 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 
 	if (e.GetKeyCode() == KEY_W)
 	{
+		m_transformationMode = TransformMode::Translate;
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Translation);
 	}
 
 	if (e.GetKeyCode() == KEY_E)
 	{
+		m_transformationMode = TransformMode::Rotate;
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Rotation);
 	}
 
 	if (e.GetKeyCode() == KEY_R)
 	{
+		m_transformationMode = TransformMode::Scale;
 		m_Gizmo->SetTransformationMode(SelectionGizmo::Scale);
 	}
 
@@ -259,5 +325,20 @@ void SelectionTool::SelectComponent(WorldComponent* NewComponent)
 		m_Gizmo->OnNewComponentSelected(NewComponent);
 		m_Gizmo->UpdatePosition(Parent->GetLocation());
 		m_Gizmo->SetScale(Vector3(1.5f, 1.5f, 1.5f));
+	}
+}
+
+ImGuizmo::OPERATION SelectionTool::TranslateTransformation(TransformMode mode)
+{
+	switch (mode)
+	{
+	case TransformMode::Translate:
+		return ImGuizmo::OPERATION::TRANSLATE;
+	case TransformMode::Rotate:
+		return ImGuizmo::OPERATION::ROTATE;
+	case TransformMode::Scale:
+		return ImGuizmo::OPERATION::SCALE;
+	default:
+		return ImGuizmo::OPERATION::TRANSLATE;
 	}
 }

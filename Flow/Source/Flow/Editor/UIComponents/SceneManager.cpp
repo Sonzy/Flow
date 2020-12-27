@@ -3,6 +3,8 @@
 
 #include "GameFramework/World.h"
 #include "Editor/EditorCamera.h"
+#include "Editor/Editor.h"
+#include "Editor/Tools/SelectionTool.h"
 #include "Rendering/RenderCommand.h"
 #include "Rendering/Other/FrameBuffer.h"
 #include "Toolbar.h"
@@ -75,6 +77,8 @@ void SceneManager::Render()
 		}
 
 		ImGui::Image(Buff->GetTextureView(), ImVec2(static_cast<float>(Buff->GetWidth()), static_cast<float>(Buff->GetHeight())));
+
+		Editor::Get().GetTool<SelectionTool>()->RenderImGuiGizmo();
 	}
 	ImGui::End();
 

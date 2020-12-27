@@ -2,6 +2,8 @@
 
 //= Includes ===================
 
+#include "Typedefs.h"
+
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -12,6 +14,12 @@
 
 #include "Rotator.h"
 #include "Transform.h"
+
+#define USE_DXMATH_FORMULAE 1
+
+#if USE_DXMATH_FORMULAE
+	#include <DirectXMath.h>
+#endif
 
 //= Forward Declarations =======
 
@@ -49,4 +57,8 @@ namespace Maths
 	float			DistanceSquared(Vector3 V1, Vector3 V2);
 
 	Rotator			FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition);
+
+#if USE_DXMATH_FORMULAE
+	void			DecomposeMatrix(Vector3& translation, Rotator& rotation, Vector3& scale, DirectX::XMMATRIX matrix);
+#endif
 }

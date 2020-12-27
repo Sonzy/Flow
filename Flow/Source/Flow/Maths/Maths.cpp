@@ -71,6 +71,22 @@ Rotator Maths::FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition)
 	return Rotator(RadiansToDegrees(-atan2f(ydis, xzdis)), RadiansToDegrees(-(atan2f(-xdis, zdis))), 0);
 }
 
+#if USE_DXMATH_FORMULAE
+
+void Maths::DecomposeMatrix(Vector3& translation, Rotator& rotation, Vector3& scale, DirectX::XMMATRIX matrix)
+{
+	DirectX::XMVECTOR vtranslation;
+	DirectX::XMVECTOR vrotation;
+	DirectX::XMVECTOR vscale;
+	DirectX::XMMatrixDecompose(&vtranslation, &vrotation, &vscale, matrix);
+
+	translation = Vector3(vtranslation.m128_f32[0], vtranslation.m128_f32[1], vtranslation.m128_f32[2]);
+	rotation = Rotator(vrotation.m128_f32[0], vrotation.m128_f32[1], vrotation.m128_f32[2]);
+	scale = Vector3(vscale.m128_f32[0], vscale.m128_f32[1], vscale.m128_f32[2]);
+}
+
+#endif //#if USE_DXMATH_FORMULAE
+
 FLOW_API Vector3::Vector3(Vector4 v)
 	: x(v.x), y(v.y), z(v.z)
 {}

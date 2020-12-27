@@ -23,6 +23,7 @@ public:
 
 	virtual void			UpdateTool(float DeltaTime);
 	virtual void			RenderTool();
+	virtual void			RenderToolImGui();
 	virtual void			BeginPlay();
 
 	virtual bool			OnMouseButtonPressed(MouseButtonPressedEvent& e);

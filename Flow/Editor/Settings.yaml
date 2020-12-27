@@ -1,7 +1,7 @@
 Levels:
   StartingLevelName: ""
 Docking:
-  DockFloatingWindows: true
+  DockFloatingWindows: false
   DockPadding: [10, 10]
 Console:
   LogColor: [1, 1, 1, 1]

@@ -1,5 +1,11 @@
 #pragma once
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // NOMINMAX
+
+#define _CRT_SECURE_NO_WARNINGS //defined for imgui warnings //TODO: Make sure this isnt causing issues
+
 #ifdef FLOW_PLATFORM_WINDOWS
 	#include <windows.h>
 #endif
@@ -27,5 +33,3 @@
 
 //Saving and loading
 #include "Flow/GameFramework/Other/ClassFactory.h"
-
-#define _CRT_SECURE_NO_WARNINGS //defined for imgui warnings //TODO: Make sure this isnt causing issues

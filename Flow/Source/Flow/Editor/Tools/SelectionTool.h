@@ -1,16 +1,35 @@
 #pragma once
-#include "Tool.h"
 
+// Includes /////////////////////////////////////////////////
+
+#include "Tool.h"
 #include "Maths/Vector3.h"
+
+#include "ThirdParty/ImGuizmo/ImGuizmo.h"
+
+// Forward Declaration //////////////////////////////////////
 
 class WorldComponent;
 class Actor;
 class SelectionGizmo;
 class Inspector;
 
+// Public Enums /////////////////////////////////////////////
+
+enum class TransformMode
+{
+	Translate,
+	Rotate,
+	Scale
+};
+
+// Class Definition /////////////////////////////////////////
+
 class SelectionTool : public Tool
 {
 public:
+	
+	// Public Functions ///////////////////////////////////////////////////////////
 
 												SelectionTool();
 	virtual										~SelectionTool();
@@ -22,6 +41,8 @@ public:
 	virtual void								RenderTool() override;
 	virtual void								BeginPlay() override;
 
+	void										RenderImGuiGizmo();
+
 	virtual bool								OnMouseButtonPressed(MouseButtonPressedEvent& e) override;
 	virtual bool								OnKeyPressed(KeyPressedEvent& e) override;
 	virtual bool								OnMouseButtonReleased(MouseButtonReleasedEvent& e);
@@ -32,10 +53,15 @@ public:
 
 	WorldComponent* const						GetSelectedComponent() { return m_SelectedComponent; }
 
+	static ImGuizmo::OPERATION					TranslateTransformation(TransformMode mode);
+
 private:
+
+	// Private Variables ///////////////////////////////////////////////////////////
 
 	WorldComponent*								m_SelectedComponent;
 	Actor*										m_SelectedActor;
+	TransformMode								m_transformationMode;
 
 	SelectionGizmo*								m_Gizmo;
 

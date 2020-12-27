@@ -328,6 +328,11 @@
     <ClInclude Include="ThirdParty\Assimp\version.h" />
     <ClInclude Include="ThirdParty\Assimp\Vertex.h" />
     <ClInclude Include="ThirdParty\Assimp\XMLTools.h" />
+    <ClInclude Include="ThirdParty\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="ThirdParty\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="ThirdParty\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="ThirdParty\ImGuizmo\ImSequencer.h" />
+    <ClInclude Include="ThirdParty\ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui_internal.h" />
@@ -453,6 +458,10 @@
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_DX11.cpp" />
     <ClCompile Include="Source\Flow\UserInterface\imgui\ImGui_Win32.cpp" />
     <ClCompile Include="Source\Flow\Window\Window_Win32.cpp" />
+    <ClCompile Include="ThirdParty\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="ThirdParty\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="ThirdParty\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="ThirdParty\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_draw.cpp" />

@@ -14762,6 +14762,9 @@ static void ImGui::DockSettingsHandler_WriteAll(ImGuiContext* ctx, ImGuiSettings
 #define WIN32_LEAN_AND_MEAN
 #endif
 #ifndef __MINGW32__
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // NOMINMAX
 #include <Windows.h>
 #else
 #include <windows.h>
