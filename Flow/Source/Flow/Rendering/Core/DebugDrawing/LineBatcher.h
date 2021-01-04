@@ -17,12 +17,20 @@ class LineBatcher : public Renderable
 {
 public:
 
+	struct Line
+	{
+		Vector3 From;
+		Vector3 To;
+		Vector3 Color;
+	};
+
 	//= Public Functions =======================================================
 
 											LineBatcher();
 											~LineBatcher();
 	void									Initialise();
 	void									AddLine(Vector3 From, Vector3 To, Vector3 Colour = Vector3(1.0f, 1.0f, 1.0f));
+	void									AddPersistentLine(const std::string& tag, Vector3 From, Vector3 To, Vector3 Colour = Vector3(1.0f, 1.0f, 1.0f));
 	void									DrawLines();
 	void									FlushLines();
 	unsigned int							GetNumberOfLines() const { return m_Lines; }
@@ -51,4 +59,6 @@ private:
 	ViewProjectionBuffer							m_CameraMatrix;
 	VertexConstantBuffer<ViewProjectionBuffer>*		m_VertexCB;
 	unsigned int									m_Lines;
+
+	std::unordered_map<std::string, Line>			m_PersistentLines;
 };

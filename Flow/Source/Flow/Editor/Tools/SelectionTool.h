@@ -56,6 +56,8 @@ public:
 	static ImGuizmo::OPERATION					TranslateTransformation(TransformMode mode);
 
 private:
+	
+	// Private Functions ///////////////////////////////////////////////////////////
 
 	// Private Variables ///////////////////////////////////////////////////////////
 
@@ -71,5 +73,6 @@ private:
 	bool										m_DrawSelectionLines;
 	std::vector<std::pair<Vector3, Vector3>>	m_PreviousLines;
 	Vector3										m_DebugLineColor;
+	ImGuizmo::MODE								m_SpaceMode;//TODO: rename
 
 };

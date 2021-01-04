@@ -1,6 +1,7 @@
+#include "Flowpch.h"
 #include "ImCurveEdit.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/imgui_internal.h"
 #include <stdint.h>
 #include <set>
 #include <vector>

@@ -85,6 +85,11 @@ public:
 		return reinterpret_cast<float*>(this);
 	}
 
+	bool IsValid()
+	{		
+		return !(std::isnan(x) || std::isnan(y) || std::isnan(z));
+	}
+
 	//= Operators =========================================================
 
 	operator DirectX::XMFLOAT3() const

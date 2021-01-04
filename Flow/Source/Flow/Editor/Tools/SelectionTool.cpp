@@ -17,10 +17,14 @@
 
 #include "GameFramework/Actor.h"
 
+#include "Editor/UIComponents/Console.h"
+
 SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
+	, m_SpaceMode(ImGuizmo::WORLD)
 {
 	m_Gizmo = new SelectionGizmo();
+	m_ConfigurationWindowOpen = true;
 }
 
 SelectionTool::~SelectionTool()
@@ -61,19 +65,25 @@ void SelectionTool::RenderImGuiGizmo()
 		Vector2 rectSize = editor.GetSceneWindowSize();
 		ImGuizmo::SetRect(rectPos.x, rectPos.y, rectSize.x, rectSize.y);
 
-		//Swap round the read order for rotation
-		const Rotator originalRotation = m_SelectedComponent->GetWorldRotation();
-		float inRot[3] = { originalRotation.Pitch, originalRotation.Yaw, originalRotation.Roll };
+		//DirectX::XMFLOAT4X4 matrix;
+		//DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity());
+
+		Rotator inRotation = m_SelectedComponent->GetWorldRotation();
+
+		if (ImGuizmo::IsUsing())
+		{
+			FLOW_ENGINE_LOG("== Update ==");
+		}
+
+		//ImGuizmo::RecomposeMatrixFromComponents(
+		//	reinterpret_cast<float*>(&m_SelectedComponent->GetWorldPosition()),
+		//	reinterpret_cast<float*>(&inRotation),
+		//	reinterpret_cast<float*>(&m_SelectedComponent->GetWorldScale()),
+		//	reinterpret_cast<float*>(&matrix)
+		//);
 
 		DirectX::XMFLOAT4X4 matrix;
-		DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity());
-
-		ImGuizmo::RecomposeMatrixFromComponents(
-			m_SelectedComponent->GetWorldPosition().Data(),
-			inRot,
-			m_SelectedComponent->GetWorldScale().Data(),
-			reinterpret_cast<float*>(&matrix)
-		);
+		DirectX::XMStoreFloat4x4(&matrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());
 
 		//= Convert view matrix to valid format
 
@@ -87,21 +97,31 @@ void SelectionTool::RenderImGuiGizmo()
 			reinterpret_cast<float*>(&fViewMatrix),
 			reinterpret_cast<float*>(&fProjectionMatrix),
 			TranslateTransformation(m_transformationMode),
-			ImGuizmo::LOCAL,
+			m_SpaceMode,
 			reinterpret_cast<float*>(&matrix)
 		);
 
 		if (ImGuizmo::IsUsing())
 		{			
-			//= Convert back to basics =
-			float mTranslation[3];
-			float mRotation[3];
-			float mScale[3];
-			ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&matrix), mTranslation, mRotation, mScale);
+			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetMatrix(matrix);
 
-			m_SelectedComponent->SetWorldPosition(Vector3(mTranslation[0], mTranslation[1], mTranslation[2]));
-			m_SelectedComponent->SetWorldRotation(Rotator(mRotation[0], mRotation[2], mRotation[1]));
-			m_SelectedComponent->SetWorldScale(Vector3(mScale[0], mScale[1], mScale[2]));
+			FLOW_ENGINE_LOG("= OutMatrix =");
+			Maths::PrintMatrix((float*)&matrix);
+
+			////= Convert back to basics =
+			//float mTranslation[3] = { 0.0f, 0.0f, 0.0f };
+			//float mRotation[3] = { 0.0f, 0.0f, 0.0f };
+			//float mScale[3] = { 0.0f, 0.0f, 0.0f };
+			//
+			//ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&matrix), mTranslation, mRotation, mScale);
+			//
+			//Rotator outRotation = *reinterpret_cast<Rotator*>(&mRotation);
+			//Vector3 outTranslation = *reinterpret_cast<Rotator*>(&mTranslation);
+			//Vector3 outScale = *reinterpret_cast<Rotator*>(&mScale);
+			//
+			//if (outTranslation.IsValid())	m_SelectedComponent->SetWorldPosition(outTranslation);
+			//if (outRotation.IsValid())	m_SelectedComponent->SetWorldRotation(outRotation);
+			//if (outScale.IsValid())	m_SelectedComponent->SetWorldScale(outScale);
 		}
 	}
 }
@@ -250,6 +270,11 @@ void SelectionTool::DrawConfigWindow()
 		if (ImGui::Checkbox("Draw debug lines in world from click", &m_DrawSelectionLines))
 		{
 			m_PreviousLines.clear();
+		}
+
+		if (ImGui::Button(m_SpaceMode == ImGuizmo::WORLD ? "World" : "Local"))
+		{
+			m_SpaceMode = (m_SpaceMode == ImGuizmo::WORLD) ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
 		}
 
 		ImGui::ColorEdit3("Debug Line Color", reinterpret_cast<float*>(&m_DebugLineColor));//, ImGuiColorEditFlags_NoInputs);		

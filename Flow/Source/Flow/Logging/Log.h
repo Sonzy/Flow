@@ -43,7 +43,7 @@ public:
 #if WITH_EDITOR
 		if (sm_Console)
 		{
-			Console::Get().PushMessage(Console::MessageType::Log, g_PrintFBuffer);
+			sm_Console->PushMessage(Console::MessageType::Log, g_PrintFBuffer);
 		}
 #endif
 	}
@@ -106,14 +106,14 @@ private:
 
 #define LOGGING_ENABLED 1
 #if LOGGING_ENABLED
-#define FLOW_ENGINE_ERROR(FormatString, ...)	Log::Error(Log::GetEngineLogger(), FormatString, __VA_ARGS__);
-#define FLOW_ENGINE_WARNING(FormatString, ...)	Log::Warning(Log::GetEngineLogger(), FormatString, __VA_ARGS__);
-#define FLOW_ENGINE_TRACE(FormatString, ...)	Log::Trace(Log::GetEngineLogger(), FormatString, __VA_ARGS__);
-#define FLOW_ENGINE_LOG(FormatString, ...)		Log::Message(Log::GetEngineLogger(), FormatString, __VA_ARGS__);
-#define FLOW_ERROR(FormatString, ...)			Log::Error(Log::GetApplicationLogger(), FormatString, __VA_ARGS__);	 
-#define FLOW_WARNING(FormatString, ...)			Log::Warning(Log::GetApplicationLogger(), FormatString, __VA_ARGS__);
-#define FLOW_TRACE(FormatString, ...)			Log::Trace(Log::GetApplicationLogger(), FormatString, __VA_ARGS__);	 
-#define FLOW_LOG(FormatString, ...)				Log::Message(Log::GetApplicationLogger(), FormatString, __VA_ARGS__);
+#define FLOW_ENGINE_ERROR(FormatString, ...)	Log::Error(Log::GetEngineLogger(), FormatString, __VA_ARGS__)
+#define FLOW_ENGINE_WARNING(FormatString, ...)	Log::Warning(Log::GetEngineLogger(), FormatString, __VA_ARGS__)
+#define FLOW_ENGINE_TRACE(FormatString, ...)	Log::Trace(Log::GetEngineLogger(), FormatString, __VA_ARGS__)
+#define FLOW_ENGINE_LOG(FormatString, ...)		Log::Message(Log::GetEngineLogger(), FormatString, __VA_ARGS__)
+#define FLOW_ERROR(FormatString, ...)			Log::Error(Log::GetApplicationLogger(), FormatString, __VA_ARGS__)
+#define FLOW_WARNING(FormatString, ...)			Log::Warning(Log::GetApplicationLogger(), FormatString, __VA_ARGS__)
+#define FLOW_TRACE(FormatString, ...)			Log::Trace(Log::GetApplicationLogger(), FormatString, __VA_ARGS__)
+#define FLOW_LOG(FormatString, ...)				Log::Message(Log::GetApplicationLogger(), FormatString, __VA_ARGS__)
 
 
 

@@ -36,9 +36,12 @@
 // includes patches for multiview from
 // https://github.com/CedricGuillemet/ImGuizmo/issues/15
 
+#include "Rendering/Core/DebugDrawing/LineBatcher.h"
+#include "GameFramework/World.h"
+
 namespace ImGuizmo
 {
-   static const float ZPI = 3.14159265358979323846f;
+   static const float ZPI = 3.14159265f;
    static const float RAD2DEG = (180.f / ZPI);
    static const float DEG2RAD = (ZPI / 180.f);
    static float gGizmoSizeClipSpace = 0.15f;
@@ -684,8 +687,9 @@ namespace ImGuizmo
    static const float angleLimit = 0.96f;
    static const float planeLimit = 0.2f;
 
-   static const vec_t directionUnary[3] = { makeVect(1.f, 0.f, 0.f), makeVect(0.f, 1.f, 0.f), makeVect(0.f, 0.f, 1.f) };
-   static const ImU32 directionColor[3] = { 0xFF715ED8, 0xFF25AA25, 0xFFCC532C };
+   static const vec_t directionUnary[3] = { makeVect(1.f, 0.0f, 0.0f), makeVect(0.0f, 1.0f, 0.0f), makeVect(0.f, 0.f, 1.0f) };
+   //static const ImU32 directionColor[3] = { 0xFF715ED8, 0xFF25AA25, 0xFFCC532C };
+   static const ImU32 directionColor[3] = { 0xFF0000FF, 0xFF00FF00, 0xFFFF0000 }; //TODO: Change
 
    // Alpha: 100%: FF, 87%: DE, 70%: B3, 54%: 8A, 50%: 80, 38%: 61, 12%: 1F
    static const ImU32 planeColor[3] = { 0xFF7A68D8, 0xFF55AB55, 0xFFD96742 };
@@ -1093,6 +1097,7 @@ namespace ImGuizmo
       float acosAngle = Clamp(Dot(localPos, gContext.mRotationVectorSource), -0.9999f, 0.9999f);
       float angle = acosf(acosAngle);
       angle *= (Dot(localPos, perpendicularVector) < 0.f) ? 1.f : -1.f;
+
       return angle;
    }
 
@@ -1249,7 +1254,6 @@ namespace ImGuizmo
          drawList->AddText(ImVec2(destinationPosOnScreen.x + 14, destinationPosOnScreen.y + 14), 0xFFFFFFFF, tmps);
       }
    }
-
 
    static void DrawTranslationGizmo(int type)
    {
@@ -1960,6 +1964,7 @@ namespace ImGuizmo
             applyRotationLocaly = true;
          }
 
+         //Testing Rotation plane is correct
          if (CanActivate() && type != NONE)
          {
             gContext.mbUsing = true;
@@ -1976,18 +1981,37 @@ namespace ImGuizmo
                gContext.mTranslationPlan = BuildPlan(gContext.mModelSource.v.position, directionUnary[type - ROTATE_X]);
             }
 
+            // Testing - Draw the axis of rotation
+            {
+                Vector3 ObjPos =
+                    Vector3(
+                        gContext.mModelSource.v.position.x,
+                        gContext.mModelSource.v.position.y,
+                        gContext.mModelSource.v.position.z
+                    );
+
+                Vector3 normalOffset = Vector3(
+                    applyRotationLocaly ? rotatePlanNormal[type - ROTATE_X].x : directionUnary[type - ROTATE_X].x,
+                    applyRotationLocaly ? rotatePlanNormal[type - ROTATE_X].y : directionUnary[type - ROTATE_X].y,
+                    applyRotationLocaly ? rotatePlanNormal[type - ROTATE_X].z : directionUnary[type - ROTATE_X].z
+                );
+
+                World::GetLineBatcher_S().AddPersistentLine("Normal", ObjPos, ObjPos + (normalOffset * 50.0f), Vector3(1.0f, 1.0f, 0.0f));
+            }
+
             const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, gContext.mTranslationPlan);
             vec_t localPos = gContext.mRayOrigin + gContext.mRayVector * len - gContext.mModel.v.position;
             gContext.mRotationVectorSource = Normalized(localPos);
             gContext.mRotationAngleOrigin = ComputeAngleOnPlan();
          }
       }
-
+      
       // rotation
       if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID))
       {
          ImGui::CaptureMouseFromApp();
          gContext.mRotationAngle = ComputeAngleOnPlan();
+
          if (snap)
          {
             float snapInRadian = snap[0] * DEG2RAD;
@@ -1998,8 +2022,13 @@ namespace ImGuizmo
          rotationAxisLocalSpace.TransformVector(makeVect(gContext.mTranslationPlan.x, gContext.mTranslationPlan.y, gContext.mTranslationPlan.z, 0.f), gContext.mModelInverse);
          rotationAxisLocalSpace.Normalize();
 
+         FLOW_ENGINE_LOG("Rotation: %f Delta Rotation: %f Axis: %f %f %f",
+             gContext.mRotationAngle,
+             gContext.mRotationAngle - gContext.mRotationAngleOrigin,
+             rotationAxisLocalSpace.x, rotationAxisLocalSpace.y, rotationAxisLocalSpace.z);
+
          matrix_t deltaRotation;
-         deltaRotation.RotationAxis(rotationAxisLocalSpace, gContext.mRotationAngle - gContext.mRotationAngleOrigin);
+         deltaRotation.RotationAxis(rotationAxisLocalSpace, gContext.mRotationAngle - gContext.mRotationAngleOrigin); // Testing - Here?
          if(gContext.mRotationAngle != gContext.mRotationAngleOrigin)
          {
              modified = true;
@@ -2021,7 +2050,7 @@ namespace ImGuizmo
             *(matrix_t*)matrix = res * deltaRotation;
             ((matrix_t*)matrix)->v.position = gContext.mModelSource.v.position;
          }
-
+         
          if (deltaMatrix)
          {
             *(matrix_t*)deltaMatrix = gContext.mModelInverse * deltaRotation * gContext.mModel;
@@ -2039,34 +2068,69 @@ namespace ImGuizmo
 
    void DecomposeMatrixToComponents(const float* matrix, float* translation, float* rotation, float* scale)
    {
-      matrix_t mat = *(matrix_t*)matrix;
+       matrix_t mat = *(matrix_t*)matrix;
+       
+       scale[0] = mat.v.right.Length();
+       scale[1] = mat.v.up.Length();
+       scale[2] = mat.v.dir.Length();
+       
+       mat.OrthoNormalize();
+       
+       //Original
+       rotation[0] = RAD2DEG * atan2f(mat.m[1][2], mat.m[2][2]);
+       //rotation[2] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]));
+       rotation[2] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[0][0] * mat.m[0][0] + mat.m[0][1] * mat.m[0][1]));
+       rotation[1] = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
 
-      scale[0] = mat.v.right.Length();
-      scale[1] = mat.v.up.Length();
-      scale[2] = mat.v.dir.Length();
+       float temp = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
 
-      mat.OrthoNormalize();
+       {
+            //float sy = sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]);
+            //bool singular = sy < 1e-6;
+            //
+            //float x, y, z;
+            //if (singular == false)
+            //{
+            //    x = atan2f(mat.m[1][2], mat.m[2][2]);
+            //    y = atan2f(-mat.m[0][2], sy);
+            //    z = atan2f(mat.m[0][1], mat.m[0][0]);
+            //}
+            //else
+            //{
+            //    x = atan2f(mat.m[2][1], mat.m[1][1]);
+            //    y = atan2f(-mat.m[0][2], sy);
+            //    z = 0;
+            //}
+            //rotation[0] = RAD2DEG * x;
+            //rotation[2] = RAD2DEG * y;
+            //rotation[1] = RAD2DEG * z;
+       }
 
-      rotation[0] = RAD2DEG * atan2f(mat.m[1][2], mat.m[2][2]);
-      rotation[1] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]));
-      rotation[2] = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
-
-      translation[0] = mat.v.position.x;
-      translation[1] = mat.v.position.y;
-      translation[2] = mat.v.position.z;
+       
+       translation[0] = mat.v.position.x;
+       translation[1] = mat.v.position.y;
+       translation[2] = mat.v.position.z;
    }
 
    void RecomposeMatrixFromComponents(const float* translation, const float* rotation, const float* scale, float* matrix)
    {
       matrix_t& mat = *(matrix_t*)matrix;
 
-      matrix_t rot[3];
-      for (int i = 0; i < 3; i++)
-      {
-         rot[i].RotationAxis(directionUnary[i], rotation[i] * DEG2RAD);
-      }
+      matrix_t roll, pitch, yaw;
+      pitch.RotationAxis(directionUnary[0], rotation[0] * DEG2RAD);
+      yaw.RotationAxis(directionUnary[1], rotation[2] * DEG2RAD);
+      roll.RotationAxis(directionUnary[2], rotation[1] * DEG2RAD);
 
-      mat = rot[0] * rot[1] * rot[2];
+      //Original
+
+      mat = roll * pitch * yaw;
+
+      if (ImGuizmo::IsUsing())
+      {
+          FLOW_ENGINE_LOG("Roll: %f Pitch: %f Yaw: %f", rotation[1] * DEG2RAD, rotation[0] * DEG2RAD, rotation[2] * DEG2RAD);
+          FLOW_ENGINE_LOG("= ImGuizmo =");
+          Maths::PrintMatrix((float*)mat);
+      }
 
       float validScale[3];
       for (int i = 0; i < 3; i++)

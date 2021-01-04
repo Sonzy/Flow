@@ -43,6 +43,8 @@ public:
 
 	void								PushMessage(MessageType type, const char* Message);
 
+	void								Clear();
+
 private:
 
 	// Private Functions //////////////////////////////////////////////////////////
@@ -51,5 +53,8 @@ private:
 
 private:
 
-	std::vector<Console::Message> m_MessageHistory;
+	// Private Variables //////////////////////////////////////////////////////////
+
+	std::vector<Console::Message>		m_MessageHistory;
+	bool								m_QueueDirty;
 };

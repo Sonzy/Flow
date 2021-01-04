@@ -165,11 +165,45 @@ WorldComponent* Inspector::GetSelectedComponent()
 void Inspector::DrawSelectedComponentTransform()
 {
 	bool bUpdate = false;
-	bUpdate |= ImGui::InputFloat3("Position", (float*)m_SelectedComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_SelectedComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	if (ImGui::InputFloat3("Scale", (float*)m_SelectedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	RenderableComponent* rComp = dynamic_cast<RenderableComponent*>(m_SelectedComponent);
+
+	if (rComp && rComp->UsingMatrixRotation())
 	{
-		bUpdate = true;
-		m_SelectedComponent->UpdateCollisionScale();
+		float position[3];
+		float rotation[3];
+		float scale[3];
+		DirectX::XMFLOAT4X4 fMatrix;
+		DirectX::XMStoreFloat4x4(&fMatrix, rComp->GetMatrix());
+		ImGuizmo::DecomposeMatrixToComponents((float*)&fMatrix, position, rotation, scale);
+
+		bUpdate |= ImGui::InputFloat3("Position", position, 1, ImGuiInputTextFlags_EnterReturnsTrue);
+		bUpdate |= ImGui::InputFloat3("Rotation", rotation, 1, ImGuiInputTextFlags_EnterReturnsTrue);
+		bUpdate |= ImGui::InputFloat3("Scale", scale, 1, ImGuiInputTextFlags_EnterReturnsTrue);
+
+		if (bUpdate == true)
+		{
+			Rotator RadianRotation = Rotator::AsRadians(*(Rotator*)&rotation);
+
+			DirectX::XMFLOAT4X4 fMatrix;
+			DirectX::XMMATRIX matrix = 	DirectX::XMMatrixScaling(scale[0], scale[1], scale[2]) *
+				DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) *
+				DirectX::XMMatrixTranslation(position[0], position[1], position[2]);
+
+			DirectX::XMStoreFloat4x4(&fMatrix, matrix);
+
+			rComp->SetMatrix(fMatrix);
+		}
 	}
+	else
+	{
+		bUpdate |= ImGui::InputFloat3("Position", (float*)m_SelectedComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+		bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_SelectedComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
+		if (ImGui::InputFloat3("Scale", (float*)m_SelectedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			bUpdate = true;
+			m_SelectedComponent->UpdateCollisionScale();
+		}
+	}
+
+
 }

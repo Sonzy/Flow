@@ -85,7 +85,26 @@ void Maths::DecomposeMatrix(Vector3& translation, Rotator& rotation, Vector3& sc
 	scale = Vector3(vscale.m128_f32[0], vscale.m128_f32[1], vscale.m128_f32[2]);
 }
 
+void Maths::PrintMatrix(DirectX::XMMATRIX m)
+{
+	DirectX::XMFLOAT4X4 fMatrix;
+	DirectX::XMStoreFloat4x4(&fMatrix, m);
+
+	FLOW_ENGINE_LOG("%f %f %f %f", fMatrix._11, fMatrix._12, fMatrix._13, fMatrix._14);
+	FLOW_ENGINE_LOG("%f %f %f %f", fMatrix._21, fMatrix._22, fMatrix._23, fMatrix._24);
+	FLOW_ENGINE_LOG("%f %f %f %f", fMatrix._31, fMatrix._32, fMatrix._33, fMatrix._34);
+	FLOW_ENGINE_LOG("%f %f %f %f", fMatrix._41, fMatrix._42, fMatrix._43, fMatrix._44);
+}
+
 #endif //#if USE_DXMATH_FORMULAE
+
+void Maths::PrintMatrix(float* m)
+{
+	FLOW_ENGINE_LOG("%f %f %f %f", m[0], m[1], m[2], m[3]);
+	FLOW_ENGINE_LOG("%f %f %f %f", m[4], m[5], m[6], m[7]);
+	FLOW_ENGINE_LOG("%f %f %f %f", m[8], m[9], m[10], m[11]);
+	FLOW_ENGINE_LOG("%f %f %f %f", m[12], m[13], m[14], m[15]);
+}
 
 FLOW_API Vector3::Vector3(Vector4 v)
 	: x(v.x), y(v.y), z(v.z)

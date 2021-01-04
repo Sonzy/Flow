@@ -351,19 +351,6 @@ void StaticMeshComponent::RefreshBinds()
 	AddTechnique(Outline);
 }
 
-DirectX::XMMATRIX StaticMeshComponent::GetTransformXM() const
-{
-	Transform WorldTransform = GetWorldTransform();
-	Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
-	Vector3 Scale = WorldTransform.m_Scale;
-
-	auto Trans = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z) *
-		DirectX::XMMatrixRotationRollPitchYaw(RadianRotation.Pitch, RadianRotation.Yaw, RadianRotation.Roll) *
-		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
-
-	return Trans;
-}
-
 void StaticMeshComponent::DrawComponentDetailsWindow()
 {
 	WorldComponent::DrawComponentDetailsWindow();

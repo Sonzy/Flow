@@ -2,9 +2,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include "Flowpch.h"
 #include "ImSequencer.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/imgui_internal.h"
 #include <cstdlib>
 
 namespace ImSequencer

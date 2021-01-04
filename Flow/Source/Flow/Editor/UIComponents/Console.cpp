@@ -4,6 +4,7 @@
 #include "Flow/Editor/Editor.h"
 
 Console::Console()
+	: m_QueueDirty(false)
 {
 	Log::InitConsole(this);
 }
@@ -26,6 +27,12 @@ void Console::Render()
 			{
 				ImGui::TextColored(TypeToColor(msg.m_Type), msg.m_Message.c_str());
 			}
+
+			if (m_QueueDirty == true)
+			{
+				ImGui::SetScrollHereY();
+				m_QueueDirty = false;
+			}
 		}
 		ImGui::EndChild();
 	}
@@ -44,7 +51,19 @@ Console* Console::GetSafe()
 
 void Console::PushMessage(MessageType type, const char* Message)
 {
+	// TODO: Dont hard code
+	if (m_MessageHistory.size() > 999999)
+	{
+		m_MessageHistory.erase(m_MessageHistory.begin());
+	}
 	m_MessageHistory.emplace_back(type, Message);
+
+	m_QueueDirty = true;
+}
+
+void Console::Clear()
+{
+	m_MessageHistory.clear();
 }
 
 Vector4 Console::TypeToColor(MessageType Type)

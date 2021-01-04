@@ -7,6 +7,7 @@
 
 //= Class Definition ===================================
 
+//TODO: is dx zxy rotation?
 class FLOW_API Rotator
 {
 public:
@@ -35,6 +36,11 @@ public:
 	float* Data()
 	{
 		return reinterpret_cast<float*>(this);
+	}
+
+	bool IsValid() const
+	{
+		return !(std::isnan(Pitch) || std::isnan(Yaw) || std::isnan(Roll));
 	}
 
 	//= Operators ======================================
@@ -170,7 +176,7 @@ public:
 
 	//= Public Variables ===================================
 
-	float Pitch;
-	float Roll;
-	float Yaw;
+	float Pitch; //Rot around x
+	float Roll; //Rot around y
+	float Yaw; //Rot around z
 };

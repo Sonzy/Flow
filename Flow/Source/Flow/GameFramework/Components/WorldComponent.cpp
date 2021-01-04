@@ -203,12 +203,18 @@ Vector3 WorldComponent::GetRelativeScale() const
 
 void WorldComponent::SetWorldScale(Vector3 NewScale)
 {
+	//TODO: Nan check
+	if (NewScale.IsValid() == false)
+	{
+		return;
+	}
+
 	Vector3 CurrentParentWorld;
 	WorldComponent* PointedComp = GetParentComponent();
 	while (PointedComp)
 	{
-	CurrentParentWorld *= PointedComp->m_RelativeTransform.m_Scale;
-	PointedComp = PointedComp->GetParentComponent();
+		CurrentParentWorld *= PointedComp->m_RelativeTransform.m_Scale;
+		PointedComp = PointedComp->GetParentComponent();
 	}
 
 	m_RelativeTransform.m_Scale = NewScale - CurrentParentWorld;

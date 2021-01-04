@@ -60,5 +60,9 @@ namespace Maths
 
 #if USE_DXMATH_FORMULAE
 	void			DecomposeMatrix(Vector3& translation, Rotator& rotation, Vector3& scale, DirectX::XMMATRIX matrix);
+
+	void			PrintMatrix(DirectX::XMMATRIX m);
 #endif
+
+	void			PrintMatrix(float* m);
 }

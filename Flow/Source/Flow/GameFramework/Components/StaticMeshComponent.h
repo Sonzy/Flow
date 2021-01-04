@@ -64,8 +64,6 @@ public:
 	/* Renderable Component Interface */
 
 	virtual void				RefreshBinds() override;
-	virtual						DirectX::XMMATRIX GetTransformXM() const override;
-
 
 	//Temp - TODO: Actually use component movement for rendering
 	Mesh*						GetMesh() { return m_StaticMesh; }

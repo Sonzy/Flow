@@ -66,10 +66,22 @@ void LineBatcher::AddLine(Vector3 From, Vector3 To, Vector3 Colour)
 	m_Lines++;
 }
 
+void LineBatcher::AddPersistentLine(const std::string& tag, Vector3 From, Vector3 To, Vector3 Colour)
+{
+	m_PersistentLines[tag] = Line{ From, To, Colour };
+}
+
 void LineBatcher::DrawLines()
 {
-	if (m_Lines == 0)
+	if (m_Lines == 0 && m_PersistentLines.size() == 0)
+	{
 		return;
+	}
+
+	for (const std::pair<std::string, Line>& line : m_PersistentLines)
+	{
+		AddLine(line.second.From, line.second.To, line.second.Color);
+	}
 
 	m_BindableVertexBuffer = new BindableVertexBuffer("LineBatcher", *m_VertexBuffer);
 
@@ -79,6 +91,7 @@ void LineBatcher::DrawLines()
 	m_VertexCB->Bind();
 	m_BindableVertexBuffer->Bind();
 	BindAll();
+
 
 	RenderCommand::Draw(m_Lines * 2);
 
