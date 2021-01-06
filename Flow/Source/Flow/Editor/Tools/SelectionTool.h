@@ -7,6 +7,9 @@
 
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
+//TODO: Remove?
+#include <DirectXMath.h>
+
 // Forward Declaration //////////////////////////////////////
 
 class WorldComponent;
@@ -66,6 +69,10 @@ private:
 	TransformMode								m_transformationMode;
 
 	SelectionGizmo*								m_Gizmo;
+
+
+	//TEST
+	DirectX::XMFLOAT4X4							m_CurrentMatrix;
 
 
 	//= Settings =

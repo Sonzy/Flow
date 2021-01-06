@@ -146,6 +146,16 @@ public:
 		z *= Other.z;
 	}
 
+	bool operator==(const Vector3& Other)
+	{
+		return x == Other.x && y == Other.y && z == Other.z;
+	}
+
+	bool operator!=(const Vector3& Other)
+	{
+		return x != Other.x && y != Other.y && z != Other.z;
+	}
+
 	template<typename OStream>
 	friend OStream& operator<<(OStream& os, const Vector3& c)
 	{

@@ -5,6 +5,7 @@
 
 Console::Console()
 	: m_QueueDirty(false)
+	, m_maxMessageCount(1000)
 {
 	Log::InitConsole(this);
 }
@@ -19,6 +20,8 @@ void Console::Update()
 
 void Console::Render()
 {
+	PROFILE_FUNCTION();
+
 	if (ImGui::Begin("Output"))
 	{
 		if (ImGui::BeginChild("Console", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar))
@@ -52,7 +55,7 @@ Console* Console::GetSafe()
 void Console::PushMessage(MessageType type, const char* Message)
 {
 	// TODO: Dont hard code
-	if (m_MessageHistory.size() > 999999)
+	if (m_MessageHistory.size() > m_maxMessageCount)
 	{
 		m_MessageHistory.erase(m_MessageHistory.begin());
 	}

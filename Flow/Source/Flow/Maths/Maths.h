@@ -21,7 +21,14 @@
 	#include <DirectXMath.h>
 #endif
 
-//= Forward Declarations =======
+// Type Definitions //////////////////////////////////////////////
+
+namespace Maths
+{
+	typedef DirectX::XMMATRIX Matrix;
+}
+
+// Forward Declarations ///////////////////////////////////////////
 
 namespace Physics { class Ray; }
 

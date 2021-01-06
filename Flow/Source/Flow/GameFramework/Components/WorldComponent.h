@@ -112,6 +112,7 @@ protected:
 	std::vector<WorldComponent*>	m_Children;
 	WorldComponent*					m_ParentComponent;
 	Transform						m_RelativeTransform;
+	Maths::Matrix					m_matrix;
 	bool							m_Visible = true;
 
 	//= Physics ========

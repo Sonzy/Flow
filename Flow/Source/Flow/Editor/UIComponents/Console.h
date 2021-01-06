@@ -57,4 +57,5 @@ private:
 
 	std::vector<Console::Message>		m_MessageHistory;
 	bool								m_QueueDirty;
+	int									m_maxMessageCount;
 };

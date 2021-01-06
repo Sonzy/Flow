@@ -65,23 +65,9 @@ void SelectionTool::RenderImGuiGizmo()
 		Vector2 rectSize = editor.GetSceneWindowSize();
 		ImGuizmo::SetRect(rectPos.x, rectPos.y, rectSize.x, rectSize.y);
 
-		//DirectX::XMFLOAT4X4 matrix;
-		//DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity());
-
 		Rotator inRotation = m_SelectedComponent->GetWorldRotation();
-
-		if (ImGuizmo::IsUsing())
-		{
-			FLOW_ENGINE_LOG("== Update ==");
-		}
-
-		//ImGuizmo::RecomposeMatrixFromComponents(
-		//	reinterpret_cast<float*>(&m_SelectedComponent->GetWorldPosition()),
-		//	reinterpret_cast<float*>(&inRotation),
-		//	reinterpret_cast<float*>(&m_SelectedComponent->GetWorldScale()),
-		//	reinterpret_cast<float*>(&matrix)
-		//);
-
+	
+		//TODO: store a matrix whilst transforming the object?
 		DirectX::XMFLOAT4X4 matrix;
 		DirectX::XMStoreFloat4x4(&matrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());
 
@@ -98,30 +84,22 @@ void SelectionTool::RenderImGuiGizmo()
 			reinterpret_cast<float*>(&fProjectionMatrix),
 			TranslateTransformation(m_transformationMode),
 			m_SpaceMode,
-			reinterpret_cast<float*>(&matrix)
+			reinterpret_cast<float*>(&m_CurrentMatrix)
 		);
 
 		if (ImGuizmo::IsUsing())
 		{			
-			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetMatrix(matrix);
+			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetMatrix(m_CurrentMatrix);
 
-			FLOW_ENGINE_LOG("= OutMatrix =");
-			Maths::PrintMatrix((float*)&matrix);
+			float position[3];
+			float rotation[3];
+			float scale[3];
 
-			////= Convert back to basics =
-			//float mTranslation[3] = { 0.0f, 0.0f, 0.0f };
-			//float mRotation[3] = { 0.0f, 0.0f, 0.0f };
-			//float mScale[3] = { 0.0f, 0.0f, 0.0f };
-			//
-			//ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&matrix), mTranslation, mRotation, mScale);
-			//
-			//Rotator outRotation = *reinterpret_cast<Rotator*>(&mRotation);
-			//Vector3 outTranslation = *reinterpret_cast<Rotator*>(&mTranslation);
-			//Vector3 outScale = *reinterpret_cast<Rotator*>(&mScale);
-			//
-			//if (outTranslation.IsValid())	m_SelectedComponent->SetWorldPosition(outTranslation);
-			//if (outRotation.IsValid())	m_SelectedComponent->SetWorldRotation(outRotation);
-			//if (outScale.IsValid())	m_SelectedComponent->SetWorldScale(outScale);
+			ImGuizmo::DecomposeMatrixToComponents((float*)&m_CurrentMatrix, position, rotation, scale); //TODO: THe matrix is fine, but the decomposed rotation isnt?
+
+			m_SelectedComponent->SetWorldPosition(*(Vector3*)&position);
+			m_SelectedComponent->SetWorldRotation(*(Rotator*)&rotation);
+			m_SelectedComponent->SetWorldScale(*(Vector3*)&scale);
 		}
 	}
 }
@@ -311,6 +289,7 @@ void SelectionTool::SelectComponent(WorldComponent* NewComponent)
 		}
 
 		m_SelectedComponent = NewComponent;
+		DirectX::XMStoreFloat4x4(&m_CurrentMatrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());//TODO:
 
 		if (m_SelectedComponent)
 		{

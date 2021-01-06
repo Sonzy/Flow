@@ -89,6 +89,14 @@ public:
 			Yaw == Other.Yaw;
 	}
 
+	bool operator!=(const Rotator& Other)
+	{
+		return
+			Pitch != Other.Pitch ||
+			Roll != Other.Roll ||
+			Yaw != Other.Yaw;
+	}
+
 	operator Vector3() const
 	{
 		return Vector3(Pitch, Roll, Yaw);

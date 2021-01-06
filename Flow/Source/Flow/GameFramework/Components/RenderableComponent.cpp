@@ -22,10 +22,10 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 {
 	PROFILE_FUNCTION();
 
-	if (m_useMatrix)
-	{
-		return m_matrix;
-	}
+	//if (m_useMatrix)
+	//{
+	//	return m_matrix;
+	//}
 
 	Transform WorldTransform = GetWorldTransform();
 	Rotator RadianRotation = Rotator::AsRadians(WorldTransform.m_Rotation);

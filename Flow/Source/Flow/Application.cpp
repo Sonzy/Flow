@@ -124,7 +124,8 @@ void Application::InitialiseApplication()
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
 	Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
-	SkyMat->SetTexture("SkyCube_Test");
+	//SkyMat->SetTexture("SkyCube_Test");
+	SkyMat->SetTexture("YokohamaCubemap_4k");
 	SkyMat->SetPixelShader("Texture_PS");
 	SkyMat->SetVertexShader("Texture_VS");
 
