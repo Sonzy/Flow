@@ -272,6 +272,11 @@ void StaticMeshComponent::RefreshBinds()
 {
 	m_Techniques.clear();
 
+	if (m_StaticMesh == nullptr || m_Material == nullptr)
+	{
+		return;
+	}
+
 	//= Standard Rendering ====
 	VertexLayout MeshLayout;
 	auto Transform = std::make_shared<TransformConstantBuffer>(this);

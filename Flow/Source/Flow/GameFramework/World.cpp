@@ -17,7 +17,6 @@
 #include "Editor/EditorCamera.h"
 #include "Editor/Editor.h"
 #include "Editor/UIComponents/Inspector.h"
-#include "Editor/SelectionGizmo.h"
 #endif
 
 #include "Utils/GUIDGenerator.h"

@@ -3,12 +3,9 @@
 // Includes /////////////////////////////////////////////////
 
 #include "Tool.h"
-#include "Maths/Vector3.h"
+#include "Maths/Maths.h"
 
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
-
-//TODO: Remove?
-#include <DirectXMath.h>
 
 // Forward Declaration //////////////////////////////////////
 
@@ -72,7 +69,7 @@ private:
 
 
 	//TEST
-	DirectX::XMFLOAT4X4							m_CurrentMatrix;
+	Matrix4x4									m_CurrentMatrix;
 
 
 	//= Settings =

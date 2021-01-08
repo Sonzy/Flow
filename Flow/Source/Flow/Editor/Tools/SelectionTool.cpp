@@ -11,7 +11,6 @@
 #include "GameFramework/Components/StaticMeshComponent.h"
 #include "GameFramework/World.h"
 
-#include "Editor/SelectionGizmo.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 
@@ -23,8 +22,7 @@ SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
 	, m_SpaceMode(ImGuizmo::WORLD)
 {
-	m_Gizmo = new SelectionGizmo();
-	m_ConfigurationWindowOpen = true;
+
 }
 
 SelectionTool::~SelectionTool()
@@ -33,8 +31,6 @@ SelectionTool::~SelectionTool()
 
 void SelectionTool::UpdateTool(float DeltaTime)
 {
-	m_Gizmo->UpdateSelection();
-
 	for (auto& line : m_PreviousLines)
 	{
 		World::GetLineBatcher_S().AddLine(line.first, line.second, m_DebugLineColor);
@@ -43,12 +39,10 @@ void SelectionTool::UpdateTool(float DeltaTime)
 
 void SelectionTool::RenderTool()
 {
-	//m_Gizmo->Render();
 }
 
 void SelectionTool::BeginPlay()
 {
-	m_Gizmo->InitialisePhysics();
 }
 
 void SelectionTool::RenderImGuiGizmo()
@@ -56,7 +50,7 @@ void SelectionTool::RenderImGuiGizmo()
 	if (m_SelectedComponent != nullptr)
 	{
 		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist(); //TODO: Put it in imgui
+		ImGuizmo::SetDrawlist(); //TODO: Put this inside ImGui?
 
 		Editor& editor = Editor::Get();
 		Vector2 rectPos = editor.GetSceneWindowPosition();
@@ -84,7 +78,7 @@ void SelectionTool::RenderImGuiGizmo()
 			DirectX::XMVECTOR quatRotation;
 			DirectX::XMVECTOR position;
 			DirectX::XMVECTOR scale;
-			DirectX::XMMatrixDecompose(&scale, &quatRotation, &position, DirectX::XMLoadFloat4x4(&m_CurrentMatrix));
+			DirectX::XMMatrixDecompose(&scale, &quatRotation, &position, DirectX::XMLoadFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(&m_CurrentMatrix)));
 
 			DirectX::XMFLOAT3 pos, sca;
 			DirectX::XMStoreFloat3(&pos, position);
@@ -106,6 +100,8 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		return true;
 	}
+
+	//TODO: Use a picking depth buffer
 
 	//Calculate the ray bounds
 	IntVector2 MousePosition = Input::GetMousePosition();
@@ -143,20 +139,6 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 			WorldComponent* comp = reinterpret_cast<WorldComponent*>(result.m_collisionObjects[i]->getUserPointer());
 			Actor* actor = comp->GetParentActor();
 
-			//Check if we hit a selection gimzo
-			if (SelectionGizmo* Gizmo = dynamic_cast<SelectionGizmo*>(actor))
-			{
-				Axis Axis = SelectionGizmo::TagToAxis(comp->m_Tag);
-				if (Axis == Axis::None)
-				{
-					FLOW_ENGINE_ERROR("Inspector::OnMouseClicked: Selected Selection Gizmo but failed to identify mesh");
-					return true;
-				}
-
-				Gizmo->OnSelected(Axis, m_SelectedComponent);
-				return true;
-			}
-
 			//Store the closest found one.
 			float DistanceSquared = Maths::DistanceSquared(Start, comp->GetWorldPosition());
 			if (DistanceSquared < ClosestDistance)
@@ -186,7 +168,6 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 			m_SelectedComponent->OnViewportDeselected();
 			m_SelectedComponent = nullptr;
 		}
-		m_Gizmo->OnNewComponentSelected(nullptr);
 
 		//Deselect and delete actor
 		if (m_SelectedActor != nullptr)
@@ -202,19 +183,16 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 	if (e.GetKeyCode() == KEY_W)
 	{
 		m_transformationMode = TransformMode::Translate;
-		m_Gizmo->SetTransformationMode(SelectionGizmo::Translation);
 	}
 
 	if (e.GetKeyCode() == KEY_E)
 	{
 		m_transformationMode = TransformMode::Rotate;
-		m_Gizmo->SetTransformationMode(SelectionGizmo::Rotation);
 	}
 
 	if (e.GetKeyCode() == KEY_R)
 	{
 		m_transformationMode = TransformMode::Scale;
-		m_Gizmo->SetTransformationMode(SelectionGizmo::Scale);
 	}
 
 	return false;
@@ -222,14 +200,6 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 
 bool SelectionTool::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 {
-	if (e.GetMouseButton() == MOUSE_LEFT)
-	{
-		if (m_Gizmo->GetSelectedAxis() != Axis::None)
-		{
-			m_Gizmo->OnDeselected();
-		}
-	}
-
 	return false;
 }
 
@@ -285,43 +255,19 @@ void SelectionTool::SelectComponent(WorldComponent* NewComponent)
 
 		if (m_SelectedComponent)
 		{
-			DirectX::XMStoreFloat4x4(&m_CurrentMatrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());//TODO:
+			m_CurrentMatrix = m_SelectedComponent->GetTransformationMatrix();
 			m_SelectedComponent->OnViewportSelected();
 		}
 	}
 
 	//If we didnt hit anything, reset the gizmo
-	if (!m_SelectedActor)
+	if (m_SelectedActor == nullptr)
 	{
 		if (m_SelectedComponent)
 		{
 			m_SelectedComponent->OnViewportDeselected();
 			m_SelectedComponent = nullptr;
 		}
-
-		m_Gizmo->OnDeselected();
-		m_Gizmo->OnNewComponentSelected(nullptr);
-
-		//Hide Gizmo
-		if (m_Gizmo->IsVisible())
-		{
-			m_Gizmo->RemoveCollidersFromWorld(World::Get());
-			m_Gizmo->SetVisibility(false);
-		}
-	}
-	//Otherwise add it to the world
-	else
-	{
-		//Show Gizmo
-		if (!m_Gizmo->IsVisible())
-		{
-			m_Gizmo->AddCollidersToWorld(World::Get());
-			m_Gizmo->SetVisibility(true);
-		}
-
-		m_Gizmo->OnNewComponentSelected(NewComponent);
-		m_Gizmo->UpdatePosition(Parent->GetLocation());
-		m_Gizmo->SetScale(Vector3(1.5f, 1.5f, 1.5f));
 	}
 }
 
@@ -329,13 +275,9 @@ ImGuizmo::OPERATION SelectionTool::TranslateTransformation(TransformMode mode)
 {
 	switch (mode)
 	{
-	case TransformMode::Translate:
-		return ImGuizmo::OPERATION::TRANSLATE;
-	case TransformMode::Rotate:
-		return ImGuizmo::OPERATION::ROTATE;
-	case TransformMode::Scale:
-		return ImGuizmo::OPERATION::SCALE;
-	default:
-		return ImGuizmo::OPERATION::TRANSLATE;
+	case TransformMode::Translate:	return ImGuizmo::OPERATION::TRANSLATE;
+	case TransformMode::Rotate:		return ImGuizmo::OPERATION::ROTATE;
+	case TransformMode::Scale:		return ImGuizmo::OPERATION::SCALE;
+	default:						return ImGuizmo::OPERATION::TRANSLATE;
 	}
 }

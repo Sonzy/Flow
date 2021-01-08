@@ -60,6 +60,8 @@ public:
 	void							SetWorldTransform(Transform NewTransform);
 	void							SetRelativeTransform(Transform NewTransform);
 
+	Matrix4x4						GetTransformationMatrix();
+
 	virtual void					Render();
 
 	Vector3*						GetWriteablePosition();

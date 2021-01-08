@@ -15,6 +15,8 @@
 #include "Rotator.h"
 #include "Transform.h"
 
+#include "Matrix4x4.h"
+
 #define USE_DXMATH_FORMULAE 1
 
 #if USE_DXMATH_FORMULAE

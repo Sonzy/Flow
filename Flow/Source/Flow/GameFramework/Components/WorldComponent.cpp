@@ -258,6 +258,24 @@ void WorldComponent::SetRelativeTransform(Transform NewTransform)
 	m_RelativeTransform = NewTransform;
 }
 
+Matrix4x4 WorldComponent::GetTransformationMatrix()
+{
+	//TODO: Remove DX dependancy
+
+	Transform WorldTransform = GetWorldTransform();
+	Rotator RadiansRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
+
+	DirectX::XMMATRIX mat =	
+		DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z) *
+		DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) *
+		//TODO: XMMAtrixRotationRollPitchYaw doesn't work here. Not sure what is different between the conversion formulae
+		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
+
+	Matrix4x4 outMat;
+	DirectX::XMStoreFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(&outMat), mat); //TODO: Check this is fine
+	return outMat;
+}
+
 void WorldComponent::Render()
 {
 	PROFILE_CURRENT_SCOPE("Render Children");

@@ -4,7 +4,6 @@
 #include "Editor/UIComponents/Inspector.h"
 #include "Application.h"
 
-#include "Editor\SelectionGizmo.h"
 #include "GameFramework/World.h"
 #include "Editor/MenuBar.h"
 #include "Editor/UIComponents/AssetBrowser.h"

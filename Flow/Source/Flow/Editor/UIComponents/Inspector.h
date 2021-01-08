@@ -52,7 +52,9 @@ private:
 
 	WorldComponent*					m_SelectedComponent;
 	World*							m_CurrentWorld;
-	bool							m_Renaming;
+	Actor*							m_RenameActor;
+
+	char							m_RenameBuffer[128];
 
 	// Whether the focused item has changed this frame, so dont apply modifiers
 	// to the new selected object from the previous one

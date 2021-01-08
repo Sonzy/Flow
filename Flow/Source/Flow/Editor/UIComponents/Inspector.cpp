@@ -5,7 +5,6 @@
 #include "GameFramework\World.h"
 
 #include "GameFramework\Actor.h"
-#include "Editor\SelectionGizmo.h"
 
 #include "Bullet/btBulletCollisionCommon.h"
 #include "Bullet/btBulletDynamicsCommon.h"
@@ -28,7 +27,7 @@
 
 Inspector::Inspector()
 	: m_CurrentWorld(nullptr)
-	, m_Renaming(false)
+	, m_RenameActor(nullptr)
 	, m_HideTree(false)
 	, m_HideWholeComponentTree(false)
 {
@@ -120,20 +119,31 @@ void Inspector::RenderHeirarchy()
 				Actor* actor = Object.second;
 				sprintf_s(Buffer, "%s###%d", actor->GetName().c_str(), Counter);
 
-				if (m_Renaming == false)
+				if (m_RenameActor != nullptr && actor == m_RenameActor)
+				{	
+					if (ImGui::InputText("Name", m_RenameBuffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						m_RenameActor->SetName(m_RenameBuffer);
+						m_RenameActor = nullptr;
+					}
+				}
+				else
 				{
 					const bool selected = m_SelectedComponent ? m_SelectedComponent->GetParentActor() == actor : false;
 					if (ImGui::Selectable(Buffer, selected))
 					{
+						//If we have changed the selected component, then stop the renaming process
+						if (actor->GetRootComponent() != m_SelectedComponent)
+						{
+							m_RenameActor = nullptr;
+						}
+
 						m_Editor->GetTool<SelectionTool>()->SelectComponent(actor->GetRootComponent());
 						ImGui::GetIO().WantCaptureKeyboard = false;
+
+
 					}
 				}
-				else
-				{					
-					ImGui::InputText("Name", &m_SelectedComponent->GetParentActor()->GetWritableName());
-				}
-
 
 				Counter++;
 			}
@@ -151,9 +161,18 @@ bool Inspector::OnKeyPressed(KeyPressedEvent& e)
 		if (Actor* Parent = m_SelectedComponent->GetParentActor())
 		{
 			//Start rename dialogue
-			m_Renaming = true;
+			m_RenameActor = Parent;
+			sprintf_s(m_RenameBuffer, "%s", m_RenameActor->GetName().c_str());
+			return true;
 		}
 	}
+
+	if (m_RenameActor != nullptr && e.GetKeyCode() == KEY_ESC)
+	{
+		m_RenameActor = nullptr;
+		return true;
+	}
+
 	return false;
 }
 

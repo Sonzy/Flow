@@ -127,7 +127,6 @@
     <ClInclude Include="Source\Flow\Editor\UIComponents\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\LevelManager.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\SceneManager.h" />
-    <ClInclude Include="Source\Flow\Editor\SelectionGizmo.h" />
     <ClInclude Include="Source\Flow\Editor\MenuBar.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Toolbar.h" />
     <ClInclude Include="Source\Flow\Editor\Tools\SelectionTool.h" />
@@ -173,6 +172,7 @@
     <ClInclude Include="Source\Flow\Maths\IntVector3.h" />
     <ClInclude Include="Source\Flow\Maths\IntVector4.h" />
     <ClInclude Include="Source\Flow\Maths\Maths.h" />
+    <ClInclude Include="Source\Flow\Maths\Matrix4x4.h" />
     <ClInclude Include="Source\Flow\Maths\Vector4.h" />
     <ClInclude Include="Source\Flow\Typedefs.h" />
     <ClInclude Include="Source\Flow\Utils\BulletDebugDrawing.h" />
@@ -357,7 +357,6 @@
     <ClCompile Include="Source\Flow\Editor\UIComponents\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\LevelManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\SceneManager.cpp" />
-    <ClCompile Include="Source\Flow\Editor\SelectionGizmo.cpp" />
     <ClCompile Include="Source\Flow\Editor\MenuBar.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Toolbar.cpp" />
     <ClCompile Include="Source\Flow\Editor\Tools\SelectionTool.cpp" />
@@ -400,6 +399,7 @@
     <ClCompile Include="Source\Flow\GameFramework\World.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actor.cpp" />
     <ClCompile Include="Source\Flow\Maths\Maths.cpp" />
+    <ClCompile Include="Source\Flow\Maths\Matrix4x4.cpp" />
     <ClCompile Include="Source\Flow\Utils\BulletDebugDrawing.cpp" />
     <ClCompile Include="Source\Flow\Utils\ComponentHelper.cpp" />
     <ClCompile Include="Source\Flow\Utils\DebugDraw.cpp" />
