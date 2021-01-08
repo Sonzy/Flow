@@ -363,6 +363,7 @@ HINSTANCE WindowClass::GetInstanceHandle()
 	return WindowClassInstance.InstanceHandle;
 }
 WindowClass::WindowClass()
+	: InstanceHandle(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX windowsClass = { 0 };
 	windowsClass.cbSize = sizeof(windowsClass);
@@ -371,9 +372,11 @@ WindowClass::WindowClass()
 	windowsClass.cbClsExtra = 0;
 	windowsClass.cbWndExtra = 0;
 	windowsClass.hInstance = GetInstanceHandle();
-	windowsClass.hIcon = nullptr; // static_cast<HICON>(LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0)); //Used to set up custom icon
-	windowsClass.hIconSm = nullptr; //static_cast<HICON>(LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));; //Same as before but small one
-	windowsClass.lpszClassName = ClassName;
+	windowsClass.hIcon = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 128, 128, 0)); //Used to set up custom icon
+	windowsClass.hIconSm = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 32, 32, 0));// static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));; //Same as before but small one
+	windowsClass.lpszClassName = ClassName;	
+
+	DWORD error = GetLastError();
 
 	RegisterClassEx(&windowsClass);
 }
