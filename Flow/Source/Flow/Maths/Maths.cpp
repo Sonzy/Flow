@@ -98,10 +98,11 @@ void Maths::PrintMatrix(DirectX::XMMATRIX m)
 
 Rotator Maths::QuaternionToEulers(DirectX::XMVECTOR quaternion)
 {
+	//Function taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
 	Rotator outRot;
 	DirectX::XMFLOAT4 q;
 	DirectX::XMStoreFloat4(&q, quaternion);
-
 
 	// roll (x-axis rotation)
 	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
@@ -125,6 +126,8 @@ Rotator Maths::QuaternionToEulers(DirectX::XMVECTOR quaternion)
 
 DirectX::XMVECTOR Maths::EulersToQuaternion(Rotator rot)
 {
+	//Function taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
 	// Abbreviations for the various angular functions
 	double cy = cos(rot.Roll * 0.5);
 	double sy = sin(rot.Roll * 0.5);

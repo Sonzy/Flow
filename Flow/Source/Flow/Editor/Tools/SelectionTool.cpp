@@ -53,8 +53,6 @@ void SelectionTool::BeginPlay()
 
 void SelectionTool::RenderImGuiGizmo()
 {
-	//TODO: Do this properly instead of lazy
-	//TODO: Try cherno's compose/decompose to avoid the issues
 	if (m_SelectedComponent != nullptr)
 	{
 		ImGuizmo::SetOrthographic(false);
@@ -64,13 +62,7 @@ void SelectionTool::RenderImGuiGizmo()
 		Vector2 rectPos = editor.GetSceneWindowPosition();
 		Vector2 rectSize = editor.GetSceneWindowSize();
 		ImGuizmo::SetRect(rectPos.x, rectPos.y, rectSize.x, rectSize.y);
-
-		Rotator inRotation = m_SelectedComponent->GetWorldRotation();
 	
-		//TODO: store a matrix whilst transforming the object?
-		DirectX::XMFLOAT4X4 matrix;
-		DirectX::XMStoreFloat4x4(&matrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());
-
 		//= Convert view matrix to valid format
 
 		DirectX::XMFLOAT4X4 fViewMatrix;
@@ -90,34 +82,17 @@ void SelectionTool::RenderImGuiGizmo()
 		if (ImGuizmo::IsUsing())
 		{			
 			DirectX::XMVECTOR quatRotation;
-			DirectX::XMVECTOR dummy;
-			DirectX::XMMatrixDecompose(&dummy, &quatRotation, &dummy, DirectX::XMLoadFloat4x4(&m_CurrentMatrix));
-			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetQuat(quatRotation);
+			DirectX::XMVECTOR position;
+			DirectX::XMVECTOR scale;
+			DirectX::XMMatrixDecompose(&scale, &quatRotation, &position, DirectX::XMLoadFloat4x4(&m_CurrentMatrix));
 
-			float position[3];
-			float rotation[3];
-			float scale[3];
+			DirectX::XMFLOAT3 pos, sca;
+			DirectX::XMStoreFloat3(&pos, position);
+			DirectX::XMStoreFloat3(&sca, scale);
 
-			Rotator rot = Maths::QuaternionToEulers(quatRotation);
-			Rotator rotRad = Rotator::AsRadians(Maths::QuaternionToEulers(quatRotation));
-			ImGuizmo::DecomposeMatrixToComponents((float*)&m_CurrentMatrix, position, rotation, scale); //TODO: THe matrix is fine, but the decomposed rotation isnt?
-
-			//FLOW_ENGINE_LOG("QuatDecompose: %f %f %f", rot.Pitch, rot.Roll, rot.Yaw);
-			//FLOW_ENGINE_LOG("MatDecompose: %f %f %f", rotation[0], rotation[1], rotation[2]);
-
-			//FLOW_ENGINE_LOG("QuatDecompose: %f %f %f | %f %f %f",
-			//	rot.Pitch, rot.Roll, rot.Yaw,
-			//	rotRad.Pitch, rotRad.Roll, rotRad.Yaw);
-
-			m_SelectedComponent->SetWorldPosition(*(Vector3*)&position);
-			m_SelectedComponent->SetWorldRotation(*(Rotator*)&rot);
-			m_SelectedComponent->SetWorldScale(*(Vector3*)&scale);
-
-			//Rotator rotWorld = m_SelectedComponent->GetWorldRotation();
-			//Rotator rotWorldRad = Rotator::AsRadians(m_SelectedComponent->GetWorldRotation());
-			//FLOW_ENGINE_LOG("World: %f %f %f | %f %f %f", 
-			//	rotWorld.Pitch, rotWorld.Roll, rotWorld.Yaw,
-			//	rotWorldRad.Pitch, rotWorldRad.Roll, rotWorldRad.Yaw);
+			m_SelectedComponent->SetWorldPosition(pos);
+			m_SelectedComponent->SetWorldRotation(Maths::QuaternionToEulers(quatRotation));
+			m_SelectedComponent->SetWorldScale(sca);
 		}
 	}
 }

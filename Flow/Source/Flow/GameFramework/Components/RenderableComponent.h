@@ -30,27 +30,9 @@ public:
 
 	virtual DirectX::XMMATRIX	GetTransformXM() const;
 
-	void						SetMatrix(DirectX::XMFLOAT4X4 fMatrix);
-	DirectX::XMMATRIX			GetMatrix() const { return m_matrix; }
-
-	void						SetQuat(DirectX::XMVECTOR inQuat);
-	DirectX::XMVECTOR			GetQuat() const {return m_quat;	};
-
-
-	//TODO: Shouldnt need this
-	bool						UsingMatrixRotation() const { return m_useMatrix; }
-	bool						UsingQuatRotation() const { return m_useQuat; }
-
 protected:
 
 	//= Protected Functions =======================
 
 	virtual void				RefreshBinds();
-
-
-	//TODO: Udpate rotation mode
-	bool						m_useMatrix;
-	bool						m_useQuat;
-	DirectX::XMMATRIX			m_matrix;
-	DirectX::XMVECTOR			m_quat;
 };
