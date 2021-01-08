@@ -53,6 +53,7 @@ public:
 	Vector3							GetRelativeScale() const;
 	void							SetWorldScale(Vector3 NewScale);
 	void							SetRelativeScale(Vector3 NewScale);
+	void							AddRelativeScale(Vector3 NewScale);
 
 	Transform						GetWorldTransform() const;
 	Transform						GetRelativeTransform() const;

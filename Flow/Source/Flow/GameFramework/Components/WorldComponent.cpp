@@ -229,6 +229,13 @@ void WorldComponent::SetRelativeScale(Vector3 NewScale)
 	UpdateCollisionScale();
 }
 
+void WorldComponent::AddRelativeScale(Vector3 NewScale)
+{
+	m_RelativeTransform.m_Scale += NewScale;
+
+	UpdateCollisionScale();
+}
+
 Transform WorldComponent::GetWorldTransform() const
 {
 	return Transform(GetWorldPosition(), GetWorldRotation(), GetWorldScale());

@@ -43,7 +43,7 @@ void SelectionTool::UpdateTool(float DeltaTime)
 
 void SelectionTool::RenderTool()
 {
-	m_Gizmo->Render();
+	//m_Gizmo->Render();
 }
 
 void SelectionTool::BeginPlay()
@@ -89,17 +89,35 @@ void SelectionTool::RenderImGuiGizmo()
 
 		if (ImGuizmo::IsUsing())
 		{			
-			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetMatrix(m_CurrentMatrix);
+			DirectX::XMVECTOR quatRotation;
+			DirectX::XMVECTOR dummy;
+			DirectX::XMMatrixDecompose(&dummy, &quatRotation, &dummy, DirectX::XMLoadFloat4x4(&m_CurrentMatrix));
+			reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->SetQuat(quatRotation);
 
 			float position[3];
 			float rotation[3];
 			float scale[3];
 
+			Rotator rot = Maths::QuaternionToEulers(quatRotation);
+			Rotator rotRad = Rotator::AsRadians(Maths::QuaternionToEulers(quatRotation));
 			ImGuizmo::DecomposeMatrixToComponents((float*)&m_CurrentMatrix, position, rotation, scale); //TODO: THe matrix is fine, but the decomposed rotation isnt?
 
+			//FLOW_ENGINE_LOG("QuatDecompose: %f %f %f", rot.Pitch, rot.Roll, rot.Yaw);
+			//FLOW_ENGINE_LOG("MatDecompose: %f %f %f", rotation[0], rotation[1], rotation[2]);
+
+			//FLOW_ENGINE_LOG("QuatDecompose: %f %f %f | %f %f %f",
+			//	rot.Pitch, rot.Roll, rot.Yaw,
+			//	rotRad.Pitch, rotRad.Roll, rotRad.Yaw);
+
 			m_SelectedComponent->SetWorldPosition(*(Vector3*)&position);
-			m_SelectedComponent->SetWorldRotation(*(Rotator*)&rotation);
+			m_SelectedComponent->SetWorldRotation(*(Rotator*)&rot);
 			m_SelectedComponent->SetWorldScale(*(Vector3*)&scale);
+
+			//Rotator rotWorld = m_SelectedComponent->GetWorldRotation();
+			//Rotator rotWorldRad = Rotator::AsRadians(m_SelectedComponent->GetWorldRotation());
+			//FLOW_ENGINE_LOG("World: %f %f %f | %f %f %f", 
+			//	rotWorld.Pitch, rotWorld.Roll, rotWorld.Yaw,
+			//	rotWorldRad.Pitch, rotWorldRad.Roll, rotWorldRad.Yaw);
 		}
 	}
 }
@@ -289,10 +307,10 @@ void SelectionTool::SelectComponent(WorldComponent* NewComponent)
 		}
 
 		m_SelectedComponent = NewComponent;
-		DirectX::XMStoreFloat4x4(&m_CurrentMatrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());//TODO:
 
 		if (m_SelectedComponent)
 		{
+			DirectX::XMStoreFloat4x4(&m_CurrentMatrix, reinterpret_cast<RenderableComponent*>(m_SelectedComponent)->GetTransformXM());//TODO:
 			m_SelectedComponent->OnViewportSelected();
 		}
 	}

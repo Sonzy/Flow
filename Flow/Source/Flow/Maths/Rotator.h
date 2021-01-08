@@ -153,18 +153,18 @@ public:
 	static Rotator AsRadians(const Rotator& Rotation)
 	{
 		Rotator Rads;
-		Rads.Pitch = (Rotation.Pitch * 3.14159f) / 180.0f;
-		Rads.Roll = (Rotation.Roll * 3.14159f) / 180.0f;
-		Rads.Yaw = (Rotation.Yaw * 3.14159f) / 180.0f;
+		Rads.Pitch = (Rotation.Pitch * 3.141592654f) / 180.0f;
+		Rads.Roll = (Rotation.Roll * 3.141592654f) / 180.0f;
+		Rads.Yaw = (Rotation.Yaw * 3.141592654f) / 180.0f;
 		return Rads;
 	}
 
 	static Rotator AsDegrees(const Rotator& Rotation)
 	{
 		Rotator Rads;
-		Rads.Pitch = (Rotation.Pitch * 180.0f) / 3.14159f;
-		Rads.Roll = (Rotation.Roll * 180.0f) / 3.14159f;
-		Rads.Yaw = (Rotation.Yaw * 180.0f) / 3.14159f;
+		Rads.Pitch = (Rotation.Pitch * 180.0f) / 3.141592654f;
+		Rads.Roll = (Rotation.Roll * 180.0f) / 3.141592654f;
+		Rads.Yaw = (Rotation.Yaw * 180.0f) / 3.141592654f;
 		return Rads;
 	}
 
@@ -185,6 +185,6 @@ public:
 	//= Public Variables ===================================
 
 	float Pitch; //Rot around x
-	float Roll; //Rot around y
-	float Yaw; //Rot around z
+	float Roll; //Rot around z
+	float Yaw; //Rot around y
 };

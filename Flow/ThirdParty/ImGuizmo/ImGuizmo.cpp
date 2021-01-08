@@ -2001,7 +2001,15 @@ namespace ImGuizmo
          rotationAxisLocalSpace.Normalize();
 
          matrix_t deltaRotation;
-         deltaRotation.RotationAxis(rotationAxisLocalSpace, gContext.mRotationAngle - gContext.mRotationAngleOrigin);
+        // deltaRotation.RotationAxis(rotationAxisLocalSpace, gContext.mRotationAngle - gContext.mRotationAngleOrigin);
+         DirectX::XMMATRIX mat = DirectX::XMMatrixRotationAxis(
+             DirectX::XMVectorSet(rotationAxisLocalSpace.x, rotationAxisLocalSpace.y, rotationAxisLocalSpace.z, rotationAxisLocalSpace.w),
+             gContext.mRotationAngle - gContext.mRotationAngleOrigin);
+
+         DirectX::XMFLOAT4X4 matf;
+         DirectX::XMStoreFloat4x4(&matf, mat);
+         deltaRotation = *(matrix_t*)&matf;
+
          if(gContext.mRotationAngle != gContext.mRotationAngleOrigin)
          {
              modified = true;

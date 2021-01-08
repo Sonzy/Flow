@@ -51,6 +51,24 @@ public:
 		return ImVec4(x, y, z, w);
 	}
 
+	bool operator==(const Vector4& rhs)
+	{
+		return
+			x == rhs.x &&
+			y == rhs.y &&
+			z == rhs.z &&
+			w == rhs.w;
+	}
+
+	bool operator!=(const Vector4& rhs)
+	{
+		return
+			x != rhs.x ||
+			y != rhs.y ||
+			z != rhs.z ||
+			w != rhs.w;
+	}
+
 	//= Public Variables ===========================
 
 	float x;

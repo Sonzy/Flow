@@ -167,7 +167,8 @@ void Inspector::DrawSelectedComponentTransform()
 	bool bUpdate = false;
 	RenderableComponent* rComp = dynamic_cast<RenderableComponent*>(m_SelectedComponent);
 
-	if (rComp && rComp->UsingMatrixRotation())
+	//if (rComp && rComp->UsingMatrixRotation())
+	if (false)
 	{
 		float position[3];
 		float rotation[3];
@@ -211,6 +212,8 @@ void Inspector::DrawSelectedComponentTransform()
 
 		if (bUpdate == true)
 		{
+			FLOW_ENGINE_LOG("TODO: Setting matrix to xm created matrix doesnt work (big saddo)");
+
 			Rotator RadianRotation = Rotator::AsRadians(*(Rotator*)&rotation);
 
 			DirectX::XMFLOAT4X4 fNewMatrix;

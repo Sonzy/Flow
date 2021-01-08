@@ -96,6 +96,182 @@ void Maths::PrintMatrix(DirectX::XMMATRIX m)
 	FLOW_ENGINE_LOG("%f %f %f %f", fMatrix._41, fMatrix._42, fMatrix._43, fMatrix._44);
 }
 
+Rotator Maths::QuaternionToEulers(DirectX::XMVECTOR quaternion)
+{
+	Rotator outRot;
+	DirectX::XMFLOAT4 q;
+	DirectX::XMStoreFloat4(&q, quaternion);
+
+
+	// roll (x-axis rotation)
+	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+	outRot.Pitch = std::atan2(sinr_cosp, cosr_cosp);
+
+	// pitch (y-axis rotation)
+	double sinp = 2 * (q.w * q.y - q.z * q.x);
+	if (std::abs(sinp) >= 1)
+		outRot.Yaw = std::copysign(PI / 2, sinp); // use 90 degrees if out of range
+	else
+		outRot.Yaw = std::asin(sinp);
+
+	// yaw (z-axis rotation)
+	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	outRot.Roll = std::atan2(siny_cosp, cosy_cosp);
+
+	return Rotator::AsDegrees(outRot);
+}
+
+DirectX::XMVECTOR Maths::EulersToQuaternion(Rotator rot)
+{
+	// Abbreviations for the various angular functions
+	double cy = cos(rot.Roll * 0.5);
+	double sy = sin(rot.Roll * 0.5);
+	double cp = cos(rot.Yaw * 0.5);
+	double sp = sin(rot.Yaw * 0.5);
+	double cr = cos(rot.Pitch * 0.5);
+	double sr = sin(rot.Pitch * 0.5);
+
+	DirectX::XMFLOAT4 q;
+	q.w = cr * cp * cy + sr * sp * sy;
+	q.x = sr * cp * cy - cr * sp * sy;
+	q.y = cr * sp * cy + sr * cp * sy;
+	q.z = cr * cp * sy - sr * sp * cy;
+
+	return DirectX::XMLoadFloat4(&q);
+}
+
+bool Maths::CompareMatrices(DirectX::XMFLOAT4X4 m1, DirectX::XMFLOAT4X4 m2)
+{
+#define SHOW_EXACT_DIFFERENCES 1
+
+#if SHOW_EXACT_DIFFERENCES
+	if (CompareFloat(m1._11,m2._11) == false)
+	{
+		FLOW_ENGINE_LOG("_11 is different, %f %f", m1._11, m2._11);
+		return false;
+	}
+		
+	if (CompareFloat(m1._12, m2._12) == false)
+	{
+		FLOW_ENGINE_LOG("_12 is different, %f %f", m1._12, m2._12);
+		return false;
+	}
+
+	if (CompareFloat(m1._13, m2._13) == false)
+	{
+		FLOW_ENGINE_LOG("_13 is different, %f %f", m1._13, m2._13);
+		return false;
+	}
+
+	if (CompareFloat(m1._14, m2._14) == false)
+	{
+		FLOW_ENGINE_LOG("_14 is different, %f %f", m1._14, m2._14);
+		return false;
+	}
+
+
+
+	if (CompareFloat(m1._21, m2._21) == false)
+	{
+		FLOW_ENGINE_LOG("_21 is different, %f %f", m1._21, m2._21);
+		return false;
+	}
+	if (CompareFloat(m1._22, m2._22) == false)
+	{
+		FLOW_ENGINE_LOG("_22 is different, %f %f", m1._22, m2._22);
+		return false;
+	}
+	if (CompareFloat(m1._23, m2._23) == false)
+	{
+		FLOW_ENGINE_LOG("_23 is different, %f %f", m1._23, m2._23);
+		return false;
+	}
+	if (CompareFloat(m1._24, m2._24) == false)
+	{
+		FLOW_ENGINE_LOG("_24 is different, %f %f", m1._24, m2._24);
+		return false;
+	}
+
+
+	if (CompareFloat(m1._31, m2._31) == false)
+	{
+		FLOW_ENGINE_LOG("_31 is different, %f %f", m1._31, m2._31);
+		return false;
+	}
+
+	if (CompareFloat(m1._32, m2._32) == false)
+	{
+		FLOW_ENGINE_LOG("_32 is different, %f %f", m1._32, m2._32);
+		return false;
+	}
+
+	if (CompareFloat(m1._33, m2._33) == false)
+	{
+		FLOW_ENGINE_LOG("_33 is different, %f %f", m1._33, m2._33);
+		return false;
+	}
+
+	if (CompareFloat(m1._34, m2._34) == false)
+	{
+		FLOW_ENGINE_LOG("_34 is different, %f %f", m1._34, m2._34);
+		return false;
+	}
+
+
+
+	if (CompareFloat(m1._41, m2._41) == false)
+	{
+		FLOW_ENGINE_LOG("_41 is different, %f %f", m1._41, m2._41);
+		return false;
+	}
+
+	if (CompareFloat(m1._42, m2._42) == false)
+	{
+		FLOW_ENGINE_LOG("_42 is different, %f %f", m1._42, m2._42);
+		return false;
+	}
+
+	if (CompareFloat(m1._43, m2._43) == false)
+	{
+		FLOW_ENGINE_LOG("_43 is different, %f %f", m1._43, m2._43);
+		return false;
+	}
+
+	if (CompareFloat(m1._44, m2._44) == false)
+	{
+		FLOW_ENGINE_LOG("_44 is different, %f %f", m1._44, m2._44);
+		return false;
+	}
+
+	return true;
+#else
+	return
+		m1._11 == m2._11 &&
+		m1._12 == m2._12 &&
+		m1._13 == m2._13 &&
+		m1._14 == m2._14 &&
+
+		m1._21 == m2._21 &&
+		m1._22 == m2._22 &&
+		m1._23 == m2._23 &&
+		m1._24 == m2._24 &&
+
+		m1._31 == m2._31 &&
+		m1._32 == m2._32 &&
+		m1._33 == m2._33 &&
+		m1._34 == m2._34 &&
+
+		m1._41 == m2._41 &&
+		m1._42 == m2._42 &&
+		m1._43 == m2._43 &&
+		m1._44 == m2._44;
+#endif
+
+}
+
+
 #endif //#if USE_DXMATH_FORMULAE
 
 void Maths::PrintMatrix(float* m)
@@ -104,6 +280,23 @@ void Maths::PrintMatrix(float* m)
 	FLOW_ENGINE_LOG("%f %f %f %f", m[4], m[5], m[6], m[7]);
 	FLOW_ENGINE_LOG("%f %f %f %f", m[8], m[9], m[10], m[11]);
 	FLOW_ENGINE_LOG("%f %f %f %f", m[12], m[13], m[14], m[15]);
+}
+
+void Maths::PrintMatrix3x3(float* m)
+{
+	FLOW_ENGINE_LOG("%f %f %f", m[0], m[1], m[2]);
+	FLOW_ENGINE_LOG("%f %f %f", m[3], m[4], m[5]);
+	FLOW_ENGINE_LOG("%f %f %f", m[6], m[7], m[8]);
+}
+
+void Maths::PrintQuaternion(float* v)
+{
+	FLOW_ENGINE_LOG("%f %f %f %f", v[0], v[1], v[2], v[3]);
+}
+
+bool Maths::CompareFloat(float a, float b, float epsilon)
+{
+	return abs(b - a) < epsilon;
 }
 
 FLOW_API Vector3::Vector3(Vector4 v)

@@ -36,7 +36,7 @@ namespace Physics { class Ray; }
 
 namespace Maths
 {
-	constexpr float PI = 3.14159265f;
+	constexpr float PI = 3.141592654f;
 	constexpr double PI_D = 3.1415926535897932;
 
 	//= Template Functions ==================
@@ -67,9 +67,16 @@ namespace Maths
 
 #if USE_DXMATH_FORMULAE
 	void			DecomposeMatrix(Vector3& translation, Rotator& rotation, Vector3& scale, DirectX::XMMATRIX matrix);
-
 	void			PrintMatrix(DirectX::XMMATRIX m);
+	Rotator			QuaternionToEulers(DirectX::XMVECTOR v);
+	DirectX::XMVECTOR EulersToQuaternion(Rotator rot);
+	bool			CompareMatrices(DirectX::XMFLOAT4X4 m1, DirectX::XMFLOAT4X4 m2);
 #endif
 
 	void			PrintMatrix(float* m);
+	void			PrintMatrix3x3(float* m);
+	void			PrintQuaternion(float* v);
+
+	bool			CompareFloat(float a, float b, float epsilon = 0.0001f);
+
 }
