@@ -1,6 +1,7 @@
 #pragma once
 #include "Rendering\Core\Materials\Material.h"
 #include "Maths/Vector3.h"
+#include "MaterialCommon.h"
 
 //TODO: Rename
 //Solid Color but without a normal
@@ -27,8 +28,6 @@ protected:
 protected:
 
 	//= Protected Variables =========================
-	struct ColorBuffer
-	{
-		DirectX::XMFLOAT4 Colour;
-	} m_Color;
+
+	MaterialCommon::Buffer::ColorFloat4				m_color;
 };

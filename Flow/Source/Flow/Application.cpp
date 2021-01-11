@@ -21,6 +21,7 @@
 #include "Assets\Materials\Mat_FlatColour.h"
 #include "Assets\Materials\ColorMaterial2D.h"
 #include "Assets\Materials\Mat_TexturedPhong.h"
+#include "Assets\Materials\Mat_LitColor.h"
 #include "Assets\Meshes\MeshAsset.h"
 
 //= Helper Inclues =
@@ -86,17 +87,18 @@ void Application::InitialiseApplication()
 	AssetSystem::Startup();
 
 	//= Materials =
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour");
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Brown");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Brown")->GetMaterial())->SetColour(Vector3(0.31f, 0.08f, 0.0f));
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_White");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Blue");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Blue")->GetMaterial())->SetColour(Vector3(0.0f, 0.0f, 1.0f));
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Red");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Red")->GetMaterial())->SetColour(Vector3(1.0f, 0.0f, 0.0f));
-	AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColour_Green");
-	static_cast<Mat_FlatColour*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green")->GetMaterial())->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Black")->GetMaterial())->SetColor(Vector3(0.0f, 0.0f, 0.0f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Grey")->GetMaterial())->SetColor(Vector3(0.863f, 0.863f, 0.863f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Slate")->GetMaterial())->SetColor(Vector3(0.439f, 0.502f, 0.565f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Blue")->GetMaterial())->SetColor(Vector3(0.0f, 0.0f, 1.0f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Red")->GetMaterial())->SetColor(Vector3(1.0f, 0.0f, 0.0f));
+	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green");
+	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Green")->GetMaterial())->SetColor(Vector3(0.0f, 1.0f, 0.0f));
 
 	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
 	Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());

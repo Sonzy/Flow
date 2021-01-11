@@ -63,7 +63,7 @@ void SpawnWindow::Render()
 		{
 			StaticMeshActor* MeshActor = m_WorldReference->SpawnActor<StaticMeshActor>("Cube");
 			StaticMeshComponent* MeshComponent = MeshActor->GetMeshComponent();
-			MeshComponent->SetMeshAndMaterial("Box", "Mat_FlatColour_White");
+			MeshComponent->SetMeshAndMaterial("Box", "Mat_LitColor_Grey");
 			SpawnedActor = MeshActor;
 		}
 

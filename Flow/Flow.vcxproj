@@ -116,7 +116,9 @@
     <ClInclude Include="Source\Flow\Assets\Levels\LevelAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\ColorMaterial2D.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialAsset.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\MaterialCommon.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\Mat_LitColor.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
@@ -349,6 +351,7 @@
     <ClCompile Include="Source\Flow\Assets\Materials\ColorMaterial2D.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\Mat_LitColor.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
@@ -489,6 +492,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\LitColor_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\LitColor_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColor2D_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

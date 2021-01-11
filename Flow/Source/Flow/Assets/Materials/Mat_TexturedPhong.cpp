@@ -16,7 +16,7 @@ Mat_TexturedPhong::Mat_TexturedPhong()
 	SetPixelShader("TexturedPhong_PS");
 	SetVertexShader("TexturedPhong_VS");
 
-	m_LightCBuffer =
+	m_lightProperties =
 	{
 		{1.0f, 1.0f, 1.0f},
 		0.1f,
@@ -36,5 +36,5 @@ void Mat_TexturedPhong::BindMaterial(Step* RenderingStep, const VertexLayout& Ve
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
 
-	RenderingStep->AddBindable(PixelConstantBuffer<ObjectLightBuffer>::Resolve(m_LightCBuffer, 1u));
+	RenderingStep->AddBindable(PixelConstantBuffer<	MaterialCommon::Buffer::ObjectLightProperties>::Resolve(m_lightProperties, MaterialCommon::Register::ObjectLightProperties));
 }

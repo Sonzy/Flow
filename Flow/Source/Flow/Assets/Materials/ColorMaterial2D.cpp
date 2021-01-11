@@ -18,7 +18,7 @@
 
 ColorMaterial2D::ColorMaterial2D()
 {
-	m_Color = { DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	m_color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	SetVertexShader("SolidColor2D_VS");
 	SetPixelShader("SolidColor2D_PS");
@@ -26,7 +26,7 @@ ColorMaterial2D::ColorMaterial2D()
 
 void ColorMaterial2D::SetColour(Vector3 NewColour)
 {
-	m_Color = { DirectX::XMFLOAT4(NewColour.x, NewColour.y, NewColour.z, 1.0f) };
+	m_color = { NewColour.x, NewColour.y, NewColour.z, 1.0f };
 }
 
 void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
@@ -37,15 +37,15 @@ void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& Vert
 	RenderingStep->AddBindable(PixelShader::Resolve(m_PixelShader->GetPath()));
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
-	RenderingStep->AddBindable(PixelConstantBuffer<ColorBuffer>::Resolve(m_Color, 2u, GenerateTag()));
+	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, MaterialCommon::Register::ColorFloat4, GenerateTag()));
 }
 
 std::string ColorMaterial2D::GenerateTag()
 {
-	return std::string("FlatColour") +
-		std::to_string(m_Color.Colour.x) +
-		std::to_string(m_Color.Colour.y) +
-		std::to_string(m_Color.Colour.z) +
-		std::to_string(m_Color.Colour.w);
+	return std::string("color2D") +
+		std::to_string(m_color.r) +
+		std::to_string(m_color.g) +
+		std::to_string(m_color.b) +
+		std::to_string(m_color.a);
 }
 

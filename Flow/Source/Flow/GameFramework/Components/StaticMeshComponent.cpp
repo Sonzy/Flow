@@ -249,7 +249,7 @@ void StaticMeshComponent::Deserialize(YAML::Node& Archive)
 
 void StaticMeshComponent::DefaultInitialise()
 {
-	SetMeshAndMaterial("Box", "Mat_FlatColour_White");
+	SetMeshAndMaterial("Box", "Mat_LitColor_Grey");
 
 	switch (World::Get()->GetWorldState())
 	{

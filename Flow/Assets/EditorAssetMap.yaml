@@ -34,3 +34,5 @@ ReferencedAssets:
   - Bin/Shaders/SolidColor2D_VS.cso
   - Bin/Shaders/SolidColor2D_PS.cso
   - Bin/Shaders/LineColor_PS.cso
+  - Bin/Shaders/LitColor_PS.cso
+  - Bin/Shaders/LitColor_VS.cso

@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Rendering\Core\Materials\Material.h"
 #include "Rendering/Core/RenderQueue/Step.h"
+#include "MaterialCommon.h"
 
 /* Material with lighting and a single texture. */
 class FLOW_API Mat_TexturedPhong : public Material
@@ -19,5 +20,5 @@ public:
 
 	//= Public Varaibles ===============================
 
-	ObjectLightBuffer			m_LightCBuffer;
+	MaterialCommon::Buffer::ObjectLightProperties	m_lightProperties;
 };
