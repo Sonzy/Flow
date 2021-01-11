@@ -135,7 +135,8 @@ void AssetSystem::Startup()
 	FLOW_ENGINE_LOG("Loading Game Assets");
 	sm_AssetSystem->LoadAssetsFromAssetMap(GetEngineAssetDirectory().append("AssetMap.yaml"), false);
 
-	sm_AssetSystem->SaveEditorAssetMap();
+	//TODO: Why did I do this originally?
+	//sm_AssetSystem->SaveEditorAssetMap();
 }
 
 void AssetSystem::Shutdown()
@@ -181,8 +182,7 @@ bool AssetSystem::LoadAsset(const std::string& FilePath)
 	NewAsset->GetMetaData().m_OriginalPath = FilePath;//TODO: Need to save and load this to the fmesh
 	NewAsset->SetAssetName(FileName);//TODO: Manage this properly
 
-	const bool SaveOnImport = true;
-	if (SaveOnImport == true)
+	if (bool SaveOnImport = true) //TODO: Make a setting?
 	{
 		sm_AssetSystem->SaveAssetMap();
 	}
@@ -221,8 +221,7 @@ bool AssetSystem::ImportAsset(const std::string& FilePath, const std::string& In
 	//Update tracked data size
 	sm_AssetSystem->m_MemoryUsage += NewAsset->GetAssetSize();
 
-	const bool SaveOnImport = true;
-	if (SaveOnImport == true)
+	if (bool SaveOnImport = true) //TODO: Make a setting?
 	{
 		sm_AssetSystem->SaveAssetMap();
 		sm_AssetSystem->SaveEditorAssetMap();
