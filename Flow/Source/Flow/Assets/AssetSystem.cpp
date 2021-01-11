@@ -10,6 +10,8 @@
 
 #include "Typedefs.h"
 
+#include <yaml-cpp/yaml.h>
+
 AssetSystem* AssetSystem::sm_AssetSystem = new AssetSystem();
 
 AssetSystem::AssetSystem()
@@ -25,115 +27,113 @@ AssetSystem::~AssetSystem()
 
 bool AssetSystem::SaveAssetMap()
 {
-	fs::path FilePath = GetEngineAssetDirectory().append("AssetMap.txt");
-	std::ofstream OutStream = std::ofstream(FilePath.string(), std::ios::out | std::ios::trunc);
-
-	if (OutStream.is_open() == false)
+	//Generate the save data
+	YAML::Emitter file;
+	file << YAML::BeginMap;
 	{
-		FLOW_ENGINE_LOG("Failed to save asset map");
-		return false;
-	}
-
-	uint32 Counter = 0;
-	for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
-	{
-		if (asset.second->GetMetaData().m_EditorAsset == false)
+		file << YAML::Key << "ReferencedAssets";
+		file << YAML::Value << YAML::BeginSeq;
 		{
-			Counter++;
+			for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
+			{
+				const Asset::MetaData& metadata = asset.second->GetMetaData();
+
+				if (metadata.m_EditorAsset == false)
+				{
+					file << metadata.m_GamePath;
+				}
+			}
 		}
+		file << YAML::EndSeq;
 	}
+	file << YAML::EndMap;
 
-	//Number of paths
-	OutStream << Counter;
-	OutStream << "\n";
-
-	for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
-	{
-		const Asset::MetaData& metadata = asset.second->GetMetaData();
-
-		if (metadata.m_EditorAsset == false)
-		{
-			OutStream << metadata.m_GamePath;
-			OutStream << "\n";
-		}
-	}
+	// Save the generated YAML data
+	fs::path FilePath = GetEngineAssetDirectory().append("AssetMap.yaml");
+	std::ofstream OutStream = std::ofstream(FilePath);
+	OutStream << file.c_str();
+	OutStream.close();
 
 	return true;
 }
 
 bool AssetSystem::SaveEditorAssetMap()
 {
-	fs::path FilePath = GetEngineAssetDirectory().append("EditorAssetMap.txt");
-	std::ofstream OutStream = std::ofstream(FilePath.string() , std::ios::out | std::ios::trunc);
-
-	if (OutStream.is_open() == false)
+	//Generate the save data
+	YAML::Emitter file;
+	file << YAML::BeginMap;
 	{
-		FLOW_ENGINE_ERROR("Failed to save asset map");
-		return false;
-	}
-
-	uint32 Counter = 0;
-	for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
-	{
-		if (asset.second->GetMetaData().m_EditorAsset == true)
+		file << YAML::Key << "ReferencedAssets";
+		file << YAML::Value << YAML::BeginSeq;
 		{
-			Counter++;
+			for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
+			{
+				const Asset::MetaData& metadata = asset.second->GetMetaData();
+
+				if (metadata.m_EditorAsset == true)
+				{
+					file << metadata.m_GamePath;
+				}
+			}
 		}
+		file << YAML::EndSeq;
 	}
 
-	//Number of paths
-	OutStream << Counter;
-	OutStream << "\n";
-
-	for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
-	{
-		const Asset::MetaData& metadata = asset.second->GetMetaData();
-
-		if (metadata.m_EditorAsset == true)
-		{
-			OutStream << metadata.m_GamePath;
-			OutStream << "\n";
-		}
-	}
+	// Save the generated YAML data
+	fs::path FilePath = GetEngineAssetDirectory().append("EditorAssetMap.yaml");
+	std::ofstream OutStream = std::ofstream(FilePath);
+	OutStream << file.c_str();
+	OutStream.close();
 
 	return true;
 }
 
 void AssetSystem::LoadAssetsFromAssetMap(const std::filesystem::path& filepath, bool Editor)
 {
-	std::ifstream InputStream = std::ifstream(filepath, std::ios::in);
-
+	std::ifstream InputStream = std::ifstream(filepath);
 	if (InputStream.is_open() == false)
 	{
-		FLOW_ENGINE_LOG("Failed to open asset map");
+		FLOW_ENGINE_LOG("AssetSystem::LoadAssetsFromAssetMap: Failed to open level save file");
 		return;
 	}
 
-	size_t AssetCount;
-	InputStream >> AssetCount;
-	InputStream.seekg(2, std::ios::cur); //skip '\n'
+	//Load the whole file
+	std::stringstream stream;
+	stream << InputStream.rdbuf();
 
-	for (size_t it = 0; it < AssetCount; it++)
+	//Get the YAML data
+	YAML::Node data = YAML::Load(stream.str());
+
+	if (data.IsDefined() == false)
 	{
-		char buffer[256] = { '\0' };
-		InputStream.getline(buffer, 256, '\n');
+		FLOW_ENGINE_WARNING("AssetSystem::LoadAssetsFromAssetMap: Failed to load any data for %s", filepath.c_str());
+		return;
+	}
 
-		//Skip commented out assets
-		if (buffer[0] == '#')
+	auto assets = data["ReferencedAssets"];
+	if (assets.IsDefined())
+	{
+		for (auto asset : assets)
 		{
-			continue;
-		}
+			std::string assetPath = asset.as<std::string>();
 
-		LoadAsset(buffer);
+			//Skip commented out assets
+			if (assetPath._Starts_with("#"))
+			{
+				continue;
+			}
+
+			LoadAsset(assetPath);
+		}
 	}
 }
 
 void AssetSystem::Startup()
 {
 	FLOW_ENGINE_LOG("Loading Editor Assets");
-	sm_AssetSystem->LoadAssetsFromAssetMap(GetEngineAssetDirectory().append("EditorAssetMap.txt"), true);
+	sm_AssetSystem->LoadAssetsFromAssetMap(GetEngineAssetDirectory().append("EditorAssetMap.yaml"), true);
 	FLOW_ENGINE_LOG("Loading Game Assets");
-	sm_AssetSystem->LoadAssetsFromAssetMap(GetEngineAssetDirectory().append("AssetMap.txt"), false);
+	sm_AssetSystem->LoadAssetsFromAssetMap(GetEngineAssetDirectory().append("AssetMap.yaml"), false);
 
 	sm_AssetSystem->SaveEditorAssetMap();
 }
