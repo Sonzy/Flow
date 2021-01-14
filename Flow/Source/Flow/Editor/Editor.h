@@ -14,6 +14,7 @@ class LevelManager;
 class SpawnWindow;
 class Tool;
 class Console;
+class IconManager;
 
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
@@ -45,6 +46,8 @@ public:
 			, m_cameraPanningSpeed(0.5f)
 			, m_cameraScrollingSpeed(0.5f)
 			, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
+			, m_nearPlane(0.5f)
+			, m_farPlane(2000.0f)
 		{}
 
 		//= Levels =
@@ -71,6 +74,11 @@ public:
 		//= Other =
 
 		Vector3				m_ObjectHighlightColour;
+
+		//= Rendering =
+
+		float				m_nearPlane;
+		float				m_farPlane;
 
 	};
 
@@ -127,11 +135,14 @@ public:
 
 	void						SetDemoWindowVisible(bool Enabled);
 	void						ToggleImGuiDemoWindow();
+	void						ImGuiPrototypingWindow();
 
 	//= Miscellanious =
 
 	bool						IsInitialised() const { return m_Initialised; }
 	void						ShowSettingsWindow(bool Show) { m_ShowSettingsWindow = Show; }
+
+	IconManager&				GetIconManager() const { return *m_iconManager; }
 
 	// Public Template Functions ///////////////////////////////////////////////
 
@@ -226,12 +237,14 @@ private:
 
 	bool							m_Initialised;
 	bool							m_ShowSettingsWindow;
+	bool							m_ShowPrototypingWindow;
 	MenuBar*						m_MenuBar;
 	bool							m_DrawDemoWindow = false;
 	Application*					m_ApplicationPointer;
 	Editor::Settings				m_Settings;
 	EditorCamera*					m_EditorCam;
 	LevelManager*					m_LevelManager;
+	IconManager*					m_iconManager;
 
 	//= Cached UI Components =
 

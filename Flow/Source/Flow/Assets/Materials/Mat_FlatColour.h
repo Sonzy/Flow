@@ -15,13 +15,13 @@ public:
 	colour otherwise it will change them all */
 	void					SetColour(Vector3 NewColour);
 
-	virtual void			BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
+	virtual void			BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const override;
 
 protected:
 
 	//= Protected Functions =========================
 
-	std::string				GenerateTag();
+	std::string				GenerateTag() const;
 
 protected:
 

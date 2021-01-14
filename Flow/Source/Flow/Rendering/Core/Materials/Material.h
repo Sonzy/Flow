@@ -35,7 +35,7 @@ public:
 	//= Public Functions ==================================
 
 										Material();
-	virtual void						BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout);
+	virtual void						BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const;
 
 	void								SetTexture(const std::string& TextureName);
 	void								SetPixelShader(const std::string& ShaderName);

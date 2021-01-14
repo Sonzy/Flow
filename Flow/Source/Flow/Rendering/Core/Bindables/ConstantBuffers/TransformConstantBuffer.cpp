@@ -22,13 +22,15 @@ void TransformConstantBuffer::Bind()
 		FLOW_ENGINE_ERROR("TransformConstantBuffer::Bind: Parent was nullptr");
 
 	//Generate the transformation from the parent.
-	const auto modelView = ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix();
+	const auto modelView = 
+		RenderCommand::GetActivePass() != 7 ? 
+		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix() :
+		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix2D();
+
 	const Transforms transform =
 	{
 		DirectX::XMMatrixTranspose(modelView),
-		DirectX::XMMatrixTranspose(
-			modelView *
-			RenderCommand::GetMainCamera()->GetProjectionMatrix())
+		DirectX::XMMatrixTranspose(modelView * RenderCommand::GetMainCamera()->GetProjectionMatrix()),
 	};
 
 	//Update and bind the constant buffers

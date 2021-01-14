@@ -81,4 +81,5 @@ namespace Maths
 
 	bool			CompareFloat(float a, float b, float epsilon = 0.0001f);
 
+
 }

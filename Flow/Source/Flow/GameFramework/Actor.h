@@ -33,6 +33,8 @@ public:
 							Actor(const std::string& Name);
 	virtual					~Actor();
 
+	virtual void			OnRegistered();
+
 	virtual void			BeginPlay();
 
 #if WITH_EDITOR

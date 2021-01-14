@@ -12,7 +12,8 @@ enum class StencilMode
 	Off,
 	Write,
 	Mask,
-	AlwaysOnTop
+	AlwaysOnTop,
+	NoDepth
 };
 
 //= Class Definitions ===================================

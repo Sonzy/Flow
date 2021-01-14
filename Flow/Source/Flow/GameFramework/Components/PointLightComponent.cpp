@@ -4,6 +4,11 @@
 #include "PointLightComponent.h"
 #include "ThirdParty/ImGui/imgui.h"
 
+#if WITH_EDITOR
+	#include "Editor/Editor.h"
+	#include "Editor/IconManager.h"
+#endif
+
 
 #include <yaml-cpp/yaml.h>
 #include "Utils/YamlSerializer.h"
@@ -27,6 +32,15 @@ PointLightComponent::PointLightComponent(const std::string& ComponentName)
 	0.045f,
 	0.0075f,
 	};
+}
+
+void PointLightComponent::OnRegistered()
+{
+#if WITH_EDITOR
+	IconManager::IconData iconData;
+	iconData.m_texture = nullptr;
+	Editor::Get().GetIconManager().RegisterIcon(GetGuid(), iconData);
+#endif
 }
 
 void PointLightComponent::Render()

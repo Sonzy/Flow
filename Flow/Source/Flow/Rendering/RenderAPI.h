@@ -45,7 +45,11 @@ public:
 	virtual void					Resize(int Width, int Height) = 0;
 	virtual void					ResizeDepthBuffer(int Width, int Height) = 0;
 
+	virtual void					SetProjectionPerspectiveMatrixDefault() = 0;
+	virtual void					SetProjectionOrthographicMatrixDefault() = 0;
+
 	virtual Vector3					GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0)) = 0;
+	virtual IntVector2				WorldToScreen(Vector3 position) = 0;
 
 	virtual API						GetAPI() = 0;
 
@@ -59,6 +63,12 @@ public:
 
 	void							SetWindowMinimized(bool Minimized)	{ m_WindowMinimised = Minimized; }
 	bool							IsWindowMinimized() const			{ return m_WindowMinimised; }
+
+	void							SetNearPlane(float plane);
+	void							SetFarPlane(float plane);
+	float&							GetNearPlaneRef();
+	float&							GetFarPlaneRef();
+
 
 protected:
 

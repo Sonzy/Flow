@@ -23,6 +23,7 @@ public:
 	static void				Execute();
 	static RenderQueue*		Get();
 	static void				Reset();
+	static int				GetActiveRenderPass();
 
 public:
 
@@ -45,6 +46,8 @@ public:
 	bool					m_Pass5Enabled = true;
 	bool					m_Pass6Enabled = true;
 	bool					m_Pass7Enabled = true;
+
+	int						m_CurrentPass;
 
 private:
 

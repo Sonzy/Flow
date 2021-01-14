@@ -1,7 +1,6 @@
 #pragma once
 #include "Core.h"
 #include "Rendering\Core\Materials\Material.h"
-#include "Rendering/Core/RenderQueue/Step.h"
 #include "MaterialCommon.h"
 
 /* Material with lighting and a single texture. */
@@ -13,7 +12,7 @@ public:
 
 								Mat_TexturedPhong();
 
-	virtual void				BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) override;
+	virtual void				BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const override;
 
 
 public:

@@ -29,7 +29,7 @@ void Mat_FlatColour::SetColour(Vector3 NewColour)
 	m_color = { NewColour.x, NewColour.y, NewColour.z, 1.0f };
 }
 
-void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
+void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const
 {
 	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
@@ -40,7 +40,7 @@ void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& Verte
 	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, MaterialCommon::Register::ColorFloat4, GenerateTag()));
 }
 
-std::string Mat_FlatColour::GenerateTag()
+std::string Mat_FlatColour::GenerateTag() const
 {
 	return std::string("FlatColor") +
 		std::to_string(m_color.r) +

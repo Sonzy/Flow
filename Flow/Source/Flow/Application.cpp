@@ -22,6 +22,7 @@
 #include "Assets\Materials\ColorMaterial2D.h"
 #include "Assets\Materials\Mat_TexturedPhong.h"
 #include "Assets\Materials\Mat_LitColor.h"
+#include "Assets\Materials\Mat_Texture2D.h"
 #include "Assets\Meshes\MeshAsset.h"
 
 //= Helper Inclues =
@@ -137,6 +138,9 @@ void Application::InitialiseApplication()
 	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White2D")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
 	AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D");
 	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green2D")->GetMaterial())->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+
+
+	AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D");
 
 
 	FLOW_ENGINE_LOG("================ Initialising Game ======================");

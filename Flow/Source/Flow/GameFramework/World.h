@@ -77,17 +77,17 @@ public:
 	void												DestroyActor(FGUID Act);
 
 	//= Object Management =
-	Actor*												FindActor(FGUID guid);
-	Component*											FindComponent(FGUID guid);
+	Actor*												FindActor(FGUID guid) const;
+	Component*											FindComponent(FGUID guid) const;
 
 	template<typename T>
-	T* FindActor(FGUID guid)
+	T* FindActor(FGUID guid) const
 	{
 		return dynamic_cast<T*>(FindActor(guid));
 	}
 
 	template<typename T>
-	T* FindComponent(FGUID guid)
+	T* FindComponent(FGUID guid) const
 	{
 		return dynamic_cast<T*>(FindComponent(guid));
 	}

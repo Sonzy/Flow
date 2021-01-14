@@ -32,6 +32,11 @@ public:
 	void AddTechnique(Technique& NewTechnique);
 	UINT GetIndexCount() const;
 
+	//= Custom debug setings =
+
+	bool									m_DebugInverseViewMatrix = false;
+	bool									m_DebugNoViewMatrix = false;
+
 protected:
 	friend class Renderer;
 
@@ -41,4 +46,6 @@ protected:
 	BindableVertexBuffer*					m_VertexBuffer;
 	Topology*								m_Topology;
 	std::vector<Technique>					m_Techniques;
+
+
 };

@@ -9,6 +9,7 @@
 #include "Editor/UIComponents/AssetBrowser.h"
 
 #include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/imgui_internal.h"
 
 #include <Psapi.h> //memory debug
 #include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
@@ -18,6 +19,7 @@
 #include "Editor/UIComponents/LevelManager.h"
 #include "Editor/UIComponents/SpawnWindow.h"
 #include "Editor/UIComponents/Console.h"
+#include "Editor/IconManager.h"
 
 #include "Editor/UIComponents/Toolbar.h"
 #include "Editor/Tools/Tool.h"
@@ -33,6 +35,7 @@ Editor::Editor()
 	, m_EditorViewportSize(0,0)
 	, m_Initialised(false)
 	, m_ShowSettingsWindow(false)
+	, m_ShowPrototypingWindow(false)
 {
 
 }
@@ -56,6 +59,7 @@ void Editor::Initialise()
 	RegisterUIComponent<Console>();
 
 	m_SceneManager = GetUIComponent<SceneManager>();
+	m_iconManager = new IconManager();
 
 	m_Initialised = true;
 }
@@ -128,6 +132,16 @@ void Editor::OnImGuiRender(bool DrawEditor)
 		{
 			m_SettingsWindow.Render(m_Settings, *this);
 		}
+
+		if (m_ShowPrototypingWindow)
+		{
+			ImGuiPrototypingWindow();
+		}		
+
+		if (true)
+		{
+			m_iconManager->RenderDebugWindow();
+		}
 	}
 }
 
@@ -172,6 +186,8 @@ void Editor::OnUpdate(float DeltaTime)
 	{
 		uiComponent->Update();
 	}
+
+	m_iconManager->RenderIcons();
 }
 
 void Editor::UpdateTools(float DeltaTime)
@@ -253,7 +269,24 @@ void Editor::SaveEditorSettings()
 		}
 		file << YAML::EndMap;
 
+		file << YAML::Key << "Testing";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "ShowImGuiPrototypingWindow";
+			file << YAML::Value << m_ShowPrototypingWindow;
+		}
+		file << YAML::EndMap;
 
+		file << YAML::Key << "Rendering";
+		file << YAML::BeginMap;
+		{
+			file << YAML::Key << "NearPlane";
+			file << YAML::Value << RenderCommand::GetNearPlaneRef();
+
+			file << YAML::Key << "FarPlane";
+			file << YAML::Value << RenderCommand::GetFarPlaneRef();
+		}
+		file << YAML::EndMap;
 	}
 	file << YAML::EndMap;
 
@@ -309,6 +342,17 @@ void Editor::LoadEditorSettings()
 		m_Settings.m_ObjectHighlightColour = otherData["ObjectHighlightColor"].as<Vector3>();
 	}
 
+	if (YAML::Node testingData = data["Testing"])
+	{
+		m_ShowPrototypingWindow = testingData["ShowImGuiPrototypingWindow"].as<bool>();
+	}
+
+	if (YAML::Node renderingData = data["Rendering"])
+	{
+		RenderCommand::SetNearPlane(renderingData["NearPlane"].as<float>());
+		RenderCommand::SetFarPlane(renderingData["FarPlane"].as<float>());
+	}
+
 	InStream.close();
 }
 
@@ -330,6 +374,62 @@ void Editor::SetDemoWindowVisible(bool Enabled)
 void Editor::ToggleImGuiDemoWindow()
 {
 	m_DrawDemoWindow = !m_DrawDemoWindow;
+}
+
+void Editor::ImGuiPrototypingWindow()
+{
+	const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
+	if (ImGui::Begin("Prototyping Window", &m_ShowPrototypingWindow, windowFlags))
+	{
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Search Filters"))
+			{
+				static bool m_filterImapsWithinDistance;
+				static float m_filterImapsWithinDistancefloat;
+
+				// Menu item with inline 
+				const char* text = "Hide IMAPs outside of distance";
+				ImVec2 size = ImGui::CalcTextSize(text);
+				size.y = 0;
+				if (ImGui::Selectable(text, false, 0, size))
+				{
+					m_filterImapsWithinDistance = !m_filterImapsWithinDistance;
+				}
+
+				ImGui::SameLine();
+				ImVec2 offset = ImVec2(ImGui::GetCursorPosX() + 30.0f, ImGui::GetCursorPosY());
+				float xPos = ImGui::GetCursorPosX();
+				if (m_filterImapsWithinDistance == true)
+				{					
+					ImVec2 position = ImVec2(ImGui::GetWindowPos().x + ImGui::GetCursorPosX() + 5.0f, ImGui::GetWindowPos().y + ImGui::GetCursorPosY());
+					ImGui::RenderCheckMark(position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
+				}
+
+				float inputSize = 80.0f;
+				float remainingWidth = ImGui::GetContentRegionAvailWidth() - offset.x;
+				if (remainingWidth < inputSize)
+				{
+					ImGui::SetCursorPosX(xPos + 30.0f);			
+				}
+												
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
+				ImGui::SameLine(offset.x); ImGui::PushItemWidth(inputSize);
+				ImGui::InputFloat("", &m_filterImapsWithinDistancefloat,0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+				ImGui::PopItemWidth();
+				ImGui::PopStyleVar();
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
+		ImVec2 position = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + ImGui::GetCursorPosX(), ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + ImGui::GetCursorPosY());
+		ImGui::RenderCheckMark(position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
+
+	}
+	ImGui::End();
 }
 
 void Editor::Open_NewLevelWindow()
@@ -482,6 +582,8 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 		GetProcessMemoryInfo(GetCurrentProcess(), &MemoryData, sizeof(MemoryData));
 
 		ImGui::Text("Memory: %.1f MB", (float)MemoryData.WorkingSetSize / 1048576);
+
+		ImGui::Text("Viewport Size: %d, %d", m_SceneManager->GetSceneWindowSize().x, m_SceneManager->GetSceneWindowSize().y);
 	}
 	ImGui::End();
 
@@ -563,6 +665,35 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 		ImGui::Text("Other");
 		{
 			updateFile |= ImGui::ColorEdit3("Selected Object Highlight Colour", reinterpret_cast<float*>(&EditorSettings.m_ObjectHighlightColour));
+		}
+		ImGui::Separator();
+
+		ImGui::Text("Testing");
+		{
+			updateFile |= ImGui::Checkbox("Show ImGui Prototyping Window", &EditorRef.m_ShowPrototypingWindow);
+		}
+		ImGui::Separator();
+
+		ImGui::Text("Rendering"); //TODO: Move somewhere else
+		{
+			bool updatedRenderSettings = false;
+			if (ImGui::InputFloat("Near Plane", &RenderCommand::GetNearPlaneRef(), 0.05f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				float& nearPlane = RenderCommand::GetNearPlaneRef();
+				if (nearPlane <= 0.0f)
+				{
+					nearPlane = 0.05f;
+				}
+
+				updatedRenderSettings = true;
+			}
+
+			if (ImGui::InputFloat("Far Plane", &RenderCommand::GetFarPlaneRef(), 10.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				updatedRenderSettings = true;
+			}
+
+			updateFile |= updatedRenderSettings;
 		}
 		ImGui::Separator();
 

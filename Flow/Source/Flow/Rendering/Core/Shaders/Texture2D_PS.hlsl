@@ -1,14 +1,10 @@
 #include "ShaderHelpers.hlsli"
 
-cbuffer CBuf : register(b2)
-{
-    float4 Colour;
-};
-
 Texture2D tex : register(t0);
 SamplerState splr;
 
 float4 main(float3 Pos : Position, float2 tc : TexCoord) : SV_Target
 {
-    return Colour;
+    return tex.Sample(splr, tc);
+    //return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

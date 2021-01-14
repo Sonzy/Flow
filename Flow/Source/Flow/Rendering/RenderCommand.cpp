@@ -8,6 +8,8 @@
 #include "Flow\GameFramework\Controllers\Controller.h"
 #include "Flow/Rendering/Core/Camera/Camera.h"
 
+#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
+
 RenderAPI* RenderCommand::sm_RendererAPI = new DX11RenderAPI();
 
 void RenderCommand::InitialiseDX11(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
@@ -113,7 +115,47 @@ bool RenderCommand::IsMinimized()
 	return sm_RendererAPI->IsWindowMinimized();
 }
 
+void RenderCommand::SetOrthographic()
+{
+	sm_RendererAPI->SetProjectionOrthographicMatrixDefault();
+}
+
+void RenderCommand::SetPerspective()
+{
+	sm_RendererAPI->SetProjectionPerspectiveMatrixDefault();
+}
+
+void RenderCommand::SetNearPlane(float dist)
+{
+	sm_RendererAPI->SetNearPlane(dist);
+}
+
+void RenderCommand::SetFarPlane(float dist)
+{
+	sm_RendererAPI->SetFarPlane(dist);
+}
+
+float& RenderCommand::GetNearPlaneRef()
+{
+	return sm_RendererAPI->GetNearPlaneRef();
+}
+
+float& RenderCommand::GetFarPlaneRef()
+{
+	return sm_RendererAPI->GetFarPlaneRef();
+}
+
 Vector3 RenderCommand::GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	return sm_RendererAPI->GetScreenToWorldDirection(X, Y, WindowSize, Origin);
+}
+
+IntVector2 RenderCommand::WorldToScreen(Vector3 position)
+{
+	return sm_RendererAPI->WorldToScreen(position);
+}
+
+int RenderCommand::GetActivePass()
+{
+	return RenderQueue::Get()->GetActiveRenderPass();
 }

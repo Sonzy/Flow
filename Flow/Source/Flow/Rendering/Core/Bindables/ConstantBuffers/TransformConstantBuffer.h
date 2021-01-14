@@ -29,6 +29,9 @@ protected:
 	{
 		DirectX::XMMATRIX		m_ModelView;
 		DirectX::XMMATRIX		m_ModelViewProjection;
+
+		DirectX::XMMATRIX		m_ModelViewProjectionNonTrans;
+		DirectX::XMMATRIX		m_ModelViewNonTrans;
 	};
 
 protected:

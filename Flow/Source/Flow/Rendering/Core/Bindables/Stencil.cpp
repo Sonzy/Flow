@@ -41,6 +41,10 @@ Stencil::Stencil(StencilMode Mode)
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 		break;
+	case StencilMode::NoDepth:
+		Description.DepthEnable = FALSE;
+		Description.StencilEnable = FALSE;
+		break;
 	case StencilMode::Off:
 		break;
 	}

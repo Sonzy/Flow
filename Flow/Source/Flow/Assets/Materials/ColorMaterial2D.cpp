@@ -29,7 +29,7 @@ void ColorMaterial2D::SetColour(Vector3 NewColour)
 	m_color = { NewColour.x, NewColour.y, NewColour.z, 1.0f };
 }
 
-void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
+void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const
 {
 	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
@@ -40,7 +40,7 @@ void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& Vert
 	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, MaterialCommon::Register::ColorFloat4, GenerateTag()));
 }
 
-std::string ColorMaterial2D::GenerateTag()
+std::string ColorMaterial2D::GenerateTag() const
 {
 	return std::string("color2D") +
 		std::to_string(m_color.r) +

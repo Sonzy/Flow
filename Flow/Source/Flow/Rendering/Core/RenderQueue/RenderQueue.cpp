@@ -53,6 +53,9 @@ void RenderQueue::Execute()
 
 	if (Queue->m_Pass0Enabled)
 	{
+		Queue->m_CurrentPass = 0;
+
+		RenderCommand::SetPerspective();
 		Rasterizer::Resolve(CullMode::Back)->Bind();
 		Stencil::Resolve(StencilMode::Off)->Bind();
 		Queue->m_Passes[0]->Execute();
@@ -61,6 +64,8 @@ void RenderQueue::Execute()
 	//= Main Pass (Front Culled)
 	if (Queue->m_Pass1Enabled)
 	{
+		Queue->m_CurrentPass = 1;
+
 		Rasterizer::Resolve(CullMode::Front)->Bind();
 		Queue->m_Passes[1]->Execute();
 	}
@@ -69,6 +74,8 @@ void RenderQueue::Execute()
 	//= Main Pass (Two Sided
 	if (Queue->m_Pass2Enabled)
 	{
+		Queue->m_CurrentPass = 2;
+
 		Rasterizer::Resolve(CullMode::None)->Bind();
 		Queue->m_Passes[2]->Execute();
 	}
@@ -78,6 +85,8 @@ void RenderQueue::Execute()
 	//= Outline Masking pass
 	if (Queue->m_Pass3Enabled)
 	{
+		Queue->m_CurrentPass = 3;
+
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		NullPixelShader::Resolve()->Bind(); //Stop D3D11 from using render targets
 		Queue->m_Passes[3]->Execute();
@@ -86,6 +95,8 @@ void RenderQueue::Execute()
 	//TODO: Editor defs
 	if (Queue->m_Pass4Enabled)
 	{
+		Queue->m_CurrentPass = 4;
+
 		Vector3 Colour = Editor::GetSettings().m_ObjectHighlightColour;
 
 		//= Outline Drawing Pass.
@@ -99,25 +110,39 @@ void RenderQueue::Execute()
 		Queue->m_Passes[4]->Execute();
 	}
 
+	Stencil::Resolve(StencilMode::Write)->Bind();
+	Rasterizer::Resolve(CullMode::Back)->Bind();
+
 	//=  No depth pass
 	if (Queue->m_Pass5Enabled)
 	{
-		Stencil::Resolve(StencilMode::Write)->Bind();
-		Rasterizer::Resolve(CullMode::Back)->Bind();
+		Queue->m_CurrentPass = 5;
+
+		Stencil::Resolve(StencilMode::Off)->Bind();
 		Queue->m_Passes[5]->Execute();
 	}
 
+	Stencil::Resolve(StencilMode::Write)->Bind();
 	//= 2D Rendering =
 	if (Queue->m_Pass6Enabled)
 	{
+		Queue->m_CurrentPass = 6;
+
+		RenderCommand::SetOrthographic();
 		Queue->m_Passes[6]->Execute();
 	}
 
 	//= User Interface = 
 	if (Queue->m_Pass7Enabled)
 	{
+		Queue->m_CurrentPass = 7;
+
+		RenderCommand::SetOrthographic();
+		Stencil::Resolve(StencilMode::Off)->Bind();
 		Queue->m_Passes[7]->Execute();
 	}
+
+	Queue->m_CurrentPass = 0;
 }
 
 RenderQueue* RenderQueue::Get()
@@ -133,4 +158,9 @@ void RenderQueue::Reset()
 	{
 		Pass->Reset();
 	}
+}
+
+int RenderQueue::GetActiveRenderPass()
+{
+	return RenderQueue::Get()->m_CurrentPass;
 }

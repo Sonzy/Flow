@@ -62,13 +62,19 @@ float Maths::DistanceSquared(Vector3 V1, Vector3 V2)
 
 Rotator Maths::FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition)
 {
-	//TODO: Make it work lmao
-	float xdis = EndPosition.x - StartPosition.x;
-	float ydis = EndPosition.z - StartPosition.z;
-	float zdis = EndPosition.y - StartPosition.y;
-	float xzdis = sqrtf(xdis * xdis + zdis * zdis);
+	Rotator outRotation;
+	Vector3 diff = EndPosition - StartPosition;
 
-	return Rotator(RadiansToDegrees(-atan2f(ydis, xzdis)), RadiansToDegrees(-(atan2f(-xdis, zdis))), 0);
+	outRotation.Pitch = atan2f(-diff.y, diff.z);
+
+	if (diff.z >= 0) {
+		outRotation.Yaw = -atan2f(diff.x * cosf(outRotation.Pitch), diff.z);
+	}
+	else {
+		outRotation.Yaw = atan2f(diff.x * cosf(outRotation.Pitch), -diff.z);
+	}
+
+	return Rotator::AsDegrees(outRotation);
 }
 
 #if USE_DXMATH_FORMULAE
@@ -107,19 +113,19 @@ Rotator Maths::QuaternionToEulers(DirectX::XMVECTOR quaternion)
 	// roll (x-axis rotation)
 	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
 	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-	outRot.Pitch = std::atan2(sinr_cosp, cosr_cosp);
+	outRot.Pitch = (float)std::atan2(sinr_cosp, cosr_cosp);
 
 	// pitch (y-axis rotation)
 	double sinp = 2 * (q.w * q.y - q.z * q.x);
 	if (std::abs(sinp) >= 1)
-		outRot.Yaw = std::copysign(PI / 2, sinp); // use 90 degrees if out of range
+		outRot.Yaw = (float)std::copysign(PI / 2, sinp); // use 90 degrees if out of range
 	else
-		outRot.Yaw = std::asin(sinp);
+		outRot.Yaw = (float)std::asin(sinp);
 
 	// yaw (z-axis rotation)
 	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
 	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	outRot.Roll = std::atan2(siny_cosp, cosy_cosp);
+	outRot.Roll = (float)std::atan2(siny_cosp, cosy_cosp);
 
 	return Rotator::AsDegrees(outRot);
 }
@@ -137,10 +143,10 @@ DirectX::XMVECTOR Maths::EulersToQuaternion(Rotator rot)
 	double sr = sin(rot.Pitch * 0.5);
 
 	DirectX::XMFLOAT4 q;
-	q.w = cr * cp * cy + sr * sp * sy;
-	q.x = sr * cp * cy - cr * sp * sy;
-	q.y = cr * sp * cy + sr * cp * sy;
-	q.z = cr * cp * sy - sr * sp * cy;
+	q.w = (float)(cr * cp * cy + sr * sp * sy);
+	q.x = (float)(sr * cp * cy - cr * sp * sy);
+	q.y = (float)(cr * sp * cy + sr * cp * sy);
+	q.z = (float)(cr * cp * sy - sr * sp * cy);
 
 	return DirectX::XMLoadFloat4(&q);
 }
@@ -273,7 +279,6 @@ bool Maths::CompareMatrices(DirectX::XMFLOAT4X4 m1, DirectX::XMFLOAT4X4 m2)
 #endif
 
 }
-
 
 #endif //#if USE_DXMATH_FORMULAE
 

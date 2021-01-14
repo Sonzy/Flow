@@ -37,7 +37,7 @@ void Mat_LitColor::SetColor(Vector3 NewColour)
 	m_color = { NewColour.x, NewColour.y, NewColour.z, 1.0f };
 }
 
-void Mat_LitColor::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
+void Mat_LitColor::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const
 {
 	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
 	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
@@ -49,7 +49,7 @@ void Mat_LitColor::BindMaterial(Step* RenderingStep, const VertexLayout& VertexL
 	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ObjectLightProperties>::Resolve(m_lightProperties, MaterialCommon::Register::ObjectLightProperties));
 }
 
-std::string Mat_LitColor::GenerateTag()
+std::string Mat_LitColor::GenerateTag() const
 {
 	return std::string("LitColor") +
 		std::to_string(m_color.r) +

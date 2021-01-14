@@ -23,6 +23,7 @@ public:
 										PointLightComponent();
 										PointLightComponent(const std::string& ComponentName);
 
+	virtual void						OnRegistered() override;
 	virtual void						Render() override;
 	virtual void						DrawComponentDetailsWindow() override;
 

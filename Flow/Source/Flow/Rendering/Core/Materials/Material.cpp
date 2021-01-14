@@ -30,7 +30,7 @@ Material::Material()
 {
 }
 
-void Material::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout)
+void Material::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const
 {
 	RenderingStep->AddBindable(Texture::Resolve(m_Texture, 0));
 	RenderingStep->AddBindable(Sampler::Resolve());

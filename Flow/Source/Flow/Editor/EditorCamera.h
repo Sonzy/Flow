@@ -17,6 +17,7 @@ public:
 	virtual void								Update(float DeltaTime) override;
 
 	N_DISC virtual DirectX::XMMATRIX			GetViewMatrix() const override;
+	N_DISC virtual DirectX::XMMATRIX			GetViewMatrix2D() const override;
 	virtual Transform							GetCameraTransform() const override;
 	virtual Vector3								GetCameraPosition() const override;
 
@@ -34,4 +35,7 @@ protected:
 	Vector3										m_Position;
 	Rotator										m_Rotation;
 	bool										m_mousePanning;
+
+
+	DirectX::XMMATRIX							m_2DView;
 };

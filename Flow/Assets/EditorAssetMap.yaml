@@ -13,12 +13,14 @@ ReferencedAssets:
   - Flow/Assets/Models/Wabble_Chair.fmesh
   - Flow/Assets/Models/Wabble_Revolver.fmesh
   - Flow/Assets/Textures/YokohamaCubemap_4k.png
+  - Flow/Assets/Textures/Error.png
   - Flow/Assets/Models/Wabble_Rifle.fmesh
   - Flow/Assets/Models/Wabble_Blunderbuss.fmesh
   - Flow/Assets/Textures/Wabble_Props.png
   - Flow/Assets/Textures/Wabble_Wood.png
   - Bin/Shaders/SolidColor_VS.cso
   - Flow/Assets/Textures/Wabble_Sand.png
+  - Flow/Assets/Textures/QuadTextureTest.png
   - Flow/Assets/Icons/Icon_Tool_Selection.png
   - Flow/Assets/Icons/Icon_Play.png
   - Flow/Assets/Icons/Icon_Pause.png
@@ -36,3 +38,5 @@ ReferencedAssets:
   - Bin/Shaders/LineColor_PS.cso
   - Bin/Shaders/LitColor_PS.cso
   - Bin/Shaders/LitColor_VS.cso
+  - Bin/Shaders/Texture2D_VS.cso
+  - Bin/Shaders/Texture2D_PS.cso

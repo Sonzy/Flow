@@ -5,6 +5,8 @@
 #include "Flow/Events/KeyEvent.h"
 #include "Editor/Editor.h"
 
+#include "Rendering/RenderCommand.h"
+
 EditorCamera::EditorCamera()
 	: m_Position(0)
 	, m_Rotation(0)
@@ -41,6 +43,59 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix() const
 
 	//Rotate the up vector
 	return DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+DirectX::XMMATRIX EditorCamera::GetViewMatrix2D() const
+{
+	return DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	);
+	
+	//=================================
+
+	//IntVector2 size = RenderCommand::GetWindowSize();
+	//float xVal = (float)size.x / 2.0f;
+	//float yVal = (float)size.y / 2.0f;
+	//
+	//DirectX::XMFLOAT4X4 viewMatrix =
+	//{
+	//	1,      0,      0,      0,
+	//	0,      1,      0,      0,
+	//	0,      0,      1,      0,
+	//	-xVal, -yVal,   0,      1
+	//};
+	//
+	//return DirectX::XMLoadFloat4x4(&viewMatrix);
+
+	//=================================
+
+	//const DirectX::XMVECTOR Forward = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	//Rotator WorldRotation = Rotator(0.0f, 0.0f, 0.0f);
+	////const DirectX::XMFLOAT3 WorldPosition = Vector3(0.0f, 0.0f, 0.0f);
+	//const DirectX::XMFLOAT3 WorldPosition = m_Position;
+	//
+	////Get Camera Look Vector3
+	//const auto lookVector = DirectX::XMVector3Transform(Forward,
+	//	DirectX::XMMatrixRotationRollPitchYaw(WorldRotation.Pitch, WorldRotation.Yaw, WorldRotation.Roll)
+	//);
+	//
+	////Get the location the camera is looking
+	//DirectX::XMFLOAT3 fLookVector;
+	//DirectX::XMFLOAT3 camTarget;
+	//
+	//DirectX::XMStoreFloat3(&fLookVector, lookVector);
+	//camTarget.x = WorldPosition.x + fLookVector.x;
+	//camTarget.y = WorldPosition.y + fLookVector.y;
+	//camTarget.z = WorldPosition.z + fLookVector.z;
+	//
+	////Return transformed Matrix with camera looking at a target
+	//DirectX::XMVECTOR vCamTarget = DirectX::XMLoadFloat3(&camTarget);
+	//DirectX::XMVECTOR camPosition = DirectX::XMLoadFloat3(&WorldPosition);
+	//
+	//DirectX::XMMATRIX lookat = DirectX::XMMatrixLookAtLH(camPosition, vCamTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));	//Rotate the up vector
+	//return lookat;
 }
 
 void EditorCamera::MoveCamera(const Transform& NewTransform)

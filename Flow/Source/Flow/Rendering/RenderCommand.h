@@ -59,9 +59,20 @@ public:
 	static void							SetMinimized(bool Minimized);
 	static bool							IsMinimized();
 
+	static void							SetOrthographic();
+	static void							SetPerspective();
+
+	static void							SetNearPlane(float dist);
+	static void							SetFarPlane(float dist);
+	static float&						GetNearPlaneRef();
+	static float&						GetFarPlaneRef();
+
 	//= Helper =
 
 	static Vector3						GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0,0));
+	static IntVector2					WorldToScreen(Vector3 position);
+
+	static int							GetActivePass();
 
 private:
 

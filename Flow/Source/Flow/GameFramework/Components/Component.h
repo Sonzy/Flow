@@ -25,6 +25,8 @@ public:
 							Component(const std::string& Name);
 	virtual					~Component();
 
+	virtual void			OnRegistered();
+
 	WorldComponent*			GetParentComponent() const;
 	Actor*					GetParentActor() const;
 

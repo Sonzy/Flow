@@ -13,3 +13,8 @@ EditorCamera:
   ScrollingSpeed: 0.5
 Other:
   ObjectHighlightColor: [0, 1, 0]
+Testing:
+  ShowImGuiPrototypingWindow: true
+Rendering:
+  NearPlane: 0.05
+  FarPlane: 2000

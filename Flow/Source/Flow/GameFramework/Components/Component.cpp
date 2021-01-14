@@ -19,6 +19,10 @@ Component::~Component()
 {
 }
 
+void Component::OnRegistered()
+{
+}
+
 WorldComponent* Component::GetParentComponent() const
 {
 	return m_AttachedComponent;

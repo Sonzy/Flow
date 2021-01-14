@@ -119,6 +119,7 @@
     <ClInclude Include="Source\Flow\Assets\Materials\MaterialCommon.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_FlatColour.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_LitColor.h" />
+    <ClInclude Include="Source\Flow\Assets\Materials\Mat_Texture2D.h" />
     <ClInclude Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.h" />
     <ClInclude Include="Source\Flow\Assets\Meshes\MeshAsset.h" />
     <ClInclude Include="Source\Flow\Assets\Shaders\ShaderAsset.h" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Source\Flow\Assets\Textures\TextureAsset.h" />
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
+    <ClInclude Include="Source\Flow\Editor\IconManager.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\LevelManager.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\SceneManager.h" />
@@ -352,11 +354,13 @@
     <ClCompile Include="Source\Flow\Assets\Materials\MaterialAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_FlatColour.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_LitColor.cpp" />
+    <ClCompile Include="Source\Flow\Assets\Materials\Mat_Texture2D.cpp" />
     <ClCompile Include="Source\Flow\Assets\Materials\Mat_TexturedPhong.cpp" />
     <ClCompile Include="Source\Flow\Assets\Meshes\MeshAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Shaders\ShaderAsset.cpp" />
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
+    <ClCompile Include="Source\Flow\Editor\IconManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\LevelManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\SceneManager.cpp" />
@@ -526,6 +530,18 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\SolidColor_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\Texture2D_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\Texture2D_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>

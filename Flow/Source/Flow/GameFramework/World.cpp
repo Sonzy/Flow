@@ -348,13 +348,13 @@ void World::DestroyActor(FGUID guid)
 	m_actorMap.erase(Iterator);
 }
 
-Actor* World::FindActor(FGUID guid)
+Actor* World::FindActor(FGUID guid) const
 {
 	auto iterator = m_actorMap.find(guid);
 	return iterator == m_actorMap.end() ? nullptr : iterator->second;
 }
 
-Component* World::FindComponent(FGUID guid)
+Component* World::FindComponent(FGUID guid) const
 {
 	auto iterator = m_componentMap.find(guid);
 	return iterator == m_componentMap.end() ? nullptr : iterator->second;
@@ -384,6 +384,7 @@ void World::Tick(float DeltaTime)
 		m_MainLevel->Tick(DeltaTime);
 	}
 }
+
 const std::string& World::GetName()
 {
 	return m_WorldName;
@@ -451,20 +452,34 @@ Controller* World::GetLocalController() const
 void World::RegisterActor(Actor* newActor)
 {
 	//TODO: Check its not already in here
+	bool registered = false;
 	if (newActor->GetGuid() == -1)
 	{
 		newActor->SetGuid(GUIDGen::Generate());
+		registered = true;
 	}
 
 	m_actorMap[newActor->GetGuid()] = newActor;
+
+	if (registered == true)
+	{
+		newActor->OnRegistered();
+	}
 }
 
 void World::RegisterComponent(Component* newComponent)
 {
+	bool registered = false;
 	if (newComponent->GetGuid() == -1)
 	{
 		newComponent->SetGuid(GUIDGen::Generate());
+		registered = true;
 	}
 
 	m_componentMap[newComponent->GetGuid()] = newComponent;
+
+	if (registered == true)
+	{
+		newComponent->OnRegistered();
+	}
 }

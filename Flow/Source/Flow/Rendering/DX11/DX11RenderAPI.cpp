@@ -45,7 +45,7 @@ DX11RenderAPI::~DX11RenderAPI()
 
 void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
 {
-	m_NearPlane = 0.5f;
+	m_NearPlane = 0.05f;
 	m_FarPlane = 2000.0f;
 	m_ViewportSize = IntVector2(ViewportWidth, ViewportHeight);
 	
@@ -238,6 +238,32 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 	CATCH_ERROR_DX(m_Device->CreateDepthStencilView(m_DepthTexture.Get(), &DepthStencilViewDescription, &m_DepthTextureView));
 }
 
+void DX11RenderAPI::SetProjectionPerspectiveMatrixDefault()
+{
+	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+
+	//Note: See ScreenToWorldVec, will fix properly another time
+#if WITH_EDITOR
+	if (m_CurrentBuffer == m_EditorBuffer)
+	{
+		m_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+	}
+#endif
+}
+
+void DX11RenderAPI::SetProjectionOrthographicMatrixDefault()
+{
+	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixOrthographicLH((float)m_ViewportSize.x, (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+
+	//Note: See ScreenToWorldVec, will fix properly another time
+#if WITH_EDITOR
+	if (m_CurrentBuffer == m_EditorBuffer)
+	{
+		m_MainCamera->SetSceneProjection(DirectX::XMMatrixOrthographicLH((float)m_ViewportSize.x, (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+	}
+#endif
+}
+
 Vector3 DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
 {
 	//TODO: need to pass in the window size instead incase im checking from any other window
@@ -285,6 +311,56 @@ Vector3 DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2 Window
 	//FLOW_ENGINE_LOG("Direction: {0}", Direction);
 
 	return Direction;
+}
+
+IntVector2 DX11RenderAPI::WorldToScreen(Vector3 position)
+{
+	{
+		CameraBase* cam = RenderCommand::GetMainCamera();
+		Vector3 camPosition = cam->GetCameraPosition();
+
+		//Vector3 worldPosition = Vector3(camPosition.x - position.x, camPosition.y - position.y, camPosition.z - position.z);
+		Vector3 worldPosition = Vector3(position.x, position.y, position.z);
+
+		DirectX::XMVECTOR vecPosition = DirectX::XMVectorSet(worldPosition.x, worldPosition.y, worldPosition.z, 1.0f);
+		IntVector2 WindowSize = GetWindowSize();
+		DirectX::XMVECTOR outProjection = DirectX::XMVector3Project(
+			vecPosition,
+			0.0f, 0.0f,
+			(float)WindowSize.x, (float)WindowSize.y,
+			0.0f, 1.0f,
+			cam->GetProjectionMatrix(),	// DirectX::XMMatrixTranspose( cam->GetProjectionMatrix()	),
+			cam->GetViewMatrix(),		// DirectX::XMMatrixTranspose( cam->GetViewMatrix()		),
+			DirectX::XMMatrixIdentity()	// DirectX::XMMatrixTranspose( DirectX::XMMatrixIdentity()	)
+		);
+
+		FLOW_ENGINE_LOG("Viewport Size: %d, %d", WindowSize.x, WindowSize.y);
+		
+		DirectX::XMFLOAT3 outVec;
+		DirectX::XMStoreFloat3(&outVec, outProjection);
+		
+		return IntVector2(outVec.x, outVec.y);
+	}
+
+
+	{
+		//CameraBase* cam = RenderCommand::GetMainCamera();
+		//DirectX::XMMATRIX clipSpace = cam->GetProjectionMatrix() * cam->GetViewMatrix();
+		//DirectX::XMVECTOR vec = DirectX::XMVector3Transform(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f), clipSpace);
+		//DirectX::XMFLOAT4 f4;
+		//DirectX::XMStoreFloat4(&f4, vec);
+		//
+		//float x = f4.x / f4.w;
+		//float y = f4.y / f4.w;
+		//
+		//float xNorm = (f4.x + 1.0f) / 2.0f;
+		//float yNorm = (f4.y + 1.0f) / 2.0f;
+		//
+		//IntVector2 WindowSize = GetWindowSize();
+		//return IntVector2((float)WindowSize.x * xNorm, (float)WindowSize.y * yNorm);
+	}
+
+
 }
 
 ID3D11Device* DX11RenderAPI::GetDevice()
@@ -374,7 +450,10 @@ void DX11RenderAPI::BindEditorFrameBuffer()
 
 	//Update the window rendering properties
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+	
+#if WITH_EDITOR
 	m_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
+#endif
 }
 
 FrameBuffer* DX11RenderAPI::GetEditorBuffer() const

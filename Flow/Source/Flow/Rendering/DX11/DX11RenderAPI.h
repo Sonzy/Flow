@@ -38,9 +38,14 @@ public:
 	virtual void			Resize(int Width, int Height) override;
 	virtual void			ResizeDepthBuffer(int Width, int Height) override;
 
+
+	virtual void			SetProjectionPerspectiveMatrixDefault() override;
+	virtual void			SetProjectionOrthographicMatrixDefault() override;
+
 	virtual API				GetAPI() override { return API::DirectX11; };
 
-	virtual Vector3			GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0));
+	virtual Vector3			GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0)) override;
+	virtual IntVector2      WorldToScreen(Vector3 position) override;
 
 	ID3D11Device*			GetDevice();
 	ID3D11DeviceContext*	GetContext();

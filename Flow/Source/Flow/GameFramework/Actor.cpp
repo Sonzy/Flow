@@ -32,6 +32,10 @@ Actor::~Actor()
 	World::Get()->DestroyActor(GetGuid());
 }
 
+void Actor::OnRegistered()
+{
+}
+
 void Actor::BeginPlay()
 {
 	if (!m_RootComponent)
