@@ -8,6 +8,7 @@
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 #include "Rendering/Core/Bindables/Shaders/NullPixelShader.h"
 #include "Rendering/Core/Bindables/Rasterizer.h"
+#include "Rendering/Core/Bindables/Blender.h"
 #include "Rendering/Other/DepthBuffer.h"
 
 #if WITH_EDITOR
@@ -141,6 +142,9 @@ void RenderQueue::Execute()
 		Stencil::Resolve(StencilMode::Off)->Bind();
 		Queue->m_Passes[7]->Execute();
 	}
+
+	//Reset for late rendering (imgui etc)
+	RenderCommand::SetPerspective();
 
 	Queue->m_CurrentPass = 0;
 }

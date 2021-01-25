@@ -88,59 +88,56 @@ void Application::InitialiseApplication()
 	AssetSystem::Startup();
 
 	//= Materials =
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Black")->GetMaterial())->SetColor(Vector3(0.0f, 0.0f, 0.0f));
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Grey")->GetMaterial())->SetColor(Vector3(0.863f, 0.863f, 0.863f));
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Slate")->GetMaterial())->SetColor(Vector3(0.439f, 0.502f, 0.565f));
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Blue")->GetMaterial())->SetColor(Vector3(0.0f, 0.0f, 1.0f));
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Red")->GetMaterial())->SetColor(Vector3(1.0f, 0.0f, 0.0f));
-	AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green");
-	static_cast<Mat_LitColor*>(AssetSystem::GetAsset<MaterialAsset>("Mat_LitColor_Green")->GetMaterial())->SetColor(Vector3(0.0f, 1.0f, 0.0f));
+	Mat_LitColor* litColorBlack = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(0.0f, 0.0f, 0.0f));
+	Mat_LitColor* litColorGrey = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(0.863f, 0.863f, 0.863f));
+	Mat_LitColor* litColorSlate = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(0.439f, 0.502f, 0.565f));
+	Mat_LitColor* litColorBlue = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(0.0f, 0.0f, 1.0f));
+	Mat_LitColor* litColorRed = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(1.0f, 0.0f, 0.0f));
+	Mat_LitColor* litColorGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green")->GetMaterial<Mat_LitColor>();
+	litColorBlack->SetColor(Vector3(0.0f, 1.0f, 0.0f));
 
-	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props");
-	Mat_TexturedPhong* PropsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Props")->GetMaterial());
+
+	Mat_TexturedPhong* PropsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props")->GetMaterial<Mat_TexturedPhong>();
 	PropsMat->SetTexture("Wabble_Props");
 	PropsMat->SetPixelShader("TexturedPhong_PS");
 	PropsMat->SetVertexShader("TexturedPhong_VS");
 
-	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons");
-	Mat_TexturedPhong* WeaponsMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wabble_Weapons")->GetMaterial());
+	Mat_TexturedPhong* WeaponsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons")->GetMaterial<Mat_TexturedPhong>();
 	WeaponsMat->SetTexture("Wabble_Weapons");
 	WeaponsMat->SetPixelShader("TexturedPhong_PS");
 	WeaponsMat->SetVertexShader("TexturedPhong_VS");
 
-	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood");
-	Mat_TexturedPhong* WoodMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Wood")->GetMaterial());
+	Mat_TexturedPhong* WoodMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood")->GetMaterial<Mat_TexturedPhong>();
 	WoodMat->SetTexture("Wabble_Wood");
 	WoodMat->SetPixelShader("TexturedPhong_PS");
 	WoodMat->SetVertexShader("TexturedPhong_VS");
 
-	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand");
-	Mat_TexturedPhong* SandMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_Sand")->GetMaterial());
+	Mat_TexturedPhong* SandMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand")->GetMaterial<Mat_TexturedPhong>();
 	SandMat->SetTexture("Wabble_Sand");
 	SandMat->SetPixelShader("TexturedPhong_PS");
 	SandMat->SetVertexShader("TexturedPhong_VS");
 
-	AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube");
-	Mat_TexturedPhong* SkyMat = static_cast<Mat_TexturedPhong*>(AssetSystem::GetAsset<MaterialAsset>("Mat_SkyCube")->GetMaterial());
-	//SkyMat->SetTexture("SkyCube_Test");
+	Mat_TexturedPhong* SkyMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube")->GetMaterial<Mat_TexturedPhong>();
 	SkyMat->SetTexture("YokohamaCubemap_4k");
 	SkyMat->SetPixelShader("Texture_PS");
 	SkyMat->SetVertexShader("Texture_VS");
 
 	//= 2D Materials =
 
-	AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D");
-	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_White2D")->GetMaterial())->SetColour(Vector3(1.0f, 1.0f, 1.0f));
-	AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D");
-	static_cast<ColorMaterial2D*>(AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColour_Green2D")->GetMaterial())->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+	ColorMaterial2D* flatColorWhite = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D")->GetMaterial<ColorMaterial2D>();
+	flatColorWhite->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+	ColorMaterial2D* flatColorGreen = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D")->GetMaterial<ColorMaterial2D>();
+	flatColorGreen->SetColour(Vector3(0.0f, 1.0f, 0.0f));
 
 
-	AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D");
+	Mat_Texture2D* matTexture2D = AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D")->GetMaterial<Mat_Texture2D>();
+	matTexture2D->SetTexture("Icon_Light");
+	matTexture2D->SetPixelShader("Texture2D_PS");
 
 
 	FLOW_ENGINE_LOG("================ Initialising Game ======================");

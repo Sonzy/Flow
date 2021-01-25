@@ -315,52 +315,32 @@ Vector3 DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2 Window
 
 IntVector2 DX11RenderAPI::WorldToScreen(Vector3 position)
 {
+	CameraBase* cam = RenderCommand::GetMainCamera();
+	Vector3 camPosition = cam->GetCameraPosition();
+
+	DirectX::XMVECTOR vecPosition = DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f);
+	IntVector2 WindowSize = GetWindowSize();
+	DirectX::XMVECTOR outProjection = DirectX::XMVector3Project(
+		vecPosition,
+		0.0f, 0.0f,
+		(float)WindowSize.x, (float)WindowSize.y,
+		0.0f, 1.0f,
+		cam->GetProjectionMatrix(),
+		cam->GetViewMatrix(),
+		DirectX::XMMatrixIdentity()
+	);
+
+	DirectX::XMFLOAT4 outVec;
+	DirectX::XMStoreFloat4(&outVec, outProjection);
+
+	//TODO: Remove in the future
+	if (outVec.z > 1.0f)
 	{
-		CameraBase* cam = RenderCommand::GetMainCamera();
-		Vector3 camPosition = cam->GetCameraPosition();
-
-		//Vector3 worldPosition = Vector3(camPosition.x - position.x, camPosition.y - position.y, camPosition.z - position.z);
-		Vector3 worldPosition = Vector3(position.x, position.y, position.z);
-
-		DirectX::XMVECTOR vecPosition = DirectX::XMVectorSet(worldPosition.x, worldPosition.y, worldPosition.z, 1.0f);
-		IntVector2 WindowSize = GetWindowSize();
-		DirectX::XMVECTOR outProjection = DirectX::XMVector3Project(
-			vecPosition,
-			0.0f, 0.0f,
-			(float)WindowSize.x, (float)WindowSize.y,
-			0.0f, 1.0f,
-			cam->GetProjectionMatrix(),	// DirectX::XMMatrixTranspose( cam->GetProjectionMatrix()	),
-			cam->GetViewMatrix(),		// DirectX::XMMatrixTranspose( cam->GetViewMatrix()		),
-			DirectX::XMMatrixIdentity()	// DirectX::XMMatrixTranspose( DirectX::XMMatrixIdentity()	)
-		);
-
-		FLOW_ENGINE_LOG("Viewport Size: %d, %d", WindowSize.x, WindowSize.y);
-		
-		DirectX::XMFLOAT3 outVec;
-		DirectX::XMStoreFloat3(&outVec, outProjection);
-		
-		return IntVector2(outVec.x, outVec.y);
+		outVec.x = -999.9f;
+		outVec.y = -999.9f;
 	}
 
-
-	{
-		//CameraBase* cam = RenderCommand::GetMainCamera();
-		//DirectX::XMMATRIX clipSpace = cam->GetProjectionMatrix() * cam->GetViewMatrix();
-		//DirectX::XMVECTOR vec = DirectX::XMVector3Transform(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f), clipSpace);
-		//DirectX::XMFLOAT4 f4;
-		//DirectX::XMStoreFloat4(&f4, vec);
-		//
-		//float x = f4.x / f4.w;
-		//float y = f4.y / f4.w;
-		//
-		//float xNorm = (f4.x + 1.0f) / 2.0f;
-		//float yNorm = (f4.y + 1.0f) / 2.0f;
-		//
-		//IntVector2 WindowSize = GetWindowSize();
-		//return IntVector2((float)WindowSize.x * xNorm, (float)WindowSize.y * yNorm);
-	}
-
-
+	return IntVector2(outVec.x, outVec.y);
 }
 
 ID3D11Device* DX11RenderAPI::GetDevice()

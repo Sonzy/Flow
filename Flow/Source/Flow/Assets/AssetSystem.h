@@ -55,7 +55,7 @@ public:
 
 	/* Temp: Used to create a new material at runtime, templated on the material class */
 	template <typename T>
-	static bool									CreateMaterial(const std::string& AssetName)
+	static MaterialAsset*						CreateMaterial(const std::string& AssetName)
 	{
 		MaterialAsset* NewAsset = new MaterialAsset();
 		NewAsset->CreateMaterial<T>();
@@ -66,7 +66,7 @@ public:
 
 		sm_AssetSystem->m_MemoryUsage += NewAsset->GetAssetSize();
 
-		return (bool)NewAsset;
+		return NewAsset;
 	}
 
 	// Returns a vector of all assets of this type

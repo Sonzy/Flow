@@ -1,3 +1,5 @@
+// Includes ///////////////////////////////////////////////////////////////////////
+
 #include "Flowpch.h"
 #include "IconManager.h"
 
@@ -22,13 +24,41 @@
 
 #include "ThirdParty/ImGui/imgui.h"
 
+// Icon Function Definitions //////////////////////////////////////////////////////
+
 IconManager::IconManager()
+	: m_iconVerticesTopLeftAligned(m_iconLayout)
+	, m_iconVerticesCentreAligned(m_iconLayout)
+	, m_showDebugWindow(false)
+	, m_iconSize(50.0f)
 {
 	m_iconMaterial = AssetSystem::GetAsset<MaterialAsset>("Mat_Texture2D")->GetMaterial();
-	//TODO: Figure out material stuff for icons
-	//TODO: Delete unused Icons
-	m_rotatorOverride = Rotator();
-	m_posOverride = Vector3();
+
+	// Set up the mesh for icons
+
+	m_iconLayout.Append(ElementType::Position2D);
+	m_iconLayout.Append(ElementType::Texture2D);
+
+	//TODO: probs do it in the shader
+	m_iconVerticesTopLeftAligned = VertexBuffer(m_iconLayout);
+	m_iconVerticesTopLeftAligned.EmplaceBack(DirectX::XMFLOAT2{ 0.0f, 0.0f }, DirectX::XMFLOAT2{ 0.0f, 0.0f });
+	m_iconVerticesTopLeftAligned.EmplaceBack(DirectX::XMFLOAT2{ 1.0f, 0.0f }, DirectX::XMFLOAT2{ 1.0f, 0.0f });
+	m_iconVerticesTopLeftAligned.EmplaceBack(DirectX::XMFLOAT2{ 1.0f, 1.0f }, DirectX::XMFLOAT2{ 1.0f, 1.0f });
+	m_iconVerticesTopLeftAligned.EmplaceBack(DirectX::XMFLOAT2{ 0.0f, 1.0f }, DirectX::XMFLOAT2{ 0.0f, 1.0f });
+
+	m_iconVerticesCentreAligned = VertexBuffer(m_iconLayout);
+	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{ -0.5f, -0.5f }, DirectX::XMFLOAT2{ 0.0f, 0.0f });
+	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{  0.5f, -0.5f }, DirectX::XMFLOAT2{ 1.0f, 0.0f });
+	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{  0.5f,  0.5f }, DirectX::XMFLOAT2{ 1.0f, 1.0f });
+	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{ -0.5f,  0.5f }, DirectX::XMFLOAT2{ 0.0f, 1.0f });
+
+	m_iconIndices.reserve(6);
+	m_iconIndices.push_back(0);
+	m_iconIndices.push_back(1);
+	m_iconIndices.push_back(2);
+	m_iconIndices.push_back(2);
+	m_iconIndices.push_back(3);
+	m_iconIndices.push_back(0);
 }
 
 void IconManager::RegisterIcon(FGUID guid, const IconData& data)
@@ -37,9 +67,6 @@ void IconManager::RegisterIcon(FGUID guid, const IconData& data)
 	newIcon->RefreshBinds(*this);
 
 	m_iconData[guid] = newIcon;
-
-	//newIcon->m_scale = Vector3(100.0f, 50.0f, 1.0f);
-	newIcon->m_scale = Vector3(100.0f, 100.0f, 1.0f);
 }
 
 void IconManager::RemoveIcon(FGUID guid)
@@ -48,6 +75,19 @@ void IconManager::RemoveIcon(FGUID guid)
 	if (iterator != m_iconData.end())
 	{
 		m_iconData.erase(iterator);
+	}
+}
+
+void IconManager::Update()
+{
+	RenderIcons();
+}
+
+void IconManager::Render()
+{
+	if (m_showDebugWindow && ImGui::Begin("Icon manager"))
+	{
+		ImGui::InputFloat("Icon Size", &m_iconSize);
 	}
 }
 
@@ -65,14 +105,7 @@ void IconManager::RenderIcons()
 			continue;
 		}
 
-		//iconData.second->m_position = world.FindComponent<WorldComponent>(iconData.first)->GetWorldPosition(); //TODO: World to screen
-		//iconData.second->m_rotation = Maths::FindLookAtRotation(iconData.second->m_position, cameraPosition);
-
-		iconData.second->m_position = m_posOverride;
-		//iconData.second->m_position = RenderCommand::WorldToScreen(world.FindComponent<WorldComponent>(iconData.first)->GetWorldPosition());
-		iconData.second->m_rotation = m_rotatorOverride;
-
-		//TODO: REmove
+		//TODO: Remove
 		iconData.second->RefreshBinds(*this);
 
 		Renderer::Submit(iconData.second);
@@ -84,94 +117,86 @@ const Material& IconManager::GetIconMaterial() const
 	return *m_iconMaterial;
 }
 
-void IconManager::RenderDebugWindow()
+const VertexBuffer& IconManager::GetIconVertices(Icon::Alignment alignment) const
 {
-	if (ImGui::Begin("Icon Manager Debug Window"))
+	switch (alignment)
 	{
-		bool updated = false;
-		
-		updated |= ImGui::SliderFloat3("Rotation", (float*)&m_rotatorOverride, 0.0f, 360.0f);
-		updated |= ImGui::SliderFloat3("Position", (float*)&m_posOverride, -300.0f, 300.0f);
-		updated |= ImGui::Checkbox("Toggle InverseViewMatrix", &m_InverseViewMatrix);
-		updated |= ImGui::Checkbox("Toggle No View Matrix", &m_NoViewMatrix);
-
-		if (updated)
-		{
-			for (auto iconData : m_iconData)
-			{
-				iconData.second->RefreshBinds(*this);
-			}
-		}
+	case Icon::Alignment::TopLeft:			return m_iconVerticesTopLeftAligned;
+	case Icon::Alignment::Centre:			return m_iconVerticesCentreAligned;
+	default:								return m_iconVerticesCentreAligned;
 	}
-	ImGui::End();
 }
 
-// Icon Function Definitions //////////////////////////////////////////////////////
+const std::vector<unsigned short>& IconManager::GetIconIndices() const
+{
+	return m_iconIndices;
+}
 
+const VertexLayout& IconManager::GetIconLayout() const
+{
+	return m_iconLayout;
+}
+
+Icon& IconManager::GetIcon(FGUID iconGuid)
+{
+	return *m_iconData[iconGuid]; //TODO: what if we get an invalid one lololol do it soon
+}
+
+float IconManager::GetIconSize() const
+{
+	return m_iconSize; //Pixels
+}
 
 Icon::Icon(FGUID guid, TextureAsset* tex)
 	: m_guid(guid)
-	, m_texture(tex)
-	, m_doubleSided(true)
-	, m_scale(1.0f, 1.0f)
+	, m_tint(1.0f, 1.0f, 1.0f, 1.0f)
+	, m_vCB(new VertexConstantBuffer<IconVertexData>(1)) //TODO: no magic numbers
+	, m_pCB(new PixelConstantBuffer<IconPixelData>(5))
 {
 }
 
 void Icon::RefreshBinds(const IconManager& manager)
 {
+	PROFILE_FUNCTION();
+
 	//TODO: Batch render these
 	m_Techniques.clear();
 
 	Technique Standard = Technique("Basic_Icon");
 	{
+		//TODO: Fix memory leaks
 		Step MainStep(PASS_UI);
-		//Step MainStep(PASS_MAIN);
 
-		//Topology
 		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-		//Vertex Layout
-		VertexLayout MeshLayout;
-		MeshLayout.Append(ElementType::Position2D);
-		MeshLayout.Append(ElementType::Texture2D);
-
-		//TODO: Change
-		float scale = 1.0f;
-
 		//Vertex Buffer
-		VertexBuffer VBuffer(MeshLayout);
-		VBuffer.EmplaceBack(DirectX::XMFLOAT2{ m_position.x  + (-0.5f * scale), m_position.y +  (-0.5f * scale)  }, DirectX::XMFLOAT2{ 0.0f, 1.0f });	  //TODO:
-		VBuffer.EmplaceBack(DirectX::XMFLOAT2{ m_position.x  + (0.5f  *	scale),  m_position.y + (-0.5f * scale)  }, DirectX::XMFLOAT2{ 1.0f, 1.0f });		  //TODO:
-		VBuffer.EmplaceBack(DirectX::XMFLOAT2{ m_position.x  + (0.5f  *	scale),  m_position.y + (0.5f  * scale) }, DirectX::XMFLOAT2{ 1.0f, 0.0f });		  //TODO:
-		VBuffer.EmplaceBack(DirectX::XMFLOAT2{ m_position.x  + (-0.5f *	scale), m_position.y +  (0.5f  * scale) }, DirectX::XMFLOAT2{ 0.0f, 0.0f });		  //TODO:
 
-		std::vector<unsigned short> indices;
-		indices.reserve(6);
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(0);
+		//For now just recreate them in case of a change
+		delete m_VertexBuffer;
+		m_VertexBuffer = new BindableVertexBuffer("IconQuad", manager.GetIconVertices(m_alignment));
 
-		DirectX::XMFLOAT2 f1 = { m_position.x + -0.5f, m_position.y + -0.5f };
-		DirectX::XMFLOAT2 f2 = { m_position.x + 0.5f,  m_position.y + -0.5f };
-		DirectX::XMFLOAT2 f3 = { m_position.x + 0.5f,  m_position.y + 0.5f	};
-		DirectX::XMFLOAT2 f4 = { m_position.x + -0.5f, m_position.y + 0.5f	};
+		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve("IconQuad", manager.GetIconIndices()));
 
-		//TODO: move to constant buffer
-		//m_VertexBuffer = static_cast<BindableVertexBuffer*>(BindableVertexBuffer::Resolve("SpriteQuad", VBuffer));
-		m_VertexBuffer = new BindableVertexBuffer("SpriteQuad", VBuffer);
-		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve("SpriteQuad", indices));
-
-		manager.GetIconMaterial().BindMaterial(&MainStep, MeshLayout);
-
-		//TODO: Remove
-		MainStep.AddBindable(new TransformConstantBuffer(this));
-
-		MainStep.AddBindable(Rasterizer::Resolve(m_doubleSided ? CullMode::None : CullMode::Back));
-
+		manager.GetIconMaterial().BindMaterial(&MainStep, manager.GetIconLayout());
 		Standard.AddStep(std::move(MainStep));
+
+		//Update vertex constant buffers
+
+		m_buf.windowSize = RenderCommand::GetWindowSize();
+		m_buf.xPosition = m_position.x;
+		m_buf.yPosition = m_position.y;
+		m_buf.xScale = manager.GetIconSize();
+		m_buf.yScale = manager.GetIconSize();
+
+		m_vCB->Update(m_buf);
+		m_vCB->Bind();
+
+		//Update pixel constant buffers
+
+		m_pBuf.m_tint = m_tint;
+
+		m_pCB->Update(m_pBuf);
+		m_pCB->Bind();
 	}
 
 	AddTechnique(Standard);
@@ -179,6 +204,5 @@ void Icon::RefreshBinds(const IconManager& manager)
 
 DirectX::XMMATRIX Icon::GetTransformXM() const
 {
-	return 	DirectX::XMMatrixScaling(m_scale.x, m_scale.y, 1.0f) *
-		DirectX::XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+	return 	DirectX::XMMatrixIdentity();
 }

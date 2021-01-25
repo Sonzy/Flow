@@ -36,6 +36,7 @@ Editor::Editor()
 	, m_Initialised(false)
 	, m_ShowSettingsWindow(false)
 	, m_ShowPrototypingWindow(false)
+	, m_DrawDemoWindow(false)
 {
 
 }
@@ -57,9 +58,9 @@ void Editor::Initialise()
 	RegisterUIComponent<SpawnWindow>();
 	RegisterUIComponent<LevelManager>();
 	RegisterUIComponent<Console>();
+	RegisterUIComponent<IconManager>();
 
 	m_SceneManager = GetUIComponent<SceneManager>();
-	m_iconManager = new IconManager();
 
 	m_Initialised = true;
 }
@@ -137,11 +138,6 @@ void Editor::OnImGuiRender(bool DrawEditor)
 		{
 			ImGuiPrototypingWindow();
 		}		
-
-		if (true)
-		{
-			m_iconManager->RenderDebugWindow();
-		}
 	}
 }
 
@@ -186,8 +182,6 @@ void Editor::OnUpdate(float DeltaTime)
 	{
 		uiComponent->Update();
 	}
-
-	m_iconManager->RenderIcons();
 }
 
 void Editor::UpdateTools(float DeltaTime)
@@ -428,6 +422,13 @@ void Editor::ImGuiPrototypingWindow()
 		ImVec2 position = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + ImGui::GetCursorPosX(), ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + ImGui::GetCursorPosY());
 		ImGui::RenderCheckMark(position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
 
+		ImGui::GetCurrentContext()->NavDisableMouseHover = true;
+		static bool selected = false;
+		ImGui::Selectable(selected ? "True" : "False", &selected);
+		ImGui::GetCurrentContext()->NavDisableMouseHover = false;
+
+		static bool selected2 = false;
+		ImGui::Selectable("Test2", &selected2);
 	}
 	ImGui::End();
 }

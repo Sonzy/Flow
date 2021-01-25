@@ -142,8 +142,6 @@ public:
 	bool						IsInitialised() const { return m_Initialised; }
 	void						ShowSettingsWindow(bool Show) { m_ShowSettingsWindow = Show; }
 
-	IconManager&				GetIconManager() const { return *m_iconManager; }
-
 	// Public Template Functions ///////////////////////////////////////////////
 
 	template<typename T>
@@ -236,20 +234,24 @@ private:
 
 
 	bool							m_Initialised;
+
+	//= ImGui Window Options =
+
 	bool							m_ShowSettingsWindow;
 	bool							m_ShowPrototypingWindow;
+	bool							m_DrawDemoWindow;
+
+	//= References =
+
 	MenuBar*						m_MenuBar;
-	bool							m_DrawDemoWindow = false;
 	Application*					m_ApplicationPointer;
-	Editor::Settings				m_Settings;
 	EditorCamera*					m_EditorCam;
 	LevelManager*					m_LevelManager;
-	IconManager*					m_iconManager;
+	Editor::Settings				m_Settings;
 
 	//= Cached UI Components =
 
 	SceneManager*					m_SceneManager;
-
 	Editor::SettingsWindow			m_SettingsWindow;
 
 	std::vector<Tool*>				m_Tools;

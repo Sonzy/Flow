@@ -16,6 +16,12 @@ public:
 		return NewMaterial;
 	}
 
+	template<typename T>
+	T* GetMaterial()
+	{
+		return dynamic_cast<T*>(m_Material);
+	}
+
 	//= Public Fucntions =====================
 
 	MaterialAsset();

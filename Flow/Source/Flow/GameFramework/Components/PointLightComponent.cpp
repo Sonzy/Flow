@@ -13,6 +13,8 @@
 #include <yaml-cpp/yaml.h>
 #include "Utils/YamlSerializer.h"
 
+//TODO: Support multiple lights
+
 PointLightComponent::PointLightComponent()
 	: RenderableComponent("Unnamed Point Light Component")
 	, m_lightPixelBuffer(0)
@@ -39,7 +41,7 @@ void PointLightComponent::OnRegistered()
 #if WITH_EDITOR
 	IconManager::IconData iconData;
 	iconData.m_texture = nullptr;
-	Editor::Get().GetIconManager().RegisterIcon(GetGuid(), iconData);
+	Editor::Get().GetUIComponent<IconManager>()->RegisterIcon(GetGuid(), iconData);
 #endif
 }
 
@@ -58,6 +60,16 @@ void PointLightComponent::Render()
 	//Update the transformed position to the shader
 	m_lightPixelBuffer.Update(Copy);
 	m_lightPixelBuffer.Bind();
+
+	IconManager* iconManager = Editor::Get().GetUIComponent<IconManager>();
+
+	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Icon& lightIcon = iconManager->GetIcon(GetGuid());
+	lightIcon.m_position.x = screen.x;
+	lightIcon.m_position.y = screen.y;
+	lightIcon.m_tint = Vector4(m_lightBuffer.m_Diffuse.x, m_lightBuffer.m_Diffuse.y, m_lightBuffer.m_Diffuse.z, 1.0f);
+	lightIcon.m_alignment = Icon::Alignment::Centre;
+	lightIcon.RefreshBinds(*iconManager);
 }
 
 void PointLightComponent::DrawComponentDetailsWindow()

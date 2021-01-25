@@ -4,6 +4,7 @@ ReferencedAssets:
   - Flow/Assets/Models/Box.fmesh
   - Bin/Shaders/Texture_VS.cso
   - Flow/Assets/Icons/Icon_FMesh.png
+  - Flow/Assets/Icons/Icon_Light.png
   - Flow/Assets/Models/Wabble_Crate.fmesh
   - Flow/Assets/Models/Area.fmesh
   - Flow/Assets/Models/Arrow.fmesh
