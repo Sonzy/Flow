@@ -7,7 +7,6 @@
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 #include "Rendering/Core/Bindables/Shaders/NullPixelShader.h"
 #include "Rendering/Core/Bindables/Rasterizer.h"
-#include "Rendering/Core/Bindables/Blender.h"
 #include "Rendering/Other/DepthBuffer.h"
 
 #if WITH_EDITOR
@@ -26,7 +25,8 @@ std::unordered_map<RenderPass, Pass> RenderQueue::sm_Passes =
 	{ RenderPass::NoDepth, Pass() },
 	{ RenderPass::Standard2D, Pass() },
 	{ RenderPass::UI, Pass() },
-	{ RenderPass::Selection, Pass() }
+	{ RenderPass::Selection, Pass() },
+	{ RenderPass::Selection2D, Pass() },
 };
 
 RenderQueue::RenderQueue()
@@ -105,11 +105,12 @@ void RenderQueue::Execute()
 	if (mainPass.IsEnabled())
 	{
 		sm_CurrentPass = RenderPass::NoDepth;
-
-		Stencil::Resolve(StencilMode::Off)->Bind();
+		Stencil::Resolve(StencilMode::NoDepth)->Bind();
 
 		noDepthPass.Execute();
 	}
+
+	Stencil::Resolve(StencilMode::Off)->Bind();
 
 	Pass& standard2DPass = sm_Passes[RenderPass::Standard2D];
 	if (standard2DPass.IsEnabled())
@@ -122,16 +123,17 @@ void RenderQueue::Execute()
 		standard2DPass.Execute();
 	}
 
-	Pass& UIPass = sm_Passes[RenderPass::Standard2D];
+	Pass& UIPass = sm_Passes[RenderPass::UI];
 	if (UIPass.IsEnabled())
 	{
-		sm_CurrentPass = RenderPass::Standard2D;
+		sm_CurrentPass = RenderPass::UI;
 
 		RenderCommand::SetOrthographic();
-		Stencil::Resolve(StencilMode::Off)->Bind();
+		Stencil::Resolve(StencilMode::NoDepth)->Bind();
 
 		UIPass.Execute();
 	}
+	Stencil::Resolve(StencilMode::Off)->Bind();
 
 	Pass& frontCullPass = sm_Passes[RenderPass::FrontFaceCulling];
 	if (frontCullPass.IsEnabled())
@@ -143,6 +145,11 @@ void RenderQueue::Execute()
 
 		frontCullPass.Execute();
 	}
+	Rasterizer::Resolve(CullMode::Back)->Bind();
+
+	bool selectionBufferClearedThisFrame = false;
+
+	RenderCommand::SetClearColour(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Pass& selectionPass = sm_Passes[RenderPass::Selection];
 	if (selectionPass.IsEnabled())
@@ -160,6 +167,7 @@ void RenderQueue::Execute()
 		}
 
 		RenderCommand::BindFrameBuffer(sm_SelectionBuffer);
+		selectionBufferClearedThisFrame = true;
 
 		RenderCommand::SetPerspective();
 
@@ -168,6 +176,35 @@ void RenderQueue::Execute()
 		// Post Selection Rendering
 		RenderCommand::BindEditorBufferWithoutClear();
 	}
+
+	Pass& selectionPass2D = sm_Passes[RenderPass::Selection2D];
+	if (selectionPass2D.IsEnabled())
+	{
+		sm_CurrentPass = RenderPass::Selection2D;
+
+		if (sm_SelectionBuffer == nullptr)
+		{
+			sm_SelectionBuffer = new FrameBuffer(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y, true);
+		}
+
+		if (sm_SelectionBuffer->GetWidth() != RenderCommand::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != RenderCommand::GetWindowSize().y)
+		{
+			sm_SelectionBuffer->Resize(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y);
+		}
+
+		selectionBufferClearedThisFrame ? RenderCommand::BindFrameBufferWithoutClear(sm_SelectionBuffer) : RenderCommand::BindFrameBuffer(sm_SelectionBuffer);
+		selectionBufferClearedThisFrame = true;
+
+		RenderCommand::SetOrthographic();
+		Stencil::Resolve(StencilMode::NoDepth)->Bind();
+
+		selectionPass2D.Execute();
+
+		// Post Selection Rendering
+		RenderCommand::BindEditorBufferWithoutClear();
+	}
+
+	Stencil::Resolve(StencilMode::Off)->Bind();
 
 	//Reset for late rendering (imgui etc)
 	RenderCommand::SetPerspective();

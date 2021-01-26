@@ -59,7 +59,21 @@ void SceneManager::Render()
 			m_EditorCam->m_CanUpdate = m_SceneFocused ? true : !ImGui::IsAnyItemActive();
 		}
 
-		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();
+
+		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();;
+		const FrameBuffer* OutputBuffer = nullptr;
+		switch (m_viewMode)
+		{
+		case SceneBufferView::Game:
+			OutputBuffer = RenderCommand::GetEditorFrameBuffer();
+			break;
+		case SceneBufferView::Selection:
+			OutputBuffer = RenderQueue::GetSelectionBuffer();
+			break;
+		default:
+			OutputBuffer = RenderCommand::GetEditorFrameBuffer();
+			break;
+		}
 
 		//Note: We assume that the scene image has no padding and is flush to the window x. 
 		m_SceneWindowPosition = IntVector2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
@@ -76,11 +90,16 @@ void SceneManager::Render()
 			m_CachedWindowSize = *reinterpret_cast<Vector2*>(&m_SceneWindowSize);
 		}
 
-		ImGui::Image(Buff->GetTextureView(), ImVec2(static_cast<float>(Buff->GetWidth()), static_cast<float>(Buff->GetHeight())));
+		ImGui::Image(OutputBuffer->GetTextureView(), ImVec2(static_cast<float>(Buff->GetWidth()), static_cast<float>(Buff->GetHeight())));
 
 		Editor::Get().GetTool<SelectionTool>()->RenderImGuiGizmo();
 	}
 	ImGui::End();
 
 	ImGui::PopStyleVar();
+}
+
+void SceneManager::SetViewMode(SceneBufferView view)
+{
+	m_viewMode = view;
 }

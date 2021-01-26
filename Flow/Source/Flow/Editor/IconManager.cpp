@@ -168,38 +168,65 @@ void Icon::RefreshBinds(const IconManager& manager)
 		Step MainStep(RenderPass::Standard2D);
 
 		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-		//Vertex Buffer
-
-		//For now just recreate them in case of a change
-		delete m_VertexBuffer;
-		m_VertexBuffer = new BindableVertexBuffer("IconQuad", manager.GetIconVertices(m_alignment));
-
-		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve("IconQuad", manager.GetIconIndices()));
+		delete m_VertexBuffer;	//For now just recreate them in case of a change
+		m_VertexBuffer = new BindableVertexBuffer(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconVertices(m_alignment)); //TODO: Manage the tags
+		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconIndices()));
 
 		manager.GetIconMaterial().BindMaterial(&MainStep, manager.GetIconLayout());
-		Standard.AddStep(std::move(MainStep));
 
 		//Update vertex constant buffers
+		m_buf.windowSize = RenderCommand::GetWindowSize();
+		m_buf.xPosition = m_position.x;
+		m_buf.yPosition = m_position.y;
+		m_buf.xScale = manager.GetIconSize();
+		m_buf.yScale = manager.GetIconSize();
+		m_vCB->Update(m_buf);
+		MainStep.AddBindable(m_vCB);
+
+		//Update pixel constant buffers
+		m_pBuf.m_tint = m_tint;
+		m_pCB->Update(m_pBuf);
+		MainStep.AddBindable(m_pCB);
+
+		Standard.AddStep(std::move(MainStep));
+	}
+	AddTechnique(Standard);
+
+
+	Technique Selection = Technique("Icon_Selection2D");
+	{
+		SelectionPassConstantBuffer buff
+		{
+			Vector4(
+			(float)(m_guid & 0xff000000) / 4278190080.0f,
+			(float)(m_guid & 0x00ff0000) / 16711680.0f,
+			(float)(m_guid & 0x0000ff00) / 65280.0f,
+			(float)(m_guid & 0x000000ff) / 255.0f)
+		};
+	
+		Step Rendering(RenderPass::Selection2D);
+
+		//No need to recreate mesh binds
+		std::string tag = "SelectionBuffer_" + std::to_string(m_guid);
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(buff, 7, tag));
+
+		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_VS")->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Rendering.AddBindable(std::move(vShader));
+		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_PS")->GetPath()));
 
 		m_buf.windowSize = RenderCommand::GetWindowSize();
 		m_buf.xPosition = m_position.x;
 		m_buf.yPosition = m_position.y;
 		m_buf.xScale = manager.GetIconSize();
 		m_buf.yScale = manager.GetIconSize();
-
 		m_vCB->Update(m_buf);
-		m_vCB->Bind();
+		Rendering.AddBindable(m_vCB);
 
-		//Update pixel constant buffers
+		Selection.AddStep(std::move(Rendering));
 
-		m_pBuf.m_tint = m_tint;
-
-		m_pCB->Update(m_pBuf);
-		m_pCB->Bind();
+		AddTechnique(Selection);
 	}
-
-	AddTechnique(Standard);
 }
 
 DirectX::XMMATRIX Icon::GetTransformXM() const

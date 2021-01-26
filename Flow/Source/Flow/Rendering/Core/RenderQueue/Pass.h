@@ -16,7 +16,8 @@ enum class RenderPass
 	Standard2D = 4,
 	UI = 5,
 	Selection = 6,
-	FrontFaceCulling = 7,
+	Selection2D = 7,
+	FrontFaceCulling = 8,
 };
 
 //= Class Definition ========================

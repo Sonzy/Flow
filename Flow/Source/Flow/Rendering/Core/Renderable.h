@@ -14,7 +14,10 @@ class Topology;
 
 // Struct Definitions /////////////////////////////////////////
 
-
+struct SelectionPassConstantBuffer
+{
+	Vector4 m_guidColor;
+};
 
 //= Class Definitions ========================================
 

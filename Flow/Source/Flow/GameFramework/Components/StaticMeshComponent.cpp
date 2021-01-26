@@ -74,8 +74,9 @@ void StaticMeshComponent::OnViewportSelected()
 {
 	RenderableComponent::OnViewportSelected();
 
-	if (m_Techniques.size() >= 2)
-		m_Techniques[1].Activate();
+	//TODO: dont hard code
+	//if (m_Techniques.size() >= 2)
+	//	m_Techniques[1].Activate();
 }
 
 void StaticMeshComponent::OnViewportDeselected()
@@ -83,8 +84,8 @@ void StaticMeshComponent::OnViewportDeselected()
 	RenderableComponent::OnViewportDeselected();
 
 	//TODO: dont hard code
-	if(m_Techniques.size() >= 2)
-		m_Techniques[1].Deactivate();
+	//if(m_Techniques.size() >= 2)
+	//	m_Techniques[1].Deactivate();
 }
 
 
@@ -270,12 +271,12 @@ void StaticMeshComponent::Render()
 
 void StaticMeshComponent::RefreshBinds()
 {
-	m_Techniques.clear();
-
 	if (m_StaticMesh == nullptr || m_Material == nullptr)
 	{
 		return;
 	}
+
+	RenderableComponent::RefreshBinds();
 
 	//= Standard Rendering ====
 	VertexLayout MeshLayout;
@@ -354,29 +355,6 @@ void StaticMeshComponent::RefreshBinds()
 	}
 
 	AddTechnique(Outline);
-
-
-	if(IsRegistered() == true)
-	{
-		Technique Selection = Technique("StaticMeshComponent_Selection");
-		Step Rendering(RenderPass::Selection);
-
-		//No need to recreate mesh binds
-
-		std::string tag = "SelectionBuffer_" + std::to_string(GetGuid());
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, 7, tag));
-
-		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
-		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
-		Rendering.AddBindable(std::move(vShader));
-		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
-
-		Rendering.AddBindable(new TransformConstantBuffer(this));
-
-		Selection.AddStep(std::move(Rendering));
-
-		AddTechnique(Selection);
-	}
 }
 
 void StaticMeshComponent::DrawComponentDetailsWindow()
@@ -416,6 +394,12 @@ void StaticMeshComponent::GenerateCollision()
 
 void StaticMeshComponent::InitialisePhysics()
 {
+	if (m_SimulatePhysics == false)
+	{
+		return; //TODO: Need to revamp physics
+	}
+
+
 	if (m_StaticMesh == nullptr)
 	{
 		FLOW_ENGINE_WARNING("StaticMeshComponent::InitialisePhysics: StaticMesh was nullptr, skipped init");

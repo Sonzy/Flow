@@ -34,8 +34,8 @@ public:
 
 	enum class Alignment
 	{
-		TopLeft,
-		Centre
+		TopLeft = 0,
+		Centre = 1
 	};
 
 public:

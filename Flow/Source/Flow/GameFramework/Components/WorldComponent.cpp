@@ -307,6 +307,8 @@ void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 void WorldComponent::DrawComponentDetailsWindow()
 {
 	Component::DrawComponentDetailsWindow();
+
+	ImGui::Checkbox("Simulate Physics", &m_SimulatePhysics);
 }
 
 void WorldComponent::DrawComponentInActorTreeRecursive()

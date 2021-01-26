@@ -91,15 +91,18 @@ void Application::InitialiseApplication()
 	Mat_LitColor* litColorBlack = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black")->GetMaterial<Mat_LitColor>();
 	litColorBlack->SetColor(Vector3(0.0f, 0.0f, 0.0f));
 	Mat_LitColor* litColorGrey = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(0.863f, 0.863f, 0.863f));
+	litColorGrey->SetColor(Vector3(0.863f, 0.863f, 0.863f));
 	Mat_LitColor* litColorSlate = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(0.439f, 0.502f, 0.565f));
+	litColorSlate->SetColor(Vector3(0.439f, 0.502f, 0.565f));
 	Mat_LitColor* litColorBlue = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(0.0f, 0.0f, 1.0f));
+	litColorBlue->SetColor(Vector3(0.0f, 0.0f, 1.0f));
 	Mat_LitColor* litColorRed = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(1.0f, 0.0f, 0.0f));
+	litColorRed->SetColor(Vector3(1.0f, 0.0f, 0.0f));
 	Mat_LitColor* litColorGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(0.0f, 1.0f, 0.0f));
+	litColorGreen->SetColor(Vector3(0.0f, 1.0f, 0.0f));
+
+	Mat_LitColor* litColorDarkGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_DarkGreen")->GetMaterial<Mat_LitColor>();
+	litColorDarkGreen->SetColor(Vector3(0.0f, 0.35f, 0.0f));
 
 
 	Mat_TexturedPhong* PropsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props")->GetMaterial<Mat_TexturedPhong>();

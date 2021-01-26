@@ -96,7 +96,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	if (e.GetMouseButton() != MOUSE_LEFT)
 		return false;
 
-	if (ImGuizmo::IsOver())
+	if (m_SelectedComponent != nullptr && ImGuizmo::IsOver())
 	{
 		return true;
 	}

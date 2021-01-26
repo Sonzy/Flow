@@ -12,6 +12,14 @@ class EditorCamera;
 class ToolBar;
 class Texture;
 
+// Enum Definitions /////////////////////////////////
+
+enum class SceneBufferView
+{
+	Game,
+	Selection
+};
+
 //= Class Declaration ===============================
 
 class SceneManager : public UIComponent
@@ -34,6 +42,8 @@ public:
 	IntVector2			GetSceneWindowSize() const { return m_SceneWindowSize; }
 	IntVector2			GetSceneWindowPosition() const { return m_SceneWindowPosition; }
 
+	void				SetViewMode(SceneBufferView view);
+
 private:
 
 	//= Private Functions ===========================
@@ -48,4 +58,5 @@ private:
 
 	ToolBar*			m_Toolbar;
 
+	SceneBufferView		m_viewMode;
 };

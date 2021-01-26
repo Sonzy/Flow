@@ -281,7 +281,7 @@ void AssetBrowser::DrawContextWindow()
 			{
 				FilePath path = FilePathString;
 				std::string FileName = path.filename().string();
-				AssetSystem::ImportAsset(FilePathString, m_EditorMode ? m_SelectedEditorDirectory.string() + '\\' + FileName : m_SelectedDirectory.string() + '\\' + FileName);
+				AssetSystem::ImportAsset(FilePathString, m_EditorMode ? m_SelectedEditorDirectory.string() + '\\' + FileName : m_SelectedDirectory.string() + '\\' + FileName); //TODO: Meshes being imported to asset map as .obj not .fmesh
 			}
 			else
 			{

@@ -17,14 +17,17 @@ ReferencedAssets:
   - Bin/Shaders/TexturedPerPixel_VS.cso
   - Bin/Shaders/Selection_PS.cso
   - Bin/Shaders/Selection_VS.cso
+  - Bin/Shaders/Selection2D_PS.cso
+  - Flow/Assets/Textures/Wabble_Props.png
+  - Bin/Shaders/Selection2D_VS.cso
+  - Flow/Assets/Textures/Wabble_Sand.png
+  - Bin/Shaders/SolidColor_VS.cso
+  - Flow\Assets\Models\TerrainTesting.fmesh
   - Flow/Assets/Models/Wabble_Revolver.fmesh
   - Flow/Assets/Textures/YokohamaCubemap_4k.png
   - Flow/Assets/Models/Wabble_Rifle.fmesh
   - Flow/Assets/Models/Wabble_Blunderbuss.fmesh
-  - Flow/Assets/Textures/Wabble_Props.png
   - Flow/Assets/Textures/Wabble_Wood.png
-  - Flow/Assets/Textures/Wabble_Sand.png
-  - Bin/Shaders/SolidColor_VS.cso
   - Bin/Shaders/LitColor_VS.cso
   - Flow/Assets/Textures/QuadTextureTest.png
   - Flow/Assets/Icons/Icon_Tool_Selection.png
@@ -45,4 +48,3 @@ ReferencedAssets:
   - Bin/Shaders/LineColor_PS.cso
   - Bin/Shaders/LitColor_PS.cso
   - Bin/Shaders/Texture2D_VS.cso
-  - Flow\Assets\Models\untitled.obj

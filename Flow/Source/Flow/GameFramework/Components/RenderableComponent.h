@@ -13,12 +13,6 @@ class Bindable;
 class IndexBuffer;
 
 //TODO: Move
-
-struct SelectionPassConstantBuffer
-{
-	Vector4 m_guidColor;
-};
-
 //= Class Definitions ============================================
 
 /* Base class for any components with rendering capabilities */

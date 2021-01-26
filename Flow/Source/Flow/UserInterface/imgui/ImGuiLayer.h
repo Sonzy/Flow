@@ -9,6 +9,13 @@
 
 //= Class Definition =========================
 
+enum class ImGuiTheme
+{
+	Unity = 0,
+	Slate = 1,
+	RayTeak = 2
+};
+
 class FLOW_API ImGuiLayer : public Layer
 {
 public:
@@ -26,6 +33,8 @@ public:
 	void			Begin();
 	void			End();
 
+	static void		SetTheme(ImGuiTheme theme);
+
 private:
 
 	//= Private Functions =================================
@@ -39,11 +48,17 @@ private:
 	bool			OnKeyReleased(KeyReleasedEvent& e);
 	bool			OnWindowResized(WindowResizedEvent& e);
 
-	void			ConfigureStyle();
+	//= Themes =
+
+	static void		SetBaseTheme();
+	static void		SetUnityTheme();
+	static void		SetSlateTheme();
+	static void		SetRayTeakTheme();
 
 private:
 
 	//= Private Variables ==================================
 
 	const float		m_MenuBarSize = 20.0f;
+	static ImGuiTheme m_theme;
 };

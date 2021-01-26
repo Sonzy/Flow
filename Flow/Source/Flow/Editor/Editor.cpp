@@ -694,7 +694,28 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 				updatedRenderSettings = true;
 			}
 
+			const char* sceneBufferOptions[] = { "Game", "Selection" };
+			static int currentSceneBufferOption = 0;
+			if (ImGui::Combo("Output Buffer", &currentSceneBufferOption, sceneBufferOptions, IM_ARRAYSIZE(sceneBufferOptions)))
+			{
+				updatedRenderSettings = true;
+				Editor::Get().GetUIComponent<SceneManager>()->SetViewMode(static_cast<SceneBufferView>(currentSceneBufferOption));
+			}
+
 			updateFile |= updatedRenderSettings;
+		}
+		ImGui::Separator();
+
+
+		ImGui::Text("Editor Appearance");
+		{
+			const char* themes[] = { "Unity", "Slate", "RayTeak" };
+			static int currentTheme = 0;
+			if (ImGui::Combo("Current Theme", &currentTheme, themes, IM_ARRAYSIZE(themes)))
+			{
+				updateFile = true;
+				ImGuiLayer::SetTheme((ImGuiTheme)currentTheme);
+			}
 		}
 		ImGui::Separator();
 
