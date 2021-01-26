@@ -13,4 +13,4 @@ typedef unsigned long long		uint64;
 
 //= Other =
 
-typedef int32					FGUID;
+typedef uint32					FGUID;

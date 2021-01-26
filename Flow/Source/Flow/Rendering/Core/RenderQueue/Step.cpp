@@ -9,7 +9,7 @@
 
 //= Class Definition - Step ==========================
 
-Step::Step(size_t TargetPass)
+Step::Step(RenderPass TargetPass)
 	: m_TargetPass(TargetPass)
 {
 }

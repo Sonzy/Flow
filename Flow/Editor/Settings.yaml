@@ -4,7 +4,7 @@ Docking:
   DockFloatingWindows: false
   DockPadding: [10, 10]
 Console:
-  LogColor: [1, 1, 1, 1]
+  LogColor: [1, 0.999989986, 0.999989986, 1]
   WarningColor: [1, 1, 0, 1]
   ErrorColor: [1, 0, 0, 1]
 EditorCamera:
@@ -14,7 +14,7 @@ EditorCamera:
 Other:
   ObjectHighlightColor: [0, 1, 0]
 Testing:
-  ShowImGuiPrototypingWindow: true
+  ShowImGuiPrototypingWindow: false
 Rendering:
-  NearPlane: 0.05
+  NearPlane: 0.0500000007
   FarPlane: 2000

@@ -26,6 +26,7 @@ public:
 	virtual					~Component();
 
 	virtual void			OnRegistered();
+	bool					IsRegistered() const;
 
 	WorldComponent*			GetParentComponent() const;
 	Actor*					GetParentActor() const;
@@ -49,4 +50,5 @@ protected:
 
 	Actor*					m_ParentObject;
 	WorldComponent*			m_AttachedComponent;
+	bool					m_registered;
 };

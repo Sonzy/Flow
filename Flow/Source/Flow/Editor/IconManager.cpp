@@ -165,7 +165,7 @@ void Icon::RefreshBinds(const IconManager& manager)
 	Technique Standard = Technique("Basic_Icon");
 	{
 		//TODO: Fix memory leaks
-		Step MainStep(PASS_UI);
+		Step MainStep(RenderPass::Standard2D);
 
 		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 

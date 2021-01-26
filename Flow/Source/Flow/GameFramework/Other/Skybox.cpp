@@ -29,7 +29,9 @@ Skybox::Skybox()
 
 	Technique Standard("Skybox_Standard");
 	{
-		Step MainStep(1);
+		Step MainStep(RenderPass::Main);
+
+		MainStep.AddBindable(Rasterizer::Resolve(CullMode::Front));
 
 		VertexLayout MeshLayout;
 		MainStep.AddBindables(m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout));

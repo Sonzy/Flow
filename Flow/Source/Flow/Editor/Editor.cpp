@@ -597,15 +597,15 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 			ImGui::SetCursorPosX(centreOffset);
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Enabled Render Passes");
 
-			RenderQueue* Queue = RenderQueue::Get();
-			ImGui::Checkbox("Main Pass (Back Culled)", &Queue->m_Pass0Enabled);
-			ImGui::Checkbox("Main Pass (Forward Culled)", &Queue->m_Pass1Enabled);
-			ImGui::Checkbox("Main Pass (Two Sided)", &Queue->m_Pass2Enabled);
-			ImGui::Checkbox("Mask Pass", &Queue->m_Pass3Enabled);
-			ImGui::Checkbox("Outline Pass", &Queue->m_Pass4Enabled);
-			ImGui::Checkbox("No Depth Pass", &Queue->m_Pass5Enabled);
-			ImGui::Checkbox("2D Pass", &Queue->m_Pass6Enabled);
-			ImGui::Checkbox("UI Pass", &Queue->m_Pass7Enabled);
+			ImGui::Checkbox("Main", &RenderQueue::GetPass(RenderPass::Main).Enabled());
+			ImGui::Checkbox("Outline Masking", &RenderQueue::GetPass(RenderPass::OutlineMasking).Enabled());
+			ImGui::Checkbox("Outline", &RenderQueue::GetPass(RenderPass::Outline).Enabled());
+			ImGui::Checkbox("No Depth", &RenderQueue::GetPass(RenderPass::NoDepth).Enabled());
+			ImGui::Checkbox("2D", &RenderQueue::GetPass(RenderPass::Standard2D).Enabled());
+			ImGui::Checkbox("UI", &RenderQueue::GetPass(RenderPass::UI).Enabled());
+			ImGui::Checkbox("Selection", &RenderQueue::GetPass(RenderPass::Selection).Enabled());
+			ImGui::Checkbox("Front Culling", &RenderQueue::GetPass(RenderPass::FrontFaceCulling).Enabled());
+
 		}
 		ImGui::EndChild();
 

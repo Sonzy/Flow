@@ -24,6 +24,10 @@ public:
 
 	virtual DirectX::XMMATRIX		GetTransformXM() const override;
 	virtual void					Render() override;
+	virtual void					RefreshBinds() override;
+
+
+	virtual void					DrawComponentDetailsWindow() override;
 
 protected:
 
@@ -31,6 +35,6 @@ protected:
 
 	MeshAsset*						m_Mesh;
 	Material*						m_Material;									
-	std::string						m_MeshPath = "Box";
+	std::string						m_MeshPath = "Cube";
 	std::string						m_MaterialPath = "Mat_SkyCube";
 };

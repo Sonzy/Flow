@@ -50,8 +50,9 @@ public:
 	ID3D11Device*			GetDevice();
 	ID3D11DeviceContext*	GetContext();
 
-	virtual void			BindBackBuffer() override;
-	virtual void			BindFrameBuffer(FrameBuffer* Buffer) override;
+	virtual void			BindBackBuffer(bool clear = true) override;
+	virtual void			BindFrameBuffer(FrameBuffer* Buffer, bool clear = true) override;
+	virtual void			BindEditorFrameBuffer(bool clear = true) override;
 
 #if WITH_EDITOR
 	void					BindEditorFrameBuffer();

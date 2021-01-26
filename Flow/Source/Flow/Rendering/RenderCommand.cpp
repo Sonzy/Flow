@@ -8,8 +8,6 @@
 #include "Flow\GameFramework\Controllers\Controller.h"
 #include "Flow/Rendering/Core/Camera/Camera.h"
 
-#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
-
 RenderAPI* RenderCommand::sm_RendererAPI = new DX11RenderAPI();
 
 void RenderCommand::InitialiseDX11(HWND WindowHandle, int ViewportWidth, int ViewportHeight)
@@ -82,7 +80,12 @@ void RenderCommand::Shutdown()
 
 void RenderCommand::BindEditorBuffer()
 {
-	dynamic_cast<DX11RenderAPI*>(sm_RendererAPI)->BindEditorFrameBuffer();
+	sm_RendererAPI->BindEditorFrameBuffer();
+}
+
+void RenderCommand::BindEditorBufferWithoutClear()
+{
+	sm_RendererAPI->BindEditorFrameBuffer(false);
 }
 
 FrameBuffer* RenderCommand::GetEditorFrameBuffer()
@@ -98,6 +101,16 @@ void RenderCommand::BindFrameBuffer(FrameBuffer* Buffer)
 void RenderCommand::BindBackBuffer()
 {
 	sm_RendererAPI->BindBackBuffer();
+}
+
+void RenderCommand::BindFrameBufferWithoutClear(FrameBuffer* Buffer)
+{
+	sm_RendererAPI->BindFrameBuffer(Buffer, false);
+}
+
+void RenderCommand::BindBackBufferWithoutClear()
+{
+	sm_RendererAPI->BindBackBuffer(false);
 }
 
 IntVector2 RenderCommand::GetWindowSize()
@@ -155,7 +168,7 @@ IntVector2 RenderCommand::WorldToScreen(Vector3 position)
 	return sm_RendererAPI->WorldToScreen(position);
 }
 
-int RenderCommand::GetActivePass()
+RenderPass RenderCommand::GetActivePass()
 {
-	return RenderQueue::Get()->GetActiveRenderPass();
+	return RenderQueue::GetActiveRenderPass();
 }

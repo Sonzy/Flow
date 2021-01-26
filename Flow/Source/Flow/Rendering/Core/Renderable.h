@@ -12,6 +12,10 @@ class IndexBuffer;
 class BindableVertexBuffer;
 class Topology;
 
+// Struct Definitions /////////////////////////////////////////
+
+
+
 //= Class Definitions ========================================
 
 /* Interface class for anything that can be rendered*/
@@ -46,6 +50,4 @@ protected:
 	BindableVertexBuffer*					m_VertexBuffer;
 	Topology*								m_Topology;
 	std::vector<Technique>					m_Techniques;
-
-
 };

@@ -33,6 +33,7 @@ private:
 	void					DrawDirectory(const FilePath& CurrentPath);
 	void					DrawFolder(const FilePath& CurrentPath, int UniqueID, std::vector<std::pair<FilePath, FilePath>>& OutRenameList);
 	void					DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vector<std::pair<FilePath, FilePath>>& OutRenameList);
+	void					DrawContextWindow();
 
 	const Texture*			GetTextureForExtension(const FilePath& FileName) const;
 

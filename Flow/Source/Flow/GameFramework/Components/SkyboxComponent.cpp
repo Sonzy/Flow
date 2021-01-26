@@ -24,23 +24,7 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 	m_Mesh = AssetSystem::GetAsset<MeshAsset>(m_MeshPath);
 	m_Material = AssetSystem::GetAsset<MaterialAsset>(m_MaterialPath)->GetMaterial();
 
-	Technique Standard("SkyboxComponent_Standard");
-	{
-		Step MainStep(1);
-
-		VertexLayout MeshLayout;
-		m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
-
-		m_IndexBuffer = m_Mesh->GetMesh(0)->m_IndexBuffer;
-		m_VertexBuffer = m_Mesh->GetMesh(0)->m_BindableVBuffer;
-		m_Topology = m_Mesh->GetMesh(0)->m_Topology;
-
-		m_Material->BindMaterial(&MainStep, MeshLayout);
-
-		MainStep.AddBindable(new TransformConstantBuffer(this)); //TODO: need to clean this up
-		Standard.AddStep(MainStep);
-	}
-	AddTechnique(Standard);
+	RefreshBinds();
 
 	m_SimulatePhysics = false;
 }
@@ -58,4 +42,63 @@ void SkyboxComponent::Render()
 	Renderer::Submit(this);
 
 	WorldComponent::Render();
+}
+
+void SkyboxComponent::RefreshBinds()
+{
+	m_Techniques.clear();
+
+	Technique Standard("SkyboxComponent_Standard");
+	{
+		Step MainStep(RenderPass::FrontFaceCulling);
+
+		VertexLayout MeshLayout;
+		m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
+
+		m_IndexBuffer = m_Mesh->GetMesh(0)->m_IndexBuffer;
+		m_VertexBuffer = m_Mesh->GetMesh(0)->m_BindableVBuffer;
+		m_Topology = m_Mesh->GetMesh(0)->m_Topology;
+
+		m_Material->BindMaterial(&MainStep, MeshLayout);
+
+		MainStep.AddBindable(new TransformConstantBuffer(this)); //TODO: need to clean this up
+		Standard.AddStep(MainStep);
+	}
+	AddTechnique(Standard);
+}
+
+void SkyboxComponent::DrawComponentDetailsWindow()
+{
+	WorldComponent::DrawComponentDetailsWindow();
+
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Skybox Component");
+
+
+	std::vector<const char*> Assets = AssetSystem::BuildAssetList<TextureAsset>();
+	static int CurrentItem = 0;
+	const char* currentItem = m_MaterialPath.c_str();
+
+	if (ImGui::BeginCombo("Material Selector - Skybox", currentItem, 0)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < Assets.size(); n++)
+		{
+			bool is_selected = (currentItem == Assets[n]);
+
+			if (ImGui::Selectable(Assets[n], is_selected))
+			{
+				currentItem = Assets[n];
+
+				m_MaterialPath = currentItem;
+				m_Material->SetTexture(currentItem);
+				RefreshBinds();
+			}
+
+			// Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 }

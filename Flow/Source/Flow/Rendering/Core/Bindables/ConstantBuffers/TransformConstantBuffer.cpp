@@ -23,7 +23,7 @@ void TransformConstantBuffer::Bind()
 
 	//Generate the transformation from the parent.
 	const auto modelView = 
-		RenderCommand::GetActivePass() != 7 ? 
+		RenderCommand::GetActivePass() != RenderPass::Standard2D || RenderCommand::GetActivePass() != RenderPass::UI ?
 		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix() :
 		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix2D();
 

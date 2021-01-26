@@ -34,7 +34,7 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 	Technique Standard("StaticMesh_Standard");
 	{
-		Step MainStep(0);
+		Step MainStep(RenderPass::Main);
 
 		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 		m_Mesh->GenerateBinds(MeshLayout);

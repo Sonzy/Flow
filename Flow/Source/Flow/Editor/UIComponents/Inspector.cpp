@@ -66,6 +66,7 @@ void Inspector::RenderInspector()
 		Actor* ParentActor = m_SelectedComponent->GetParentActor();
 
 		ImGui::InputText("ObjectName", &ParentActor->GetWritableName());
+		ImGui::Text("Guid: %lu", m_SelectedComponent->GetGuid());
 		ImGui::TextColored(IMGUI_ORANGE, (std::string("Selected Component: ") + (m_SelectedComponent == nullptr ? m_SelectedComponent->GetName() : std::string("None"))).c_str());
 
 		if (m_HideTree == false && ParentActor->GetRootComponent())

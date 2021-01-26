@@ -285,7 +285,7 @@ void StaticMeshComponent::RefreshBinds()
 	{
 		Technique Standard = Technique("StaticMeshComponent_Standard");
 		{
-			Step MainStep(0);
+			Step MainStep(RenderPass::Main);
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 			m_StaticMesh->GenerateBinds(MeshLayout);
@@ -306,7 +306,7 @@ void StaticMeshComponent::RefreshBinds()
 	{
 		Technique StandardNoDepthPass = Technique("StaticMeshComponent_StandardNoDepthPass");
 		{
-			Step MainStep(5);
+			Step MainStep(RenderPass::NoDepth);
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 			m_StaticMesh->GenerateBinds(MeshLayout);
@@ -328,7 +328,7 @@ void StaticMeshComponent::RefreshBinds()
 	Technique Outline = Technique("StaticMeshComponent_Outline");
 	Outline.Deactivate();
 	{
-		Step Masking(3);
+		Step Masking(RenderPass::OutlineMasking);
 
 		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
 		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
@@ -340,7 +340,7 @@ void StaticMeshComponent::RefreshBinds()
 		Outline.AddStep(std::move(Masking));
 	}
 	{
-		Step DrawOutline(4);
+		Step DrawOutline(RenderPass::Outline);
 
 		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
 		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
@@ -354,6 +354,29 @@ void StaticMeshComponent::RefreshBinds()
 	}
 
 	AddTechnique(Outline);
+
+
+	if(IsRegistered() == true)
+	{
+		Technique Selection = Technique("StaticMeshComponent_Selection");
+		Step Rendering(RenderPass::Selection);
+
+		//No need to recreate mesh binds
+
+		std::string tag = "SelectionBuffer_" + std::to_string(GetGuid());
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, 7, tag));
+
+		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
+		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Rendering.AddBindable(std::move(vShader));
+		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
+
+		Rendering.AddBindable(new TransformConstantBuffer(this));
+
+		Selection.AddStep(std::move(Rendering));
+
+		AddTechnique(Selection);
+	}
 }
 
 void StaticMeshComponent::DrawComponentDetailsWindow()

@@ -32,7 +32,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	Description.SampleDesc.Quality = 0;
 	Description.Usage = D3D11_USAGE_DEFAULT;
 	Description.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	Description.CPUAccessFlags = 0;
+	Description.CPUAccessFlags = D3D11_CPU_ACCESS_READ; //TODO: Can read framebuffers
 	Description.MiscFlags = 0;
 
 	//Create Texture

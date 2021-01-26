@@ -2,7 +2,6 @@
 
 #include "Flowpch.h"
 #include "RenderQueue.h"
-#include "Rendering/Core/RenderQueue/Pass.h"
 
 #include "Rendering/Core/Bindables/Stencil.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
@@ -16,87 +15,78 @@
 #include "Rendering/Core/TemplateBuffers/TemplateBuffers.h"
 #endif
 
-RenderQueue* RenderQueue::sm_RenderQueue = new RenderQueue();
+
+FrameBuffer* RenderQueue::sm_SelectionBuffer = nullptr;
+RenderPass	RenderQueue::sm_CurrentPass = RenderPass::Main;
+std::unordered_map<RenderPass, Pass> RenderQueue::sm_Passes =
+{
+	{ RenderPass::Main, Pass() },
+	{ RenderPass::OutlineMasking, Pass() },
+	{ RenderPass::Outline, Pass() },
+	{ RenderPass::NoDepth, Pass() },
+	{ RenderPass::Standard2D, Pass() },
+	{ RenderPass::UI, Pass() },
+	{ RenderPass::Selection, Pass() }
+};
 
 RenderQueue::RenderQueue()
 {
-	m_Passes.emplace_back(new Pass()); //Main Pass (Back Culled)
-	m_Passes.emplace_back(new Pass()); //Main Pass (Forward Culled)
-	m_Passes.emplace_back(new Pass()); //Main Pass (Two Sided)
-	m_Passes.emplace_back(new Pass()); //Mask Pass
-	m_Passes.emplace_back(new Pass()); //Outline Draw Pass
-	m_Passes.emplace_back(new Pass()); //No Depth
-	m_Passes.emplace_back(new Pass()); //2D
-	m_Passes.emplace_back(new Pass()); //User Interface
 }
 
 RenderQueue::~RenderQueue()
 {
 	//TODO: canny remember if this one destructs.
-	m_Passes.clear();
+	sm_Passes.clear();
+
+	delete sm_SelectionBuffer;
+}
+
+Pass& RenderQueue::GetPass(RenderPass pass)
+{
+	return sm_Passes[pass];
 }
 
 void RenderQueue::SubmitTechnique(Technique* Tech)
 {
 }
 
-void RenderQueue::AcceptJob(Job NewJob, size_t TargetPass)
+void RenderQueue::AcceptJob(Job NewJob, RenderPass TargetPass)
 {
 	//TODO: Ensure that this is a valid pass
-	sm_RenderQueue->m_Passes[TargetPass]->Accept(NewJob);
+	sm_Passes[TargetPass].Accept(NewJob);
 }
 
 void RenderQueue::Execute()
 {
-	RenderQueue* Queue = RenderQueue::Get();
-
 	//= Main Render pass
 
-	if (Queue->m_Pass0Enabled)
+	Pass& mainPass = sm_Passes[RenderPass::Main];
+	if (mainPass.IsEnabled())
 	{
-		Queue->m_CurrentPass = 0;
+		sm_CurrentPass = RenderPass::Main;
 
 		RenderCommand::SetPerspective();
 		Rasterizer::Resolve(CullMode::Back)->Bind();
 		Stencil::Resolve(StencilMode::Off)->Bind();
-		Queue->m_Passes[0]->Execute();
+
+		mainPass.Execute();
 	}
 
-	//= Main Pass (Front Culled)
-	if (Queue->m_Pass1Enabled)
+	Pass& outlineMaskPass = sm_Passes[RenderPass::OutlineMasking];
+	if (outlineMaskPass.IsEnabled())
 	{
-		Queue->m_CurrentPass = 1;
-
-		Rasterizer::Resolve(CullMode::Front)->Bind();
-		Queue->m_Passes[1]->Execute();
-	}
-
-
-	//= Main Pass (Two Sided
-	if (Queue->m_Pass2Enabled)
-	{
-		Queue->m_CurrentPass = 2;
-
-		Rasterizer::Resolve(CullMode::None)->Bind();
-		Queue->m_Passes[2]->Execute();
-	}
-
-	//Reset 
-	Rasterizer::Resolve(CullMode::Back)->Bind();
-	//= Outline Masking pass
-	if (Queue->m_Pass3Enabled)
-	{
-		Queue->m_CurrentPass = 3;
+		sm_CurrentPass = RenderPass::OutlineMasking;
 
 		Stencil::Resolve(StencilMode::Write)->Bind();
 		NullPixelShader::Resolve()->Bind(); //Stop D3D11 from using render targets
-		Queue->m_Passes[3]->Execute();
+
+		outlineMaskPass.Execute();
 	}
 
-	//TODO: Editor defs
-	if (Queue->m_Pass4Enabled)
+	Pass& outlinePass = sm_Passes[RenderPass::Outline];
+	if (mainPass.IsEnabled())
 	{
-		Queue->m_CurrentPass = 4;
+		sm_CurrentPass = RenderPass::Outline;
 
 		Vector3 Colour = Editor::GetSettings().m_ObjectHighlightColour;
 
@@ -108,63 +98,92 @@ void RenderQueue::Execute()
 		PXCB->Update(ColourBuffer);
 		PXCB->Bind();
 
-		Queue->m_Passes[4]->Execute();
+		outlinePass.Execute();
 	}
 
-	Stencil::Resolve(StencilMode::Write)->Bind();
-	Rasterizer::Resolve(CullMode::Back)->Bind();
-
-	//=  No depth pass
-	if (Queue->m_Pass5Enabled)
+	Pass& noDepthPass = sm_Passes[RenderPass::NoDepth];
+	if (mainPass.IsEnabled())
 	{
-		Queue->m_CurrentPass = 5;
+		sm_CurrentPass = RenderPass::NoDepth;
 
 		Stencil::Resolve(StencilMode::Off)->Bind();
-		Queue->m_Passes[5]->Execute();
+
+		noDepthPass.Execute();
 	}
 
-	Stencil::Resolve(StencilMode::Write)->Bind();
-	//= 2D Rendering =
-	if (Queue->m_Pass6Enabled)
+	Pass& standard2DPass = sm_Passes[RenderPass::Standard2D];
+	if (standard2DPass.IsEnabled())
 	{
-		Queue->m_CurrentPass = 6;
-
-		RenderCommand::SetOrthographic();
-		Queue->m_Passes[6]->Execute();
-	}
-
-	//= User Interface = 
-	if (Queue->m_Pass7Enabled)
-	{
-		Queue->m_CurrentPass = 7;
+		sm_CurrentPass = RenderPass::Standard2D;
 
 		RenderCommand::SetOrthographic();
 		Stencil::Resolve(StencilMode::Off)->Bind();
-		Queue->m_Passes[7]->Execute();
+
+		standard2DPass.Execute();
+	}
+
+	Pass& UIPass = sm_Passes[RenderPass::Standard2D];
+	if (UIPass.IsEnabled())
+	{
+		sm_CurrentPass = RenderPass::Standard2D;
+
+		RenderCommand::SetOrthographic();
+		Stencil::Resolve(StencilMode::Off)->Bind();
+
+		UIPass.Execute();
+	}
+
+	Pass& frontCullPass = sm_Passes[RenderPass::FrontFaceCulling];
+	if (frontCullPass.IsEnabled())
+	{
+		sm_CurrentPass = RenderPass::FrontFaceCulling;
+
+		RenderCommand::SetPerspective();
+		Rasterizer::Resolve(CullMode::Front)->Bind();
+
+		frontCullPass.Execute();
+	}
+
+	Pass& selectionPass = sm_Passes[RenderPass::Selection];
+	if (selectionPass.IsEnabled())
+	{
+		sm_CurrentPass = RenderPass::Selection;
+
+		if (sm_SelectionBuffer == nullptr)
+		{
+			sm_SelectionBuffer = new FrameBuffer(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y, true);
+		}
+
+		if (sm_SelectionBuffer->GetWidth() != RenderCommand::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != RenderCommand::GetWindowSize().y)
+		{
+			sm_SelectionBuffer->Resize(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y);
+		}
+
+		RenderCommand::BindFrameBuffer(sm_SelectionBuffer);
+
+		RenderCommand::SetPerspective();
+
+		selectionPass.Execute();
+
+		// Post Selection Rendering
+		RenderCommand::BindEditorBufferWithoutClear();
 	}
 
 	//Reset for late rendering (imgui etc)
 	RenderCommand::SetPerspective();
 
-	Queue->m_CurrentPass = 0;
-}
-
-RenderQueue* RenderQueue::Get()
-{
-	return sm_RenderQueue;
+	sm_CurrentPass = RenderPass::Main;
 }
 
 void RenderQueue::Reset()
-{
-	RenderQueue* Queue = RenderQueue::Get();
-	
-	for (auto& Pass : Queue->m_Passes)
+{	
+	for (auto& Pass : sm_Passes)
 	{
-		Pass->Reset();
+		Pass.second.Reset();
 	}
 }
 
-int RenderQueue::GetActiveRenderPass()
+RenderPass RenderQueue::GetActiveRenderPass()
 {
-	return RenderQueue::Get()->m_CurrentPass;
+	return sm_CurrentPass;
 }

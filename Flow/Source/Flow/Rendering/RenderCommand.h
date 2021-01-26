@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 
 #include "Rendering/Core/RenderQueue/Job.h"
+#include "Flow/Rendering/Core/RenderQueue/RenderQueue.h"
 #include "Maths/IntVector2.h"
 
 //= Forward Declarations =========================
@@ -49,11 +50,14 @@ public:
 	static void							Shutdown();
 
 #if WITH_EDITOR
-	static void							BindEditorBuffer();
 	static FrameBuffer*					GetEditorFrameBuffer();
+	static void							BindEditorBuffer();
+	static void							BindEditorBufferWithoutClear();
 #endif
 	static void							BindFrameBuffer(FrameBuffer* Buffer);
 	static void							BindBackBuffer();
+	static void							BindFrameBufferWithoutClear(FrameBuffer* Buffer);
+	static void							BindBackBufferWithoutClear();
 
 	static IntVector2					GetWindowSize();
 	static void							SetMinimized(bool Minimized);
@@ -72,7 +76,7 @@ public:
 	static Vector3						GetScreenToWorldDirectionVector(int X, int Y, IntVector2 WindowSize, IntVector2 Origin = IntVector2(0,0));
 	static IntVector2					WorldToScreen(Vector3 position);
 
-	static int							GetActivePass();
+	static RenderPass					GetActivePass();
 
 private:
 

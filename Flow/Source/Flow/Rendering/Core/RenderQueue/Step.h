@@ -1,5 +1,9 @@
 #pragma once
 
+// Includes ////////////////////////////////////
+
+#include "Rendering/Core/RenderQueue/Pass.h"
+
 //= Forward Declarations =======================
 
 class Bindable;
@@ -14,7 +18,7 @@ public:
 
 	//= Public Functions ========================================
 
-						Step(size_t TargetPass);
+						Step(RenderPass TargetPass);
 
 	void				Submit(const Renderable& Drawable) const;
 	void				Bind() const;
@@ -28,6 +32,6 @@ private:
 
 	//= Private Variables ======================================
 
-	size_t									m_TargetPass;
+	RenderPass				m_TargetPass;
 	std::vector<Bindable*>	m_Bindables;
 };

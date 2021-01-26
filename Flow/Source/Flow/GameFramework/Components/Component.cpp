@@ -11,7 +11,10 @@ Component::Component()
 }
 
 Component::Component(const std::string& Name)
-	: GameObject(Name), m_ParentObject(nullptr), m_AttachedComponent(nullptr)
+	: GameObject(Name)
+	, m_ParentObject(nullptr)
+	, m_AttachedComponent(nullptr)
+	, m_registered(false)
 {
 }
 
@@ -21,6 +24,12 @@ Component::~Component()
 
 void Component::OnRegistered()
 {
+	m_registered = true;
+}
+
+bool Component::IsRegistered() const
+{
+	return m_registered;
 }
 
 WorldComponent* Component::GetParentComponent() const
@@ -55,6 +64,7 @@ void Component::Tick(float DeltaTime)
 
 void Component::DrawComponentDetailsWindow()
 {
+
 }
 
 void Component::Serialize(YAML::Emitter& Archive)

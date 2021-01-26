@@ -10,6 +10,7 @@ RenderableComponent::RenderableComponent()
 RenderableComponent::RenderableComponent(const std::string& Name)
 	: WorldComponent(Name)
 {
+
 }
 
 const IndexBuffer& RenderableComponent::GetIndexBuffer() const
@@ -38,6 +39,19 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 			DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) *
 			DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z);
 	}
+}
+
+void RenderableComponent::OnRegistered()
+{
+	WorldComponent::OnRegistered();
+
+	uint32 guid = GetGuid();
+	m_SelectionConstantBuffer.selectionColor = 
+		Vector4(
+			(float)(guid & 0xff000000) / 4278190080.0f,
+			(float)(guid & 0x00ff0000) / 16711680.0f,
+			(float)(guid & 0x0000ff00) / 65280.0f,
+			(float)(guid & 0x000000ff) / 255.0f);
 }
 
 void RenderableComponent::RefreshBinds()

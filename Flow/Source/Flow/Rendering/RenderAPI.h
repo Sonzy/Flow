@@ -56,8 +56,9 @@ public:
 	void							SetMainCamera(CameraBase* Camera) { m_MainCamera = Camera;	}
 	CameraBase*						GetMainCamera() const { return m_MainCamera; }
 
-	virtual void					BindBackBuffer() = 0;
-	virtual void					BindFrameBuffer(FrameBuffer* Buffer) = 0;
+	virtual void					BindBackBuffer(bool clear = true) = 0;
+	virtual void					BindFrameBuffer(FrameBuffer* Buffer, bool clear = true) = 0;
+	virtual void					BindEditorFrameBuffer(bool clear = true) = 0;
 
 	IntVector2						GetWindowSize() { return m_ViewportSize; }
 

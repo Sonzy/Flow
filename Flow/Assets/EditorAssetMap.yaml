@@ -1,26 +1,31 @@
 ReferencedAssets:
-  - Flow/Assets/Models/Wabble_Table.fmesh
-  - Bin/Shaders/TexturedPerPixel_PS.cso
-  - Flow/Assets/Models/Box.fmesh
+  - Flow/Assets/Textures/Error.png
   - Bin/Shaders/Texture_VS.cso
   - Flow/Assets/Icons/Icon_FMesh.png
-  - Flow/Assets/Icons/Icon_Light.png
   - Flow/Assets/Models/Wabble_Crate.fmesh
   - Flow/Assets/Models/Area.fmesh
+  - Bin/Shaders/TexturedPerPixel_PS.cso
+  - Flow/Assets/Models/Box.fmesh
+  - Flow/Assets/Models/Cube.fmesh
+  - Flow/Assets/Models/Wabble_Table.fmesh
+  - Flow/Assets/Icons/Icon_Light.png
   - Flow/Assets/Models/Arrow.fmesh
+  - Flow/Assets/Textures/StandardCubeMap.png
   - Flow/Assets/Textures/Wabble_Weapons.png
-  - Bin/Shaders/TexturedPerPixel_VS.cso
-  - Flow/Assets/Models/Wabble_Shotgun.fmesh
   - Flow/Assets/Models/Wabble_Chair.fmesh
+  - Flow/Assets/Models/Wabble_Shotgun.fmesh
+  - Bin/Shaders/TexturedPerPixel_VS.cso
+  - Bin/Shaders/Selection_PS.cso
+  - Bin/Shaders/Selection_VS.cso
   - Flow/Assets/Models/Wabble_Revolver.fmesh
   - Flow/Assets/Textures/YokohamaCubemap_4k.png
-  - Flow/Assets/Textures/Error.png
   - Flow/Assets/Models/Wabble_Rifle.fmesh
   - Flow/Assets/Models/Wabble_Blunderbuss.fmesh
   - Flow/Assets/Textures/Wabble_Props.png
   - Flow/Assets/Textures/Wabble_Wood.png
-  - Bin/Shaders/SolidColor_VS.cso
   - Flow/Assets/Textures/Wabble_Sand.png
+  - Bin/Shaders/SolidColor_VS.cso
+  - Bin/Shaders/LitColor_VS.cso
   - Flow/Assets/Textures/QuadTextureTest.png
   - Flow/Assets/Icons/Icon_Tool_Selection.png
   - Flow/Assets/Icons/Icon_Play.png
@@ -29,15 +34,15 @@ ReferencedAssets:
   - Flow/Assets/Icons/Icon_Shader.png
   - Flow/Assets/Icons/Icon_Folder.png
   - Flow/Assets/Icons/Icon_Image.png
+  - Bin/Shaders/Texture2D_PS.cso
   - Bin/Shaders/TexturedPhong_PS.cso
   - Bin/Shaders/Texture_PS.cso
   - Bin/Shaders/TexturedPhong_VS.cso
-  - Bin/Shaders/SolidColor_PS.cso
-  - Bin/Shaders/LineColor_VS.cso
   - Bin/Shaders/SolidColor2D_VS.cso
+  - Bin/Shaders/LineColor_VS.cso
+  - Bin/Shaders/SolidColor_PS.cso
   - Bin/Shaders/SolidColor2D_PS.cso
   - Bin/Shaders/LineColor_PS.cso
   - Bin/Shaders/LitColor_PS.cso
-  - Bin/Shaders/LitColor_VS.cso
   - Bin/Shaders/Texture2D_VS.cso
-  - Bin/Shaders/Texture2D_PS.cso
+  - Flow\Assets\Models\untitled.obj

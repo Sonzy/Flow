@@ -5,17 +5,19 @@
 #include <vector>
 #include "Rendering/Core/RenderQueue/Job.h"
 
-//= Macro Definitions =======================
+//= Enum Definitions =======================
 
-//TODO: manage these better
-#define PASS_MAIN 0
-#define PASS_FRONT_CULLED 1
-#define PASS_NO_CULLING 2
-#define PASS_OUTLINE_MASKING 3
-#define PASS_OUTLINE 4
-#define PASS_NO_DEPTH 5
-#define PASS_2D 6
-#define PASS_UI 7
+enum class RenderPass
+{
+	Main = 0,
+	OutlineMasking = 1,
+	Outline = 2,
+	NoDepth = 3,
+	Standard2D = 4,
+	UI = 5,
+	Selection = 6,
+	FrontFaceCulling = 7,
+};
 
 //= Class Definition ========================
 
@@ -25,13 +27,20 @@ public:
 
 	//= Public Functions ==========================
 
+	Pass();
+	
 	void				Accept(Job NewJob);
 	void				Execute() const;
 	void				Reset();
+
+	bool				IsEnabled() const;
+	bool&				Enabled();
+	void				SetEnabled(bool enabled);
 
 private:
 
 	//= Private Variables =========================
 
-	std::vector<Job>	m_Jobs;
+	std::vector<Job>	m_jobs;
+	bool				m_enabled;
 };

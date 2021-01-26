@@ -304,6 +304,11 @@ void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 {
 }
 
+void WorldComponent::DrawComponentDetailsWindow()
+{
+	Component::DrawComponentDetailsWindow();
+}
+
 void WorldComponent::DrawComponentInActorTreeRecursive()
 {
 	//TODO: Need to use some GUIDs

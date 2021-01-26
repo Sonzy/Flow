@@ -72,6 +72,8 @@ void AssetBrowser::Render()
 				{
 					m_EditorMode = true;
 					DrawDirectory(m_SelectedEditorDirectory);
+
+					DrawContextWindow();
 				}
 				ImGui::EndChild();
 
@@ -86,6 +88,8 @@ void AssetBrowser::Render()
 				{
 					m_EditorMode = false;
 					DrawDirectory(m_SelectedDirectory);
+
+					DrawContextWindow();
 				}
 				ImGui::EndChild();
 
@@ -93,27 +97,6 @@ void AssetBrowser::Render()
 			}
 
 			ImGui::EndTabBar();
-		}
-
-
-		if (ImGui::BeginPopupContextWindow("AssetBrowserContext"))
-		{
-			if (ImGui::MenuItem("Import Asset"))
-			{
-				std::string FilePathString;
-				if (static_cast<Window_Win32&>(Application::Get().GetWindow()).OpenFile(FilePathString) == true)
-				{
-					FilePath path = FilePathString;
-					std::string FileName = path.filename().string();
-					AssetSystem::ImportAsset(FilePathString, m_EditorMode ? m_SelectedEditorDirectory.string() + '\\' + FileName : m_SelectedDirectory.string() + '\\' + FileName);
-				}
-				else
-				{
-					FLOW_ENGINE_ERROR("AssetBrowser::DrawWindow: Failed to import file");
-				}
-
-			}
-			ImGui::EndPopup();
 		}
 
 		previousFrameWindowHeight = ImGui::GetWindowSize().y;
@@ -284,6 +267,29 @@ void AssetBrowser::DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vec
 	if (ImGui::GetCursorPosX() + m_IconSpacing + m_IconSize > m_WindowWidth)
 	{
 		ImGui::SetCursorPos(ImVec2(m_CursorInitialX, CursorPos.y + m_IconSize + m_YSpacing));
+	}
+}
+
+void AssetBrowser::DrawContextWindow()
+{
+	if (ImGui::BeginPopupContextWindow("AssetBrowserContext"))
+	{
+		if (ImGui::MenuItem("Import Asset"))
+		{
+			std::string FilePathString;
+			if (static_cast<Window_Win32&>(Application::Get().GetWindow()).OpenFile(FilePathString) == true)
+			{
+				FilePath path = FilePathString;
+				std::string FileName = path.filename().string();
+				AssetSystem::ImportAsset(FilePathString, m_EditorMode ? m_SelectedEditorDirectory.string() + '\\' + FileName : m_SelectedDirectory.string() + '\\' + FileName);
+			}
+			else
+			{
+				FLOW_ENGINE_ERROR("AssetBrowser::DrawWindow: Failed to import file");
+			}
+
+		}
+		ImGui::EndPopup();
 	}
 }
 

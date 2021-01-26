@@ -69,6 +69,7 @@ public:
 	Vector3*						GetWriteableScale();
 
 	virtual void					DrawDetailsWindow(bool bDontUpdate) override;
+	virtual void					DrawComponentDetailsWindow() override;
 	void							DrawComponentInActorTreeRecursive();
 
 	std::vector<WorldComponent*>	GetChildren() const;

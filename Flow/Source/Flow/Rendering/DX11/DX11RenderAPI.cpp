@@ -204,14 +204,6 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	m_Context->RSSetViewports(1u, &Viewport);
 
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-
-	//Note: See ScreenToWorldVec, will fix properly another time
-#if WITH_EDITOR
-	if (m_CurrentBuffer == m_EditorBuffer)
-	{
-		m_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-	}
-#endif
 }
 
 void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
@@ -241,27 +233,11 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 void DX11RenderAPI::SetProjectionPerspectiveMatrixDefault()
 {
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-
-	//Note: See ScreenToWorldVec, will fix properly another time
-#if WITH_EDITOR
-	if (m_CurrentBuffer == m_EditorBuffer)
-	{
-		m_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-	}
-#endif
 }
 
 void DX11RenderAPI::SetProjectionOrthographicMatrixDefault()
 {
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixOrthographicLH((float)m_ViewportSize.x, (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-
-	//Note: See ScreenToWorldVec, will fix properly another time
-#if WITH_EDITOR
-	if (m_CurrentBuffer == m_EditorBuffer)
-	{
-		m_MainCamera->SetSceneProjection(DirectX::XMMatrixOrthographicLH((float)m_ViewportSize.x, (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-	}
-#endif
 }
 
 Vector3 DX11RenderAPI::GetScreenToWorldDirection(int X, int Y, IntVector2 WindowSize, IntVector2 Origin)
@@ -353,7 +329,7 @@ ID3D11DeviceContext* DX11RenderAPI::GetContext()
 	return m_Context.Get();
 }
 
-void DX11RenderAPI::BindBackBuffer()
+void DX11RenderAPI::BindBackBuffer(bool clear)
 {
 	CREATE_RESULT_HANDLE();
 
@@ -379,31 +355,35 @@ void DX11RenderAPI::BindBackBuffer()
 	Viewport.TopLeftY = 0.0f;
 
 	m_Context->RSSetViewports(1u, &Viewport);
- 
+
 #if WITH_EDITOR
 	m_EditorBufferBound = false;
 #endif
 }
 
-void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer)
+void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer, bool clear)
 {
 	CREATE_RESULT_HANDLE();
 
 	//Create Render Target view and bind framebuffer
 	CATCH_ERROR_DX(m_Device->CreateRenderTargetView(Buffer->GetTexture(), nullptr, &m_RenderTarget));
 
-	m_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight()};
-	if (!Buffer->HasDepthBuffer())
-	{
-		ResizeDepthBuffer(m_ViewportSize.x, m_ViewportSize.y);
-		m_Context->OMSetRenderTargets(1u, m_RenderTarget.GetAddressOf(), m_DepthTextureView.Get());
-	}
-	else
-	{
-		m_Context->OMSetRenderTargets(1u, m_RenderTarget.GetAddressOf(), Buffer->GetDepthBuffer()->GetTextureView());
+	m_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight() };
 
-		m_Context->ClearRenderTargetView(m_RenderTarget.Get(), m_BackgroundColour);
-		m_Context->ClearDepthStencilView(Buffer->GetDepthBuffer()->GetTextureView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+	if (clear == true)
+	{
+		if (!Buffer->HasDepthBuffer())
+		{
+			ResizeDepthBuffer(m_ViewportSize.x, m_ViewportSize.y);
+			m_Context->OMSetRenderTargets(1u, m_RenderTarget.GetAddressOf(), m_DepthTextureView.Get());
+		}
+		else
+		{
+			m_Context->OMSetRenderTargets(1u, m_RenderTarget.GetAddressOf(), Buffer->GetDepthBuffer()->GetTextureView());
+
+			m_Context->ClearRenderTargetView(m_RenderTarget.Get(), m_BackgroundColour);
+			m_Context->ClearDepthStencilView(Buffer->GetDepthBuffer()->GetTextureView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+		}
 	}
 
 	D3D11_VIEWPORT Viewport;
@@ -422,18 +402,14 @@ void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer)
 #endif
 }
 
-void DX11RenderAPI::BindEditorFrameBuffer()
+void DX11RenderAPI::BindEditorFrameBuffer(bool clear)
 {
 	//Bind the frame buffer
-	BindFrameBuffer(m_EditorBuffer);
+	BindFrameBuffer(m_EditorBuffer, clear);
 	m_EditorBufferBound = true;
 
 	//Update the window rendering properties
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-	
-#if WITH_EDITOR
-	m_MainCamera->SetSceneProjection(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
-#endif
 }
 
 FrameBuffer* DX11RenderAPI::GetEditorBuffer() const

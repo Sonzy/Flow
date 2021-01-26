@@ -12,6 +12,13 @@
 class Bindable;
 class IndexBuffer;
 
+//TODO: Move
+
+struct SelectionPassConstantBuffer
+{
+	Vector4 selectionColor;
+};
+
 //= Class Definitions ============================================
 
 /* Base class for any components with rendering capabilities */
@@ -30,9 +37,13 @@ public:
 
 	virtual DirectX::XMMATRIX	GetTransformXM() const;
 
+	virtual void				OnRegistered() override;
+
 protected:
 
 	//= Protected Functions =======================
 
 	virtual void				RefreshBinds();
+
+	SelectionPassConstantBuffer m_SelectionConstantBuffer;
 };

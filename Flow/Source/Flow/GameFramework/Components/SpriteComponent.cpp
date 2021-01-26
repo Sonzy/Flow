@@ -47,7 +47,7 @@ void SpriteComponent::RefreshBinds()
 
 	Technique Standard = Technique("SpriteComponent_Standard");
 	{
-		Step MainStep(0);
+		Step MainStep(RenderPass::Main);
 
 		//Topology
 		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));

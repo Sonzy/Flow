@@ -96,6 +96,77 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	if (e.GetMouseButton() != MOUSE_LEFT)
 		return false;
 
+	//= Testing =
+
+	//if(const bool UseTestPicking = false)
+	//{
+	//
+	//	IntVector2 MousePosition = Input::GetMousePosition();
+	//
+	//	HRESULT ResultHandle;
+	//	D3D11_MAPPED_SUBRESOURCE MSR; //TODO: Copy the data then read it
+	//
+	//	const FrameBuffer* buf = RenderQueue::GetSelectionBuffer();
+	//
+	//	Microsoft::WRL::ComPtr<ID3D11Texture2D> pNewTexture;
+	//	{
+	//		//Create the texture resource
+	//		D3D11_TEXTURE2D_DESC textureDesc = {};
+	//		textureDesc.Width = buf->GetWidth();
+	//		textureDesc.Height = buf->GetHeight();
+	//		textureDesc.MipLevels = 1;
+	//		textureDesc.ArraySize = 1;
+	//		textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	//		textureDesc.SampleDesc.Count = 1;
+	//		textureDesc.SampleDesc.Quality = 0;
+	//		textureDesc.Usage = D3D11_USAGE_STAGING;
+	//		textureDesc.BindFlags = 0;
+	//		textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	//		textureDesc.MiscFlags = 0;
+	//
+	//	
+	//		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
+	//	}
+	//
+	//	RenderCommand::DX11GetContext()->CopyResource(pNewTexture.Get(),buf->GetTexture());
+	//
+	//
+	//	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+	//		pNewTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
+	//
+	//
+	//	//int* vals = reinterpret_cast<int*>(MSR.pData);
+	//	//uint32 YOffset = (MousePosition.y * MSR.RowPitch);
+	//	//uint32 XOffset = MousePosition.x * 4;
+	//	//uint32 pixelData = vals[XOffset + YOffset];
+	//
+	//	uint8* vals = reinterpret_cast<uint8*>(MSR.pData);
+	//	uint8* pixel = &vals[(MousePosition.x * 4) + (MousePosition.y * MSR.RowPitch)];
+	//	uint32* pixelData = reinterpret_cast<uint32*>(&pixel);
+	//
+	//	//_B8G8R8A8
+	//	uint32 B = *pixelData & 0xff000000;
+	//	uint32 G = *pixelData & 0xff0000;
+	//	uint32 R = *pixelData & 0xff00;
+	//	uint32 A = *pixelData & 0xff;
+	//
+	//	FGUID guid = 0;
+	//	guid |= R;
+	//	guid |= G;
+	//	guid |= B;
+	//	guid |= A;
+	//
+	//	RenderCommand::DX11GetContext()->Unmap(pNewTexture.Get(), 0u);
+	//
+	//	FLOW_ENGINE_LOG("RowPitch: %lu", MSR.RowPitch);
+	//	FLOW_ENGINE_LOG("Pixel: %lu, Guid: %lu B:%d G:%d R: %d A:%d", *pixelData, guid, B, G, R, A);
+	//}
+
+
+
+
+	//==============
+
 	if (ImGuizmo::IsOver())
 	{
 		return true;
