@@ -96,137 +96,73 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	if (e.GetMouseButton() != MOUSE_LEFT)
 		return false;
 
-	//= Testing =
-
-	//if(const bool UseTestPicking = false)
-	//{
-	//
-	//	IntVector2 MousePosition = Input::GetMousePosition();
-	//
-	//	HRESULT ResultHandle;
-	//	D3D11_MAPPED_SUBRESOURCE MSR; //TODO: Copy the data then read it
-	//
-	//	const FrameBuffer* buf = RenderQueue::GetSelectionBuffer();
-	//
-	//	Microsoft::WRL::ComPtr<ID3D11Texture2D> pNewTexture;
-	//	{
-	//		//Create the texture resource
-	//		D3D11_TEXTURE2D_DESC textureDesc = {};
-	//		textureDesc.Width = buf->GetWidth();
-	//		textureDesc.Height = buf->GetHeight();
-	//		textureDesc.MipLevels = 1;
-	//		textureDesc.ArraySize = 1;
-	//		textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	//		textureDesc.SampleDesc.Count = 1;
-	//		textureDesc.SampleDesc.Quality = 0;
-	//		textureDesc.Usage = D3D11_USAGE_STAGING;
-	//		textureDesc.BindFlags = 0;
-	//		textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	//		textureDesc.MiscFlags = 0;
-	//
-	//	
-	//		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
-	//	}
-	//
-	//	RenderCommand::DX11GetContext()->CopyResource(pNewTexture.Get(),buf->GetTexture());
-	//
-	//
-	//	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
-	//		pNewTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
-	//
-	//
-	//	//int* vals = reinterpret_cast<int*>(MSR.pData);
-	//	//uint32 YOffset = (MousePosition.y * MSR.RowPitch);
-	//	//uint32 XOffset = MousePosition.x * 4;
-	//	//uint32 pixelData = vals[XOffset + YOffset];
-	//
-	//	uint8* vals = reinterpret_cast<uint8*>(MSR.pData);
-	//	uint8* pixel = &vals[(MousePosition.x * 4) + (MousePosition.y * MSR.RowPitch)];
-	//	uint32* pixelData = reinterpret_cast<uint32*>(&pixel);
-	//
-	//	//_B8G8R8A8
-	//	uint32 B = *pixelData & 0xff000000;
-	//	uint32 G = *pixelData & 0xff0000;
-	//	uint32 R = *pixelData & 0xff00;
-	//	uint32 A = *pixelData & 0xff;
-	//
-	//	FGUID guid = 0;
-	//	guid |= R;
-	//	guid |= G;
-	//	guid |= B;
-	//	guid |= A;
-	//
-	//	RenderCommand::DX11GetContext()->Unmap(pNewTexture.Get(), 0u);
-	//
-	//	FLOW_ENGINE_LOG("RowPitch: %lu", MSR.RowPitch);
-	//	FLOW_ENGINE_LOG("Pixel: %lu, Guid: %lu B:%d G:%d R: %d A:%d", *pixelData, guid, B, G, R, A);
-	//}
-
-
-
-
-	//==============
-
 	if (ImGuizmo::IsOver())
 	{
 		return true;
 	}
 
-	//TODO: Use a picking depth buffer
-
-	//Calculate the ray bounds
 	IntVector2 MousePosition = Input::GetMousePosition();
-	Vector3 Start = RenderCommand::GetMainCamera()->GetCameraPosition();
-	Vector3 Direction = RenderCommand::GetScreenToWorldDirectionVector( 	//TODO: normalise direction
-		MousePosition.x,
-		MousePosition.y,
-		Editor::Get().GetSceneWindowSize(),
-		Editor::Get().GetSceneWindowPosition());
-	Vector3 End = Start + (Direction * 1000.0f);
 
-	if (m_DrawSelectionLines)
+	HRESULT ResultHandle;
+	D3D11_MAPPED_SUBRESOURCE MSR; //TODO: Copy the data then read it
+
+	const FrameBuffer* buf = RenderQueue::GetSelectionBuffer();
+
 	{
-		m_PreviousLines.emplace_back(Start, End); //TODO: Do properly
+		//Create the texture resource
+		D3D11_TEXTURE2D_DESC textureDesc = {};
+		textureDesc.Width = buf->GetWidth();
+		textureDesc.Height = buf->GetHeight();
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_STAGING;
+		textureDesc.BindFlags = 0;
+		textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		textureDesc.MiscFlags = 0;
+
+
+		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
 	}
 
-	//TODO: Filter out other objects that arent world components
-	//Raytrace into the world 
+	RenderCommand::DX11GetContext()->CopyResource(pNewTexture.Get(), buf->GetTexture());
 
-	Physics::TraceResultMulti result = Physics::RayTraceMulti(Start, End);
 
-	//Store the hit objects
-	WorldComponent* HitComponent = nullptr;
-	Actor* HitActor = nullptr;
+	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+		pNewTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
 
-	if (result.hasHit())
-	{
-		float ClosestDistance = 99999999.0f;
-		WorldComponent* FoundComponent = nullptr;
-		Actor* FoundActor = nullptr; //Only check for a gizmo if this is true
+	MousePosition -= Editor::Get().GetSceneWindowPosition();
+	int index = (MousePosition.x * 4) + (MousePosition.y * MSR.RowPitch);
+	uint8* vals = reinterpret_cast<uint8*>(MSR.pData);
+	uint8* pixel = &vals[index];
+	uint32* pixelData = reinterpret_cast<uint32*>(pixel);
 
-		//TODO: Move this check to check the object that last drew the pixel
-		for (int i = 0; i < result.m_collisionObjects.size(); i++)
-		{
-			WorldComponent* comp = reinterpret_cast<WorldComponent*>(result.m_collisionObjects[i]->getUserPointer());
-			Actor* actor = comp->GetParentActor();
+	//_B8G8R8A8
+	uint32 A = *pixelData & 0xff000000;
+	uint32 R = *pixelData & 0xff0000;
+	uint32 G = *pixelData & 0xff00;
+	uint32 B = *pixelData & 0xff;
 
-			//Store the closest found one.
-			float DistanceSquared = Maths::DistanceSquared(Start, comp->GetWorldPosition());
-			if (DistanceSquared < ClosestDistance)
-			{
-				ClosestDistance = DistanceSquared;
-				FoundComponent = comp;
-				FoundActor = actor;
-			}
-		}
+	FGUID guid = 0;
 
-		HitComponent = FoundComponent;
-		HitActor = HitComponent->GetParentActor();
-	}
+	RenderCommand::DX11GetContext()->Unmap(pNewTexture.Get(), 0u);
 
-	SelectComponent(HitComponent);
+	//debug
+	recentcolorclicked = Vector4((float)(R >> 16) / 255.0f, (float)(G >> 8) / 255.0f, (float)(B / 255.0f), (float)(A >> 24) / 255.0f);
 
-	return false;
+	guid = (R << 8) | (G << 8) | (B<< 8) | (A >> 24);
+
+	// Debug
+	//FLOW_ENGINE_LOG("Pixel: %lu, Guid: %lu B:%lu G:%lu R: %lu A:%lu", *pixelData, guid, B / 4, G / 4, R / 4, A / 4);
+	//FLOW_ENGINE_LOG("R:%lu G:%lu B: %lu A:%lu", (R >> 16), (G >> 8), B, (A >> 24));
+	//FLOW_ENGINE_LOG("R:%lu G:%lu B: %lu A:%lu", (R << 8), (G << 8), (B << 8), (A >> 24));
+	//FLOW_ENGINE_LOG("Guid: %lu", guid);
+	//FLOW_ENGINE_LOG("Clicked Color: %f %f %f %f", recentcolorclicked.x, recentcolorclicked.y, recentcolorclicked.z, recentcolorclicked.w);
+
+	SelectComponent(World::Get()->FindComponent<WorldComponent>(guid));
+	return true;
 }
 
 bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
@@ -278,6 +214,12 @@ void SelectionTool::DrawConfigWindow()
 {
 	if (ImGui::Begin("Selection Tool Config", &m_ConfigurationWindowOpen))
 	{
+		if (ImGui::CollapsingHeader("Picking"))
+		{
+			ImGui::Image(RenderQueue::GetSelectionBuffer()->GetTextureView(), ImVec2(500, 500));
+			ImGui::SameLine(); ImGui::ColorButton("clicked color", recentcolorclicked);
+		}
+
 		//Clear the stored lines on setting change
 		if (ImGui::Checkbox("Draw debug lines in world from click", &m_DrawSelectionLines))
 		{

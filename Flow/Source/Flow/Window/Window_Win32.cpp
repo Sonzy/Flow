@@ -69,8 +69,6 @@ void Window_Win32::Initialise(const Window::Properties& Properties)
 	m_WindowData.Title = m_Props.m_Title;
 	m_WindowData.Width = m_Props.m_Width;
 	m_WindowData.Height = m_Props.m_Height;
-
-	RenderCommand::SetClearColour(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void Window_Win32::Shutdown()

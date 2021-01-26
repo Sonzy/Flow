@@ -76,20 +76,19 @@ ImVec2 MenuBar::Draw()
 			if (ImGui::MenuItem("Editor Settings"))
 			{
 				Editor::Get().ShowSettingsWindow(true);
+			}
 
-				if (ImGui::BeginMenu("Tools"))
+			if (ImGui::BeginMenu("Tools"))
+			{
+				if (ImGui::MenuItem("Selection Tool"))
 				{
-					if (ImGui::MenuItem("Selection Tool"))
+					if (SelectionTool* tool = Editor::Get().GetTool<SelectionTool>())
 					{
-						if (SelectionTool* tool = Editor::Get().GetTool<SelectionTool>())
-						{
-							tool->OpenConfigWindow();
-						}						
+						tool->OpenConfigWindow();
 					}
-
-
-					ImGui::EndMenu();
 				}
+
+				ImGui::EndMenu();
 			}
 
 			if (ImGui::BeginMenu("Bullet Physics"))

@@ -75,7 +75,7 @@ protected:
 
 	//= Protected Variables ===================================
 
-	float							m_BackgroundColour[4] = { 0.2f, 0.2f, 0.2f, 0.2f };
+	float							m_BackgroundColour[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	CameraBase*						m_MainCamera;
 									
 	IntVector2						m_ViewportSize;

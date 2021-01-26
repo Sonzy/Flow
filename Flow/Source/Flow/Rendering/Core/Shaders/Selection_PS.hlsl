@@ -6,6 +6,11 @@ cbuffer test : register(b7)
     float colorA;
 }
 
+//float4 main() : SV_TARGET
+//{
+//    return float4(colorR, colorG, colorB, colorA);
+//}
+
 float4 main() : SV_TARGET
 {
     return float4(colorR, colorG, colorB, colorA);

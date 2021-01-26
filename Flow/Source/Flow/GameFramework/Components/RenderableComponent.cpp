@@ -46,12 +46,16 @@ void RenderableComponent::OnRegistered()
 	WorldComponent::OnRegistered();
 
 	uint32 guid = GetGuid();
-	m_SelectionConstantBuffer.selectionColor = 
-		Vector4(
-			(float)(guid & 0xff000000) / 4278190080.0f,
-			(float)(guid & 0x00ff0000) / 16711680.0f,
-			(float)(guid & 0x0000ff00) / 65280.0f,
-			(float)(guid & 0x000000ff) / 255.0f);
+	m_SelectionConstantBuffer.m_guidColor = Vector4(
+		(float)(guid & 0xff000000) / 4278190080.0f,
+		(float)(guid & 0x00ff0000) / 16711680.0f,
+		(float)(guid & 0x0000ff00) / 65280.0f,
+		(float)(guid & 0x000000ff) / 255.0f);
+
+	FLOW_ENGINE_LOG("GUID: %lu", guid);
+	FLOW_ENGINE_LOG("GUID: %lu, %lu, %lu, %lu", guid & 0xff000000, guid & 0x00ff0000, guid & 0x0000ff00, guid & 0x000000ff);
+	FLOW_ENGINE_LOG("CBUFFER: %f %f %f %f", m_SelectionConstantBuffer.m_guidColor.x, m_SelectionConstantBuffer.m_guidColor.y, m_SelectionConstantBuffer.m_guidColor.z, m_SelectionConstantBuffer.m_guidColor.w);
+	FLOW_ENGINE_LOG("/////////////////////////////////////////////////////////////////////////", guid);
 }
 
 void RenderableComponent::RefreshBinds()

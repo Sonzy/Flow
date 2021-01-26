@@ -16,7 +16,7 @@ class IndexBuffer;
 
 struct SelectionPassConstantBuffer
 {
-	Vector4 selectionColor;
+	Vector4 m_guidColor;
 };
 
 //= Class Definitions ============================================

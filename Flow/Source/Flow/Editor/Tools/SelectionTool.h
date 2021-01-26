@@ -7,6 +7,8 @@
 
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
+#include "Rendering/Core/Bindables/Texture.h"
+
 // Forward Declaration //////////////////////////////////////
 
 class WorldComponent;
@@ -70,6 +72,10 @@ private:
 
 	//TEST
 	Matrix4x4									m_CurrentMatrix;
+
+	//TODO: remove -> Picking testing
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>		pNewTexture;
+	Vector4										recentcolorclicked;
 
 
 	//= Settings =

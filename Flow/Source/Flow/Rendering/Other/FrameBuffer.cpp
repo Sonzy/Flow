@@ -3,10 +3,11 @@
 #include "Flow/Rendering/RenderCommand.h"
 #include "DepthBuffer.h"
 
-FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer)
+FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt)
 	: m_HasDepthBuffer(CreateDepthBuffer)
 	, m_Texture(nullptr)
 	, m_TextureView(nullptr)
+	, m_fmt(fmt)
 {
 	Resize(Width, Height);
 }
@@ -27,12 +28,12 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	Description.Height = Height;
 	Description.MipLevels = 1;
 	Description.ArraySize = 1;
-	Description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	Description.Format = m_fmt;
 	Description.SampleDesc.Count = 1;
 	Description.SampleDesc.Quality = 0;
 	Description.Usage = D3D11_USAGE_DEFAULT;
 	Description.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	Description.CPUAccessFlags = D3D11_CPU_ACCESS_READ; //TODO: Can read framebuffers
+	Description.CPUAccessFlags = 0;
 	Description.MiscFlags = 0;
 
 	//Create Texture

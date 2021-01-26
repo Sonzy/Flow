@@ -17,7 +17,7 @@ public:
 
 	//= Public Functions =======================================
 
-										FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer);
+										FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt = DXGI_FORMAT_B8G8R8A8_UNORM);
 										~FrameBuffer();
 	void								Resize(unsigned int Width, unsigned int Height);
 	
@@ -37,6 +37,8 @@ private:
 														
 	bool												m_HasDepthBuffer;
 	std::shared_ptr<DepthBuffer>						m_DepthBuffer;
+
+	DXGI_FORMAT											m_fmt;
 														
 	unsigned int										m_Width;
 	unsigned int										m_Height;

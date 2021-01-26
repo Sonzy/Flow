@@ -87,6 +87,12 @@ public:
 		return !operator==(Other);
 	}
 
+	void operator-=(const IntVector2 Other)
+	{
+		x -= Other.x;
+		y -= Other.y;
+	}
+
 	template<typename OStream>
 	friend OStream& operator<<(OStream& os, const IntVector2& c)
 	{
