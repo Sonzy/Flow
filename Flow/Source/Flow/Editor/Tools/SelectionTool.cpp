@@ -69,7 +69,7 @@ void SelectionTool::RenderImGuiGizmo()
 			reinterpret_cast<float*>(&fViewMatrix),
 			reinterpret_cast<float*>(&fProjectionMatrix),
 			TranslateTransformation(m_transformationMode),
-			m_SpaceMode,
+			m_transformationMode != TransformMode::Scale ? m_SpaceMode : ImGuizmo::MODE::LOCAL, //Only use local scaling 
 			reinterpret_cast<float*>(&m_CurrentMatrix)
 		);
 

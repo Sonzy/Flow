@@ -31,20 +31,10 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 	Transform WorldTransform = GetWorldTransform();
 	Rotator RadiansRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
 
-	if (const bool useNormal = false)
-	{
-		return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z) *
-			DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) * 
-			//TODO: XMMAtrixRotationRollPitchYaw doesn't work here. Not sure what is different between the conversion formulae
-			DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
-	}
-	else
-	{
-		return 
-			DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z) *
-			DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) *
-			DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z);
-	}
+	return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z) *
+		DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) *
+		//TODO: XMMAtrixRotationRollPitchYaw doesn't work here. Not sure what is different between the conversion formulae
+		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
 }
 
 void RenderableComponent::OnRegistered()
