@@ -26,8 +26,13 @@ public:
 	virtual void					Render() override;
 	virtual void					RefreshBinds() override;
 
+	const std::string&				GetMaterialPath();
+	void 							SetMaterial(const std::string& path);
 
 	virtual void					DrawComponentDetailsWindow() override;
+
+	virtual void					Serialize(YAML::Emitter& Archive) override;
+	virtual void					Deserialize(YAML::Node& Archive) override;
 
 protected:
 

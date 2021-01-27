@@ -36,7 +36,7 @@ Inspector::Inspector()
 
 void Inspector::Update()
 {
-	m_SelectedComponent = m_Editor->GetTool<SelectionTool>()->GetSelectedComponent();
+	m_SelectedComponent = m_editor->GetTool<SelectionTool>()->GetSelectedComponent();
 }
 
 void Inspector::Render()
@@ -114,11 +114,10 @@ void Inspector::RenderHeirarchy()
 		if (ImGui::BeginChild("Hierarchy"))
 		{
 			char Buffer[256] = { '\0' };
-			int Counter = 0;
 			for (std::pair<FGUID, Actor*> Object : m_CurrentWorld->GetActorMap())
 			{
 				Actor* actor = Object.second;
-				sprintf_s(Buffer, "%s###%d", actor->GetName().c_str(), Counter);
+				sprintf_s(Buffer, "%s (%s)", actor->GetName().c_str(), actor->GetStaticName());
 
 				if (m_RenameActor != nullptr && actor == m_RenameActor)
 				{	
@@ -139,14 +138,10 @@ void Inspector::RenderHeirarchy()
 							m_RenameActor = nullptr;
 						}
 
-						m_Editor->GetTool<SelectionTool>()->SelectComponent(actor->GetRootComponent());
+						m_editor->GetTool<SelectionTool>()->SelectComponent(actor->GetRootComponent());
 						ImGui::GetIO().WantCaptureKeyboard = false;
-
-
 					}
 				}
-
-				Counter++;
 			}
 		}
 		ImGui::EndChild();

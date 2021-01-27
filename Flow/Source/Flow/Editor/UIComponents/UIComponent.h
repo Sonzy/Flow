@@ -30,6 +30,10 @@ public:
 
 	virtual void			BeginPlay() {};
 
+	void					SetWindowVisibilty(bool visible);
+	void					ToggleVisibility();
+	bool					IsWindowVisible();
+
 	//= Events =
 
 	virtual bool			OnMouseButtonPressed(MouseButtonPressedEvent& e);
@@ -44,5 +48,6 @@ public:
 protected:
 	friend class Editor;
 
-	Editor*					m_Editor;
+	Editor*					m_editor;
+	bool					m_windowVisible;
 };

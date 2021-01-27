@@ -13,6 +13,8 @@
 
 #include "Flow\Assets\Meshes\MeshAsset.h" 
 
+#include <yaml-cpp/yaml.h>
+
 SkyboxComponent::SkyboxComponent()
 	: SkyboxComponent("Skybox Component")
 {
@@ -32,8 +34,10 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 
 DirectX::XMMATRIX SkyboxComponent::GetTransformXM() const
 {
+	const float farPlane = RenderCommand::GetFarPlaneRef();
+
 	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition();
-	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
+	return DirectX::XMMatrixScaling(farPlane, farPlane, farPlane) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }
 
@@ -65,6 +69,17 @@ void SkyboxComponent::RefreshBinds()
 		Standard.AddStep(MainStep);
 	}
 	AddTechnique(Standard);
+}
+
+const std::string& SkyboxComponent::GetMaterialPath()
+{
+	return m_MaterialPath;
+}
+
+void SkyboxComponent::SetMaterial(const std::string& path)
+{
+	m_Material->SetTexture(path);
+	RefreshBinds();
 }
 
 void SkyboxComponent::DrawComponentDetailsWindow()
@@ -100,5 +115,28 @@ void SkyboxComponent::DrawComponentDetailsWindow()
 			}
 		}
 		ImGui::EndCombo();
+	}
+}
+
+void SkyboxComponent::Serialize(YAML::Emitter& Archive)
+{
+	WorldComponent::Serialize(Archive);
+
+	Archive << YAML::Key << "SkyboxComponent";
+	Archive << YAML::BeginMap;
+	{
+		Archive << YAML::Key << "SkyboxTexture";
+		Archive << YAML::Value << m_MaterialPath;
+	}
+	Archive << YAML::EndMap;
+}
+
+void SkyboxComponent::Deserialize(YAML::Node& Archive)
+{
+	WorldComponent::Deserialize(Archive);
+
+	if (YAML::Node node = Archive["SkyboxComponent"])
+	{
+		SetMaterial(node["SkyboxTexture"].as<std::string>());
 	}
 }

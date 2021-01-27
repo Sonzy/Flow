@@ -104,7 +104,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	IntVector2 MousePosition = Input::GetMousePosition();
 
 	HRESULT ResultHandle;
-	D3D11_MAPPED_SUBRESOURCE MSR; //TODO: Copy the data then read it
+	D3D11_MAPPED_SUBRESOURCE MSR;
 
 	const FrameBuffer* buf = RenderQueue::GetSelectionBuffer();
 

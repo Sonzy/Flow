@@ -29,6 +29,11 @@ void Console::Render()
 			for (auto& msg : m_MessageHistory)
 			{
 				ImGui::TextColored(TypeToColor(msg.m_Type), msg.m_Message.c_str());
+
+				if (const bool formatSeparator = false)
+				{
+					ImGui::Separator();
+				}
 			}
 
 			if (m_QueueDirty == true)

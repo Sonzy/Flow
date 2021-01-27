@@ -27,4 +27,5 @@
 
 #define WITH_EDITOR 1
 
-#define REGISTER_CLASS(ClassName) virtual const char* GetClassNameID() const override { return typeid(ClassName).name(); }
+#define REGISTER_CLASS(ClassName)	virtual const char* GetClassNameID() const override { return typeid(ClassName).name(); } \
+									virtual const char* GetStaticName() const override { return #ClassName; } 

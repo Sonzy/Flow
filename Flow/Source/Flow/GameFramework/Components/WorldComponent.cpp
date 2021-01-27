@@ -466,7 +466,7 @@ void WorldComponent::UpdateCollisionScale()
 
 void WorldComponent::Serialize(YAML::Emitter& Archive)
 {
-	GameObject::Serialize(Archive);
+	Component::Serialize(Archive);
 
 	Archive << YAML::Key << "WorldComponent";
 	Archive << YAML::BeginMap;
@@ -501,21 +501,24 @@ void WorldComponent::Serialize(YAML::Emitter& Archive)
 
 void WorldComponent::Deserialize(YAML::Node& Archive)
 {
+	Component::Deserialize(Archive);
+
 	if (YAML::Node node = Archive["WorldComponent"])
 	{
 		SetParent(World::Get()->FindActor(node["ParentActor"].as<FGUID>()));
 
-		if (node["IsRoot"].as<bool>())
-		{
-			if (m_ParentObject != nullptr)
-			{
-				m_ParentObject->SetRootComponent(this);
-			}
-			else
-			{
-				FLOW_ENGINE_ERROR("Deserialised a component with a parent that cannot be found");
-			}
-		}
+		//TODO: mebby reimplement. for now the actor handles this
+		//if (node["IsRoot"].as<bool>())
+		//{
+		//	if (m_ParentObject != nullptr)
+		//	{
+		//		m_ParentObject->SetRootComponent(this);
+		//	}
+		//	else
+		//	{
+		//		FLOW_ENGINE_ERROR("WorldComponent::Deserialize: Deserialised a component with a parent that cannot be found");
+		//	}
+		//}
 
 		SetParentComponent(dynamic_cast<WorldComponent*>(World::Get()->FindComponent(node["ParentComponent"].as<FGUID>())));
 

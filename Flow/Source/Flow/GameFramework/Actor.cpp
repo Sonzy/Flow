@@ -213,12 +213,12 @@ void Actor::Deserialize(YAML::Node& Archive)
 
 	if (YAML::Node actorNode = Archive["Actor"])
 	{
-		SetWorldTransform(actorNode["Transform"].as<Transform>());
-
 		if (YAML::Node node = actorNode["Components"])
 		{
 			//Check if we have already initialised children that havent had their parent set
 			World* world = World::Get();
+
+			bool root = true;
 			for (YAML::iterator::value_type child : node)
 			{
 				WorldComponent* childComponent = world->FindComponent<WorldComponent>(child.as<FGUID>());
@@ -228,8 +228,18 @@ void Actor::Deserialize(YAML::Node& Archive)
 				}
 
 				childComponent->SetParent(this);
+				if (root)
+				{
+					SetRootComponent(childComponent);
+					root = false;
+					//TODO: Do better
+				}
 			}
 		}
+
+		//TODO: Give it an empty root if we dont have one?
+
+		SetWorldTransform(actorNode["Transform"].as<Transform>()); // Set transform after to make sure we have a root component
 	}
 }
 

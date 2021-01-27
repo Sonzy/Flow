@@ -104,6 +104,8 @@ void Application::InitialiseApplication()
 	Mat_LitColor* litColorDarkGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_DarkGreen")->GetMaterial<Mat_LitColor>();
 	litColorDarkGreen->SetColor(Vector3(0.0f, 0.35f, 0.0f));
 
+	Mat_LitColor* litColorLightGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_LightGreen")->GetMaterial<Mat_LitColor>();
+	litColorLightGreen->SetColor(Vector3(0.412f, 1.0f, 0.459f));
 
 	Mat_TexturedPhong* PropsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props")->GetMaterial<Mat_TexturedPhong>();
 	PropsMat->SetTexture("Wabble_Props");

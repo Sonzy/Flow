@@ -264,7 +264,10 @@ void StaticMeshComponent::Render()
 {
 	PROFILE_FUNCTION();
 
-	Renderer::Submit(this);
+	if (m_StaticMesh != nullptr && m_Material != nullptr)
+	{
+		Renderer::Submit(this);
+	}
 
 	WorldComponent::Render();
 }

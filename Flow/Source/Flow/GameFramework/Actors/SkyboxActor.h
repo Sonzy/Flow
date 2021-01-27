@@ -18,12 +18,15 @@ public:
 	
 	//= Public Functions ===========================
 
-										SkyboxActor();
-										SkyboxActor(const std::string& Name);
+									SkyboxActor();
+									SkyboxActor(const std::string& Name);
+
+	virtual void					Serialize(YAML::Emitter& Archive) override;
+	virtual void					Deserialize(YAML::Node& Archive) override;
 
 public:
 
 	//= Public Variables ===========================
 	
-	SkyboxComponent*					m_Skybox;
+	SkyboxComponent*				m_Skybox;
 };

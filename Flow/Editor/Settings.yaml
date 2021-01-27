@@ -17,4 +17,4 @@ Testing:
   ShowImGuiPrototypingWindow: false
 Rendering:
   NearPlane: 0.0500000007
-  FarPlane: 2000
+  FarPlane: 500

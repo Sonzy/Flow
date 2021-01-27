@@ -3,6 +3,7 @@
 // Includes /////////////////////////////////////////////////
 
 #include <string>
+#include <typeinfo>
 #include "Flow\Core.h"
 #include "Typedefs.h"
 
@@ -51,6 +52,7 @@ public:
 	virtual void			Deserialize(YAML::Node& Archive);
 
 	virtual const char*		GetClassNameID() const  { return typeid(GameObject).name(); }
+	virtual const char*		GetStaticName() const { return "GameObject"; }
 
 	// If this is owned, dont handle it's own saving and loading. Something else will manage it
 	bool					IsOwned() const			{ return m_owned; }

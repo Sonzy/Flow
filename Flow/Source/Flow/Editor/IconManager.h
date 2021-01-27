@@ -75,6 +75,7 @@ public:
 
 	void								RegisterIcon(FGUID guid, const IconData& data);
 	void								RemoveIcon(FGUID guid);
+	void								Reset();
 
 	virtual void						Update() override;
 	virtual void						Render() override;

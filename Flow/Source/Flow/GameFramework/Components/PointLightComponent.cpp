@@ -16,7 +16,7 @@
 //TODO: Support multiple lights
 
 PointLightComponent::PointLightComponent()
-	: RenderableComponent("Unnamed Point Light Component")
+	: RenderableComponent("Point Light Component")
 	, m_lightPixelBuffer(0)
 {
 }
@@ -81,6 +81,16 @@ void PointLightComponent::DrawComponentDetailsWindow()
 	ImGui::InputFloat("Attenuation Constant", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationConstant));				
 	ImGui::InputFloat("Attenuation Linear", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationLinear));				
 	ImGui::InputFloat("Attenuation Quadratic", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationQuadratic));				
+}
+
+const LightBuffer_t& PointLightComponent::GetLightBuffer() const
+{
+	return m_lightBuffer;
+}
+
+void PointLightComponent::SetLightBuffer(const LightBuffer_t& buf)
+{
+	m_lightBuffer = buf;
 }
 
 void PointLightComponent::Serialize(YAML::Emitter& Archive)

@@ -9,6 +9,21 @@ UIComponent::~UIComponent()
 {
 }
 
+void UIComponent::SetWindowVisibilty(bool visible)
+{
+	m_windowVisible = visible;
+}
+
+void UIComponent::ToggleVisibility()
+{
+	m_windowVisible = !m_windowVisible;
+}
+
+bool UIComponent::IsWindowVisible()
+{
+	return m_windowVisible;
+}
+
 bool UIComponent::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
 	return false;

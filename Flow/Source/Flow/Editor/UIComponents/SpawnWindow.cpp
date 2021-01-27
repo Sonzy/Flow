@@ -72,7 +72,7 @@ void SpawnWindow::Render()
 			if (ImGui::Button(ActorClass.second.c_str()) && !SpawnedActor)
 			{
 				SpawnedActor = ClassFactory::Get().CreateObjectFromID<Actor>(ActorClass.first);
-				World::Get()->RegisterActor(SpawnedActor);
+				World::Get()->RegisterGameObject(SpawnedActor);
 			}
 		}
 
@@ -118,7 +118,7 @@ void SpawnWindow::DrawSpawnContextWindow(Actor* Parent)
 				Parent->SetRootComponent(NewComponent);
 			}
 
-			World::Get()->RegisterComponent(NewComponent);
+			World::Get()->RegisterGameObject(NewComponent);
 		}
 
 		ImGui::EndMenu();

@@ -21,6 +21,9 @@ public:
 	PointLightActor();
 	PointLightActor(const std::string& Name);
 
+	virtual void					Serialize(YAML::Emitter& Archive) override;
+	virtual void					Deserialize(YAML::Node& Archive) override;
+
 protected:
 
 	//= Protected Variables ==================

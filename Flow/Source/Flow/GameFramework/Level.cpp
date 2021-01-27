@@ -68,27 +68,6 @@ bool Level::Load(YAML::Node& Input)
 		cam->MoveCamera(Input["EditorCameraTransform"].as<Transform>());
 	}
 
-	auto actors = Input["Actors"];
-	if (actors.IsDefined())
-	{
-		for (auto actor : actors)
-		{
-			//Get Class Metadata
-			YAML::Node GameObject = actor["GameObject"];
-			std::string classID = GameObject["ClassName"].as<std::string>(); //TODO: Set the guid before generating a new one?
-
-			Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(classID);
-			if (NewActor == nullptr)
-			{
-				FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", classID);
-				continue;
-			}
-
-			World::Get()->RegisterActor(NewActor);
-			NewActor->Deserialize(actor);
-		}
-	}
-
 	YAML::Node components = Input["Components"];
 	if (components.IsDefined())
 	{
@@ -105,8 +84,29 @@ bool Level::Load(YAML::Node& Input)
 				continue;
 			}
 
-			World::Get()->RegisterComponent(NewComponent);
+			World::Get()->RegisterGameObject(NewComponent, GameObject["Guid"].as<FGUID>());
 			NewComponent->Deserialize(componentNode);
+		}
+	}
+
+	auto actors = Input["Actors"];
+	if (actors.IsDefined())
+	{
+		for (auto actor : actors)
+		{
+			//Get Class Metadata
+			YAML::Node GameObject = actor["GameObject"];
+			std::string classID = GameObject["ClassName"].as<std::string>(); //TODO: Set the guid before generating a new one?
+
+			Actor* NewActor = ClassFactory::Get().CreateObjectFromID<Actor>(classID);
+			if (NewActor == nullptr)
+			{
+				FLOW_ENGINE_ERROR("Tried to load an actor of class %s and failed.", classID);
+				continue;
+			}
+
+			World::Get()->RegisterGameObject(NewActor, GameObject["Guid"].as<FGUID>());
+			NewActor->Deserialize(actor);
 		}
 	}
 

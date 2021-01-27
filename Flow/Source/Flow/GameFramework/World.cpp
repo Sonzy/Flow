@@ -17,6 +17,8 @@
 #include "Editor/EditorCamera.h"
 #include "Editor/Editor.h"
 #include "Editor/UIComponents/Inspector.h"
+#include "Editor/IconManager.h"
+#include "Editor/Tools/SelectionTool.h"
 #endif
 
 #include "Utils/GUIDGenerator.h"
@@ -32,11 +34,14 @@ World::World()
 {	}
 
 World::World(const std::string& WorldName)
-	: m_WorldName(WorldName), m_MainLevel(new Level("Main Level")), 
+	: m_WorldName(WorldName)
+	, m_MainLevel(new Level("Main Level"))
+	, m_LogGameObjectRegistering(false)
+	, m_LogGameObjectDestruction(false)
 #if WITH_EDITOR
-	m_WorldState(WorldState::Editor)
+	, m_WorldState(WorldState::Editor)
 #else
-	m_WorldState(WorldState::Paused)
+	, m_WorldState(WorldState::Paused)
 #endif
 {
 	m_DebugDrawer.Init();
@@ -62,7 +67,7 @@ void World::SaveLevel()
 	//Check for errors
 	if (outFile.GetLastError().empty())
 	{
-		FLOW_ENGINE_ERROR("Level saved to %s successfully", savePath.c_str());
+		FLOW_ENGINE_ERROR("Level saved to %s successfully", savePath.string().c_str());
 	}
 	else
 	{
@@ -76,7 +81,7 @@ void World::LoadLevel()
 	InitialisePhysics(true);
 
 	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml";
-	FLOW_ENGINE_LOG("======== Loading level %s... ========", savePath.c_str());
+	FLOW_ENGINE_LOG("Loading level %s...", savePath.string().c_str());
 
 	std::ifstream InStream = std::ifstream(savePath);
 	if (InStream.is_open() == false)
@@ -108,6 +113,24 @@ void World::LoadLevel()
 		DestroyActor(guid);
 	}
 
+	//Clear the components that are left over for some reason
+	if (const bool reportFreeComponents = true)
+	{
+		for (const std::pair<FGUID, Component*>& Act : m_componentMap)
+		{
+			FLOW_ENGINE_WARNING("Deleted free component %lu - %s", Act.second->GetGuid(), Act.second->GetName().c_str());
+			actorsToDestroy.push_back(Act.first);
+		}
+	}
+	m_componentMap.clear();
+
+#if WITH_EDITOR
+
+	Editor& e = Editor::Get();
+	e.GetUIComponent<IconManager>()->Reset();
+
+#endif
+
 	m_MainLevel->Load(data);
 
 	//====================
@@ -119,7 +142,7 @@ void World::LoadLevel()
 
 	//Check for errors
 
-	FLOW_ENGINE_LOG("======== Loaded  level %s... ========", savePath.c_str());
+	FLOW_ENGINE_LOG("Level %s loaded successfully", savePath.string().c_str());
 
 #if WITH_EDITOR
 	//Reinitialise all actors for editor
@@ -209,6 +232,98 @@ void World::StartEditor()
 		m_WorldState = WorldState::Editor;
 		m_MainLevel->DispatchEditorBeginPlay();
 	}
+}
+
+bool World::DestroyActor(FGUID guid)
+{
+	if (guid == -1)
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete invalid actor guid");
+		return false;
+	}
+
+	auto actorIt = m_actorMap.find(guid);
+	if (actorIt == m_actorMap.end())
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to find actor but had no actor with guid %d", guid);
+		return false;
+	}
+
+	Actor* actor = m_actorMap[guid];
+
+	//Remove physics
+	actor->DestroyPhysics();
+
+	//Destroy the components
+	if (actor->GetRootComponent() != nullptr)
+	{
+		std::vector<WorldComponent*> components;
+		ComponentHelper::BuildComponentArray(actor->GetRootComponent(), components);
+
+		for (WorldComponent* component : components)
+		{
+			auto iterator = m_componentMap.find(component->GetGuid());
+			if (iterator == m_componentMap.end())
+			{
+				FLOW_ENGINE_ERROR("World::DestroyActor: Failed to destroy component");
+				continue;
+			}
+
+			if (m_LogGameObjectDestruction)
+			{
+				FLOW_ENGINE_ERROR("World::DestroyActor: Destroying Component %lu - %s", component->GetGuid(), component->GetName().c_str());
+			}
+			m_componentMap.erase(iterator);
+			delete component;
+		}
+	}
+
+	if (m_LogGameObjectDestruction)
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Destroying Actor %lu - %s", actor->GetGuid(), actor->GetName().c_str());
+	}
+	m_actorMap.erase(actorIt);
+
+#if WITH_EDITOR
+	Editor::Get().GetTool<SelectionTool>()->SelectComponent(nullptr);
+#endif
+
+	delete actor;
+
+	return true;
+}
+
+bool World::DestroyComponent(FGUID guid)
+{
+	if (guid == -1)
+	{
+		FLOW_ENGINE_ERROR("World::DestroyComponent: Tried to delete invalid actor guid");
+		return false;
+	}
+
+	auto it = m_componentMap.find(guid);
+	if (it == m_componentMap.end())
+	{
+		FLOW_ENGINE_ERROR("World::DestroyComponent: Tried to find actor but had no actor with guid %d", guid);
+		return false;
+	}
+
+	Component* comp = m_componentMap[guid];
+	if (m_LogGameObjectDestruction)
+	{
+		FLOW_ENGINE_ERROR("World::DestroyActor: Destroying Component %lu - %s", comp->GetGuid(), comp->GetName().c_str());
+	}
+	m_componentMap.erase(it);
+
+#if WITH_EDITOR
+	Editor& e = Editor::Get();
+	e.GetTool<SelectionTool>()->SelectComponent(nullptr);
+	e.GetUIComponent<IconManager>()->RemoveIcon(comp->GetGuid());
+#endif
+
+	delete comp;
+
+	return true;
 }
 
 void World::StartGame()
@@ -304,48 +419,6 @@ void World::InitialisePhysics(bool Force)
 	m_PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 
 	FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Initialised");
-}
-
-void World::DestroyActor(FGUID guid)
-{
-	if (guid == -1)
-	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to delete invalid actor guid");
-		return;
-	}
-
-	auto Iterator = m_actorMap.find(guid);
-	if (Iterator == m_actorMap.end())
-	{
-		FLOW_ENGINE_ERROR("World::DestroyActor: Tried to find actor but had no actor with guid %d", guid);
-		return;
-	}
-
-	Actor* actor = m_actorMap[guid];
-
-	//Remove physics
-	actor->DestroyPhysics();
-
-	//Destroy the components
-	if (actor->GetRootComponent() != nullptr)
-	{
-		std::vector<WorldComponent*> components;
-		ComponentHelper::BuildComponentArray(actor->GetRootComponent(), components);
-
-		for (WorldComponent* component : components)
-		{
-			auto iterator = m_componentMap.find(component->GetGuid());
-			if (iterator == m_componentMap.end())
-			{
-				FLOW_ENGINE_ERROR("World::DestroyActor: Failed to destroy component");
-				continue;
-			}
-
-			m_componentMap.erase(iterator);
-		}
-	}
-
-	m_actorMap.erase(Iterator);
 }
 
 Actor* World::FindActor(FGUID guid) const
@@ -449,37 +522,74 @@ Controller* World::GetLocalController() const
 	return nullptr;
 }
 
-void World::RegisterActor(Actor* newActor)
+void World::RegisterGameObject(GameObject* newObject)
 {
-	//TODO: Check its not already in here
-	bool registered = false;
-	if (newActor->GetGuid() == -1)
+	if (newObject->GetGuid() != -1)
 	{
-		newActor->SetGuid(GUIDGen::Generate());
-		registered = true;
+		FLOW_ENGINE_ERROR("World::RegisterGameObject: Tried to register to actor that already has a guid (%lu)", newObject->GetGuid());
+		return;
 	}
 
-	m_actorMap[newActor->GetGuid()] = newActor;
+	FGUID newGuid = GUIDGen::Generate();
+	newObject->SetGuid(newGuid);
 
-	if (registered == true)
+	if (Actor* newActor = dynamic_cast<Actor*>(newObject))
 	{
+		m_actorMap[newGuid] = newActor;
 		newActor->OnRegistered();
+
+		if (m_LogGameObjectRegistering)
+		{
+			FLOW_ENGINE_LOG("Registered new actor: %lu %s", newGuid, newActor->GetName().c_str());
+		}
+	}
+	else if (Component* newComponent = dynamic_cast<Component*>(newObject))
+	{
+		m_componentMap[newGuid] = newComponent;
+		newComponent->OnRegistered();
+
+		if (m_LogGameObjectRegistering)
+		{
+			FLOW_ENGINE_LOG("Registered new component: %lu %s", newGuid, newComponent->GetName().c_str());
+		}
 	}
 }
 
-void World::RegisterComponent(Component* newComponent)
+void World::RegisterGameObject(GameObject* newObject, FGUID guid)
 {
-	bool registered = false;
-	if (newComponent->GetGuid() == -1)
+	std::unordered_map<FGUID, Actor*>::iterator foundActor = m_actorMap.find(guid);
+	if (foundActor != m_actorMap.end())
 	{
-		newComponent->SetGuid(GUIDGen::Generate());
-		registered = true;
+		m_actorMap.erase(foundActor);
 	}
 
-	m_componentMap[newComponent->GetGuid()] = newComponent;
-
-	if (registered == true)
+	std::unordered_map<FGUID, Component*>::iterator foundComponent = m_componentMap.find(guid);
+	if (foundComponent != m_componentMap.end())
 	{
+		m_componentMap.erase(foundComponent);
+	}
+
+	newObject->SetGuid(guid);
+
+	if (Actor* newActor = dynamic_cast<Actor*>(newObject))
+	{
+		m_actorMap[guid] = newActor;
+		newActor->OnRegistered();
+
+
+		if (m_LogGameObjectRegistering)
+		{
+			FLOW_ENGINE_LOG("Registered new actor with existing guid: %lu %s", guid, newActor->GetName().c_str());
+		}
+	}
+	else if (Component* newComponent = dynamic_cast<Component*>(newObject))
+	{
+		m_componentMap[guid] = newComponent;
 		newComponent->OnRegistered();
+
+		if (m_LogGameObjectRegistering)
+		{
+			FLOW_ENGINE_LOG("Registered new component with existing guid: %lu %s", guid, newComponent->GetName().c_str());
+		}
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <yaml-cpp/yaml.h>
+#include "Typedefs.h"
 #include "Maths/Maths.h"
 #include "Maths/Transform.h"
 
@@ -43,7 +44,8 @@ inline YAML::Emitter& operator << (YAML::Emitter& out, const IntVector3& v) {
 	return out;
 }
 
-inline YAML::Emitter& operator << (YAML::Emitter& out, const IntVector4& v) {
+inline YAML::Emitter& operator << (YAML::Emitter& out, const IntVector4& v) 
+{
 	out << YAML::Flow;
 	out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 	return out;
@@ -218,22 +220,6 @@ namespace YAML
 	{
 		static Node encode(const Transform& rhs)
 		{
-			//Node node;
-			//
-			//node.push_back(rhs.m_Position.x);
-			//node.push_back(rhs.m_Position.y);
-			//node.push_back(rhs.m_Position.z);
-			//
-			//node.push_back(rhs.m_Rotation.Pitch);
-			//node.push_back(rhs.m_Rotation.Roll);
-			//node.push_back(rhs.m_Rotation.Yaw);
-			//
-			//node.push_back(rhs.m_Scale.x);
-			//node.push_back(rhs.m_Scale.y);
-			//node.push_back(rhs.m_Scale.z);
-			//
-			//return node;
-
 			Node transform;
 
 			Node position;

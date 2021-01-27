@@ -63,6 +63,12 @@ IconManager::IconManager()
 
 void IconManager::RegisterIcon(FGUID guid, const IconData& data)
 {
+	if (m_iconData.find(guid) != m_iconData.end())
+	{
+		//TODO: will want to support multiple icons in tehf uture
+		FLOW_ENGINE_WARNING("IconManager::RegisterIcon: Tried to register an icon when one already exists. %lu", guid);
+	}
+
 	Icon* newIcon = new Icon(guid, data.m_texture);
 	newIcon->RefreshBinds(*this);
 
@@ -76,6 +82,11 @@ void IconManager::RemoveIcon(FGUID guid)
 	{
 		m_iconData.erase(iterator);
 	}
+}
+
+void IconManager::Reset()
+{
+	m_iconData.clear();
 }
 
 void IconManager::Update()

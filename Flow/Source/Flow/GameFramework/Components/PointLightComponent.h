@@ -27,6 +27,9 @@ public:
 	virtual void						Render() override;
 	virtual void						DrawComponentDetailsWindow() override;
 
+	const LightBuffer_t&				GetLightBuffer() const;
+	void								SetLightBuffer(const LightBuffer_t& buf);
+
 	//= Save/Load =
 
 	virtual void						Serialize(YAML::Emitter& Archive) override;

@@ -19,6 +19,7 @@
 #include "Editor/UIComponents/LevelManager.h"
 #include "Editor/UIComponents/SpawnWindow.h"
 #include "Editor/UIComponents/Console.h"
+#include "Editor/UIComponents/WorldViewer.h"
 #include "Editor/IconManager.h"
 
 #include "Editor/UIComponents/Toolbar.h"
@@ -59,6 +60,7 @@ void Editor::Initialise()
 	RegisterUIComponent<LevelManager>();
 	RegisterUIComponent<Console>();
 	RegisterUIComponent<IconManager>();
+	RegisterUIComponent<WorldViewer>();
 
 	m_SceneManager = GetUIComponent<SceneManager>();
 

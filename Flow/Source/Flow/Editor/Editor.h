@@ -198,7 +198,7 @@ public:
 		}
 
 		T* NewUIComponent = new T();
-		NewUIComponent->m_Editor = this;
+		NewUIComponent->m_editor = this;
 		m_UIComponents.push_back(NewUIComponent);
 	}
 

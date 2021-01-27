@@ -11,6 +11,7 @@
 #include "Maths/Vector3.h"
 #include "Utils\BulletDebugDrawing.h"
 #include "Typedefs.h"
+#include "Utils/ComponentHelper.h"
 
 //= Forward Declarations =================================
 
@@ -23,6 +24,7 @@ class Actor;
 class Skybox;
 class Controller;
 class Component;
+class GameObject;
 
 //= Enum Definitions ====================================
 
@@ -47,10 +49,27 @@ public:
 		static_assert(std::is_base_of<Actor, T>::value, "Trying to spawn a class that isn't an actor");
 
 		T* newActor = new T(Name);
-		RegisterActor(newActor);
+		RegisterGameObject(newActor);
 
 		return newActor;
 	}
+
+	template<typename T>
+	T* DestroyActor(T* act)
+	{
+		static_assert(std::is_base_of<Actor, T>::value, "Tried to destroy a component templated with a non-component type");
+
+		return DestroyActor(act->GetGuid()) ? nullptr : act;
+	}
+
+	template<typename T>
+	T* DestroyComponent(T* comp)
+	{
+		static_assert(std::is_base_of<Component, T>::value, "Tried to destroy a component templated with a non-component type");
+
+		return DestroyComponent(comp->GetGuid()) ? nullptr : comp;
+	}
+
 
 	//= Public Functions ============================
 
@@ -74,7 +93,8 @@ public:
 
 	//= Actor manipulation = 
 
-	void												DestroyActor(FGUID Act);
+	bool												DestroyActor(FGUID guid);
+	bool												DestroyComponent(FGUID guid);
 
 	//= Object Management =
 	Actor*												FindActor(FGUID guid) const;
@@ -110,8 +130,8 @@ public:
 
 	//= Registration =
 
-	void												RegisterActor(Actor* newActor);
-	void												RegisterComponent(Component* newActor);
+	void												RegisterGameObject(GameObject* newObject);
+	void												RegisterGameObject(GameObject* newObject, FGUID guid); //Register with specific guid
 
 
 	//= Getters etc
@@ -165,6 +185,8 @@ private:
 
 	BulletDebugDraw										m_DebugDrawer;
 	static LineBatcher									sm_LineBatcher;
+	bool												m_LogGameObjectRegistering;
+	bool												m_LogGameObjectDestruction;
 
 	//= Other =======
 

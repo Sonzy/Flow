@@ -139,6 +139,7 @@
     <ClInclude Include="Source\Flow\Editor\UIComponents\UIComponent.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Console.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\SpawnWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\UIComponents\WorldViewer.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\ErrorHelpers.h" />
@@ -372,6 +373,7 @@
     <ClCompile Include="Source\Flow\Editor\UIComponents\UIComponent.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Console.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\SpawnWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\UIComponents\WorldViewer.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\Event.cpp" />

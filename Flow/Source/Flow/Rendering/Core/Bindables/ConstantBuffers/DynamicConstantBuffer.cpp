@@ -167,7 +167,7 @@ namespace DynamicCB
 		{
 			Signature += Element.first + ":"s + Element.second.GetSignature() + ";"s;
 		}
-		Signature + "}"s;
+		Signature + "}"s; //TODO: probs wanna fix this
 		return Signature;
 	}
 

@@ -2,6 +2,8 @@
 #include "Gameobject.h"
 #include "Utils/GUIDGenerator.h"
 #include <yaml-cpp/yaml.h>
+#include "Utils/YamlSerializer.h"
+#include "GameFramework/World.h"
 
 GameObject::GameObject()
 	: m_name("Unnamed Object")
@@ -58,7 +60,6 @@ void GameObject::Deserialize(YAML::Node& Archive)
 {
 	YAML::Node GameObject = Archive["GameObject"];
 	{
-		m_guid = GameObject["Guid"].as<FGUID>();
 		m_name = GameObject["Name"].as<std::string>();
 	}
 }
