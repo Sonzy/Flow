@@ -5,6 +5,7 @@
 #include "ThirdParty/ImGui/imgui.h"
 
 #if WITH_EDITOR
+#include "Assets/AssetSystem.h"
 	#include "Editor/Editor.h"
 	#include "Editor/IconManager.h"
 #endif
@@ -40,7 +41,7 @@ void PointLightComponent::OnRegistered()
 {
 #if WITH_EDITOR
 	IconManager::IconData iconData;
-	iconData.m_texture = nullptr;
+	iconData.m_texture = AssetSystem::GetAsset<TextureAsset>("Icon_Light");
 	Editor::Get().GetUIComponent<IconManager>()->RegisterIcon(GetGuid(), iconData);
 #endif
 }
@@ -62,25 +63,56 @@ void PointLightComponent::Render()
 	m_lightPixelBuffer.Bind();
 
 	IconManager* iconManager = Editor::Get().GetUIComponent<IconManager>();
-
-	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
-	Icon& lightIcon = iconManager->GetIcon(GetGuid());
-	lightIcon.m_position.x = screen.x;
-	lightIcon.m_position.y = screen.y;
-	lightIcon.m_tint = Vector4(m_lightBuffer.m_Diffuse.x, m_lightBuffer.m_Diffuse.y, m_lightBuffer.m_Diffuse.z, 1.0f);
-	lightIcon.m_alignment = Icon::Alignment::Centre;
-	lightIcon.RefreshBinds(*iconManager);
 }
 
 void PointLightComponent::DrawComponentDetailsWindow()
 {
 	ImGui::TextColored(IMGUI_YELLOW, "Point Light Settings");
-	ImGui::ColorPicker3("Light Diffuse Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Diffuse));		
-	ImGui::ColorPicker3("Ambient Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Ambient));
-	ImGui::InputFloat("Diffuse Intensity", reinterpret_cast<float*>(&m_lightBuffer.m_DiffuseIntensity));				
-	ImGui::InputFloat("Attenuation Constant", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationConstant));				
-	ImGui::InputFloat("Attenuation Linear", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationLinear));				
-	ImGui::InputFloat("Attenuation Quadratic", reinterpret_cast<float*>(&m_lightBuffer.m_AttenuationQuadratic));				
+	ImGui::ColorEdit3("Light Diffuse Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Diffuse));
+	ImGui::ColorEdit3("Ambient Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Ambient));
+
+	float width = ImGui::GetContentRegionAvailWidth();
+	ImGui::Columns(3, "ComponentDeets", true);
+
+	ImGui::SetColumnWidth(0, width * 0.4);
+	ImGui::SetColumnWidth(1, width * 0.4);
+	ImGui::SetColumnWidth(2, width * 0.2);
+
+	ImGui::Text("Diffuse Intensity");
+	ImGui::Text("Attenuation Constant");
+	ImGui::Text("Attenuation Linear");
+	ImGui::Text("Attenuation Quadratic");
+
+	ImGui::NextColumn();
+
+	//ImGui::PushItemWidth();
+	ImGui::PushID("DiffuseSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_DiffuseIntensity, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationConstantSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationConstant, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationLinearSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationLinear, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationQuadraticSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
+	//ImGui::PopItemWidth();
+
+	ImGui::NextColumn();
+
+	//ImGui::PushItemWidth();
+	ImGui::PushID("DiffuseInput"); ImGui::InputFloat("", &m_lightBuffer.m_DiffuseIntensity, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationConstantInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationConstant, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationLinearInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationLinear, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AttenuationQuadraticInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
+	//ImGui::PopItemWidth();
+
+	ImGui::NextColumn();
+}
+
+void PointLightComponent::IconUpdate(IconManager& iconManager)
+{
+	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Icon& lightIcon = iconManager.GetIcon(GetGuid());
+	lightIcon.m_position.x = screen.x;
+	lightIcon.m_position.y = screen.y;
+	lightIcon.m_tint = Vector4(m_lightBuffer.m_Diffuse.x, m_lightBuffer.m_Diffuse.y, m_lightBuffer.m_Diffuse.z, 1.0f);
+	lightIcon.m_alignment = Icon::Alignment::Centre;
+	lightIcon.RefreshBinds(iconManager); //TODO: Dont do this every frame
 }
 
 const LightBuffer_t& PointLightComponent::GetLightBuffer() const

@@ -29,7 +29,6 @@ Actor::Actor(const std::string& Name)
 
 Actor::~Actor()
 {
-	World::Get()->DestroyActor(GetGuid());
 }
 
 void Actor::OnRegistered()

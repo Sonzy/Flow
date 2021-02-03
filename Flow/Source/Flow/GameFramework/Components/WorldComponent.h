@@ -11,6 +11,7 @@
 class btRigidBody;
 class btCollisionShape;
 class MotionState;
+class IconManager;
 namespace YAML { class Emitter; }
 
 //= Class Definitions ===============================================
@@ -31,6 +32,8 @@ public:
 	virtual void					EditorBeginPlay() override;
 	virtual void					OnViewportSelected() override;
 	virtual void					OnViewportDeselected() override;
+
+	virtual void					IconUpdate(IconManager& iconManager);
 #endif
 	virtual void					BeginPlay() override;
 	virtual void					Tick(float DeltaTime) override;

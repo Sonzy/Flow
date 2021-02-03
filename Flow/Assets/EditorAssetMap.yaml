@@ -9,6 +9,7 @@ ReferencedAssets:
   - Flow/Assets/Models/Cube.fmesh
   - Flow/Assets/Models/Wabble_Table.fmesh
   - Flow/Assets/Icons/Icon_Light.png
+  - Flow/Assets/Icons/Icon_Camera.png
   - Flow/Assets/Models/Arrow.fmesh
   - Flow/Assets/Textures/StandardCubeMap.png
   - Flow/Assets/Textures/Wabble_Weapons.png

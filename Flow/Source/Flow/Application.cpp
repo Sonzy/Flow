@@ -63,8 +63,6 @@ void Application::InitialiseApplication()
 {
 	Instrumentor::Get().BeginSession("Application Startup", "Saved/Profiling-Startup.json");
 
-	FLOW_ENGINE_LOG("================ Initialising Engine ======================");
-
 	PROFILE_FUNCTION();
 
 	sm_Application = this;
@@ -72,90 +70,118 @@ void Application::InitialiseApplication()
 	m_GameDirectory = std::filesystem::current_path();
 
 	//Create the main window
-	m_MainWindow = Window::Create(Window::Properties(m_ApplicationName, 1280u, 720u));
-	m_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+	{
+		PROFILE_CURRENT_SCOPE("Window Creation");
 
-	//Initialise the debug UI Layer
-	m_Layer_ImGui = new ImGuiLayer();
-	PushOverlay(m_Layer_ImGui);
+		m_MainWindow = Window::Create(Window::Properties(m_ApplicationName, 1280u, 720u));
+		m_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
+	}
 
-	//= Build class factory map before the application starts
-	m_ClassFactory = new ClassFactory();
-	m_ClassFactory->RegisterClassUIDs();
+	{
+		PROFILE_CURRENT_SCOPE("ImGui Layer Initialisation");
+
+		//Initialise the debug UI Layer
+		m_Layer_ImGui = new ImGuiLayer();
+		PushOverlay(m_Layer_ImGui);
+	}
+
+	{
+		PROFILE_CURRENT_SCOPE("Factory Initialisation");
+
+		//= Build class factory map before the application starts
+		m_ClassFactory = new ClassFactory();
+		m_ClassFactory->RegisterClassUIDs();
+	}
+
 
 	//= Models =
 
-	AssetSystem::Startup();
+	{
+		PROFILE_CURRENT_SCOPE("Asset System Initialisation");
 
-	//= Materials =
-	Mat_LitColor* litColorBlack = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black")->GetMaterial<Mat_LitColor>();
-	litColorBlack->SetColor(Vector3(0.0f, 0.0f, 0.0f));
-	Mat_LitColor* litColorGrey = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey")->GetMaterial<Mat_LitColor>();
-	litColorGrey->SetColor(Vector3(0.863f, 0.863f, 0.863f));
-	Mat_LitColor* litColorSlate = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate")->GetMaterial<Mat_LitColor>();
-	litColorSlate->SetColor(Vector3(0.439f, 0.502f, 0.565f));
-	Mat_LitColor* litColorBlue = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue")->GetMaterial<Mat_LitColor>();
-	litColorBlue->SetColor(Vector3(0.0f, 0.0f, 1.0f));
-	Mat_LitColor* litColorRed = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red")->GetMaterial<Mat_LitColor>();
-	litColorRed->SetColor(Vector3(1.0f, 0.0f, 0.0f));
-	Mat_LitColor* litColorGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green")->GetMaterial<Mat_LitColor>();
-	litColorGreen->SetColor(Vector3(0.0f, 1.0f, 0.0f));
-
-	Mat_LitColor* litColorDarkGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_DarkGreen")->GetMaterial<Mat_LitColor>();
-	litColorDarkGreen->SetColor(Vector3(0.0f, 0.35f, 0.0f));
-
-	Mat_LitColor* litColorLightGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_LightGreen")->GetMaterial<Mat_LitColor>();
-	litColorLightGreen->SetColor(Vector3(0.412f, 1.0f, 0.459f));
-
-	Mat_TexturedPhong* PropsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props")->GetMaterial<Mat_TexturedPhong>();
-	PropsMat->SetTexture("Wabble_Props");
-	PropsMat->SetPixelShader("TexturedPhong_PS");
-	PropsMat->SetVertexShader("TexturedPhong_VS");
-
-	Mat_TexturedPhong* WeaponsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons")->GetMaterial<Mat_TexturedPhong>();
-	WeaponsMat->SetTexture("Wabble_Weapons");
-	WeaponsMat->SetPixelShader("TexturedPhong_PS");
-	WeaponsMat->SetVertexShader("TexturedPhong_VS");
-
-	Mat_TexturedPhong* WoodMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood")->GetMaterial<Mat_TexturedPhong>();
-	WoodMat->SetTexture("Wabble_Wood");
-	WoodMat->SetPixelShader("TexturedPhong_PS");
-	WoodMat->SetVertexShader("TexturedPhong_VS");
-
-	Mat_TexturedPhong* SandMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand")->GetMaterial<Mat_TexturedPhong>();
-	SandMat->SetTexture("Wabble_Sand");
-	SandMat->SetPixelShader("TexturedPhong_PS");
-	SandMat->SetVertexShader("TexturedPhong_VS");
-
-	Mat_TexturedPhong* SkyMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube")->GetMaterial<Mat_TexturedPhong>();
-	SkyMat->SetTexture("YokohamaCubemap_4k");
-	SkyMat->SetPixelShader("Texture_PS");
-	SkyMat->SetVertexShader("Texture_VS");
-
-	//= 2D Materials =
-
-	ColorMaterial2D* flatColorWhite = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D")->GetMaterial<ColorMaterial2D>();
-	flatColorWhite->SetColour(Vector3(1.0f, 1.0f, 1.0f));
-	ColorMaterial2D* flatColorGreen = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D")->GetMaterial<ColorMaterial2D>();
-	flatColorGreen->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+		AssetSystem::Startup();
+	}
 
 
-	Mat_Texture2D* matTexture2D = AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D")->GetMaterial<Mat_Texture2D>();
-	matTexture2D->SetTexture("Icon_Light");
-	matTexture2D->SetPixelShader("Texture2D_PS");
+	{
+		PROFILE_CURRENT_SCOPE("Custom Materials");
+
+		//= Materials =
+		Mat_LitColor* litColorBlack = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Black")->GetMaterial<Mat_LitColor>();
+		litColorBlack->SetColor(Vector3(0.0f, 0.0f, 0.0f));
+		Mat_LitColor* litColorGrey = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Grey")->GetMaterial<Mat_LitColor>();
+		litColorGrey->SetColor(Vector3(0.863f, 0.863f, 0.863f));
+		Mat_LitColor* litColorSlate = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Slate")->GetMaterial<Mat_LitColor>();
+		litColorSlate->SetColor(Vector3(0.439f, 0.502f, 0.565f));
+		Mat_LitColor* litColorBlue = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Blue")->GetMaterial<Mat_LitColor>();
+		litColorBlue->SetColor(Vector3(0.0f, 0.0f, 1.0f));
+		Mat_LitColor* litColorRed = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Red")->GetMaterial<Mat_LitColor>();
+		litColorRed->SetColor(Vector3(1.0f, 0.0f, 0.0f));
+		Mat_LitColor* litColorGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_Green")->GetMaterial<Mat_LitColor>();
+		litColorGreen->SetColor(Vector3(0.0f, 1.0f, 0.0f));
+
+		Mat_LitColor* litColorDarkGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_DarkGreen")->GetMaterial<Mat_LitColor>();
+		litColorDarkGreen->SetColor(Vector3(0.0f, 0.35f, 0.0f));
+
+		Mat_LitColor* litColorLightGreen = AssetSystem::CreateMaterial<Mat_LitColor>("Mat_LitColor_LightGreen")->GetMaterial<Mat_LitColor>();
+		litColorLightGreen->SetColor(Vector3(0.412f, 1.0f, 0.459f));
+
+		Mat_TexturedPhong* PropsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Props")->GetMaterial<Mat_TexturedPhong>();
+		PropsMat->SetTexture("Wabble_Props");
+		PropsMat->SetPixelShader("TexturedPhong_PS");
+		PropsMat->SetVertexShader("TexturedPhong_VS");
+
+		Mat_TexturedPhong* WeaponsMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wabble_Weapons")->GetMaterial<Mat_TexturedPhong>();
+		WeaponsMat->SetTexture("Wabble_Weapons");
+		WeaponsMat->SetPixelShader("TexturedPhong_PS");
+		WeaponsMat->SetVertexShader("TexturedPhong_VS");
+
+		Mat_TexturedPhong* WoodMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Wood")->GetMaterial<Mat_TexturedPhong>();
+		WoodMat->SetTexture("Wabble_Wood");
+		WoodMat->SetPixelShader("TexturedPhong_PS");
+		WoodMat->SetVertexShader("TexturedPhong_VS");
+
+		Mat_TexturedPhong* SandMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Sand")->GetMaterial<Mat_TexturedPhong>();
+		SandMat->SetTexture("Wabble_Sand");
+		SandMat->SetPixelShader("TexturedPhong_PS");
+		SandMat->SetVertexShader("TexturedPhong_VS");
+
+		Mat_TexturedPhong* SkyMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SkyCube")->GetMaterial<Mat_TexturedPhong>();
+		SkyMat->SetTexture("YokohamaCubemap_4k");
+		SkyMat->SetPixelShader("Texture_PS");
+		SkyMat->SetVertexShader("Texture_VS");
+
+		//= 2D Materials =
+
+		ColorMaterial2D* flatColorWhite = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D")->GetMaterial<ColorMaterial2D>();
+		flatColorWhite->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+		ColorMaterial2D* flatColorGreen = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D")->GetMaterial<ColorMaterial2D>();
+		flatColorGreen->SetColour(Vector3(0.0f, 1.0f, 0.0f));
 
 
-	FLOW_ENGINE_LOG("================ Initialising Game ======================");
+		Mat_Texture2D* matTexture2D = AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D")->GetMaterial<Mat_Texture2D>();
+		matTexture2D->SetTexture("Icon_Light");
+		matTexture2D->SetPixelShader("Texture2D_PS");
+	}
 
-	m_Layer_Game = new GameLayer();
+	{
+		//Game Initialisation
+		PROFILE_CURRENT_SCOPE("Game Initialisation");
 
-	//Create the game world
-	m_GameWorld = new World("Game World");
+		m_Layer_Game = new GameLayer();
 
-	//Create the editor
+		//Create the game world
+		m_GameWorld = new World("Game World");
+	}
+
 #if WITH_EDITOR
-	m_Layer_Editor = new Editor();
-	m_Layer_Editor->Initialise();
+	{
+		//Game Initialisation
+		PROFILE_CURRENT_SCOPE("Editor Initialisation");
+
+		m_Layer_Editor = new Editor();
+		m_Layer_Editor->Initialise();
+	}
 #endif
 
 	PushLayer(m_Layer_Game);
@@ -163,8 +189,6 @@ void Application::InitialiseApplication()
 #if WITH_EDITOR
 	PushLayer(m_Layer_Editor);
 #endif
-
-	FLOW_ENGINE_LOG("================ Initialisation Complete ==================");
 }
 
 Application::~Application()

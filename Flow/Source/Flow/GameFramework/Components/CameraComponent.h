@@ -24,6 +24,9 @@ public:
 											CameraComponent();
 											CameraComponent(const std::string& Name);
 
+	virtual void							OnRegistered() override;
+	virtual void							IconUpdate(IconManager& iconManager) override;
+
 	virtual void							Update(float DeltaTime) override;
 	virtual void							MoveCamera(const Transform& NewTransform) override;
 	virtual Transform						GetCameraTransform() const override;

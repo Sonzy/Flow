@@ -2,6 +2,12 @@
 #include "CameraComponent.h"
 #include "Flow\Input\Input.h"
 
+#if WITH_EDITOR
+#include "Assets/AssetSystem.h"
+#include "Editor/Editor.h"
+#include "Editor/IconManager.h"
+#endif
+
 #include <yaml-cpp/yaml.h>
 
 CameraComponent::CameraComponent()
@@ -14,6 +20,25 @@ CameraComponent::CameraComponent(const std::string& Name)
 {
 	m_Projection = DirectX::XMMATRIX();
 	m_FieldOfView = 90.0f;
+}
+
+void CameraComponent::OnRegistered()
+{
+#if WITH_EDITOR
+	IconManager::IconData iconData;
+	iconData.m_texture = AssetSystem::GetAsset<TextureAsset>("Icon_Camera");
+	Editor::Get().GetUIComponent<IconManager>()->RegisterIcon(GetGuid(), iconData);
+#endif
+}
+
+void CameraComponent::IconUpdate(IconManager& iconManager)
+{
+	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Icon& icon = iconManager.GetIcon(GetGuid());
+	icon.m_position.x = screen.x;
+	icon.m_position.y = screen.y;
+	icon.m_alignment = Icon::Alignment::Centre;
+	icon.RefreshBinds(iconManager); //TODO: Dont do this every frame
 }
 
 void CameraComponent::Update(float DeltaTime)
@@ -30,7 +55,6 @@ Transform CameraComponent::GetCameraTransform() const
 {
 	return m_RelativeTransform;
 }
-
 
 DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
 {

@@ -364,6 +364,12 @@ void World::StopGame()
 	FLOW_ENGINE_LOG("World State set to Editor");
 #endif
 	// Quit here? should be editor only tbh, might make the whole func editor only
+
+	std::vector<Controller*> controllers = GetAllActorsOfType<Controller>();
+	for (Controller* cont : controllers)
+	{
+		DestroyActor(cont);
+	}
 }
 
 LineBatcher& World::GetLineBatcher_S()

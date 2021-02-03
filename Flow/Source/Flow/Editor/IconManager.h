@@ -55,6 +55,8 @@ public:
 	IconPixelData					m_pBuf;
 	VertexConstantBuffer<IconVertexData>* m_vCB;
 	PixelConstantBuffer<IconPixelData>* m_pCB;
+
+	Material						m_iconMaterial;
 };
 
 class IconManager : public UIComponent
@@ -82,7 +84,7 @@ public:
 
 	void								RenderIcons();
 
-	const Material&						GetIconMaterial() const;
+	static const Material*				GetIconMaterial();
 
 	const VertexBuffer&					GetIconVertices(Icon::Alignment alignment) const;
 	const std::vector<unsigned short>&	GetIconIndices() const;
@@ -92,8 +94,9 @@ public:
 	float								GetIconSize() const;
 
 private:
+	static Material*						sm_iconMaterialDefault;
+
 	std::unordered_map<FGUID, Icon*>		m_iconData;
-	Material*								m_iconMaterial;
 
 	VertexBuffer							m_iconVerticesTopLeftAligned;
 	VertexBuffer							m_iconVerticesCentreAligned;

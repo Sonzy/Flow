@@ -60,6 +60,9 @@ void WorldComponent::OnViewportSelected()
 void WorldComponent::OnViewportDeselected()
 {
 }
+void WorldComponent::IconUpdate(IconManager& iconManager)
+{
+}
 #endif
 
 void WorldComponent::BeginPlay()

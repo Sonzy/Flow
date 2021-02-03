@@ -14,7 +14,7 @@ CameraActor::CameraActor(const std::string& Name)
 	: Pawn(Name), m_CameraMovementSpeed(1.0f), m_CameraHorizontalRotationSpeed(0.25f), m_CameraVerticalRotationSpeed(0.15f)
 {
 	m_CameraComponent = CreateComponent<CameraComponent>("Camera");
-	m_CameraComponent->SetOwned(true);
+	m_CameraComponent->SetOwned(false);
 	m_RootComponent = m_CameraComponent;
 }
 

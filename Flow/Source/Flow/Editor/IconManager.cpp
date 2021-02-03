@@ -24,6 +24,8 @@
 
 #include "ThirdParty/ImGui/imgui.h"
 
+Material* IconManager::sm_iconMaterialDefault = nullptr;
+
 // Icon Function Definitions //////////////////////////////////////////////////////
 
 IconManager::IconManager()
@@ -32,7 +34,7 @@ IconManager::IconManager()
 	, m_showDebugWindow(false)
 	, m_iconSize(50.0f)
 {
-	m_iconMaterial = AssetSystem::GetAsset<MaterialAsset>("Mat_Texture2D")->GetMaterial();
+	sm_iconMaterialDefault = AssetSystem::GetAsset<MaterialAsset>("Mat_Texture2D")->GetMaterial();
 
 	// Set up the mesh for icons
 
@@ -116,16 +118,14 @@ void IconManager::RenderIcons()
 			continue;
 		}
 
-		//TODO: Remove
-		iconData.second->RefreshBinds(*this);
-
+		World::Get()->FindComponent<WorldComponent>(iconData.first)->IconUpdate(*this);
 		Renderer::Submit(iconData.second);
 	}
 }
 
-const Material& IconManager::GetIconMaterial() const
+const Material* IconManager::GetIconMaterial()
 {
-	return *m_iconMaterial;
+	return sm_iconMaterialDefault;
 }
 
 const VertexBuffer& IconManager::GetIconVertices(Icon::Alignment alignment) const
@@ -164,6 +164,8 @@ Icon::Icon(FGUID guid, TextureAsset* tex)
 	, m_vCB(new VertexConstantBuffer<IconVertexData>(1)) //TODO: no magic numbers
 	, m_pCB(new PixelConstantBuffer<IconPixelData>(5))
 {
+	m_iconMaterial = *IconManager::GetIconMaterial();
+	m_iconMaterial.SetTexture(tex->GetAssetName());
 }
 
 void Icon::RefreshBinds(const IconManager& manager)
@@ -183,7 +185,7 @@ void Icon::RefreshBinds(const IconManager& manager)
 		m_VertexBuffer = new BindableVertexBuffer(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconVertices(m_alignment)); //TODO: Manage the tags
 		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconIndices()));
 
-		manager.GetIconMaterial().BindMaterial(&MainStep, manager.GetIconLayout());
+		m_iconMaterial.BindMaterial(&MainStep, manager.GetIconLayout());
 
 		//Update vertex constant buffers
 		m_buf.windowSize = RenderCommand::GetWindowSize();

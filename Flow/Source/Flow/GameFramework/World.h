@@ -70,6 +70,21 @@ public:
 		return DestroyComponent(comp->GetGuid()) ? nullptr : comp;
 	}
 
+	template<typename T>
+	std::vector<T*>	GetAllActorsOfType()
+	{
+		std::vector<T*> outVec;
+		for (auto actor : m_actorMap)
+		{
+			if (T* found = dynamic_cast<T*>(actor.second))
+			{
+				outVec.push_back(found);
+			}
+		}
+
+		return std::move(outVec);
+	}
+
 
 	//= Public Functions ============================
 

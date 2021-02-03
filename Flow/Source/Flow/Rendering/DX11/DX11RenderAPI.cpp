@@ -203,6 +203,7 @@ void DX11RenderAPI::Resize(int Width, int Height)
 
 	m_Context->RSSetViewports(1u, &Viewport);
 
+	//VerticalFOV = HorizontalFOV / AspectRatio.
 	m_MainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(m_MainCamera->GetFOV()), (float)m_ViewportSize.x / (float)m_ViewportSize.y, m_NearPlane, m_FarPlane));
 }
 
