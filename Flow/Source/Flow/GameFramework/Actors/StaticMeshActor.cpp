@@ -20,10 +20,7 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 
 StaticMeshActor::~StaticMeshActor()
 {
-	if (m_MeshComponent)
-	{
-		delete m_MeshComponent;
-	}
+
 }
 
 StaticMeshComponent* StaticMeshActor::GetMeshComponent() const
@@ -45,7 +42,7 @@ void StaticMeshActor::Serialize(YAML::Emitter& Archive)
 
 void StaticMeshActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get()->DestroyComponent(m_RootComponent);
+	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
 
 	Actor::Deserialize(Archive);
 

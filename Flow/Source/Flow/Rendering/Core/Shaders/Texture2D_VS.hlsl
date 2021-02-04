@@ -1,8 +1,4 @@
-cbuffer CBuf
-{
-    matrix modelView;
-    matrix modelViewProj;
-}
+#include "VertexShaderHelpers.hlsli"
 
 struct VSOut
 {
@@ -27,7 +23,7 @@ cbuffer UIBuffer
 VSOut main(float2 pos : Position, float2 tex : TexCoord)
 {
     VSOut vso;
-    vso.viewPos = (float3) mul(float4(pos.x, pos.y, 0.0f, 1.0f), modelView);
+    vso.viewPos = (float3) mul(float4(pos.x, pos.y, 0.0f, 1.0f), m_modelView);
     vso.tex = tex;
     
     //Map to clip space

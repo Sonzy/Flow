@@ -1,14 +1,41 @@
 
-cbuffer PointLightCBuf
+// Constant Buffers /////////////////////////////////////////////////////////////////
+
+cbuffer CB_Camera : register(b9)
 {
-	float3 LightPos;
-	float3 Ambient;
-	float3 DiffuseColour;
-	float DiffuseIntensity;
-	float AttenuationConstant;
-	float AttenuationLinear;
-	float AttenuationQuadratic;
+    float3 m_cameraPosition;
+}
+
+cbuffer PointLightCBuf : register(b12)
+{
+	float3 m_point_lightPosition;
+    float3 m_point_diffuseColor;
+    float m_point_diffuseIntensity;
+    float m_point_specularIntensity;
+    float m_point_aConstant;
+    float m_point_aLinear;
+    float m_point_aQuadratic;
 };
+
+cbuffer DirectionalLightCBuffer : register(b13)
+{
+    float3 m_directional_lightDirection;
+    float3 m_directional_ambientColor;
+    float3 m_directional_diffuseColor;
+    float3 m_directional_specularColor;
+    float m_directional_diffuseIntensity;
+    float m_directional_ambientIntensity;
+    float m_directional_specularIntensity;
+}
+
+cbuffer ObjectCBuf : register(b11)
+{
+    float3 specularColor;
+    float specularWeight;
+    float specularGloss;
+};
+
+// Structs /////////////////////////////////////////////////////////////////
 
 struct LightVectorData
 {
@@ -17,6 +44,8 @@ struct LightVectorData
 	float distToL;
 };
 
+
+// Functions /////////////////////////////////////////////////////////////////
 
 float3 MapNormal(
 	const in float3 tan,
@@ -35,46 +64,64 @@ float3 MapNormal(
 	return normalize(mul(tanNormal, tanToTarget));
 }
 
-float Attenuate(uniform float attConst, uniform float attLin, uniform float attQuad, const in float distFragToL)
+float3 CalculateDirectionalLight(float3 position, float3 normal, float3 lightDirection)
 {
-	return 1.0f / (attConst + attLin * distFragToL + attQuad * (distFragToL * distFragToL));
+    float3 directional_ambient = float3(0.0f, 0.0f, 0.0f);
+    float3 directional_diffuse = float3(0.0f, 0.0f, 0.0f);
+    float3 directional_specular = float3(0.0f, 0.0f, 0.0f);
+	
+	//Ambient
+	{
+        directional_ambient = m_directional_ambientColor * m_directional_ambientIntensity;
+    }
+	
+	//Diffuse
+	{   
+        float diffusePower = max(dot(-lightDirection, normal), 0.0f);
+        directional_diffuse = m_directional_diffuseColor * diffusePower * m_directional_diffuseIntensity;
+    }
+	
+	//Specular
+	{
+        float3 viewDirection = normalize(m_cameraPosition - position);
+        float3 reflectionDirection = reflect(lightDirection, normal);
+      
+        float specular = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 32);
+        directional_specular = m_directional_specularIntensity * specular * m_directional_specularColor;
+    }
+	
+   return (directional_ambient + directional_diffuse + directional_specular);
 }
 
-float3 Diffuse(
-	uniform float3 diffuseColor,
-	uniform float diffuseIntensity,
-	const in float att,
-	const in float3 viewDirFragToL,
-	const in float3 viewNormal)
+float3 CalculatePointLight(float3 position, float3 normal)
 {
-	//return diffuseColor * diffuseIntensity * att * max(0.0f, dot(viewDirFragToL, viewNormal));
-	return diffuseColor * diffuseIntensity * max(0.0f, dot(viewDirFragToL, viewNormal));
-}
+    float3 point_ambient = float3(0.0f, 0.0f, 0.0f);
+    float3 point_diffuse = float3(0.0f, 0.0f, 0.0f);
+    float3 point_specular = float3(0.0f, 0.0f, 0.0f);
+    
+    float3 point_direction = normalize(position - m_point_lightPosition);
+    float point_distance = length(position - m_point_lightPosition);
+    float point_attenuation = 1.0 / (m_point_aConstant + m_point_aLinear * point_distance + m_point_aQuadratic * (point_distance * point_distance));
+	
+	//Diffuse
+	{           
+        float diffusePower = max(dot(-point_direction, normal), 0.0f);
+        point_diffuse = m_point_diffuseColor * diffusePower * m_point_diffuseIntensity;
+        
+        point_diffuse *= point_attenuation;
 
-float3 Speculate(
-	const in float3 specularColor,
-	uniform float specularIntensity,
-	const in float3 viewNormal,
-	const in float3 viewFragToL,
-	const in float3 viewPos,
-	const in float att,
-	const in float specularPower)
-{
-	// calculate reflected light vector
-	const float3 w = viewNormal * dot(viewFragToL, viewNormal);
-	const float3 r = normalize(w * 2.0f - viewFragToL);
-	// vector from camera to fragment (in view space)
-	const float3 viewCamToFrag = normalize(viewPos);
-	// calculate specular component color based on angle between
-	// viewing vector and reflection vector, narrow with power function
-	return att * specularColor * specularIntensity * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPower);
-}
-
-LightVectorData CalculateLightVectorData(const in float3 lightPos, const in float3 fragPos)
-{
-	LightVectorData lv;
-	lv.vToL = lightPos - fragPos;
-	lv.distToL = length(lv.vToL);
-	lv.dirToL = lv.vToL / lv.distToL;
-	return lv;
+    }
+	
+	//Specular
+	{
+        float3 viewDirection = normalize(m_cameraPosition - position);
+        float3 reflectionDirection = reflect(point_direction, normal);
+      
+        float specular = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 32);
+        point_specular = m_point_specularIntensity * specular;
+        
+        point_specular *= point_attenuation;
+    }
+	
+    return (point_ambient + point_diffuse + point_specular);
 }

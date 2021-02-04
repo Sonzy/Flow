@@ -482,9 +482,9 @@ btDiscreteDynamicsWorld* World::GetPhysicsWorld()
 	return Application::GetWorld()->m_PhysicsWorld;
 }
 
-World* World::Get()
+World& World::Get()
 {
-	return Application::GetWorld();
+	return *Application::GetWorld();
 }
 
 void World::AddPhysicsObject(btRigidBody* Obj)

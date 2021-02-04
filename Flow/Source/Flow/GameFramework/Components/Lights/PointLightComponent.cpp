@@ -4,6 +4,10 @@
 #include "PointLightComponent.h"
 #include "ThirdParty/ImGui/imgui.h"
 
+#include "Assets/Materials/MaterialCommon.h"
+
+#include "Rendering/Core/Camera/Camera.h"
+
 #if WITH_EDITOR
 #include "Assets/AssetSystem.h"
 	#include "Editor/Editor.h"
@@ -17,24 +21,21 @@
 //TODO: Support multiple lights
 
 PointLightComponent::PointLightComponent()
-	: RenderableComponent("Point Light Component")
-	, m_lightPixelBuffer(0)
+	: PointLightComponent("Point Light Component")
 {
 }
 
 PointLightComponent::PointLightComponent(const std::string& ComponentName)
 	: RenderableComponent(ComponentName)
-	, m_lightPixelBuffer(0)
+	, m_lightPixelBuffer(MaterialCommon::Register::PointLightProperties)
 {
-	m_lightBuffer = {
-	{ 1.5f,100.0f,-4.5f },
-	{ 0.05f,0.05f,0.05f },
-	{ 1.0f,1.0f,1.0f },
-	1.0f,
-	1.0f,
-	0.045f,
-	0.0075f,
-	};
+	m_lightBuffer.m_Diffuse	= { 1.0f, 1.0f, 1.0f };
+	m_lightBuffer.m_Position = { 0.0f, 0.0f, 0.0f };
+	m_lightBuffer.m_DiffuseIntensity = 1.0f;
+	m_lightBuffer.m_specularIntensity = 1.0f;	
+	m_lightBuffer.m_attenuationConstant = 1.0f;	
+	m_lightBuffer.m_attenuationLinear = 0.09f;	
+	m_lightBuffer.m_attenuationQuadratic = 0.032f;	
 }
 
 void PointLightComponent::OnRegistered()
@@ -61,45 +62,41 @@ void PointLightComponent::Render()
 	//Update the transformed position to the shader
 	m_lightPixelBuffer.Update(Copy);
 	m_lightPixelBuffer.Bind();
-
-	IconManager* iconManager = Editor::Get().GetUIComponent<IconManager>();
 }
 
 void PointLightComponent::DrawComponentDetailsWindow()
 {
 	ImGui::TextColored(IMGUI_YELLOW, "Point Light Settings");
 	ImGui::ColorEdit3("Light Diffuse Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Diffuse));
-	ImGui::ColorEdit3("Ambient Colour", reinterpret_cast<float*>(&m_lightBuffer.m_Ambient));
 
 	float width = ImGui::GetContentRegionAvailWidth();
 	ImGui::Columns(3, "ComponentDeets", true);
 
-	ImGui::SetColumnWidth(0, width * 0.4);
-	ImGui::SetColumnWidth(1, width * 0.4);
-	ImGui::SetColumnWidth(2, width * 0.2);
+	ImGui::SetColumnWidth(0, width * 0.4f);
+	ImGui::SetColumnWidth(1, width * 0.4f);
+	ImGui::SetColumnWidth(2, width * 0.2f);
 
 	ImGui::Text("Diffuse Intensity");
+	ImGui::Text("Specular Intensity");
 	ImGui::Text("Attenuation Constant");
 	ImGui::Text("Attenuation Linear");
 	ImGui::Text("Attenuation Quadratic");
 
 	ImGui::NextColumn();
 
-	//ImGui::PushItemWidth();
 	ImGui::PushID("DiffuseSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_DiffuseIntensity, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationConstantSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationConstant, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationLinearSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationLinear, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationQuadraticSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_AttenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
-	//ImGui::PopItemWidth();
+	ImGui::PushID("SpecularSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_specularIntensity, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AConstantSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_attenuationConstant, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("ALinearSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_attenuationLinear, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AQuadraticSlider"); ImGui::SliderFloat("", &m_lightBuffer.m_attenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
 
 	ImGui::NextColumn();
 
-	//ImGui::PushItemWidth();
 	ImGui::PushID("DiffuseInput"); ImGui::InputFloat("", &m_lightBuffer.m_DiffuseIntensity, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationConstantInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationConstant, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationLinearInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationLinear, 0.0f, 10.0f); ImGui::PopID();
-	ImGui::PushID("AttenuationQuadraticInput"); ImGui::InputFloat("", &m_lightBuffer.m_AttenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
-	//ImGui::PopItemWidth();
+	ImGui::PushID("SpecularInput"); ImGui::InputFloat("", &m_lightBuffer.m_specularIntensity, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AConstantInput"); ImGui::InputFloat("", &m_lightBuffer.m_attenuationConstant, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("ALinearInput"); ImGui::InputFloat("", &m_lightBuffer.m_attenuationLinear, 0.0f, 10.0f); ImGui::PopID();
+	ImGui::PushID("AQuadraticInput"); ImGui::InputFloat("", &m_lightBuffer.m_attenuationQuadratic, 0.0f, 10.0f); ImGui::PopID();
 
 	ImGui::NextColumn();
 }
@@ -135,23 +132,23 @@ void PointLightComponent::Serialize(YAML::Emitter& Archive)
 		Archive << YAML::Key << "Position";
 		Archive << YAML::Value << static_cast<Vector3>(m_lightBuffer.m_Position);
 
-		Archive << YAML::Key << "Ambient";
-		Archive << YAML::Value << static_cast<Vector3>(m_lightBuffer.m_Ambient);
-
 		Archive << YAML::Key << "Diffuse";
 		Archive << YAML::Value << static_cast<Vector3>(m_lightBuffer.m_Diffuse);
 
 		Archive << YAML::Key << "DiffuseIntensity";
 		Archive << YAML::Value << m_lightBuffer.m_DiffuseIntensity;
 
+		Archive << YAML::Key << "SpecularIntensity";
+		Archive << YAML::Value << m_lightBuffer.m_specularIntensity;
+
 		Archive << YAML::Key << "AttenuationConstant";
-		Archive << YAML::Value << m_lightBuffer.m_AttenuationConstant;
+		Archive << YAML::Value << m_lightBuffer.m_attenuationConstant;
 
 		Archive << YAML::Key << "AttenuationLinear";
-		Archive << YAML::Value << m_lightBuffer.m_AttenuationLinear;
+		Archive << YAML::Value << m_lightBuffer.m_attenuationLinear;
 
 		Archive << YAML::Key << "AttenuationQuadratic";
-		Archive << YAML::Value << m_lightBuffer.m_AttenuationQuadratic;
+		Archive << YAML::Value << m_lightBuffer.m_attenuationQuadratic;
 	}
 	Archive << YAML::EndMap;
 }
@@ -163,11 +160,11 @@ void PointLightComponent::Deserialize(YAML::Node& Archive)
 	if (YAML::Node node = Archive["PointLightComponent"])
 	{
 		m_lightBuffer.m_Position = node["Position"].as<Vector3>();
-		m_lightBuffer.m_Ambient = node["Ambient"].as<Vector3>();
 		m_lightBuffer.m_Diffuse = node["Diffuse"].as<Vector3>();
 		m_lightBuffer.m_DiffuseIntensity = node["DiffuseIntensity"].as<float>();
-		m_lightBuffer.m_AttenuationConstant = node["AttenuationConstant"].as<float>();
-		m_lightBuffer.m_AttenuationLinear = node["AttenuationLinear"].as<float>();
-		m_lightBuffer.m_AttenuationQuadratic = node["AttenuationQuadratic"].as<float>();
+		m_lightBuffer.m_specularIntensity = node["SpecularIntensity"].as<float>();
+		m_lightBuffer.m_attenuationConstant = node["AttenuationConstant"].as<float>();
+		m_lightBuffer.m_attenuationLinear = node["AttenuationLinear"].as<float>();
+		m_lightBuffer.m_attenuationQuadratic = node["AttenuationQuadratic"].as<float>();
 	}
 }

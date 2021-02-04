@@ -6,7 +6,10 @@
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 #include "Rendering/Core/Bindables/Shaders/PixelShader.h"
 #include "Rendering/Core/Bindables/Shaders/VertexShader.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
+#include "Assets/Materials/MaterialCommon.h"
 
 RenderableComponent::RenderableComponent()
 	: WorldComponent("Unnamed RenderableComponent")
@@ -51,22 +54,20 @@ void RenderableComponent::OnRegistered()
 
 void RenderableComponent::RefreshBinds()
 {
-	m_Techniques.clear();
-
 	if (IsRegistered() == true)
 	{
 		Technique Selection = Technique("RenderableComponent_Selection");
 		Step Rendering(RenderPass::Selection);
 
-		//No need to recreate mesh binds
-
 		std::string tag = "SelectionBuffer_" + std::to_string(GetGuid());
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, 7, tag));
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, tag));
 
 		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
 		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
 		Rendering.AddBindable(std::move(vShader));
 		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
+
+		Rendering.AddBindable(InputLayout::Resolve(m_VertexBuffer->GetLayout(), vShaderByteCode));
 
 		Rendering.AddBindable(new TransformConstantBuffer(this));
 

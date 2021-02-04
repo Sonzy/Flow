@@ -8,7 +8,7 @@
 //= Class (InputLayout) Definition =============
 
 InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
-	: m_VertexLayout(std::move(Layout))
+	: m_VertexLayout(Layout)
 {
 	CREATE_RESULT_HANDLE();
 

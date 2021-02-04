@@ -1,17 +1,6 @@
-cbuffer CBuf
-{
-    matrix modelView;
-    matrix modelViewProj;
-}
+#include "VertexShaderHelpers.hlsli"
 
-struct VSOut
+float4 main(float3 pos : Position) : SV_Position
 {
-    float4 Pos : SV_Position;
-};
-
-VSOut main(float3 pos : Position, float3 n : Normal, float2 tex : TexCoord)
-{
-    VSOut vso;
-    vso.Pos = mul(float4(pos, 1.0f), modelViewProj);
-    return vso;
+    return mul(float4(pos, 1.0f), m_modelViewProj);
 }

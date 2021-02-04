@@ -151,12 +151,17 @@ void Application::InitialiseApplication()
 		SkyMat->SetPixelShader("Texture_PS");
 		SkyMat->SetVertexShader("Texture_VS");
 
+		//= Flat Color =
+
+		Mat_FlatColour* flatColorGreen = AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColor_Green")->GetMaterial<Mat_FlatColour>();
+		flatColorGreen->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+
 		//= 2D Materials =
 
-		ColorMaterial2D* flatColorWhite = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D")->GetMaterial<ColorMaterial2D>();
-		flatColorWhite->SetColour(Vector3(1.0f, 1.0f, 1.0f));
-		ColorMaterial2D* flatColorGreen = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D")->GetMaterial<ColorMaterial2D>();
-		flatColorGreen->SetColour(Vector3(0.0f, 1.0f, 0.0f));
+		ColorMaterial2D* flatColorWhite2D = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_White2D")->GetMaterial<ColorMaterial2D>();
+		flatColorWhite2D->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+		ColorMaterial2D* flatColorGreen2D = AssetSystem::CreateMaterial<ColorMaterial2D>("Mat_FlatColour_Green2D")->GetMaterial<ColorMaterial2D>();
+		flatColorGreen2D->SetColour(Vector3(0.0f, 1.0f, 0.0f));
 
 
 		Mat_Texture2D* matTexture2D = AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D")->GetMaterial<Mat_Texture2D>();

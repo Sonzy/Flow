@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include "Core.h"
 #include "Rendering/Core/RenderableBase.h"
+#include "Maths/Vector3.h"
+#include "Maths/Rotator.h"
 
 //= Forward Declarations ============================
 
@@ -22,9 +24,9 @@ public:
 	void						InitialiseStaticMesh(const std::string& LocalPath, Material* MaterialOverride);
 	virtual DirectX::XMMATRIX	GetTransformXM() const override;
 
-protected:
+public:
 
-	//= Protected Variables =========================================
+	//= Public Variables =========================================
 
 	Vector3						m_Position;
 	Rotator						m_Rotation;

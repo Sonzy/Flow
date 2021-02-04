@@ -1,6 +1,6 @@
 #include "Flowpch.h"
 #include "PointLightActor.h"
-#include "Flow/GameFramework/Components/PointLightComponent.h"
+#include "Flow/GameFramework/Components/Lights/PointLightComponent.h"
 #include "Flow/GameFramework/Components/WorldComponent.h"
 #include "Flow/GameFramework/Components/Component.h"
 
@@ -34,7 +34,7 @@ void PointLightActor::Serialize(YAML::Emitter& Archive)
 
 void PointLightActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get()->DestroyComponent(m_RootComponent);
+	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
 
 	Actor::Deserialize(Archive);
 

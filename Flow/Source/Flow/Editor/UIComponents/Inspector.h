@@ -51,7 +51,7 @@ private:
 	//= Private Variables =========================
 
 	WorldComponent*					m_SelectedComponent;
-	World*							m_CurrentWorld;
+	World&							m_CurrentWorld;
 	Actor*							m_RenameActor;
 
 	char							m_RenameBuffer[128];

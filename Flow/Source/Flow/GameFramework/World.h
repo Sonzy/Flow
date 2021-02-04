@@ -132,7 +132,7 @@ public:
 	static btCollisionWorld::ClosestRayResultCallback	WorldTrace(Vector3 Start, Vector3 End);
 
 	static btDiscreteDynamicsWorld*						GetPhysicsWorld();
-	static World*										Get();
+	static World&										Get();
 
 	void												AddPhysicsObject(btRigidBody* Obj);
 	void												AddCollisionObject(btCollisionObject* Obj);

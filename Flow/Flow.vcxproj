@@ -128,6 +128,7 @@
     <ClInclude Include="Source\Flow\Core.h" />
     <ClInclude Include="Source\Flow\Editor\EditorCamera.h" />
     <ClInclude Include="Source\Flow\Editor\IconManager.h" />
+    <ClInclude Include="Source\Flow\Editor\Modules\Module.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Inspector.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\LevelManager.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\SceneManager.h" />
@@ -138,7 +139,7 @@
     <ClInclude Include="Source\Flow\Editor\UIComponents\AssetBrowser.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\UIComponent.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\Console.h" />
-    <ClInclude Include="Source\Flow\Editor\UIComponents\SpawnWindow.h" />
+    <ClInclude Include="Source\Flow\Editor\Modules\Spawner.h" />
     <ClInclude Include="Source\Flow\Editor\UIComponents\WorldViewer.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\ErrorHandling\dxerr.h" />
@@ -150,13 +151,15 @@
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
     <ClInclude Include="Source\Flowpch.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Actors\DirectionalLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\PointLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\SkyboxActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\SpriteActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\StaticMeshActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\CameraComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\Component.h" />
-    <ClInclude Include="Source\Flow\GameFramework\Components\PointLightComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\Lights\DirectionalLightComponent.h" />
+    <ClInclude Include="Source\Flow\GameFramework\Components\Lights\PointLightComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\RenderableComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\SkyboxComponent.h" />
     <ClInclude Include="Source\Flow\GameFramework\Components\SpriteComponent.h" />
@@ -362,6 +365,7 @@
     <ClCompile Include="Source\Flow\Assets\Textures\TextureAsset.cpp" />
     <ClCompile Include="Source\Flow\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source\Flow\Editor\IconManager.cpp" />
+    <ClCompile Include="Source\Flow\Editor\Modules\Module.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Inspector.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\LevelManager.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\SceneManager.cpp" />
@@ -372,7 +376,7 @@
     <ClCompile Include="Source\Flow\Editor\UIComponents\AssetBrowser.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\UIComponent.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\Console.cpp" />
-    <ClCompile Include="Source\Flow\Editor\UIComponents\SpawnWindow.cpp" />
+    <ClCompile Include="Source\Flow\Editor\Modules\Spawner.cpp" />
     <ClCompile Include="Source\Flow\Editor\UIComponents\WorldViewer.cpp" />
     <ClCompile Include="Source\Flow\ErrorHandling\dxerr.cpp" />
     <ClCompile Include="Source\Flow\Events\ApplicationEvent.cpp" />
@@ -384,13 +388,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Flow\GameFramework\Actors\CameraActor.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Actors\DirectionalLightActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\PointLightActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\SkyboxActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\SpriteActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Actors\StaticMeshActor.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\Component.cpp" />
-    <ClCompile Include="Source\Flow\GameFramework\Components\PointLightComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\Lights\DirectionalLightComponent.cpp" />
+    <ClCompile Include="Source\Flow\GameFramework\Components\Lights\PointLightComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\RenderableComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Flow\GameFramework\Components\SpriteComponent.cpp" />
@@ -482,6 +488,7 @@
     <None Include="Source\Flow\ErrorHandling\DXGetErrorString.inl" />
     <None Include="Source\Flow\ErrorHandling\DXTrace.inl" />
     <None Include="Source\Flow\Rendering\Core\Shaders\ShaderHelpers.hlsli" />
+    <None Include="Source\Flow\Rendering\Core\Shaders\VertexShaderHelpers.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\assimp-vc140-mt.lib" />
@@ -568,19 +575,6 @@
     <FxCompile Include="Source\Flow\Rendering\Core\Shaders\Texture2D_VS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPerPixel_PS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="Source\Flow\Rendering\Core\Shaders\TexturedPerPixel_VS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Bin/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>

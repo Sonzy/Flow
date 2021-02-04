@@ -23,7 +23,7 @@ void WorldViewer::Render()
 		{
 			if (ImGui::CollapsingHeader("Actor List"))
 			{
-				const std::unordered_map<FGUID, Actor*> actorList = m_World->GetActorMap();
+				const std::unordered_map<FGUID, Actor*> actorList = m_World.GetActorMap();
 				for (auto data : actorList)
 				{
 					ImGui::Text("%lu - %s", data.first, data.second->GetName().c_str());
@@ -32,7 +32,7 @@ void WorldViewer::Render()
 
 			if (ImGui::CollapsingHeader("Component List"))
 			{
-				const std::unordered_map<FGUID, Component*> componentList = m_World->GetComponentMap();
+				const std::unordered_map<FGUID, Component*> componentList = m_World.GetComponentMap();
 				for (auto data : componentList)
 				{
 					ImGui::Text("%lu - %s", data.first, data.second->GetName().c_str());

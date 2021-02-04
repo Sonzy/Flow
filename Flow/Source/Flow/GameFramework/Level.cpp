@@ -7,6 +7,8 @@
 #include "Actor.h"
 #include "Components/WorldComponent.h"
 
+#include "Rendering/Core/Camera/Camera.h"
+
 #include "Utils/YamlSerializer.h"
 #include <yaml-cpp/yaml.h>
 
@@ -31,7 +33,7 @@ void Level::Save(YAML::Emitter& file)
 	//= Serialise all actors =
 	file << YAML::Key << "Actors";
 	file << YAML::Value << YAML::BeginSeq;
-	for (const std::pair<FGUID, Actor*> actor : World::Get()->GetActorMap())
+	for (const std::pair<FGUID, Actor*> actor : World::Get().GetActorMap())
 	{
 		if (actor.second->IsOwned() == false)
 		{
@@ -45,7 +47,7 @@ void Level::Save(YAML::Emitter& file)
 	//= Serialise all components =
 	file << YAML::Key << "Components";
 	file << YAML::Value << YAML::BeginSeq;
-	for (const std::pair<FGUID, Component*> component : World::Get()->GetComponentMap())
+	for (const std::pair<FGUID, Component*> component : World::Get().GetComponentMap())
 	{
 		if (component.second->IsOwned() == false)
 		{
@@ -84,7 +86,7 @@ bool Level::Load(YAML::Node& Input)
 				continue;
 			}
 
-			World::Get()->RegisterGameObject(NewComponent, GameObject["Guid"].as<FGUID>());
+			World::Get().RegisterGameObject(NewComponent, GameObject["Guid"].as<FGUID>());
 			NewComponent->Deserialize(componentNode);
 		}
 	}
@@ -105,7 +107,7 @@ bool Level::Load(YAML::Node& Input)
 				continue;
 			}
 
-			World::Get()->RegisterGameObject(NewActor, GameObject["Guid"].as<FGUID>());
+			World::Get().RegisterGameObject(NewActor, GameObject["Guid"].as<FGUID>());
 			NewActor->Deserialize(actor);
 		}
 	}

@@ -252,7 +252,7 @@ void StaticMeshComponent::DefaultInitialise()
 {
 	SetMeshAndMaterial("Box", "Mat_LitColor_Grey");
 
-	switch (World::Get()->GetWorldState())
+	switch (World::Get().GetWorldState())
 	{
 	case WorldState::Editor: EditorBeginPlay(); break;
 	case WorldState::Paused:
@@ -279,11 +279,10 @@ void StaticMeshComponent::RefreshBinds()
 		return;
 	}
 
-	RenderableComponent::RefreshBinds();
+	m_Techniques.clear();
 
 	//= Standard Rendering ====
 	VertexLayout MeshLayout;
-	auto Transform = std::make_shared<TransformConstantBuffer>(this);
 
 	if (!m_DrawWithoutDepth)
 	{
@@ -306,58 +305,60 @@ void StaticMeshComponent::RefreshBinds()
 		}
 		AddTechnique(Standard);
 	}
-	else
-	{
-		Technique StandardNoDepthPass = Technique("StaticMeshComponent_StandardNoDepthPass");
-		{
-			Step MainStep(RenderPass::NoDepth);
+	//else
+	//{
+	//	Technique StandardNoDepthPass = Technique("StaticMeshComponent_StandardNoDepthPass");
+	//	{
+	//		Step MainStep(RenderPass::NoDepth);
+	//
+	//		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
+	//		m_StaticMesh->GenerateBinds(MeshLayout);
+	//		m_VertexBuffer = m_StaticMesh->m_BindableVBuffer;
+	//		m_IndexBuffer = m_StaticMesh->m_IndexBuffer;
+	//		m_Topology = m_StaticMesh->m_Topology;
+	//
+	//		if (m_Material)
+	//			m_Material->BindMaterial(&MainStep, MeshLayout);
+	//
+	//		MainStep.AddBindable(new TransformConstantBuffer(this));
+	//
+	//		StandardNoDepthPass.AddStep(std::move(MainStep));
+	//	}
+	//	AddTechnique(StandardNoDepthPass);
+	//}
+	//
+	//
+	//Technique Outline = Technique("StaticMeshComponent_Outline");
+	//Outline.Deactivate();
+	//{
+	//	Step Masking(RenderPass::OutlineMasking);
+	//
+	//	auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
+	//	auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
+	//	Masking.AddBindable(std::move(VS));
+	//
+	//	Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+	//	Masking.AddBindable(new TransformConstantBuffer(this));
+	//
+	//	Outline.AddStep(std::move(Masking));
+	//}
+	//{
+	//	Step DrawOutline(RenderPass::Outline);
+	//
+	//	auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
+	//	auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
+	//
+	//	DrawOutline.AddBindable(std::move(VS));
+	//	DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_PS")->GetPath()));
+	//	DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
+	//	DrawOutline.AddBindable(new TransformConstantBuffer(this));
+	//
+	//	Outline.AddStep(DrawOutline);
+	//}
 
-			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
-			m_StaticMesh->GenerateBinds(MeshLayout);
-			m_VertexBuffer = m_StaticMesh->m_BindableVBuffer;
-			m_IndexBuffer = m_StaticMesh->m_IndexBuffer;
-			m_Topology = m_StaticMesh->m_Topology;
+	//AddTechnique(Outline);
 
-			if (m_Material)
-				m_Material->BindMaterial(&MainStep, MeshLayout);
-
-			MainStep.AddBindable(new TransformConstantBuffer(this));
-
-			StandardNoDepthPass.AddStep(std::move(MainStep));
-		}
-		AddTechnique(StandardNoDepthPass);
-	}
-
-
-	Technique Outline = Technique("StaticMeshComponent_Outline");
-	Outline.Deactivate();
-	{
-		Step Masking(RenderPass::OutlineMasking);
-
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
-		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
-		Masking.AddBindable(std::move(VS));
-
-		Masking.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		Masking.AddBindable(new TransformConstantBuffer(this));
-
-		Outline.AddStep(std::move(Masking));
-	}
-	{
-		Step DrawOutline(RenderPass::Outline);
-
-		auto VS = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_VS")->GetPath());
-		auto VSByteCode = static_cast<VertexShader&>(*VS).GetByteCode();
-
-		DrawOutline.AddBindable(std::move(VS));
-		DrawOutline.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("SolidColor_PS")->GetPath()));
-		DrawOutline.AddBindable(InputLayout::Resolve(MeshLayout, VSByteCode));
-		DrawOutline.AddBindable(new TransformConstantBuffer(this));
-
-		Outline.AddStep(DrawOutline);
-	}
-
-	AddTechnique(Outline);
+	RenderableComponent::RefreshBinds();
 }
 
 void StaticMeshComponent::DrawComponentDetailsWindow()
@@ -422,7 +423,7 @@ void StaticMeshComponent::InitialisePhysics()
 	GenerateCollision();
 	CreateRigidBody(); //TODO: Handle non-root component objects
 
-	World* CurrentWorld = World::Get();
+	World& CurrentWorld = World::Get();
 
 	if (!m_RigidBody)
 	{
@@ -430,7 +431,7 @@ void StaticMeshComponent::InitialisePhysics()
 		return;
 	}
 
-	CurrentWorld->AddPhysicsObject(m_RigidBody);
+	CurrentWorld.AddPhysicsObject(m_RigidBody);
 
 	//FLOW_ENGINE_LOG("Physics initialised for object {0}", m_name);
 }
@@ -442,7 +443,7 @@ void StaticMeshComponent::DestroyPhysics()
 		return;
 	}
 
-	World::Get()->GetPhysicsWorld()->removeRigidBody(m_RigidBody);
+	World::Get().GetPhysicsWorld()->removeRigidBody(m_RigidBody);
 	delete m_RigidBody;
 	m_RigidBody = nullptr;
 }

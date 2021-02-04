@@ -1,40 +1,41 @@
 ReferencedAssets:
-  - Flow/Assets/Textures/Error.png
-  - Bin/Shaders/Texture_VS.cso
-  - Flow/Assets/Icons/Icon_FMesh.png
-  - Flow/Assets/Models/Wabble_Crate.fmesh
-  - Flow/Assets/Models/Area.fmesh
+  - Flow/Assets/Models/Cube.fmesh
   - Bin/Shaders/TexturedPerPixel_PS.cso
   - Flow/Assets/Models/Box.fmesh
-  - Flow/Assets/Models/Cube.fmesh
+  - Flow/Assets/Textures/Error.png
+  - Flow/Assets/Icons/Icon_FMesh.png
+  - Bin/Shaders/Texture_VS.cso
+  - Flow/Assets/Models/Wabble_Crate.fmesh
+  - Flow/Assets/Models/Area.fmesh
   - Flow/Assets/Models/Wabble_Table.fmesh
   - Flow/Assets/Icons/Icon_Light.png
+  - Flow/Assets/Icons/Icon_DirectionalLight.png
+  - Flow/Assets/Icons/Icon_Stop.png
   - Flow/Assets/Icons/Icon_Camera.png
   - Flow/Assets/Models/Arrow.fmesh
-  - Flow/Assets/Textures/StandardCubeMap.png
   - Flow/Assets/Textures/Wabble_Weapons.png
-  - Flow/Assets/Models/Wabble_Chair.fmesh
-  - Flow/Assets/Models/Wabble_Shotgun.fmesh
+  - Flow/Assets/Textures/StandardCubeMap.png
   - Bin/Shaders/TexturedPerPixel_VS.cso
+  - Flow/Assets/Models/Wabble_Shotgun.fmesh
+  - Flow/Assets/Models/Wabble_Chair.fmesh
   - Bin/Shaders/Selection_PS.cso
   - Bin/Shaders/Selection_VS.cso
-  - Bin/Shaders/Selection2D_PS.cso
   - Flow/Assets/Textures/Wabble_Props.png
+  - Bin/Shaders/Selection2D_PS.cso
   - Bin/Shaders/Selection2D_VS.cso
-  - Flow/Assets/Textures/Wabble_Sand.png
   - Bin/Shaders/SolidColor_VS.cso
-  - Flow\Assets\Models\TerrainTesting.fmesh
+  - Flow/Assets/Textures/Wabble_Sand.png
   - Flow/Assets/Models/Wabble_Revolver.fmesh
+  - Flow\Assets\Models\TerrainTesting.fmesh
   - Flow/Assets/Textures/YokohamaCubemap_4k.png
   - Flow/Assets/Models/Wabble_Rifle.fmesh
   - Flow/Assets/Models/Wabble_Blunderbuss.fmesh
   - Flow/Assets/Textures/Wabble_Wood.png
-  - Bin/Shaders/LitColor_VS.cso
   - Flow/Assets/Textures/QuadTextureTest.png
+  - Bin/Shaders/LitColor_VS.cso
   - Flow/Assets/Icons/Icon_Tool_Selection.png
   - Flow/Assets/Icons/Icon_Play.png
   - Flow/Assets/Icons/Icon_Pause.png
-  - Flow/Assets/Icons/Icon_Stop.png
   - Flow/Assets/Icons/Icon_Shader.png
   - Flow/Assets/Icons/Icon_Folder.png
   - Flow/Assets/Icons/Icon_Image.png
@@ -42,10 +43,11 @@ ReferencedAssets:
   - Bin/Shaders/TexturedPhong_PS.cso
   - Bin/Shaders/Texture_PS.cso
   - Bin/Shaders/TexturedPhong_VS.cso
-  - Bin/Shaders/SolidColor2D_VS.cso
-  - Bin/Shaders/LineColor_VS.cso
   - Bin/Shaders/SolidColor_PS.cso
+  - Bin/Shaders/LineColor_VS.cso
+  - Bin/Shaders/SolidColor2D_VS.cso
   - Bin/Shaders/SolidColor2D_PS.cso
   - Bin/Shaders/LineColor_PS.cso
   - Bin/Shaders/LitColor_PS.cso
   - Bin/Shaders/Texture2D_VS.cso
+  - Flow/Assets/Models/ArrowZForward.fmesh

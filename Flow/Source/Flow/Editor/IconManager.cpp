@@ -8,6 +8,7 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/Core/RenderQueue/Pass.h"
 #include "Rendering/Core/Vertex/VertexLayout.h"
+#include "Rendering/Core/Camera/Camera.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 #include "Rendering/Core/Bindables/Topology.h"
@@ -108,7 +109,7 @@ void IconManager::RenderIcons()
 {
 	PROFILE_FUNCTION();
 
-	const World& world = *World::Get();
+	const World& world = World::Get();
 	Vector3 cameraPosition = RenderCommand::GetMainCamera()->GetCameraPosition();
 	for (auto iconData : m_iconData)
 	{
@@ -117,9 +118,16 @@ void IconManager::RenderIcons()
 			FLOW_ENGINE_WARNING("Icon is here for invalid object");
 			continue;
 		}
-
-		World::Get()->FindComponent<WorldComponent>(iconData.first)->IconUpdate(*this);
-		Renderer::Submit(iconData.second);
+				
+		if (WorldComponent* parent = World::Get().FindComponent<WorldComponent>(iconData.first))
+		{
+			parent->IconUpdate(*this);
+			Renderer::Submit(iconData.second);
+		}
+		else
+		{
+			FLOW_ENGINE_WARNING("Icon parent is nullptr");
+		}
 	}
 }
 
@@ -221,7 +229,7 @@ void Icon::RefreshBinds(const IconManager& manager)
 
 		//No need to recreate mesh binds
 		std::string tag = "SelectionBuffer_" + std::to_string(m_guid);
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(buff, 7, tag));
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(buff, MaterialCommon::Register::Selection, tag));
 
 		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_VS")->GetPath());
 		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();

@@ -8,13 +8,13 @@
 class UIComponent;
 class MenuBar;
 class Application;
-struct ImVec2;
 class EditorCamera;
 class LevelManager;
-class SpawnWindow;
 class Tool;
 class Console;
 class IconManager;
+class Module;
+struct ImVec2;
 
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
@@ -173,9 +173,23 @@ public:
 	}
 
 	template<typename T>
+	T* GetModule() const
+	{
+		for (Module* module : m_modules)
+		{
+			if (T* casted = dynamic_cast<T*>(module))
+			{
+				return casted;
+			}
+		}
+
+		return nullptr;
+	}
+
+	template<typename T>
 	void RegisterTool()
 	{
-		static_assert(std::is_base_of<Tool, T>::value, "Tried to create a component templated with a non-component type");
+		static_assert(std::is_base_of<Tool, T>::value, "Tried to create a component Tool with a non-Tool type");
 
 		if (GetTool<T>() != nullptr)
 		{
@@ -187,9 +201,9 @@ public:
 	}
 
 	template<typename T>
-	void						RegisterUIComponent()
+	void RegisterUIComponent()
 	{
-		static_assert(std::is_base_of<UIComponent, T>::value, "Tried to create a component templated with a non-component type");
+		static_assert(std::is_base_of<UIComponent, T>::value, "Tried to create a UIComponent templated with a non-UIComponent type");
 
 		if (GetUIComponent<T>() != nullptr)
 		{
@@ -200,6 +214,22 @@ public:
 		T* NewUIComponent = new T();
 		NewUIComponent->m_editor = this;
 		m_UIComponents.push_back(NewUIComponent);
+	}
+
+	template<typename T>
+	void RegisterModule()
+	{
+		static_assert(std::is_base_of<Module, T>::value, "Tried to create a module templated with a non-module type");
+
+		if (GetModule<T>() != nullptr)
+		{
+			FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered Module");
+			return;
+		}
+
+		T* newModule = new T();
+		newModule->m_editor = this;
+		m_modules.push_back(newModule);
 	}
 
 private:
@@ -256,6 +286,7 @@ private:
 
 	std::vector<Tool*>				m_Tools;
 	std::vector<UIComponent*>		m_UIComponents;
+	std::vector<Module*>			m_modules;
 
 	//App Statistics
 	float							m_TimeSinceFrameUpdate = 0.0f;

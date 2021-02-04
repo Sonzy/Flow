@@ -4,6 +4,7 @@
 
 #include <DirectXMath.h>
 #include "Maths/Maths.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 
 //= Forward Declarations =====================================
 
@@ -14,6 +15,13 @@ class MouseScrolledEvent;
 class KeyPressedEvent;
 class KeyReleasedEvent;
 
+// Struct Definitions ////////////////////////////////////////
+
+struct CameraBuffer
+{
+	alignas(16)	DirectX::XMFLOAT3 m_cameraPosition;
+};
+
 //= Class Definition =========================================
 
 /* Interface for camera, anything inheriting from this can be used as a camera.
@@ -21,6 +29,8 @@ Use Update instead of tick, if the camera is moved outside of update, re-cache *
 class FLOW_API CameraBase
 {
 public:
+
+	CameraBase();
 
 	//= Public Functions
 	virtual void							SetProjectionMatrix(DirectX::XMMATRIX NewProjection);
@@ -74,4 +84,8 @@ protected:
 	Vector3									m_LastKnownCameraPos;
 	Vector3									m_Forward;
 	float									m_FieldOfView = 90;
+
+
+	CameraBuffer							m_cameraBuffer;
+	//PixelConstantBuffer<CameraBuffer>		m_cameraPixelBuffer;
 };

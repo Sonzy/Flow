@@ -10,6 +10,7 @@
 BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer)
 	: m_Stride((UINT)Buffer.GetLayout().GetSize())
 	, m_Tag(Tag)
+	, m_layout(Buffer.GetLayout())
 {
 	CREATE_RESULT_HANDLE();
 
@@ -25,6 +26,10 @@ BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexB
 	SubresourceData.pSysMem = Buffer.GetData();
 
 	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &m_Buffer));
+
+#if WITH_EDITOR
+	m_d3dlayout = Buffer.GetLayout().GetD3DLayout();
+#endif
 }
 
 void BindableVertexBuffer::Bind()
@@ -41,6 +46,11 @@ std::string BindableVertexBuffer::GetUID() const
 {
 	return GenerateUID(m_Tag);
 }
+const VertexLayout& BindableVertexBuffer::GetLayout() const
+{
+	return m_layout;
+}
+
 std::string BindableVertexBuffer::GenerateUID_Internal(const std::string& Tag)
 {
 	using namespace std::string_literals;

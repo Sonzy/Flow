@@ -22,5 +22,5 @@ private:
 
 	// Private Variables //////////////////////
 
-	World* m_World;
+	World& m_World;
 };

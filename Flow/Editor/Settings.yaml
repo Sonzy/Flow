@@ -18,3 +18,13 @@ Testing:
 Rendering:
   NearPlane: 0.0500000007
   FarPlane: 500
+  RenderingFlags:
+    Main: true
+    Outline Masking: true
+    Outline: true
+    No Depth: true
+    2D: true
+    UI: true
+    Selection: true
+    Selection2D: true
+    Front Culling: true

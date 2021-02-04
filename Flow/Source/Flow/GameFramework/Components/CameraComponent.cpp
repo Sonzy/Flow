@@ -43,7 +43,7 @@ void CameraComponent::IconUpdate(IconManager& iconManager)
 
 void CameraComponent::Update(float DeltaTime)
 {
-
+	CameraBase::Update(DeltaTime);
 }
 
 void CameraComponent::MoveCamera(const Transform& NewTransform)

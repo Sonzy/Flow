@@ -97,6 +97,11 @@ public:
 			Yaw != Other.Yaw;
 	}
 
+	Rotator operator-()
+	{
+		return Rotator(-Pitch, -Roll, -Yaw);
+	}
+
 	operator Vector3() const
 	{
 		return Vector3(Pitch, Roll, Yaw);
@@ -106,7 +111,7 @@ public:
 	Vector3 GetForwardVector() const
 	{
 		Rotator Radians = Rotator::AsRadians(*this);
-		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), DirectX::XMQuaternionRotationRollPitchYaw(Radians.Pitch, Radians.Yaw, Radians.Roll));
+		DirectX::XMVECTOR UpdatedVector = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), EulersToQuaternion(Radians));
 		DirectX::XMFLOAT3 Rotated;
 		DirectX::XMStoreFloat3(&Rotated, UpdatedVector);
 		return Vector3(Rotated.x, Rotated.y, Rotated.z);
@@ -187,4 +192,27 @@ public:
 	float Pitch; //Rot around x
 	float Roll; //Rot around z
 	float Yaw; //Rot around y
+
+private:
+
+	DirectX::XMVECTOR EulersToQuaternion(const Rotator rot) const
+	{
+		//Function taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
+		// Abbreviations for the various angular functions
+		double cy = cos(rot.Roll * 0.5);
+		double sy = sin(rot.Roll * 0.5);
+		double cp = cos(rot.Yaw * 0.5);
+		double sp = sin(rot.Yaw * 0.5);
+		double cr = cos(rot.Pitch * 0.5);
+		double sr = sin(rot.Pitch * 0.5);
+
+		DirectX::XMFLOAT4 q;
+		q.w = (float)(cr * cp * cy + sr * sp * sy);
+		q.x = (float)(sr * cp * cy - cr * sp * sy);
+		q.y = (float)(cr * sp * cy + sr * cp * sy);
+		q.z = (float)(cr * cp * sy - sr * sp * cy);
+
+		return DirectX::XMLoadFloat4(&q);
+	}
 };

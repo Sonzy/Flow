@@ -18,6 +18,8 @@
 #include "Rendering\Core\Materials\Material.h"
 #include "Assets/Meshes/MeshAsset.h"
 
+#include "Maths/Maths.h"
+
 //= Class Definition - Static Mesh =====================================
 
 StaticMesh::StaticMesh(const std::string& LocalPath)
@@ -53,7 +55,9 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 DirectX::XMMATRIX StaticMesh::GetTransformXM() const
 {
-	return DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.Pitch, m_Rotation.Yaw, m_Rotation.Roll) * //Rotate around box centre
-		DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);// * //Move relative to origin
+	Rotator rads = Rotator::AsRadians(m_Rotation);
+	return 	DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
+		DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(rads)) *
+		//TODO: XMMAtrixRotationRollPitchYaw doesn't work here. Not sure what is different between the conversion formulae
+		DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 }

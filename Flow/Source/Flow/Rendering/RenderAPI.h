@@ -2,12 +2,12 @@
 
 //= Includes ==================================
 
-#include "Rendering/Core/Camera/Camera.h"
 #include "Maths/IntVector2.h"
 
 //= Forward Declarations ======================
 
 class FrameBuffer;
+class CameraBase;
 
 //= Class Definitions =========================
 

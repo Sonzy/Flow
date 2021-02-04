@@ -1,4 +1,4 @@
-cbuffer test : register(b7)
+cbuffer test : register(b10)
 {
     float colorR;
     float colorG;

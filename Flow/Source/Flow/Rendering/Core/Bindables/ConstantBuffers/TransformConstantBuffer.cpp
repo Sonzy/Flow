@@ -6,11 +6,11 @@
 
 std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::m_VertexConstBuffer;
 
-TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
+TransformConstantBuffer::TransformConstantBuffer(Renderable* Parent)
 	: m_ParentObject(Parent)
 {
 	if (!m_VertexConstBuffer)
-		m_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(VertexSlot);
+		m_VertexConstBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(0);
 }
 
 void TransformConstantBuffer::Bind()

@@ -38,7 +38,7 @@ void SceneManager::Render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	auto State = World::Get()->GetWorldState();
+	auto State = World::Get().GetWorldState();
 	std::string WindowName;
 	switch (State)
 	{

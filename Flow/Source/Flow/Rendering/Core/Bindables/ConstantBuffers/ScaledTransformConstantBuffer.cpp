@@ -1,8 +1,10 @@
 #include "Flowpch.h"
 #include "ScaledTransformConstantBuffer.h"
 
+#include "Rendering/Core/Camera/Camera.h"
+
 ScaledTransformConstantBuffer::ScaledTransformConstantBuffer(Renderable* Parent, UINT VertexSlot)
-	: TransformConstantBuffer(Parent, VertexSlot)
+	: TransformConstantBuffer(Parent)
 {
 }
 

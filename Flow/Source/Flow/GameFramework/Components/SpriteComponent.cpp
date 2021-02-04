@@ -126,7 +126,7 @@ void SpriteComponent::InitialisePhysics()
 		return;
 	}
 
-	World::Get()->AddPhysicsObject(m_RigidBody);
+	World::Get().AddPhysicsObject(m_RigidBody);
 }
 
 void SpriteComponent::EditorBeginPlay()

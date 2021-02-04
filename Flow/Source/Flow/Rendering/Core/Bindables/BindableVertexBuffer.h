@@ -28,6 +28,7 @@ public:
 											BindableVertexBuffer(const std::string& Tag, const VertexBuffer& Buffer);
 	void									Bind() override;
 	std::string								GetUID() const override;
+	const VertexLayout&						GetLayout() const;
 
 protected:
 
@@ -42,4 +43,9 @@ protected:
 	std::string								m_Tag; //Used to find the bindable in the codex
 	UINT									m_Stride;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_Buffer;
+
+#if WITH_EDITOR
+	VertexLayout							m_layout;
+	std::vector<D3D11_INPUT_ELEMENT_DESC>	m_d3dlayout;
+#endif
 };	

@@ -12,6 +12,8 @@
 #include "Rendering/Core/Vertex/VertexLayout.h"
 #include "Rendering/Core/Vertex/VertexBuffer.h"
 
+#include "Rendering/Core/Camera/Camera.h"
+
 #include "Assets/AssetSystem.h"
 
 //= Class (LineBatcher) Definition ==================================

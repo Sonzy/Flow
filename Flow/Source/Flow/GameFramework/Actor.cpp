@@ -7,13 +7,18 @@
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 
 #include "GameFramework\World.h"
-#include "Editor/UIComponents/Inspector.h"
-#include "Editor/UIComponents/SpawnWindow.h"
+
 
 #include "Utils/YamlSerializer.h"
 #include <yaml-cpp/yaml.h>
 
 #include "Utils/ComponentHelper.h"
+
+#if WITH_EDITOR
+	#include "Editor/Editor.h"
+	#include "Editor/Modules/Spawner.h"
+	#include "Editor/UIComponents/Inspector.h"
+#endif
 
 Actor::Actor()
 	: m_RootComponent(nullptr)
@@ -215,12 +220,12 @@ void Actor::Deserialize(YAML::Node& Archive)
 		if (YAML::Node node = actorNode["Components"])
 		{
 			//Check if we have already initialised children that havent had their parent set
-			World* world = World::Get();
+			World& world = World::Get();
 
 			bool root = true;
 			for (YAML::iterator::value_type child : node)
 			{
-				WorldComponent* childComponent = world->FindComponent<WorldComponent>(child.as<FGUID>());
+				WorldComponent* childComponent = world.FindComponent<WorldComponent>(child.as<FGUID>());
 				if (childComponent == nullptr)
 				{
 					continue;
@@ -258,7 +263,7 @@ void Actor::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool D
 		//Add new component
 		if (ImGui::BeginPopupContextWindow())
 		{
-			SpawnWindow::DrawSpawnContextWindow(this);
+			Editor::Get().GetModule<Spawner>()->DrawComponentSpawnContextWindow(this);
 
 			ImGui::EndPopup();
 		}

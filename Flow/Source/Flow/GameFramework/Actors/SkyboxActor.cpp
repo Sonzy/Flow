@@ -31,7 +31,7 @@ void SkyboxActor::Serialize(YAML::Emitter& Archive)
 
 void SkyboxActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get()->DestroyComponent(m_RootComponent);
+	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
 
 	Actor::Deserialize(Archive);
 

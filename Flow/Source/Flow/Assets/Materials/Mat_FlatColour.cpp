@@ -37,7 +37,7 @@ void Mat_FlatColour::BindMaterial(Step* RenderingStep, const VertexLayout& Verte
 	RenderingStep->AddBindable(PixelShader::Resolve(m_PixelShader->GetPath()));
 	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
-	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, MaterialCommon::Register::ColorFloat4, GenerateTag()));
+	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, 0, GenerateTag()));
 }
 
 std::string Mat_FlatColour::GenerateTag() const

@@ -6,11 +6,12 @@
 #include "Rendering\Renderer.h"
 #include "Rendering\Core\Mesh\StaticMesh.h"
 #include "Assets\AssetSystem.h"
+#include "Assets\Materials\MaterialCommon.h"
 
 //= Class (PointLight) Definition ================================
 
 PointLight::PointLight(float LightRadius)
-	:  m_PixelConstantBuffer(0)
+	:  m_PixelConstantBuffer(MaterialCommon::Register::PointLightProperties)
 {
 	Reset();
 }

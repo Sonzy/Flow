@@ -17,9 +17,9 @@
 #include "Rendering/Other/FrameBuffer.h"
 #include "Editor/EditorCamera.h"
 #include "Editor/UIComponents/LevelManager.h"
-#include "Editor/UIComponents/SpawnWindow.h"
 #include "Editor/UIComponents/Console.h"
 #include "Editor/UIComponents/WorldViewer.h"
+#include "Editor/Modules/Spawner.h"
 #include "Editor/IconManager.h"
 
 #include "Editor/UIComponents/Toolbar.h"
@@ -56,11 +56,12 @@ void Editor::Initialise()
 	RegisterUIComponent<AssetBrowser>();
 	RegisterUIComponent<Inspector>();
 	RegisterUIComponent<SceneManager>();
-	RegisterUIComponent<SpawnWindow>();
 	RegisterUIComponent<LevelManager>();
 	RegisterUIComponent<Console>();
 	RegisterUIComponent<IconManager>();
 	RegisterUIComponent<WorldViewer>();
+
+	RegisterModule<Spawner>();
 
 	m_SceneManager = GetUIComponent<SceneManager>();
 
@@ -69,7 +70,7 @@ void Editor::Initialise()
 
 void Editor::InitialiseEditor()
 {
-	World::Get()->LoadLevel();
+	World::Get().LoadLevel();
 }
 
 void Editor::BeginPlay()
@@ -281,6 +282,38 @@ void Editor::SaveEditorSettings()
 
 			file << YAML::Key << "FarPlane";
 			file << YAML::Value << RenderCommand::GetFarPlaneRef();
+
+			file << YAML::Key << "RenderingFlags";
+			file << YAML::Value << YAML::BeginMap;
+			{
+				file << YAML::Key << "Main";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::Main).IsEnabled();
+
+				file << YAML::Key << "Outline Masking";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::OutlineMasking).IsEnabled();
+
+				file << YAML::Key << "Outline";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::Outline).IsEnabled();
+
+				file << YAML::Key << "No Depth";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::NoDepth).IsEnabled();
+
+				file << YAML::Key << "2D";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::Standard2D).IsEnabled();
+
+				file << YAML::Key << "UI";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::UI).IsEnabled();
+
+				file << YAML::Key << "Selection";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::Selection).IsEnabled();
+
+				file << YAML::Key << "Selection2D";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::Selection2D).IsEnabled();
+
+				file << YAML::Key << "Front Culling";
+				file << YAML::Value << RenderQueue::GetPass(RenderPass::FrontFaceCulling).IsEnabled();
+			}
+			file << YAML::EndMap;
 		}
 		file << YAML::EndMap;
 	}
@@ -347,6 +380,19 @@ void Editor::LoadEditorSettings()
 	{
 		RenderCommand::SetNearPlane(renderingData["NearPlane"].as<float>());
 		RenderCommand::SetFarPlane(renderingData["FarPlane"].as<float>());
+
+		if (YAML::Node flags = renderingData["RenderingFlags"])
+		{
+			RenderQueue::GetPass(RenderPass::Main).SetEnabled(				flags["Main"].as<bool>());
+			RenderQueue::GetPass(RenderPass::OutlineMasking).SetEnabled(	flags["Outline Masking"].as<bool>());
+			RenderQueue::GetPass(RenderPass::Outline).SetEnabled(			flags["Outline"].as<bool>());
+			RenderQueue::GetPass(RenderPass::NoDepth).SetEnabled(			flags["No Depth"].as<bool>());
+			RenderQueue::GetPass(RenderPass::Standard2D).SetEnabled(		flags["2D"].as<bool>());
+			RenderQueue::GetPass(RenderPass::UI).SetEnabled(				flags["UI"].as<bool>());
+			RenderQueue::GetPass(RenderPass::Selection).SetEnabled(			flags["Selection"].as<bool>());
+			RenderQueue::GetPass(RenderPass::Selection2D).SetEnabled(		flags["Selection2D"].as<bool>());
+			RenderQueue::GetPass(RenderPass::Main).SetEnabled(				flags["Front Culling"].as<bool>());
+		}
 	}
 
 	InStream.close();
@@ -599,14 +645,22 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 			ImGui::SetCursorPosX(centreOffset);
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Enabled Render Passes");
 
-			ImGui::Checkbox("Main", &RenderQueue::GetPass(RenderPass::Main).Enabled());
-			ImGui::Checkbox("Outline Masking", &RenderQueue::GetPass(RenderPass::OutlineMasking).Enabled());
-			ImGui::Checkbox("Outline", &RenderQueue::GetPass(RenderPass::Outline).Enabled());
-			ImGui::Checkbox("No Depth", &RenderQueue::GetPass(RenderPass::NoDepth).Enabled());
-			ImGui::Checkbox("2D", &RenderQueue::GetPass(RenderPass::Standard2D).Enabled());
-			ImGui::Checkbox("UI", &RenderQueue::GetPass(RenderPass::UI).Enabled());
-			ImGui::Checkbox("Selection", &RenderQueue::GetPass(RenderPass::Selection).Enabled());
-			ImGui::Checkbox("Front Culling", &RenderQueue::GetPass(RenderPass::FrontFaceCulling).Enabled());
+			bool updateFile = false;
+
+			updateFile |= ImGui::Checkbox("Main", &RenderQueue::GetPass(RenderPass::Main).Enabled());
+			updateFile |= ImGui::Checkbox("Outline Masking", &RenderQueue::GetPass(RenderPass::OutlineMasking).Enabled());
+			updateFile |= ImGui::Checkbox("Outline", &RenderQueue::GetPass(RenderPass::Outline).Enabled());
+			updateFile |= ImGui::Checkbox("No Depth", &RenderQueue::GetPass(RenderPass::NoDepth).Enabled());
+			updateFile |= ImGui::Checkbox("2D", &RenderQueue::GetPass(RenderPass::Standard2D).Enabled());
+			updateFile |= ImGui::Checkbox("UI", &RenderQueue::GetPass(RenderPass::UI).Enabled());
+			updateFile |= ImGui::Checkbox("Selection", &RenderQueue::GetPass(RenderPass::Selection).Enabled());
+			updateFile |= ImGui::Checkbox("Selection2D", &RenderQueue::GetPass(RenderPass::Selection2D).Enabled());
+			updateFile |= ImGui::Checkbox("Front Culling", &RenderQueue::GetPass(RenderPass::FrontFaceCulling).Enabled());
+
+			if (updateFile == true)
+			{
+				SaveEditorSettings();
+			}
 
 		}
 		ImGui::EndChild();

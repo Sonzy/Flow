@@ -18,6 +18,8 @@
 
 #include "Editor/UIComponents/Console.h"
 
+#include "Rendering/Core/Camera/Camera.h"
+
 SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
 	, m_SpaceMode(ImGuizmo::WORLD)
@@ -49,6 +51,8 @@ void SelectionTool::RenderImGuiGizmo()
 {
 	if (m_SelectedComponent != nullptr)
 	{
+		m_CurrentMatrix = m_SelectedComponent->GetTransformationMatrix();
+
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist(); //TODO: Put this inside ImGui?
 
@@ -161,7 +165,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	//FLOW_ENGINE_LOG("Guid: %lu", guid);
 	//FLOW_ENGINE_LOG("Clicked Color: %f %f %f %f", recentcolorclicked.x, recentcolorclicked.y, recentcolorclicked.z, recentcolorclicked.w);
 
-	SelectComponent(World::Get()->FindComponent<WorldComponent>(guid));
+	SelectComponent(World::Get().FindComponent<WorldComponent>(guid));
 	return true;
 }
 
@@ -180,7 +184,7 @@ bool SelectionTool::OnKeyPressed(KeyPressedEvent& e)
 		if (m_SelectedActor != nullptr)
 		{
 			m_SelectedActor->OnViewportDeselected();
-			World::Get()->DestroyActor(m_SelectedActor->GetGuid());
+			World::Get().DestroyActor(m_SelectedActor->GetGuid());
 			m_SelectedActor = nullptr;
 		}
 

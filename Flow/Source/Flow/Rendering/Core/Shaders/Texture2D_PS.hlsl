@@ -3,7 +3,7 @@
 Texture2D tex : register(t0);
 SamplerState splr;
 
-cbuffer IconBuffer : register(b5)
+cbuffer IconBuffer
 {
     float4 color;
 };

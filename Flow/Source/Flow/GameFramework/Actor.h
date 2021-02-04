@@ -101,7 +101,7 @@ protected:
 		T* NewComponent = new T(NewName);
 		NewComponent->SetParent(this);
 
-		World::Get()->RegisterGameObject(NewComponent);
+		World::Get().RegisterGameObject(NewComponent);
 
 		return NewComponent;
 	}

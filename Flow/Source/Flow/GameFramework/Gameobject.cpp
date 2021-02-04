@@ -50,7 +50,7 @@ void GameObject::Serialize(YAML::Emitter& Archive)
 	Archive << YAML::Value << YAML::BeginMap;
 	
 	Archive << YAML::Key << "Name" << YAML::Value << m_name.c_str();
-	Archive << YAML::Key << "ClassName" << YAML::Value << GetClassNameID();
+	Archive << YAML::Key << "ClassName" << YAML::Value << std::string(GetClassNameID());
 	Archive << YAML::Key << "Guid" << YAML::Value << m_guid;
 	
 	Archive << YAML::EndMap;

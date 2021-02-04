@@ -23,15 +23,15 @@
 
 #include "Editor/Editor.h"
 #include "Editor/Tools/SelectionTool.h"
+#include "Editor/Modules/Spawner.h"
 
 
 Inspector::Inspector()
-	: m_CurrentWorld(nullptr)
+	: m_CurrentWorld(World::Get())
 	, m_RenameActor(nullptr)
 	, m_HideTree(false)
 	, m_HideWholeComponentTree(false)
 {
-	m_CurrentWorld = World::Get();
 }
 
 void Inspector::Update()
@@ -107,14 +107,14 @@ void Inspector::RenderHeirarchy()
 {
 	if (ImGui::Begin("Scene Hierarchy"))
 	{
-		ImGui::Text(std::string("Level: " + m_CurrentWorld->GetName()).c_str());
+		ImGui::Text(std::string("Level: " + m_CurrentWorld.GetName()).c_str());
 
 		ImGui::Separator();
 
 		if (ImGui::BeginChild("Hierarchy"))
 		{
 			char Buffer[256] = { '\0' };
-			for (std::pair<FGUID, Actor*> Object : m_CurrentWorld->GetActorMap())
+			for (std::pair<FGUID, Actor*> Object : m_CurrentWorld.GetActorMap())
 			{
 				Actor* actor = Object.second;
 				sprintf_s(Buffer, "%s (%s)", actor->GetName().c_str(), actor->GetStaticName());
@@ -129,6 +129,7 @@ void Inspector::RenderHeirarchy()
 				}
 				else
 				{
+					ImGui::PushID(actor->GetGuid());
 					const bool selected = m_SelectedComponent ? m_SelectedComponent->GetParentActor() == actor : false;
 					if (ImGui::Selectable(Buffer, selected))
 					{
@@ -141,7 +142,15 @@ void Inspector::RenderHeirarchy()
 						m_editor->GetTool<SelectionTool>()->SelectComponent(actor->GetRootComponent());
 						ImGui::GetIO().WantCaptureKeyboard = false;
 					}
+
+					ImGui::PopID();
 				}
+			}
+
+			if (ImGui::BeginPopupContextWindow())
+			{
+				Editor::Get().GetModule<Spawner>()->DrawActorSpawnContextWindow();
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::EndChild();

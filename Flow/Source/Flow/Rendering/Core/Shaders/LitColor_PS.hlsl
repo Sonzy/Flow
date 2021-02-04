@@ -1,31 +1,20 @@
 #include "ShaderHelpers.hlsli"
 
-cbuffer CBuf : register(b2)
+cbuffer CBuf
 {
     float4 color;
 };
 
-cbuffer ObjectCBuf
-{
-    float3 specularColor;
-    float specularWeight;
-    float specularGloss;
-};
-
 float4 main(float3 Pos : Position, float3 n : Normal) : SV_TARGET
 {
-	// normalize the mesh normal
-    n = normalize(n);
-	// fragment to light vector data
-    const LightVectorData lv = CalculateLightVectorData(LightPos, Pos);
-	// attenuation
-    const float att = Attenuate(AttenuationConstant, AttenuationLinear, AttenuationQuadratic, lv.distToL);
-	// diffuse
-    const float3 diffuse = Diffuse(DiffuseColour, DiffuseIntensity, att, lv.dirToL, n);
-	// specular
-    const float3 specular = Speculate(
-		DiffuseColour * DiffuseIntensity * specularColor, specularWeight, n,
-		lv.vToL, Pos, att, specularGloss);
+    float3 normal = normalize(n);
+    const float3 lightDirection = normalize(m_directional_lightDirection);
+       
+	// Directional light
+    
+    float3 directional_output = CalculateDirectionalLight(Pos, normal, lightDirection);
+    float3 point_output = CalculatePointLight(Pos, normal);
+    
 	// final color
-    return float4(saturate((diffuse + Ambient) * color.rgb + specular), 1.0f);
+    return float4(directional_output + point_output, 1.0f) * color;
 }

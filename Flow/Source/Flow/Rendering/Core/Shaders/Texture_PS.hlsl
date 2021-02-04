@@ -1,10 +1,3 @@
-cbuffer ObjectCBuf
-{
-	float3 specularColor;
-	float specularWeight;
-	float specularGloss;
-};
-
 Texture2D tex : register(t0);
 SamplerState splr;
 
