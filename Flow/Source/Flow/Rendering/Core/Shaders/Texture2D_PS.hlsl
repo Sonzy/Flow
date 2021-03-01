@@ -15,6 +15,7 @@ float4 main(float3 Pos : Position, float2 tc : TexCoord) : SV_Target
     clip(textureColor.a < 0.1f ? -1 : 1); //Give it some tolerance in case of mipmapping    
     
     //TODO: Manage better. Mask it?
+    //Mask out any whites
     if(textureColor.r > 0.75f && 
        textureColor.g > 0.75f && 
        textureColor.b > 0.75f)
@@ -24,7 +25,7 @@ float4 main(float3 Pos : Position, float2 tc : TexCoord) : SV_Target
     else
     {
         finalColor = textureColor;
-    }
+    }    
     
     return finalColor;
 }

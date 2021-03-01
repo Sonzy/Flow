@@ -12,6 +12,13 @@
 
 //TODO: Reload the collision meshes, might need to import
 
+// Forward Declarations //////////////////////////////////////////
+
+namespace YAML
+{
+	class Emitter;
+}
+
 /* Asset management class used for managing all assets in the engine */
 class FLOW_API AssetSystem
 {
@@ -107,6 +114,26 @@ public:
 private:
 	//TODO: Remove
 	friend class MenuBar;
+
+	// Private Template Functions //////////////////////////////////
+
+	template<typename T>
+	void SaveAssetType(YAML::Emitter& file, std::unordered_set<const char*>& outSavedAssets, bool allowEditor)
+	{
+		std::vector<const char*> assets = BuildAssetList<T>();
+		for (const char* assetName : assets)
+		{
+			Asset* a = AssetSystem::GetAsset(assetName);
+			const Asset::MetaData& metadata = a->GetMetaData();
+
+			if (metadata.m_EditorAsset == allowEditor)
+			{
+				file << metadata.m_GamePath;
+			}
+
+			outSavedAssets.insert(assetName);
+		}
+	}
 
 	//= Private Functions ==============================
 

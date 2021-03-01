@@ -170,7 +170,7 @@ Icon::Icon(FGUID guid, TextureAsset* tex)
 	: m_guid(guid)
 	, m_tint(1.0f, 1.0f, 1.0f, 1.0f)
 	, m_vCB(new VertexConstantBuffer<IconVertexData>(1)) //TODO: no magic numbers
-	, m_pCB(new PixelConstantBuffer<IconPixelData>(5))
+	, m_pCB(new PixelConstantBuffer<IconPixelData>(0))
 {
 	m_iconMaterial = *IconManager::GetIconMaterial();
 	m_iconMaterial.SetTexture(tex->GetAssetName());

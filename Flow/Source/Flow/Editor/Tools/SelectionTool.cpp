@@ -97,8 +97,11 @@ void SelectionTool::RenderImGuiGizmo()
 
 bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
-	if (e.GetMouseButton() != MOUSE_LEFT)
+	if (e.GetMouseButton() != MOUSE_LEFT ||
+		Editor::Get().IsMouseOverScene() == false)
+	{
 		return false;
+	}
 
 	if (m_SelectedComponent != nullptr && ImGuizmo::IsOver())
 	{

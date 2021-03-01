@@ -151,6 +151,11 @@ void Application::InitialiseApplication()
 		SkyMat->SetPixelShader("Texture_PS");
 		SkyMat->SetVertexShader("Texture_VS");
 
+		Mat_TexturedPhong* SkyBlueMat = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_Skybox_Blue")->GetMaterial<Mat_TexturedPhong>();
+		SkyBlueMat->SetTexture("Blue");
+		SkyBlueMat->SetPixelShader("Texture_PS");
+		SkyBlueMat->SetVertexShader("Texture_VS");
+
 		//= Flat Color =
 
 		Mat_FlatColour* flatColorGreen = AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColor_Green")->GetMaterial<Mat_FlatColour>();

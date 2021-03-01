@@ -34,8 +34,20 @@ bool AssetSystem::SaveAssetMap()
 		file << YAML::Key << "ReferencedAssets";
 		file << YAML::Value << YAML::BeginSeq;
 		{
+			//Save assets in order
+			std::unordered_set<const char*> savedAssets;
+
+			SaveAssetType<MeshAsset>(file, savedAssets, false);
+			SaveAssetType<TextureAsset>(file, savedAssets, false);
+			SaveAssetType<ShaderAsset>(file, savedAssets, false);
+
 			for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
 			{
+				if (savedAssets.find(asset.second->GetAssetName().c_str()) != savedAssets.end())
+				{
+					continue;
+				}
+
 				const Asset::MetaData& metadata = asset.second->GetMetaData();
 
 				if (metadata.m_EditorAsset == false)
@@ -66,8 +78,20 @@ bool AssetSystem::SaveEditorAssetMap()
 		file << YAML::Key << "ReferencedAssets";
 		file << YAML::Value << YAML::BeginSeq;
 		{
+			//Save assets in order
+			std::unordered_set<const char*> savedAssets;
+
+			SaveAssetType<MeshAsset>(file, savedAssets, true);
+			SaveAssetType<TextureAsset>(file, savedAssets, true);
+			SaveAssetType<ShaderAsset>(file, savedAssets, true);
+
 			for (std::pair<size_t, Asset*> asset : m_LoadedAssets)
 			{
+				if (savedAssets.find(asset.second->GetAssetName().c_str()) != savedAssets.end())
+				{
+					continue;
+				}
+
 				const Asset::MetaData& metadata = asset.second->GetMetaData();
 
 				if (metadata.m_EditorAsset == true)

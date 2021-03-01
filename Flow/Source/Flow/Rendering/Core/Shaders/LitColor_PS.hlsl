@@ -1,6 +1,6 @@
 #include "ShaderHelpers.hlsli"
 
-cbuffer CBuf
+cbuffer CBuf : register(b0)
 {
     float4 color;
 };
