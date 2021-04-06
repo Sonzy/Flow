@@ -66,7 +66,7 @@
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zm1000 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -91,7 +91,7 @@
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllexport);_WINDLL;%(PreprocessorDefinitions);FLOW_PLATFORM_WINDOWS;FLOW_BUILD_DLL;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow;$(SolutionDir)Flow\ThirdParty\Bullet\Include\Bullet;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Assimp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>Flowpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
     <ClInclude Include="Source\Flow\Events\Event.h" />
     <ClInclude Include="Source\Flow\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Events\MouseEvent.h" />
-    <ClInclude Include="Source\Flowpch.h" />
+    <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\CameraActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\DirectionalLightActor.h" />
     <ClInclude Include="Source\Flow\GameFramework\Actors\PointLightActor.h" />
@@ -383,7 +383,7 @@
     <ClCompile Include="Source\Flow\Events\Event.cpp" />
     <ClCompile Include="Source\Flow\Events\KeyEvent.cpp" />
     <ClCompile Include="Source\Flow\Events\MouseEvent.cpp" />
-    <ClCompile Include="Source\Flowpch.cpp">
+    <ClCompile Include="Source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
