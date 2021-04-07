@@ -5,7 +5,7 @@
 #include "Flow/Core.h"
 #include <d3d11.h>
 #include <wrl.h>
-#include "Flow/ErrorHandling/ErrorMacros.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "Flow/Rendering/RenderCommand.h"
 
 //= Forward Declarations ===========================

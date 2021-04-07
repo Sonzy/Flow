@@ -4,7 +4,7 @@
 
 PixelConstantBufferDynamic::PixelConstantBufferDynamic(const DynamicCB::LayoutElement& LayoutRoot, UINT Slot, const DynamicCB::Buffer* Buffer)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	D3D11_BUFFER_DESC ConstantBufferDescription;
 	ConstantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -18,20 +18,20 @@ PixelConstantBufferDynamic::PixelConstantBufferDynamic(const DynamicCB::LayoutEl
 	{
 		D3D11_SUBRESOURCE_DATA CSD = {};
 		CSD.pSysMem = Buffer->GetData();
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, &CSD, &m_ConstantBuffer));
+		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, &CSD, &m_ConstantBuffer));
 	}
 	else
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, nullptr, &m_ConstantBuffer));
+		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&ConstantBufferDescription, nullptr, &m_ConstantBuffer));
 }
 
 void PixelConstantBufferDynamic::Update(const DynamicCB::Buffer& Buffer)
 {
 	assert(&Buffer.GetRootLayoutElement() == &GetRootLayoutElement());
 
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	D3D11_MAPPED_SUBRESOURCE MSR;
-	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+	CaptureDXError(RenderCommand::DX11GetContext()->Map(
 		m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 	memcpy(MSR.pData, Buffer.GetData(), Buffer.GetSizeInBytes());

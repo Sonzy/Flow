@@ -18,7 +18,7 @@
 #include "ThirdParty\ImGui\imgui.h"
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 SpriteComponent::SpriteComponent()
 	: SpriteComponent("Sprite Component")

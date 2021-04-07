@@ -2,10 +2,10 @@
 
 //= Includes =================================
 
-#include "Layers/Layer.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/ApplicationEvent.h"
+#include "Framework/Layers/Layer.h"
+#include "Framework/Events/KeyEvent.h"
+#include "Framework/Events/MouseEvent.h"
+#include "Framework/Events/ApplicationEvent.h"
 
 //= Class Definition =========================
 

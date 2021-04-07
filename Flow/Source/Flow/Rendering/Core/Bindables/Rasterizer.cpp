@@ -9,13 +9,13 @@
 Rasterizer::Rasterizer(CullMode CullMode)
 	: m_CullMode(CullMode)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	CD3D11_RASTERIZER_DESC Description = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
 	Description.CullMode = static_cast<D3D11_CULL_MODE>(m_CullMode); 
 	//TODO: Need to flip the normals in the shaders if it is a back face
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &m_Rasterizer));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &m_Rasterizer));
 }
 
 void Rasterizer::Bind()

@@ -8,7 +8,8 @@
 #include "Assets\Shaders\ShaderAsset.h"
 #include "Assets\Textures\TextureAsset.h"
 #include "Assets\Materials\MaterialAsset.h"
-#include "Utils/FileSystem.h"
+#include "Framework/Utils/FileSystem.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 //TODO: Reload the collision meshes, might need to import
 

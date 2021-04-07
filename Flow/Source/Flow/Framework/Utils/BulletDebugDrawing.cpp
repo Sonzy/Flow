@@ -2,7 +2,7 @@
 #include "BulletDebugDrawing.h"
 #include "Rendering\Core\DebugDrawing\LineBatcher.h"
 #include "GameFramework\World.h"
-#include "Utils/DebugDraw.h"
+#include "Framework/Utils/DebugDraw.h"
 
 void BulletDebugDraw::Init()
 {

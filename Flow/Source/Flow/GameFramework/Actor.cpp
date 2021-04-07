@@ -9,10 +9,10 @@
 #include "GameFramework\World.h"
 
 
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 #include <yaml-cpp/yaml.h>
 
-#include "Utils/ComponentHelper.h"
+#include "Framework/Utils/ComponentHelper.h"
 
 #if WITH_EDITOR
 	#include "Editor/Editor.h"

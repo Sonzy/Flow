@@ -16,7 +16,7 @@
 #include "Editor/Tools\SelectionTool.h"
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 WorldComponent::WorldComponent()
 	: WorldComponent("Unnamed WorldComponent")
@@ -99,7 +99,7 @@ Vector3 WorldComponent::GetWorldPosition() const
 	{
 		Rotator ParentRotation = Rotator::AsRadians(Parent->GetWorldRotation());
 
-		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&static_cast<DirectX::XMFLOAT3>(m_RelativeTransform.m_Position));
+		DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(reinterpret_cast<const DirectX::XMFLOAT3*>(&m_RelativeTransform.m_Position));
 		DirectX::XMVECTOR Rotation = DirectX::XMQuaternionRotationRollPitchYaw(ParentRotation.Pitch, ParentRotation.Yaw, ParentRotation.Roll);
 		DirectX::XMVECTOR NewPosition = DirectX::XMVector3Rotate(Position, Rotation);
 		DirectX::XMFLOAT3 RotatedPos;

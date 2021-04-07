@@ -4,8 +4,8 @@
 #include <wincodec.h>
 #include "TextureAsset.h"
 #include "DXTex/DirectXTex.h"
-#include "Utils/Timer.h"
-#include "Utils/FileSystem.h"
+#include "Framework/Utils/Timer.h"
+#include "Framework/Utils/FileSystem.h"
 
 #include "Rendering/Core/Bindables/Texture.h"
 
@@ -27,7 +27,7 @@ bool TextureAsset::ImportAsset(const std::string& FilePath, const std::string& S
 	//Load file using DirectXTex
 	std::string Path = FilePath;
 	std::wstring WidePath = std::wstring(Path.begin(), Path.end());
-	CATCH_ERROR_DX(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, m_Image));
+	CaptureDXError(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, m_Image));
 
 	if (ResultHandle != 0)
 	{
@@ -44,7 +44,7 @@ bool TextureAsset::ImportAsset(const std::string& FilePath, const std::string& S
 #endif // TIME_TEXTURE_CONVERSION
 
 		DirectX::ScratchImage ConvertedImage;
-		CATCH_ERROR_DX(DirectX::Convert(*m_Image.GetImage(0, 0, 0), m_Format, DirectX::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, ConvertedImage));
+		CaptureDXError(DirectX::Convert(*m_Image.GetImage(0, 0, 0), m_Format, DirectX::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, ConvertedImage));
 
 		m_Image.InitializeFromImage(*ConvertedImage.GetImage(0, 0, 0));
 
@@ -86,7 +86,7 @@ bool TextureAsset::LoadAsset(const std::string& FilePath)
 	//Load file using DirectXTex
 	std::string Path = FilePath;
 	std::wstring WidePath = std::wstring(Path.begin(), Path.end());
-	CATCH_ERROR_DX(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, m_Image));
+	CaptureDXError(DirectX::LoadFromWICFile(WidePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, m_Image));
 
 	if (ResultHandle != 0)
 	{
@@ -103,7 +103,7 @@ bool TextureAsset::LoadAsset(const std::string& FilePath)
 #endif // TIME_TEXTURE_CONVERSION
 
 		DirectX::ScratchImage ConvertedImage;
-		CATCH_ERROR_DX(DirectX::Convert(*m_Image.GetImage(0, 0, 0), m_Format, DirectX::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, ConvertedImage));
+		CaptureDXError(DirectX::Convert(*m_Image.GetImage(0, 0, 0), m_Format, DirectX::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, ConvertedImage));
 
 		m_Image.InitializeFromImage(*ConvertedImage.GetImage(0, 0, 0));
 
@@ -128,6 +128,6 @@ void TextureAsset::CreateThumbnail()
 {
 	HRESULT ResultHandle;
 
-	CATCH_ERROR_DX(DirectX::Resize(*m_Image.GetImage(0, 0, 0), 128, 128, DirectX::TEX_FILTER_DEFAULT, m_ThumbnailImage));
+	CaptureDXError(DirectX::Resize(*m_Image.GetImage(0, 0, 0), 128, 128, DirectX::TEX_FILTER_DEFAULT, m_ThumbnailImage));
 	m_Thumbnail = new Texture(m_ThumbnailImage, 0, m_AssetName + "_Thumnail");
 }

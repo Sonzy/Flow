@@ -10,11 +10,11 @@
 PixelShader::PixelShader(const std::string& LocalPath)
 	: m_ShaderPath(LocalPath)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
-	CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob));
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
+	CaptureDXError(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
 }
 
 void PixelShader::Bind()

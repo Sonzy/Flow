@@ -3,7 +3,7 @@
 #include "Flow/Rendering/RenderCommand.h"
 #include "Flow/GameFramework/Components/CameraComponent.h"
 #include "Flow/GameFramework/Controllers/Controller.h"
-#include "Flow/Input/Input.h"
+#include "Framework/Input/Input.h"
 
 CameraActor::CameraActor()
 	: CameraActor("Camera Actor")

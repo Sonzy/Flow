@@ -3,7 +3,7 @@
 // Includes ////////////////////////////////////////////////////
 
 #include "UIComponent.h"
-#include "Events/MouseEvent.h"
+#include "Framework/Events/MouseEvent.h"
 
 // Forward Declarations ////////////////////////////////////////
 

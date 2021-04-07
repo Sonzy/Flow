@@ -6,7 +6,7 @@ IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned shor
 	: m_Count((UINT)Indices.size())
 	, m_Tag(Tag)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	//Bind the index buffer
 	D3D11_BUFFER_DESC IndexBufferDescription = {};
@@ -20,7 +20,7 @@ IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned shor
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
 	SubresourceData.pSysMem = Indices.data();
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_IndexBuffer));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_IndexBuffer));
 }
 
 void IndexBuffer::Bind()

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SelectionTool.h"
 #include "Editor/Editor.h"
-#include "Input/Input.h"
+#include "Framework/Input/Input.h"
 
 #include "Rendering\RenderCommand.h"
 
@@ -11,8 +11,8 @@
 #include "GameFramework/Components/StaticMeshComponent.h"
 #include "GameFramework/World.h"
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
+#include "Framework/Events/KeyEvent.h"
+#include "Framework/Events/MouseEvent.h"
 
 #include "GameFramework/Actor.h"
 
@@ -131,13 +131,13 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 		textureDesc.MiscFlags = 0;
 
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
+		CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
 	}
 
 	RenderCommand::DX11GetContext()->CopyResource(pNewTexture.Get(), buf->GetTexture());
 
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+	CaptureDXError(RenderCommand::DX11GetContext()->Map(
 		pNewTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
 
 	MousePosition -= Editor::Get().GetSceneWindowPosition();

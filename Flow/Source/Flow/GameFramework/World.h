@@ -9,9 +9,9 @@
 #include "GameFramework/Level.h"
 #include "Rendering/Core/DebugDrawing/LineBatcher.h"
 #include "Maths/Vector3.h"
-#include "Utils\BulletDebugDrawing.h"
+#include "Framework/Utils\BulletDebugDrawing.h"
 #include "Typedefs.h"
-#include "Utils/ComponentHelper.h"
+#include "Framework/Utils/ComponentHelper.h"
 
 //= Forward Declarations =================================
 

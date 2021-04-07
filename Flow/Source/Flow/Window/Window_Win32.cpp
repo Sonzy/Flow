@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "Window_Win32.h"
 #include "Flow/Core.h"
-#include "Flow/Events/ApplicationEvent.h"
-#include "Flow/Events/MouseEvent.h"
-#include "Flow/Events/KeyEvent.h"
-#include "Flow/Rendering/Renderer.h"
-#include "Flow\Application.h"
+#include "Framework/Events/ApplicationEvent.h"
+#include "Framework/Events/MouseEvent.h"
+#include "Framework/Events/KeyEvent.h"
+#include "Rendering/Renderer.h"
+#include "Application.h"
 
 Window* Window::Create(const Window::Properties& Properties, bool MainWindow)
 {

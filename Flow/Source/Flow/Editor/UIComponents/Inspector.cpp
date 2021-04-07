@@ -10,7 +10,7 @@
 #include "Bullet/btBulletDynamicsCommon.h"
 
 #include "Rendering\RenderCommand.h"
-#include "Input\Input.h"
+#include "Framework/Input\Input.h"
 
 #include "Application.h"
 #include "GameFramework\World.h"
@@ -19,7 +19,7 @@
 #include "GameFramework\Components\StaticMeshComponent.h"
 #include "GameFramework\Components\CameraComponent.h"
 
-#include "Events/KeyEvent.h"
+#include "Framework/Events/KeyEvent.h"
 
 #include "Editor/Editor.h"
 #include "Editor/Tools/SelectionTool.h"

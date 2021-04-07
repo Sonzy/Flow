@@ -2,6 +2,7 @@
 #include "FrameBuffer.h"
 #include "Flow/Rendering/RenderCommand.h"
 #include "DepthBuffer.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 
 FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt)
 	: m_HasDepthBuffer(CreateDepthBuffer)
@@ -20,7 +21,7 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	//Create Texture Description
 	D3D11_TEXTURE2D_DESC Description = {};
@@ -37,7 +38,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	Description.MiscFlags = 0;
 
 	//Create Texture
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&Description, nullptr, &m_Texture));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&Description, nullptr, &m_Texture));
 
 	m_Width = Width;
 	m_Height = Height;
@@ -48,7 +49,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = -1;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(m_Texture.Get(), &SRVDesc, &m_TextureView));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(m_Texture.Get(), &SRVDesc, &m_TextureView));
 
 	if (m_HasDepthBuffer)
 	{

@@ -2,12 +2,12 @@
 #include "Application.h"
 
 //= Misc Includes =
-#include "Logging/Log.h"
+#include "Framework/Logging/Log.h"
 
 
 //= Input Includes =
-#include "Events/ApplicationEvent.h"
-#include "Input/Input.h"
+#include "Framework/Events/ApplicationEvent.h"
+#include "Framework/Input/Input.h"
 #include "ThirdParty\ImGui\imgui.h"
 
 //= Editor Includes =
@@ -26,12 +26,12 @@
 #include "Assets\Meshes\MeshAsset.h"
 
 //= Helper Inclues =
-#include "Utils\Profiling.h"
+#include "Framework/Utils\Profiling.h"
 #include "GameFramework/Other/ClassFactory.h"
 
 //= Game Framework includes =
 #include "GameFramework\World.h"
-#include "Layers/GameLayer.h"
+#include "Framework/Layers/GameLayer.h"
 
 #define BIND_EVENT_FUNCTION(FunctionPtr) std::bind(FunctionPtr, this, std::placeholders::_1)
 

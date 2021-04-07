@@ -1,6 +1,6 @@
 #pragma once
-#include "Layers/Layer.h"
-#include "Events/MouseEvent.h"
+#include "Framework/Layers/Layer.h"
+#include "Framework/Events/MouseEvent.h"
 #include "Editor/UIComponents/SceneManager.h"
 
 //= Forward Declarations ================================

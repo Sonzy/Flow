@@ -28,7 +28,7 @@ enum ElemType
 #undef X
 
 		Struct,
-		Array,
+		ArrayElement,
 		Empty,
 };
 

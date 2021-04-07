@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/World.h"
-#include "Utils/GUIDGenerator.h"
+#include "Framework/Utils/GUIDGenerator.h"
 #include <yaml-cpp/yaml.h>
 
 Component::Component()

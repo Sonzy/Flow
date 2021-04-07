@@ -5,7 +5,7 @@
 #include "Flow/GameFramework/Components/Component.h"
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 PointLightActor::PointLightActor()
 	: PointLightActor("Point Light Actor")

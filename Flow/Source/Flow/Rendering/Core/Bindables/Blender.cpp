@@ -29,8 +29,8 @@ Blender::Blender(bool Blending)
 		RenderTarget.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	}
 
-	CREATE_RESULT_HANDLE();
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBlendState(&BlendDescription, &m_Blender));
+	CreateResultHandle();
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateBlendState(&BlendDescription, &m_Blender));
 }
 
 void Blender::Bind()

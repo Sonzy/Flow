@@ -6,9 +6,9 @@
 #include "UserInterface/imgui/ImGui_DX11.h"
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
-#include "Input/KeyCodes.h"
+#include "Framework/Input/KeyCodes.h"
 
-#include "Events/MouseEvent.h"
+#include "Framework/Events/MouseEvent.h"
 
 #include "Window/Window_Win32.h"
 #include "Rendering/DX11/DX11RenderAPI.h"

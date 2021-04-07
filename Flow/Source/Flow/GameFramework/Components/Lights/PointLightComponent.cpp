@@ -16,7 +16,7 @@
 
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 //TODO: Support multiple lights
 

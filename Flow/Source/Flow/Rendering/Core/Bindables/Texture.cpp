@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "Texture.h"
-#include "Flow/ErrorHandling/ErrorMacros.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "BindableCodex.h"
 #include "Flow\Assets\AssetSystem.h"
 
@@ -36,7 +36,7 @@ Texture::Texture(TextureAsset* Asset, UINT Slot)
 	//sd.SysMemPitch = Asset->GetPitch();
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
 
 	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset->GetBufferPtr(), Asset->GetPitch(), 0u);
 
@@ -46,7 +46,7 @@ Texture::Texture(TextureAsset* Asset, UINT Slot)
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
 
 	RenderCommand::DX11GetContext()->GenerateMips(m_TextureView.Get());
 }
@@ -79,7 +79,7 @@ Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::strin
 	//sd.SysMemPitch = Asset->GetPitch();
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
 
 	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset.GetPixels(), static_cast<UINT>(Asset.GetImage(0, 0, 0)->rowPitch), 0u);
 
@@ -89,7 +89,7 @@ Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::strin
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
 
 	RenderCommand::DX11GetContext()->GenerateMips(m_TextureView.Get());
 }

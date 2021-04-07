@@ -18,7 +18,7 @@
 
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 DirectionalLightComponent::DirectionalLightComponent()
 	: DirectionalLightComponent("DirectionalLightComponent")

@@ -1,23 +1,23 @@
 #include "pch.h"
 #include "Skybox.h"
 
-#include "Flow\Utils\HelperMacros.h"
-#include "Flow\Logging\Log.h"
+#include "Framework\Utils\HelperMacros.h"
+#include "Framework\Logging\Log.h"
 
-#include "Flow\Assets\AssetSystem.h"
-#include "Flow\Assets\Meshes\MeshAsset.h"
+#include "Assets\AssetSystem.h"
+#include "Assets\Meshes\MeshAsset.h"
 
-#include "Flow\Rendering\Core\Bindables\Topology.h"
-#include "Flow\Rendering\Core\Bindables\BindableVertexBuffer.h"
-#include "Flow\Rendering\Core\Materials\Material.h"
-#include "Flow\Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Flow\Rendering\Core\Bindables\Rasterizer.h"
+#include "Rendering\Core\Bindables\Topology.h"
+#include "Rendering\Core\Bindables\BindableVertexBuffer.h"
+#include "Rendering\Core\Materials\Material.h"
+#include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
+#include "Rendering\Core\Bindables\Rasterizer.h"
 
-#include "Flow\Rendering\Core\Vertex\VertexLayout.h"
-#include "Flow\Rendering\Core\Vertex\VertexBuffer.h"
+#include "Rendering\Core\Vertex\VertexLayout.h"
+#include "Rendering\Core\Vertex\VertexBuffer.h"
 
-#include "Flow\Rendering\Core\Camera\Camera.h"
-#include "Flow\GameFramework\Components\CameraComponent.h"
+#include "Rendering\Core\Camera\Camera.h"
+#include "GameFramework\Components\CameraComponent.h"
 
 Skybox::Skybox()
 {

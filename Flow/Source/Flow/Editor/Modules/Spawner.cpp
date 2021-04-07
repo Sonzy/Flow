@@ -18,7 +18,7 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Other/ClassFactory.h"
 
-#include "Utils/ComponentHelper.h"
+#include "Framework/Utils/ComponentHelper.h"
 
 #include "Editor/Editor.h"
 

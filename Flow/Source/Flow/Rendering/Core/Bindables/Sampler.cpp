@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "Sampler.h"
-#include "Flow/ErrorHandling/ErrorMacros.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "BindableCodex.h"
 
 //= Class (Sampler) Definition ==========================
@@ -22,7 +22,7 @@ Sampler::Sampler()
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	SamplerDesc.MipLODBias = 0.0f;
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
 }
 
 void Sampler::Bind()

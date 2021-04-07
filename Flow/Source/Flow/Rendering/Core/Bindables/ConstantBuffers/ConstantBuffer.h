@@ -2,7 +2,7 @@
 
 //= Includes =====================================================
 
-#include "Logging/Log.h"
+#include "Framework/Logging/Log.h"
 #include "Rendering/Core/Bindable.h"
 #include "Rendering/Core/Bindables/BindableCodex.h"
 
@@ -37,7 +37,7 @@ public:
 
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &consts;
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
+		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 	}
 
 	ConstantBuffer(UINT slot)
@@ -53,7 +53,7 @@ public:
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 	}
 
 	void Update(const C& consts)
@@ -61,7 +61,7 @@ public:
 		HRESULT ResultHandle;
 		D3D11_MAPPED_SUBRESOURCE MSR;
 
-		CATCH_ERROR_DX(RenderCommand::DX11GetContext()->Map(
+		CaptureDXError(RenderCommand::DX11GetContext()->Map(
 			m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 		memcpy(MSR.pData, &consts, sizeof(consts));

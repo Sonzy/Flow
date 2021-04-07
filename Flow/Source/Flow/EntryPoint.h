@@ -1,5 +1,5 @@
 #pragma once
-#include "Logging/Log.h"
+#include "Framework/Logging/Log.h"
 #include "Application.h"
 
 #ifdef FLOW_PLATFORM_WINDOWS

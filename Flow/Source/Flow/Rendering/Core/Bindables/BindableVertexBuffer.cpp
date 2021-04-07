@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "BindableVertexBuffer.h"
-#include "Flow/ErrorHandling/ErrorMacros.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "BindableCodex.h"
 
 //= Class (BindableVertexBuffer) Definition ===========
@@ -12,7 +12,7 @@ BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexB
 	, m_Tag(Tag)
 	, m_layout(Buffer.GetLayout())
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	D3D11_BUFFER_DESC BufferDescription;
 	BufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -25,7 +25,7 @@ BindableVertexBuffer::BindableVertexBuffer(const std::string& Tag, const VertexB
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
 	SubresourceData.pSysMem = Buffer.GetData();
 
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &m_Buffer));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&BufferDescription, &SubresourceData, &m_Buffer));
 
 #if WITH_EDITOR
 	m_d3dlayout = Buffer.GetLayout().GetD3DLayout();

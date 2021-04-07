@@ -1,5 +1,5 @@
 #pragma once
-#include <yaml-cpp/yaml.h>
+#include "yaml-cpp/yaml.h"
 #include "Typedefs.h"
 #include "Maths/Maths.h"
 #include "Maths/Transform.h"

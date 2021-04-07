@@ -57,7 +57,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Sandbox\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Sandbox\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllimport);FLOW_PLATFORM_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
     </ClCompile>
@@ -74,7 +74,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Sandbox\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow\ThirdParty\YamlCpp\Include;$(SolutionDir)Flow\ThirdParty\DXTex\Include;$(SolutionDir)Flow\ThirdParty\OpenCV;$(SolutionDir)Flow;$(SolutionDir)Flow\Source\Flow;$(SolutionDir)Flow\Source;$(SolutionDir)Flow\ThirdParty\Bullet\Include;$(SolutionDir)Sandbox\Source;$(SolutionDir)Flow\ThirdParty\spdlog\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_API=__declspec(dllimport);FLOW_PLATFORM_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

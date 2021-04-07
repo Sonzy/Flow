@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Editor.h"
-#include "Events/MouseEvent.h"
+#include "Framework/Events/MouseEvent.h"
 #include "Editor/UIComponents/Inspector.h"
 #include "Application.h"
 
@@ -27,7 +27,7 @@
 #include "Editor/Tools/SelectionTool.h"
 
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 
 #define PASS_KEY_EVENT(MemberName) 	if (MemberName != nullptr && MemberName->OnKeyPressed(e)) { return true; }
 
@@ -483,7 +483,8 @@ void Editor::ImGuiPrototypingWindow()
 
 void Editor::Open_NewLevelWindow()
 {
-	m_LevelManager->Open_NewLevelWindow();
+	FLOW_ENGINE_LOG("TODO");
+	GetUIComponent<LevelManager>()->Open_NewLevelWindow();
 }
 
 bool Editor::IsSceneWindowFocused() const

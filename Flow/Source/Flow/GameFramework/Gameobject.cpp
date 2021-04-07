@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Gameobject.h"
-#include "Utils/GUIDGenerator.h"
+#include "Framework/Utils/GUIDGenerator.h"
 #include <yaml-cpp/yaml.h>
-#include "Utils/YamlSerializer.h"
+#include "Framework/Utils/YamlSerializer.h"
 #include "GameFramework/World.h"
 
 GameObject::GameObject()

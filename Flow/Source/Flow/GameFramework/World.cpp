@@ -11,7 +11,7 @@
 #include "GameFramework\Controllers\Controller.h"
 #include "GameFramework\Controllers\PlayerController.h"
 
-#include "Utils/DebugDraw.h"
+#include "Framework/Utils/DebugDraw.h"
 
 #if WITH_EDITOR
 #include "Editor/EditorCamera.h"
@@ -21,8 +21,8 @@
 #include "Editor/Tools/SelectionTool.h"
 #endif
 
-#include "Utils/GUIDGenerator.h"
-#include "Utils/ComponentHelper.h"
+#include "Framework/Utils/GUIDGenerator.h"
+#include "Framework/Utils/ComponentHelper.h"
 #include "Assets/AssetSystem.h"
 
 #include <yaml-cpp/yaml.h>

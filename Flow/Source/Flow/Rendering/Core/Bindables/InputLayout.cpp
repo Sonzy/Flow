@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "InputLayout.h"
-#include "Flow/ErrorHandling/ErrorMacros.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "BindableCodex.h"
 
 //= Class (InputLayout) Definition =============
@@ -10,10 +10,10 @@
 InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
 	: m_VertexLayout(Layout)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	const auto D3DLayout = m_VertexLayout.GetD3DLayout();
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateInputLayout(
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateInputLayout(
 		D3DLayout.data(),
 		(UINT)D3DLayout.size(),
 		vertexShaderByteCode->GetBufferPointer(),

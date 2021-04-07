@@ -9,7 +9,7 @@
 
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
-#include "Utils/ImGuiHelper.h"
+#include "Framework/Utils/ImGuiHelper.h"
 
 #include "GameFramework\World.h"
 

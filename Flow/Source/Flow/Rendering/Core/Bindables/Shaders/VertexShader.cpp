@@ -10,10 +10,10 @@
 VertexShader::VertexShader(const std::string& LocalPath)
 	: m_ShaderPath(LocalPath)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
-	CATCH_ERROR_DX(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &m_Blob));
-	CATCH_ERROR_DX(RenderCommand::DX11GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader));
+	CaptureDXError(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &m_Blob));
+	CaptureDXError(RenderCommand::DX11GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader));
 }
 
 void VertexShader::Bind()

@@ -71,7 +71,7 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 	UINT SwapCreateFlags = 0;
 	SwapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG; //TODO: Disable in non debug mode
 
-	CATCH_ERROR_DX(
+	CaptureDXError(
 		D3D11CreateDeviceAndSwapChain(
 			nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
@@ -87,12 +87,12 @@ void DX11RenderAPI::InitialiseDX11API(HWND WindowHandle, int ViewportWidth, int 
 			m_Context.GetAddressOf())
 	);
 
-	//CATCH_ERROR_DX(_Device->QueryInterface(__uuidof(ID3D11Debug), (void**)&_DeviceDebug));
+	//CaptureDXError(_Device->QueryInterface(__uuidof(ID3D11Debug), (void**)&_DeviceDebug));
 
 	// Create render target view and populate backbuffer
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
-	CATCH_ERROR_DX(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
-	CATCH_ERROR_DX(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
+	CaptureDXError(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
+	CaptureDXError(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
 
 	ResizeDepthBuffer(ViewportWidth, ViewportHeight);
 
@@ -151,7 +151,7 @@ void DX11RenderAPI::EndFrame()
 	}
 
 	HRESULT ResultHandle;
-	CATCH_ERROR_DX(m_SwapChain->Present(0, 0));
+	CaptureDXError(m_SwapChain->Present(0, 0));
 
 	m_Context->OMSetRenderTargets(1u, m_RenderTarget.GetAddressOf(), m_DepthTextureView.Get());
 }
@@ -180,12 +180,12 @@ void DX11RenderAPI::Resize(int Width, int Height)
 	m_RenderTarget.Reset();
 	//_DeviceDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 
-	CATCH_ERROR_DX(m_SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0));
+	CaptureDXError(m_SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0));
 
 	//// Create render target view and populate backbuffer
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
-	CATCH_ERROR_DX(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
-	CATCH_ERROR_DX(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
+	CaptureDXError(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
+	CaptureDXError(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
 	BackBuffer.Reset();
 
 	ResizeDepthBuffer(Width, Height);
@@ -221,14 +221,14 @@ void DX11RenderAPI::ResizeDepthBuffer(int Width, int Height)
 	DepthDescription.SampleDesc.Quality = 0u;
 	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
 	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	CATCH_ERROR_DX(m_Device->CreateTexture2D(&DepthDescription, nullptr, &m_DepthTexture));
+	CaptureDXError(m_Device->CreateTexture2D(&DepthDescription, nullptr, &m_DepthTexture));
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
 	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
-	CATCH_ERROR_DX(m_Device->CreateDepthStencilView(m_DepthTexture.Get(), &DepthStencilViewDescription, &m_DepthTextureView));
+	CaptureDXError(m_Device->CreateDepthStencilView(m_DepthTexture.Get(), &DepthStencilViewDescription, &m_DepthTextureView));
 }
 
 void DX11RenderAPI::SetProjectionPerspectiveMatrixDefault()
@@ -332,12 +332,12 @@ ID3D11DeviceContext* DX11RenderAPI::GetContext()
 
 void DX11RenderAPI::BindBackBuffer(bool clear)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	// Create render target view and populate backbuffer
 	Microsoft::WRL::ComPtr<ID3D11Resource> BackBuffer = nullptr;
-	CATCH_ERROR_DX(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
-	CATCH_ERROR_DX(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
+	CaptureDXError(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBuffer));
+	CaptureDXError(m_Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &m_RenderTarget));
 
 	Window& Win = Application::Get().GetWindow();
 	IntVector2 AdjWindowSize = dynamic_cast<Window_Win32&>(Win).GetAdjustedWindowSize();
@@ -364,10 +364,10 @@ void DX11RenderAPI::BindBackBuffer(bool clear)
 
 void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer, bool clear)
 {
-	CREATE_RESULT_HANDLE();
+	CreateResultHandle();
 
 	//Create Render Target view and bind framebuffer
-	CATCH_ERROR_DX(m_Device->CreateRenderTargetView(Buffer->GetTexture(), nullptr, &m_RenderTarget));
+	CaptureDXError(m_Device->CreateRenderTargetView(Buffer->GetTexture(), nullptr, &m_RenderTarget));
 
 	m_ViewportSize = { (int)Buffer->GetWidth(), (int)Buffer->GetHeight() };
 
