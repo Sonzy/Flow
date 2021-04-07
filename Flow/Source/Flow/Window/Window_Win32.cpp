@@ -260,6 +260,7 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 		e = &Event;
 		break;
 	}
+	//= Other =
 	default:
 		bHandled = false;
 	}
@@ -270,6 +271,7 @@ LRESULT Window_Win32::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 		{
 			FLOW_ENGINE_ERROR("Window_Win32::HandleMessages: Error was nullptr (Message: %d)", msg);
 		}
+
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 
@@ -372,10 +374,11 @@ WindowClass::WindowClass()
 	windowsClass.hInstance = GetInstanceHandle();
 	windowsClass.hIcon = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 128, 128, 0)); //Used to set up custom icon
 	windowsClass.hIconSm = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 32, 32, 0));// static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));; //Same as before but small one
+	windowsClass.hCursor = LoadCursor(NULL, IDC_ARROW); ;
 	windowsClass.lpszClassName = ClassName;	
 
 	DWORD error = GetLastError();
-
+	
 	RegisterClassEx(&windowsClass);
 }
 WindowClass::~WindowClass()
