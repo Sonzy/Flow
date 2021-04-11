@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "Step.h"
-#include "Rendering/Core/Bindable.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
 #include "Rendering/Core/RenderQueue/RenderQueue.h"
 #include "Rendering/Core/TechniqueProbe.h"
@@ -29,18 +29,19 @@ void Step::Bind() const
 
 void Step::InitialiseParentReferences(const Renderable& Drawable)
 {
-	for (auto& Bind : m_Bindables)
-	{
-		Bind->InitialiseParentReferences( Drawable );
-	}
+	FLOW_ENGINE_LOG("InitialiseParentReferences:: TODO");
+	//for (auto& Bind : m_Bindables)
+	//{
+	//	Bind->InitialiseParentReferences( Drawable );
+	//}
 }
 
-void Step::AddBindable(Bindable* NewBind)
+void Step::AddBindable(Bindables::Bindable* NewBind)
 {
 	m_Bindables.push_back(std::move(NewBind));
 }
 
-void Step::AddBindables(std::vector<Bindable*> Binds)
+void Step::AddBindables(std::vector<Bindables::Bindable*> Binds)
 {
 	//TODO: Ensure this is bug free
 	m_Bindables.insert(m_Bindables.end(), Binds.begin(), Binds.end());
@@ -50,8 +51,9 @@ void Step::AcceptProbe(TechniqueProbe& Probe)
 {
 	Probe.SetStep(this);
 
-	for (auto& B : m_Bindables)
-	{
-		B->AcceptProbe(Probe);
-	}
+	FLOW_ENGINE_LOG("AcceptProbe: Todo");
+	//for (auto& B : m_Bindables)
+	//{
+	//	B->AcceptProbe(Probe);
+	//}
 }

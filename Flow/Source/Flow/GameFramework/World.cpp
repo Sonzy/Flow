@@ -14,11 +14,14 @@
 #include "Framework/Utils/DebugDraw.h"
 
 #if WITH_EDITOR
-#include "Editor/EditorCamera.h"
-#include "Editor/Editor.h"
-#include "Editor/UIComponents/Inspector.h"
-#include "Editor/IconManager.h"
-#include "Editor/Tools/SelectionTool.h"
+	#include "Editor/EditorCamera.h"
+	#include "Editor/Editor.h"
+	#include "Editor/UIComponents/Inspector.h"
+	#include "Editor/IconManager.h"
+	#include "Editor/Tools/SelectionTool.h"
+#else
+	#include "Actors\CameraActor.h"
+	#include "Rendering\Core\Camera\Camera.h"
 #endif
 
 #include "Framework/Utils/GUIDGenerator.h"
@@ -219,11 +222,24 @@ void World::InitialiseWorld()
 {
 #if WITH_EDITOR
 	m_EditorCam = new EditorCamera();
-	RenderCommand::SetMainCamera(m_EditorCam);
+	Renderer::SetMainCamera(m_EditorCam);
+#else
+	std::vector<CameraBase*> cams = GetAllActorsOfType<CameraBase>();
+	if (cams.size() > 0)
+	{
+		Renderer::SetMainCamera(cams[0]);
+	}
+	else
+	{
+		CameraActor* camActor = SpawnActor<CameraActor>("NewCameraActor");
+		Renderer::SetMainCamera(dynamic_cast<CameraBase*>(camActor->GetRootComponent()));
+	}
 #endif
 
 	InitialisePhysics();
 }
+
+#if WITH_EDITOR
 
 void World::StartEditor()
 {
@@ -233,6 +249,8 @@ void World::StartEditor()
 		m_MainLevel->DispatchEditorBeginPlay();
 	}
 }
+
+#endif // WITH_EDITOR
 
 bool World::DestroyActor(FGUID guid)
 {
@@ -348,7 +366,7 @@ void World::StartGame()
 #if WITH_EDITOR
 	//TODO: Dont want to do this normally, only if we want to simulate link unreal etc
 	//Move camera to the editor camera
-	RenderCommand::GetMainCamera()->MoveCamera(m_EditorCam->GetCameraTransform());
+	Renderer::GetMainCamera()->MoveCamera(m_EditorCam->GetCameraTransform());
 #endif
 }
 

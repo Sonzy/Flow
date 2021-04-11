@@ -50,6 +50,8 @@ void Actor::BeginPlay()
 	m_RootComponent->BeginPlay();
 }
 
+#if WITH_EDITOR
+
 void Actor::EditorBeginPlay()
 {
 	if (!m_RootComponent)
@@ -67,6 +69,8 @@ void Actor::OnViewportSelected()
 void Actor::OnViewportDeselected()
 {
 }
+
+#endif // WITH_EDITOR
 
 void Actor::Tick(float DeltaTime)
 {
@@ -247,6 +251,7 @@ void Actor::Deserialize(YAML::Node& Archive)
 	}
 }
 
+#if WITH_EDITOR
 void Actor::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool DontOpenTree)
 {
 	const ImVec2 ButtonSize = ImVec2(100, 12);
@@ -281,3 +286,5 @@ void Actor::DrawInspectionTree(WorldComponent* CurrentInspectedComponent, bool D
 		ImGui::PopStyleVar();
 	}
 }
+
+#endif WITH_EDITOR

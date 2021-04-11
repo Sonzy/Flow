@@ -1,32 +1,42 @@
 #pragma once
 
-//= Includes ==================================
+// Includes //////////////////////////////////////////////////////////
 
-#include "Rendering/Core/Bindable.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Class Definition ==========================
+// Forward Declarations /////////////////////////////////////////////
+ 
+ struct ID3D11PixelShader;
+ 
+// Namespace ////////////////////////////////////////////////////////
 
-class PixelShader : public Bindable
-{
-public:
+ namespace Bindables
+ {
+	 // Class Definition /////////////////////////////////////////////////
 
-	//= Public Static Functions ======================================
+	 class PixelShader : public Bindables::Bindable
+	 {
+	 public:
 
-	static Bindable*			Resolve(const std::string& LocalPath);
-	static std::string							GenerateUID(const std::string& LocalPath);
+		 // Public Static Functions //////////////////////////////////////
 
-public:
+		 static PixelShader*						Resolve(const string& localPath);
+		 static HashString							GenerateID(const string& localPath);
 
-	//= Public Functions =============================================
+	 public:
 
-												PixelShader(const std::string& LocalPath);
-	void										Bind() override;
-	std::string									GetUID() const override;
+		 // Public Functions ////////////////////////////////////////////
 
-protected:
+													PixelShader(const string& localPath);
+		 void										Bind() override;
+		 virtual HashString							GetID() override;
 
-	//= Protected Variables ==========================================
+	 private:
 
-	std::string									m_ShaderPath;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_PixelShader;
-};
+		 // Private Variables ///////////////////////////////////////////
+
+		 string										m_shaderPath;
+		 ComPtr<ID3D11PixelShader>					m_pixelShader;
+	 };
+ }

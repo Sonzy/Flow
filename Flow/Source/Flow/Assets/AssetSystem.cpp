@@ -147,8 +147,16 @@ void AssetSystem::LoadAssetsFromAssetMap(const std::filesystem::path& filepath, 
 				continue;
 			}
 
+			if (assetPath.empty() == true)
+			{
+				FLOW_ENGINE_WARNING("Empty Asset Path");
+				continue;
+			}
+
 			LoadAsset(assetPath);
 		}
+
+		FLOW_ENGINE_LOG("Done?");
 	}
 }
 

@@ -1,36 +1,51 @@
-//= Includes ===================================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ///////////////////////////////////////////////////////////////////
+
 #include <d3dcompiler.h>
+#include <d3d11.h>
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "PixelShader.h"
-#include "Rendering\Core\Bindables\BindableCodex.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class (Pixel Shader) Definition =============================
+// Class Definition ///////////////////////////////////////////////////////////
 
-PixelShader::PixelShader(const std::string& LocalPath)
-	: m_ShaderPath(LocalPath)
+Bindables::PixelShader::PixelShader(const string& localPath)
+	: m_shaderPath(localPath)
 {
 	CreateResultHandle();
 
-	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
-	CaptureDXError(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &Blob));
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader));
+	ID3DBlob* blob;
+	std::string temp = localPath.c_str();
+	CaptureDXError(D3DReadFileToBlob(std::wstring{ temp.begin(),temp.end() }.c_str(), &blob));
+	CaptureDXError(Renderer::GetDevice()->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_pixelShader));
 }
 
-void PixelShader::Bind()
+void Bindables::PixelShader::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+	Renderer::GetContext()->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 }
-Bindable* PixelShader::Resolve(const std::string& LocalPath)
+
+Bindables::PixelShader* Bindables::PixelShader::Resolve(const string& localPath)
 {
-	return BindableCodex::Resolve<PixelShader>(LocalPath);
+	return Bindables::Codex::Resolve<PixelShader>(localPath);
 }
-std::string PixelShader::GenerateUID(const std::string& LocalPath)
+
+HashString Bindables::PixelShader::GenerateID(const string& localPath)
 {
-	using namespace std::string_literals;
-	return typeid(PixelShader).name() + "#"s + LocalPath;
+	char buffer[64];
+	snprintf(buffer, 64, "PixelShader-%s", localPath.c_str());
+	return buffer;
 }
-std::string PixelShader::GetUID() const
+
+HashString Bindables::PixelShader::GetID()
 {
-	return GenerateUID(m_ShaderPath);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_shaderPath);
+	}
+	return m_id;
 }

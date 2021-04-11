@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "Console.h"
 #include "ThirdParty/ImGui/imgui.h"
 #include "Flow/Editor/Editor.h"
@@ -94,3 +97,5 @@ Console::Message::Message(MessageType Type, const char* NewMessage)
 	, m_Message(NewMessage)
 {
 }
+
+#endif WITH_EDITOR

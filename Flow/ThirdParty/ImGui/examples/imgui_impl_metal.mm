@@ -63,13 +63,13 @@
 - (void)emptyRenderPipelineStateCache;
 - (void)setupRenderState:(ImDrawData *)drawData
            commandBuffer:(id<MTLCommandBuffer>)commandBuffer
-          commandEncoder:(id<MTLRenderCommandEncoder>)commandEncoder
+          commandEncoder:(id<MTLRendererEncoder>)commandEncoder
      renderPipelineState:(id<MTLRenderPipelineState>)renderPipelineState
             vertexBuffer:(MetalBuffer *)vertexBuffer
       vertexBufferOffset:(size_t)vertexBufferOffset;
 - (void)renderDrawData:(ImDrawData *)drawData
          commandBuffer:(id<MTLCommandBuffer>)commandBuffer
-        commandEncoder:(id<MTLRenderCommandEncoder>)commandEncoder;
+        commandEncoder:(id<MTLRendererEncoder>)commandEncoder;
 @end
 
 static MetalContext *g_sharedMetalContext = nil;
@@ -105,7 +105,7 @@ void ImGui_ImplMetal_NewFrame(MTLRenderPassDescriptor *renderPassDescriptor)
 }
 
 // Metal Render function.
-void ImGui_ImplMetal_RenderDrawData(ImDrawData* draw_data, id<MTLCommandBuffer> commandBuffer, id<MTLRenderCommandEncoder> commandEncoder)
+void ImGui_ImplMetal_RenderDrawData(ImDrawData* draw_data, id<MTLCommandBuffer> commandBuffer, id<MTLRendererEncoder> commandEncoder)
 {
     [g_sharedMetalContext renderDrawData:draw_data commandBuffer:commandBuffer commandEncoder:commandEncoder];
 }
@@ -411,7 +411,7 @@ void ImGui_ImplMetal_DestroyDeviceObjects()
 
 - (void)setupRenderState:(ImDrawData *)drawData
            commandBuffer:(id<MTLCommandBuffer>)commandBuffer
-          commandEncoder:(id<MTLRenderCommandEncoder>)commandEncoder
+          commandEncoder:(id<MTLRendererEncoder>)commandEncoder
      renderPipelineState:(id<MTLRenderPipelineState>)renderPipelineState
             vertexBuffer:(MetalBuffer *)vertexBuffer
       vertexBufferOffset:(size_t)vertexBufferOffset
@@ -456,7 +456,7 @@ void ImGui_ImplMetal_DestroyDeviceObjects()
 
 - (void)renderDrawData:(ImDrawData *)drawData
          commandBuffer:(id<MTLCommandBuffer>)commandBuffer
-        commandEncoder:(id<MTLRenderCommandEncoder>)commandEncoder
+        commandEncoder:(id<MTLRendererEncoder>)commandEncoder
 {
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     int fb_width = (int)(drawData->DisplaySize.x * drawData->FramebufferScale.x);

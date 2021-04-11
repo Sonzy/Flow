@@ -2,9 +2,9 @@
 
 //= Includes =======================================
 
-#include "Rendering/Core/Bindable.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 #include "Rendering/Core/Bindables/IndexBuffer.h"
-#include "Rendering/Core/RenderableBase.h"
+#include "Rendering/Core/Renderable.h"
 #include "Rendering/Core/Vertex/VertexLayout.h"
 
 //= Forward Declarations ===========================
@@ -13,7 +13,7 @@ class Material;
 
 //= Class Definition ===============================
 
-class FLOW_API Line : public RenderableBase
+class FLOW_API Line : public Renderable
 {
 public:
 
@@ -38,7 +38,7 @@ public:
 private:
 
 	//= Private Functions ========================================
-	void						AddBind(Bindable* bind);
+	void						AddBind(Bindables::Bindable* bind);
 	void						BindAll();
 
 private:
@@ -46,8 +46,8 @@ private:
 	//= Private Static Variables =================================
 
 	static VertexLayout								m_VertexLayout;
-	static std::vector<Bindable*>	m_Binds;
-	static IndexBuffer*								m_IndexBuffer;
+	static std::vector<Bindables::Bindable*>		m_Binds;
+	static Bindables::IndexBuffer*					m_IndexBuffer;
 
 
 };

@@ -1,40 +1,50 @@
 #pragma once
 
-//= Includes =============================================
+// Includes ////////////////////////////////////////////////////////////
 
-#include "Flow\Rendering\Core\Bindable.h"
-#include "Flow/Assets/Textures/TextureAsset.h"
+#include "Framework/Types/ComPtr.h"
+#include "DXTex/DirectXTex.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Class Definitions ====================================
+// Type Definitions ////////////////////////////////////////////////////////////
 
-class Texture : public Bindable
+struct ID3D11ShaderResourceView;
+class TextureAsset;
+
+// Class Definitions ////////////////////////////////////////////////////////////
+
+namespace Bindables
 {
-public:
+	class Texture : public Bindables::Bindable
+	{
+	public:
 
-	//= Public Static Functions ==================================================
+		// Public Static Functions ////////////////////////////////////////////////////////////
 
-	static Bindable*		Resolve(TextureAsset* Asset, UINT slot);
-	static std::string						GenerateUID(TextureAsset* Asset, UINT slot);
+		static Texture*							Resolve(TextureAsset* asset, UINT slot);
+		static HashString						GenerateID(TextureAsset* asset, UINT slot);
 
-public:
+	public:
 
-	//= Public Functions =========================================================
+		// Public Functions ////////////////////////////////////////////////////////////
 
-											Texture(TextureAsset* Asset, UINT slot);
-											Texture(const DirectX::ScratchImage& Asset, UINT slot, const std::string& AssetName);
+												Texture(TextureAsset* asset, UINT slot);
+												Texture(const DirectX::ScratchImage& image, UINT slot, const std::string& assetName);
 
-	void									Bind() override;
-	ID3D11ShaderResourceView*				GetTextureView() const { return m_TextureView.Get(); } //TODO: being lazy, can go out of scope whilst in use
+		virtual void							Bind() override;
+		ID3D11ShaderResourceView*				GetTextureView() const;
 
-	//= Bindable Interface =
+		// Bindable Interface =
 
-	std::string								GetUID() const override;
+		virtual HashString						GetID() override;
 
-protected:
+	protected:
 
-	//= Protected Variables =======================================================
+		// Protected Variables ////////////////////////////////////////////////////////////
 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>		m_TextureView;
-	UINT													m_Slot;
-	std::string												m_AssetName;
-};
+		ComPtr<ID3D11Texture2D>					m_texture;
+		ComPtr<ID3D11ShaderResourceView>		m_textureView;
+		uint32									m_slot;
+		TextureAsset*							m_asset;
+	};
+}

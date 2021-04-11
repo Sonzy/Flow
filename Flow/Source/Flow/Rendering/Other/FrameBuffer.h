@@ -2,7 +2,7 @@
 
 //= Includes ===============================
 
-#include <wrl.h>
+#include "Framework/Types/ComPtr.h"
 #include <d3d11.h>
 
 //= Forward Declarations ===================
@@ -32,8 +32,8 @@ private:
 
 	//= Private Variables ======================================
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				m_Texture = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	m_TextureView = nullptr;
+	ComPtr<ID3D11Texture2D>								m_Texture = nullptr;
+	ComPtr<ID3D11ShaderResourceView>					m_TextureView = nullptr;
 														
 	bool												m_HasDepthBuffer;
 	std::shared_ptr<DepthBuffer>						m_DepthBuffer;

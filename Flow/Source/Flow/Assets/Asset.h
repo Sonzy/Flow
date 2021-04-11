@@ -3,7 +3,10 @@
 
 //= Forward Declarations ==============================
 
-class Texture;
+namespace Bindables
+{
+	class Texture;
+}
 
 /* Base class for assets. Manages naming and asset types */
 class FLOW_API Asset
@@ -65,5 +68,5 @@ protected:
 	size_t					m_AssetSize = 0;
 	Asset::Type				m_AssetType = Asset::Type::None;
 	Asset::MetaData			m_Metadata;
-	Texture*				m_Thumbnail = nullptr;
+	Bindables::Texture*		m_Thumbnail = nullptr;
 };

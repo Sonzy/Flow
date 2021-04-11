@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "UIComponent.h"
 
 UIComponent::UIComponent()
@@ -63,3 +66,5 @@ bool UIComponent::OnWindowResized(WindowResizedEvent& e)
 {
 	return false;
 }
+
+#endif // WITH_EDITOR

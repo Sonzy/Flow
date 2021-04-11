@@ -1,25 +1,30 @@
-//= Includes =============================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Texture.h"
+
+// Includes ///////////////////////////////////////////////////////////////////
+
+#include <d3d11.h>
+#include "Assets/Textures/TextureAsset.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
-#include "BindableCodex.h"
-#include "Flow\Assets\AssetSystem.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Texture.h"
 
-//= Class (Texture) Definition ===========================
+// Class Definition ///////////////////////////////////////////////////////////
 
-Texture::Texture(TextureAsset* Asset, UINT Slot)
+Bindables::Texture::Texture(TextureAsset* asset, UINT slot)
+	: m_asset(asset)
 {
-	HRESULT ResultHandle;
+	CreateResultHandle();
 
 	// Bindable context stuff
-	m_AssetName = Asset->GetAssetName();
-	m_Slot = Slot;
+	m_slot = slot;
 
 	//Create the texture resource
 	D3D11_TEXTURE2D_DESC textureDesc = {};
-	textureDesc.Width = Asset->GetWidth();
-	textureDesc.Height = Asset->GetHeight();
+	textureDesc.Width = asset->GetWidth();
+	textureDesc.Height = asset->GetHeight();
 	textureDesc.MipLevels = 0; //Use all mips
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -30,15 +35,9 @@ Texture::Texture(TextureAsset* Asset, UINT Slot)
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
-	//Disabled for mip mapping
-	//D3D11_SUBRESOURCE_DATA sd = {};
-	//sd.pSysMem = Asset->GetBufferPtr();
-	//sd.SysMemPitch = Asset->GetPitch();
+	CaptureDXError(Renderer::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_texture));
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
-
-	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset->GetBufferPtr(), Asset->GetPitch(), 0u);
+	Renderer::GetContext()->UpdateSubresource(m_texture.Get(), 0u, nullptr, asset->GetBufferPtr(), asset->GetPitch(), 0u);
 
 	//Create a view to the texture
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -46,18 +45,18 @@ Texture::Texture(TextureAsset* Asset, UINT Slot)
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
+	CaptureDXError(Renderer::GetDevice()->CreateShaderResourceView(m_texture.Get(), &srvDesc, &m_textureView));
 
-	RenderCommand::DX11GetContext()->GenerateMips(m_TextureView.Get());
+	Renderer::GetContext()->GenerateMips(m_textureView.Get());
 }
 
-Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::string& AssetName)
+Bindables::Texture::Texture(const DirectX::ScratchImage& Asset, UINT slot, const std::string& AssetName)
+	: m_slot(slot)
 {
 	HRESULT ResultHandle;
 
 	// Bindable context stuff
-	m_AssetName = AssetName;
-	m_Slot = Slot;
+	m_slot = slot;
 
 	//Create the texture resource
 	D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -78,10 +77,9 @@ Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::strin
 	//sd.pSysMem = Asset->GetBufferPtr();
 	//sd.SysMemPitch = Asset->GetPitch();
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture));
+	CaptureDXError(Renderer::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_texture));
 
-	RenderCommand::DX11GetContext()->UpdateSubresource(pTexture.Get(), 0u, nullptr, Asset.GetPixels(), static_cast<UINT>(Asset.GetImage(0, 0, 0)->rowPitch), 0u);
+	Renderer::GetContext()->UpdateSubresource(m_texture.Get(), 0u, nullptr, Asset.GetPixels(), static_cast<UINT>(Asset.GetImage(0, 0, 0)->rowPitch), 0u);
 
 	//Create a view to the texture
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -89,25 +87,38 @@ Texture::Texture(const DirectX::ScratchImage& Asset, UINT Slot, const std::strin
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_TextureView));
+	CaptureDXError(Renderer::GetDevice()->CreateShaderResourceView(m_texture.Get(), &srvDesc, &m_textureView));
 
-	RenderCommand::DX11GetContext()->GenerateMips(m_TextureView.Get());
+	Renderer::GetContext()->GenerateMips(m_textureView.Get());
 }
 
-void Texture::Bind()
+void Bindables::Texture::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
+	Renderer::GetContext()->PSSetShaderResources(m_slot, 1u, &m_textureView);
 }
-Bindable* Texture::Resolve(TextureAsset* Asset, UINT Slot)
+
+ID3D11ShaderResourceView* Bindables::Texture::GetTextureView() const
 {
-	return BindableCodex::Resolve<Texture>(Asset, Slot);
+	return m_textureView.Get();
 }
-std::string Texture::GenerateUID(TextureAsset* Asset, UINT Slot)
+
+Bindables::Texture* Bindables::Texture::Resolve(TextureAsset* asset, UINT slot)
 {
-	using namespace std::string_literals; //Using literal operator to force these to strings
-	return typeid(Texture).name() + "#"s + Asset->GetAssetPath() + "#"s + std::to_string(Slot);
+	return Bindables::Codex::Resolve<Texture>(asset, slot);
 }
-std::string Texture::GetUID() const
+
+HashString Bindables::Texture::GenerateID(TextureAsset* asset, UINT slot)
 {
-	return GenerateUID(AssetSystem::GetAsset<TextureAsset>(m_AssetName), m_Slot);
+	char buffer[256];
+	snprintf(buffer, 256, "Texture-%s_%d", asset->GetAssetPath().c_str(), slot);
+	return buffer;
+}
+
+HashString Bindables::Texture::GetID()
+{
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_asset, m_slot);
+	}
+	return m_id;
 }

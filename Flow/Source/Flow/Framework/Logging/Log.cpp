@@ -1,10 +1,15 @@
 #include "pch.h"
+
+
+
 #include "Log.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 std::shared_ptr<spdlog::logger> Log::sm_EngineLogger;
 std::shared_ptr<spdlog::logger> Log::sm_AppLogger;
+#if WITH_EDITOR
 Console* Log::sm_Console = nullptr;
+#endif // WITH_EDITOR
 
 void Log::InitialiseEngineLogger()
 {

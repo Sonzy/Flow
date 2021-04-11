@@ -1,5 +1,7 @@
 #pragma once
 
+#if WITH_EDITOR
+
 // Includes ///////////////////////////////
 
 // Forward Declarations ///////////////////
@@ -51,3 +53,5 @@ protected:
 	Editor*					m_editor;
 	bool					m_windowVisible;
 };
+
+#endif // WITH_EDITOR

@@ -1,31 +1,34 @@
+// Pch /////////////////////////////////////////////////////////////////
+
 #include "pch.h"
-#include "Spawner.h"
-#include "ThirdParty/ImGui/imgui.h"
-#include "GameFramework/World.h"
 
-#include "GameFramework/Actors/StaticMeshActor.h"
-#include "GameFramework/Actors/PointLightActor.h"
-#include "GameFramework/Actors/DirectionalLightActor.h"
-#include "GameFramework/Actors/SkyboxActor.h"
-#include "GameFramework/Actors/CameraActor.h"
-#include "GameFramework/Actors/SpriteActor.h"
+#if WITH_EDITOR
 
-#include "GameFramework/Components/StaticMeshComponent.h"
-#include "GameFramework/Components/SpriteComponent.h"
-#include "GameFramework/Components/Lights/PointLightComponent.h"
-#include "GameFramework/Components/Lights/DirectionalLightComponent.h"
-#include "GameFramework/Components/SkyboxComponent.h"
-#include "GameFramework/Components/CameraComponent.h"
-#include "GameFramework/Other/ClassFactory.h"
-
-#include "Framework/Utils/ComponentHelper.h"
+// Includes /////////////////////////////////////////////////////////////////
 
 #include "Editor/Editor.h"
+#include "Framework/Utils/ComponentHelper.h"
+#include "GameFramework/World.h"
+#include "GameFramework/Actors/CameraActor.h"
+#include "GameFramework/Actors/DirectionalLightActor.h"
+#include "GameFramework/Actors/SkyboxActor.h"
+#include "GameFramework/Actors/SpriteActor.h"
+#include "GameFramework/Actors/StaticMeshActor.h"
+#include "GameFramework/Actors/PointLightActor.h"
+#include "GameFramework/Components/CameraComponent.h"
+#include "GameFramework/Components/Lights/DirectionalLightComponent.h"
+#include "GameFramework/Components/Lights/PointLightComponent.h"
+#include "GameFramework/Components/SkyboxComponent.h"
+#include "GameFramework/Components/SpriteComponent.h"
+#include "GameFramework/Components/StaticMeshComponent.h"
+#include "GameFramework/Other/ClassFactory.h"
+#include "Spawner.h"
+#include "ThirdParty/ImGui/imgui.h"
 
 Spawner::Spawner()
-	: m_WorldReference(World::Get())
+	: m_worldReference(World::Get())
 {
-	m_SpawnDistance = 20.0f;
+	m_spawnDistance = 20.0f;
 
 	RegisterActorClass<StaticMeshActor>("Static Mesh Actor");
 	RegisterActorClass<PointLightActor>("Point Light Actor");
@@ -102,10 +105,10 @@ void Spawner::DrawActorSpawnContextWindow()
 		if (newActor)
 		{
 			//TODO: Not working right
-			Transform CameraTrans = RenderCommand::GetMainCamera()->GetCameraTransform();
-			newActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position + (CameraTrans.m_Rotation.GetForwardVector() * m_SpawnDistance));
+			Transform CameraTrans = Renderer::GetMainCamera()->GetCameraTransform();
+			newActor->GetRootComponent()->SetWorldPosition(CameraTrans.m_Position + (CameraTrans.m_Rotation.GetForwardVector() * m_spawnDistance));
 
-			switch (m_WorldReference.GetWorldState())
+			switch (m_worldReference.GetWorldState())
 			{
 			case WorldState::Editor: newActor->EditorBeginPlay(); break;
 			case WorldState::Paused:
@@ -116,3 +119,5 @@ void Spawner::DrawActorSpawnContextWindow()
 		ImGui::EndMenu();
 	}
 }
+
+#endif //WITH_EDITOR

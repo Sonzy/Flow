@@ -1,51 +1,63 @@
-//= Includes =======================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ///////////////////////////////////////////////////////////////////
+
+#include "pch.h"
+#include <d3d11.h>
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "Rasterizer.h"
-#include "BindableCodex.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class (Rasterizer) Definition ==================
+// Class Definition ///////////////////////////////////////////////////////////
 
-Rasterizer::Rasterizer(CullMode CullMode)
-	: m_CullMode(CullMode)
+Rasterizer::Rasterizer(CullMode mode)
+	: m_cullMode(mode)
 {
 	CreateResultHandle();
 
 	CD3D11_RASTERIZER_DESC Description = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
-	Description.CullMode = static_cast<D3D11_CULL_MODE>(m_CullMode); 
-	//TODO: Need to flip the normals in the shaders if it is a back face
+	Description.CullMode = static_cast<D3D11_CULL_MODE>(m_cullMode); 
 
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateRasterizerState(&Description, &m_Rasterizer));
+	//TODO: Need to flip the normals in the shaders if it is a back face
+	CaptureDXError(Renderer::GetDevice()->CreateRasterizerState(&Description, &m_rasterizerState));
 }
 
 void Rasterizer::Bind()
 {
-	RenderCommand::DX11GetContext()->RSSetState(m_Rasterizer.Get());
+	Renderer::GetContext()->RSSetState(m_rasterizerState.Get());
 }
 
-Rasterizer* Rasterizer::Resolve(CullMode CullMode)
+HashString Rasterizer::GetID()
 {
-	return BindableCodex::Resolve<Rasterizer>(CullMode);
-}
-
-std::string Rasterizer::GenerateUID(CullMode CullMode)
-{
-	using namespace std::string_literals;
-	std::string Type;
-	switch (CullMode)
+	if (m_id.IsNull())
 	{
-	case CullMode::None:
-		Type = "None";
-		break;
-	case CullMode::Back:
-		Type = "Back";
-		break;
-	case CullMode::Front:
-		Type = "Front";
-		break;
-	default:
-		break;
+		m_id = GenerateID(m_cullMode);
 	}
+	return m_id;
+}
 
-	return typeid(Rasterizer).name() + "#"s + Type;
+Rasterizer* Rasterizer::Resolve(CullMode mode)
+{
+	return Bindables::Codex::Resolve<Rasterizer>(mode);
+}
+
+HashString Rasterizer::GenerateID(CullMode mode)
+{
+	char buffer[64];
+	snprintf(buffer, 32, "Rasterizer-%s", CullModeToString(mode));
+	return buffer;
+}
+
+const char* Rasterizer::CullModeToString(CullMode mode)
+{
+	switch (mode)
+	{
+	case Rasterizer::Cull_None:		return "None";
+	case Rasterizer::Cull_Back:		return "Back";
+	case Rasterizer::Cull_Front:	return "Front";
+	default:						return "Unknown";
+	}
 }

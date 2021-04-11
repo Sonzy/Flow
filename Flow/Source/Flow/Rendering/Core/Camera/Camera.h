@@ -34,8 +34,8 @@ public:
 
 	//= Public Functions
 	virtual void							SetProjectionMatrix(DirectX::XMMATRIX NewProjection);
-	N_DISC virtual DirectX::XMMATRIX		GetViewMatrix() const = 0;
-	N_DISC virtual DirectX::XMMATRIX		GetViewMatrix2D() const { return DirectX::XMMatrixIdentity(); };
+	[[nodiscard]] virtual DirectX::XMMATRIX GetViewMatrix() const = 0;
+	[[nodiscard]] virtual DirectX::XMMATRIX	GetViewMatrix2D() const { return DirectX::XMMatrixIdentity(); };
 	virtual void							MoveCamera(const Transform& NewTransform) = 0;
 	virtual Transform						GetCameraTransform() const = 0;
 	virtual Vector3							GetCameraPosition() const = 0;

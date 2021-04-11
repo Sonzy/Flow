@@ -1,5 +1,7 @@
 #pragma once
 
+#if WITH_EDITOR
+
 // Includes ////////////////////////////////////////////////////
 
 #include "UIComponent.h"
@@ -61,3 +63,5 @@ private:
 	bool							m_HideTree;
 	bool							m_HideWholeComponentTree; // Whether to render the component tree at all
 };	
+
+#endif // WITH_EDITOR

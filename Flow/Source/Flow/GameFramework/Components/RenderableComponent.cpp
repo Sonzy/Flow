@@ -7,7 +7,7 @@
 #include "Rendering/Core/Bindables/Shaders/PixelShader.h"
 #include "Rendering/Core/Bindables/Shaders/VertexShader.h"
 #include "Rendering/Core/Bindables/InputLayout.h"
-#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Rendering/Core/Bindables/VertexBuffer.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
 #include "Assets/Materials/MaterialCommon.h"
 
@@ -22,9 +22,9 @@ RenderableComponent::RenderableComponent(const std::string& Name)
 
 }
 
-const IndexBuffer& RenderableComponent::GetIndexBuffer() const
+const Bindables::IndexBuffer& RenderableComponent::GetIndexBuffer() const
 {
-	return *m_IndexBuffer;
+	return *m_indexBuffer;
 }
 
 DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
@@ -59,15 +59,17 @@ void RenderableComponent::RefreshBinds()
 		Technique Selection = Technique("RenderableComponent_Selection");
 		Step Rendering(RenderPass::Selection);
 
-		std::string tag = "SelectionBuffer_" + std::to_string(GetGuid());
+		char buffer[64];
+		snprintf(buffer, 64, "SelectionBuffer_%s", std::to_string(GetGuid()).c_str());
+		string tag = buffer;
 		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, tag));
 
-		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
-		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		Bindables::VertexShader* vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
+		ID3DBlob* vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
 		Rendering.AddBindable(std::move(vShader));
-		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
+		Rendering.AddBindable(Bindables::PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
 
-		Rendering.AddBindable(InputLayout::Resolve(m_VertexBuffer->GetLayout(), vShaderByteCode));
+		Rendering.AddBindable(Bindables::InputLayout::Resolve(m_vertexBuffer->GetLayout(), vShaderByteCode));
 
 		Rendering.AddBindable(new TransformConstantBuffer(this));
 

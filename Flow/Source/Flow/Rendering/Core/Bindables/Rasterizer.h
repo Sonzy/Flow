@@ -1,40 +1,53 @@
 #pragma once
 
-//= Includes ===================================
+// Includes /////////////////////////////////////////////////////////////////////
 
-#include "Rendering\Core\Bindable.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Global Enums ===============================
+// Forward Declarations /////////////////////////////////////////////////////////
 
-enum class CullMode
-{
-	None = 1,
-	Front = 2,
-	Back = 3
-};
+struct ID3D11RasterizerState;
 
-//= Class Definition ===========================
+// Class Definition  ////////////////////////////////////////////////////////////
 
-class Rasterizer : public Bindable
+class Rasterizer : public Bindables::Bindable
 {
 public:
 
-	//= Public Static Functions ===============================
+	// Public Enums  ////////////////////////////////////////////////////////////
 
-	static Rasterizer*								Resolve(CullMode CullMode);
-	static std::string								GenerateUID(CullMode CullMode);
+	enum CullMode
+	{
+		Cull_None = 1,
+		Cull_Front = 2,
+		Cull_Back = 3
+	};
 
 public:
 
-	//= Public Functions ======================================
+	// Public Static Functions  //////////////////////////////////////////////////
 
-													Rasterizer(CullMode CullMode);
-	void											Bind() override;
+	static Rasterizer*						Resolve(CullMode mode);
+	static HashString						GenerateID(CullMode mode);
+	static const char*						CullModeToString(CullMode mode);
+
+public:
+
+	// Public Functions  /////////////////////////////////////////////////////////
+
+											Rasterizer(CullMode mode);
+	virtual void							Bind() override;
+
+
+	//= Bindable Interface =
+
+	virtual HashString						GetID();
 
 private:
 
-	//= Private Variables ====================================
+	// Private Variables  ////////////////////////////////////////////////////////
 
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	m_Rasterizer;
-	CullMode										m_CullMode;
+	ComPtr<ID3D11RasterizerState>			m_rasterizerState;
+	CullMode								m_cullMode;
 };

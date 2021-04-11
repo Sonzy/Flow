@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "DepthBuffer.h"
-#include "Flow/Rendering/RenderCommand.h"
+#include "Flow/Rendering/Renderer.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
 
 DepthBuffer::DepthBuffer(unsigned int Width, unsigned int Height)
@@ -18,7 +18,7 @@ void DepthBuffer::Resize(unsigned int Width, unsigned int Height)
 {
 	CreateResultHandle();
 
-	auto Device = RenderCommand::DX11GetDevice();
+	auto Device = Renderer::GetDevice();
 	// Create the depth stencil texture
 	D3D11_TEXTURE2D_DESC DepthDescription = {};
 	DepthDescription.Width = Width;

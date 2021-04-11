@@ -3,11 +3,10 @@
 // Includes /////////////////////////////////////////////////
 
 #include "Tool.h"
+#include "Framework/Types/ComPtr.h"
 #include "Maths/Maths.h"
-
-#include "ThirdParty/ImGuizmo/ImGuizmo.h"
-
 #include "Rendering/Core/Bindables/Texture.h"
+#include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
 // Forward Declaration //////////////////////////////////////
 
@@ -15,6 +14,7 @@ class WorldComponent;
 class Actor;
 class SelectionGizmo;
 class Inspector;
+struct ID3D11Texture2D;
 
 // Public Enums /////////////////////////////////////////////
 
@@ -74,7 +74,7 @@ private:
 	Matrix4x4									m_CurrentMatrix;
 
 	//TODO: remove -> Picking testing
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>		pNewTexture;
+	ComPtr<ID3D11Texture2D>						m_newTexture;
 	Vector4										recentcolorclicked;
 
 

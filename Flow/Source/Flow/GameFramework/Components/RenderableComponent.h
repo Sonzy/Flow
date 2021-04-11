@@ -9,7 +9,11 @@
 
 //= Forward Declarations =========================================
 
-class Bindable;
+namespace Bindables
+{
+	class Bindable;
+}
+
 class IndexBuffer;
 
 //TODO: Move
@@ -27,7 +31,7 @@ public:
 								RenderableComponent();
 								RenderableComponent(const std::string& Name);
 
-	const IndexBuffer&			GetIndexBuffer() const;
+	const Bindables::IndexBuffer&	GetIndexBuffer() const;
 
 	virtual DirectX::XMMATRIX	GetTransformXM() const;
 

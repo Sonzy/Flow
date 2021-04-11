@@ -13,9 +13,9 @@ public:
 
 	virtual bool				ImportAsset(const std::string& FilePath, const std::string& SavePath) override;
 	virtual bool				LoadAsset(const std::string& AssetPath) override;
-	const std::string&			GetPath() const;
+	const string&				GetPath() const;
 
 private:
 
-	std::string					m_ShaderPath;
+	string						m_shaderPath;
 };

@@ -27,6 +27,7 @@
 #endif
 #include "ThirdParty/ImGui/imgui_internal.h"
 #include "ImGuizmo.h"
+#include <DirectXMath.h>
 #if !defined(_WIN32) 
 #define _malloca(x) alloca(x)
 #else

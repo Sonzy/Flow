@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "LevelManager.h"
 #include "ThirdParty/ImGui/imgui.h"
 
@@ -39,4 +42,6 @@ void LevelManager::Draw_NewLevel()
 		ImGui::End();
 	}
 
-}
+
+
+#endif // WITH_EDITOR

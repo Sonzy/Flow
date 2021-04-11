@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "Toolbar.h"
 
 #include "ThirdParty/ImGui/imgui.h"
@@ -6,13 +9,15 @@
 
 #include "Flow/Application.h"
 
+#include "Rendering/Core/Bindables/Texture.h"
+
 ToolBar::ToolBar()
 {
 	//If we crash here, the texture asset probably doesnt exist
-	m_Icon_SelectionTool = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Tool_Selection"), 1);
-	m_Icon_Play = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Play"), 1);
-	m_Icon_Pause = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Pause"), 1);
-	m_Icon_Stop = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Stop"), 1);
+	m_Icon_SelectionTool = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Tool_Selection"), 1);
+	m_Icon_Play = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Play"), 1);
+	m_Icon_Pause = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Pause"), 1);
+	m_Icon_Stop = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Stop"), 1);
 }
 
 ToolBar::~ToolBar()
@@ -77,3 +82,5 @@ void ToolBar::Render()
 		ImGui::EndChild();
 	}
 }
+
+#endif // WITH_EDITOR

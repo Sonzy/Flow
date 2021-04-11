@@ -2,15 +2,19 @@
 
 //= Includes =================================================
 
-#include "Bindable.h"
 #include <DirectXMath.h>
-#include "Flow/Rendering/Core/RenderQueue/Technique.h"
+#include "Bindables/Bindable.h"
+#include "Rendering/Core/RenderQueue/Technique.h"
+#include "Maths\Vector4.h"
 
 //= Forward Declarations =====================================
 
-class IndexBuffer;
-class BindableVertexBuffer;
-class Topology;
+namespace Bindables
+{
+	class IndexBuffer;
+	class VertexBuffer;
+	class Topology;
+}
 
 // Struct Definitions /////////////////////////////////////////
 
@@ -28,7 +32,6 @@ public:
 
 	//= Public Functions ===============================
 
-	//Renderable(Renderable&&) = delete; //TODO: Why this will stop Vector3 Unique ptr errors, but deleting lvalue copy constructor doesnt.
 	virtual ~Renderable();
 
 	virtual DirectX::XMMATRIX GetTransformXM() const = 0;
@@ -49,8 +52,8 @@ protected:
 
 	//= Protected Variables =============================
 
-	IndexBuffer*							m_IndexBuffer;
-	BindableVertexBuffer*					m_VertexBuffer;
-	Topology*								m_Topology;
-	std::vector<Technique>					m_Techniques;
+	Bindables::IndexBuffer*					m_indexBuffer;
+	Bindables::VertexBuffer*				m_vertexBuffer;
+	Bindables::Topology*					m_topology;
+	std::vector<Technique>					m_techniques;
 };

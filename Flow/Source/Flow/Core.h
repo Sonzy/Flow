@@ -23,9 +23,7 @@
 
 #define FLOW_BIND_EVENT_FUNCTION(Func) std::bind(&Func, this, std::placeholders::_1)
 
-#define N_DISC [[nodiscard]]
-
-#define WITH_EDITOR 1
+#define WITH_EDITOR 0
 
 #define REGISTER_CLASS(ClassName)	virtual const char* GetClassNameID() const override { return typeid(ClassName).name(); } \
 									virtual const char* GetStaticName() const override { return #ClassName; } 

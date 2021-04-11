@@ -71,9 +71,11 @@ public:
 	Rotator*						GetWriteableRotation();
 	Vector3*						GetWriteableScale();
 
+#if WITH_EDITOR
 	virtual void					DrawDetailsWindow(bool bDontUpdate) override;
 	virtual void					DrawComponentDetailsWindow() override;
 	void							DrawComponentInActorTreeRecursive();
+#endif // WITH_EDITOR
 
 	std::vector<WorldComponent*>	GetChildren() const;
 	WorldComponent*					GetChildByName(const std::string& ChildName);

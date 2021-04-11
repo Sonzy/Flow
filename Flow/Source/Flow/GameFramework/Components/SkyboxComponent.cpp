@@ -2,12 +2,11 @@
 #include "SkyboxComponent.h"
 
 #include "Rendering/Core/Camera/Camera.h"
-#include "Rendering\Core\Bindables\Topology.h"
-#include "Rendering\Core\Bindables\BindableVertexBuffer.h"
-#include "Rendering\Core\Vertex\VertexLayout.h"
-#include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Rendering\Core\Bindables\Rasterizer.h"
-#include "Rendering\Core\Vertex\VertexBuffer.h"
+#include "Rendering/Core/Bindables/Topology.h"
+#include "Rendering/Core/Vertex/VertexLayout.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
+#include "Rendering/Core/Bindables/Rasterizer.h"
+#include "Rendering/Core/Vertex/VertexBufferData.h"
 #include "Rendering/Renderer.h"
 
 #include "Assets/AssetSystem.h"
@@ -35,9 +34,9 @@ SkyboxComponent::SkyboxComponent(const std::string& Name)
 
 DirectX::XMMATRIX SkyboxComponent::GetTransformXM() const
 {
-	const float farPlane = RenderCommand::GetFarPlaneRef();
+	const float farPlane = Renderer::GetFarPlaneRef();
 
-	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition();
+	DirectX::XMFLOAT3 CamPos = Renderer::GetMainCamera()->GetCameraPosition();
 	return DirectX::XMMatrixScaling(farPlane, farPlane, farPlane) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }
@@ -51,7 +50,7 @@ void SkyboxComponent::Render()
 
 void SkyboxComponent::RefreshBinds()
 {
-	m_Techniques.clear();
+	m_techniques.clear();
 
 	Technique Standard("SkyboxComponent_Standard");
 	{
@@ -60,9 +59,9 @@ void SkyboxComponent::RefreshBinds()
 		VertexLayout MeshLayout;
 		m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout);
 
-		m_IndexBuffer = m_Mesh->GetMesh(0)->m_IndexBuffer;
-		m_VertexBuffer = m_Mesh->GetMesh(0)->m_BindableVBuffer;
-		m_Topology = m_Mesh->GetMesh(0)->m_Topology;
+		m_indexBuffer = m_Mesh->GetMesh(0)->m_IndexBuffer;
+		m_vertexBuffer = m_Mesh->GetMesh(0)->m_BindableVBuffer;
+		m_topology = m_Mesh->GetMesh(0)->m_Topology;
 
 		m_Material->BindMaterial(&MainStep, MeshLayout);
 

@@ -1,45 +1,55 @@
 #pragma once
 
-//= Includes ===========================================
+// Includes /////////////////////////////////////////////////////////////////////////
 
-#include "Flow\Rendering\Core\Bindable.h"
-#include <wrl.h>
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Global Enums =======================================
+// Type Definitions /////////////////////////////////////////////////////////////////
 
-enum class StencilMode
+struct ID3D11DepthStencilState;
+
+namespace Bindables
 {
-	Off,
-	Write,
-	Mask,
-	AlwaysOnTop,
-	NoDepth
-};
+	// Class Definitions ////////////////////////////////////////////////////////////////
 
-//= Class Definitions ===================================
+	class Stencil : public Bindables::Bindable
+	{
+	public:
 
-class Stencil : public Bindable
-{
-public:
+		// Public Enums /////////////////////////////////////////////////////////////////
 
-	//= Public Static Functions ========================================
-	static Bindable*					Resolve(StencilMode mode);
-	static std::string									GenerateUID(StencilMode mode);
-	static std::string									GetModeAsString(StencilMode mode);
+		enum class Mode
+		{
+			Off,
+			Write,
+			Mask,
+			AlwaysOnTop,
+			NoDepth
+		};
 
-public:
+	public:
 
-	//= Public Functions ===============================================
+		// Public Static Functions //////////////////////////////////////////////////////
 
-														Stencil(StencilMode mode);
-	virtual void										Bind() override;
-	virtual std::string									GetUID() const;
+		static Stencil* Resolve(Stencil::Mode mode);
+		static HashString									GenerateID(Stencil::Mode mode);
+		static string										GetModeAsString(Stencil::Mode mode);
+
+	public:
+
+		// Public Functions ////////////////////////////////////////////////////////////
+
+		Stencil(Stencil::Mode mode);
+		virtual void										Bind() override;
+		virtual HashString									GetID() override;
 
 
-private:
+	private:
 
-	//= Private Variables ==============================================
+		// Private Variables //////////////////////////////////////////////////////////
 
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>		m_Stencil;
-	StencilMode											m_Mode;
-};
+		ComPtr<ID3D11DepthStencilState>						m_stencil;
+		Stencil::Mode										m_mode;
+	};
+}

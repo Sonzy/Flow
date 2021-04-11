@@ -9,7 +9,7 @@
 #include "Assets/AssetSystem.h"
 
 #include "Rendering/Core/Bindables/Topology.h"
-#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Rendering/Core/Bindables/VertexBuffer.h"
 #include "Rendering/Core/Bindables/IndexBuffer.h"
 
 #include "Typedefs.h"
@@ -294,7 +294,7 @@ std::vector<Mesh::Vertex> Mesh::GetVertices() const
 	return Vertices;
 }
 
-std::vector<Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
+std::vector<Bindables::Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
 {
 	//Dont regenerate if already done
 	if (m_Binds.size() != 0)
@@ -303,7 +303,7 @@ std::vector<Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
 		return m_Binds;
 	}
 
-	m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	m_Topology = static_cast<Bindables::Topology*>(Bindables::Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	m_Binds.push_back(m_Topology);
 
 	// Define Vertex Layout
@@ -323,23 +323,23 @@ std::vector<Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
 		);
 	}
 
-	std::vector<unsigned short> indices;
-	indices.reserve(GetNumFaces() * 3); //Using triangles, change for quads
-	for (auto& Face : GetFaces())
+	Array<uint16> indices;
+	indices.Reserve((uint32)(GetNumFaces() * 3)); //Using triangles, change for quads
+	for (const Mesh::Face& Face : GetFaces())
 	{
 		assert(Face.m_NumIndices == 3);
-		indices.push_back(Face.m_Indices[0]);
-		indices.push_back(Face.m_Indices[1]);
-		indices.push_back(Face.m_Indices[2]);
+		indices.Add(static_cast<uint16>(Face.m_Indices[0]));
+		indices.Add(static_cast<uint16>(Face.m_Indices[1]));
+		indices.Add(static_cast<uint16>(Face.m_Indices[2]));
 	}
 
 	//Add Vertex Buffer Bind
-	m_BindableVBuffer = static_cast<BindableVertexBuffer*>(BindableVertexBuffer::Resolve(m_Parent->GetAssetName() + std::to_string(m_MeshIndex), VBuffer));
+	m_BindableVBuffer = static_cast<Bindables::VertexBuffer*>(Bindables::VertexBuffer::Resolve(HashString((m_Parent->GetAssetName() + std::to_string(m_MeshIndex)).c_str()) , VBuffer));
 	m_Binds.push_back(m_BindableVBuffer);
 
 	//Bind Index Buffer
 	assert("MeshAsset::GenerateBinds: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-	m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve(m_Parent->GetAssetName() + std::to_string(m_MeshIndex), indices));
+	m_IndexBuffer = static_cast<Bindables::IndexBuffer*>(Bindables::IndexBuffer::Resolve(HashString((m_Parent->GetAssetName() + std::to_string(m_MeshIndex)).c_str()), indices));
 	m_Binds.push_back(m_IndexBuffer);
 
 	OutVertexLayout = m_VertexLayout;
@@ -347,7 +347,7 @@ std::vector<Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLayout)
 	return m_Binds;
 }
 
-const IndexBuffer* Mesh::GetIndexBuffer() const
+const Bindables::IndexBuffer* Mesh::GetIndexBuffer() const
 {
 	return m_IndexBuffer;
 }

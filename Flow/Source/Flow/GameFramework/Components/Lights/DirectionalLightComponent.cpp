@@ -5,7 +5,7 @@
 
 #include "Assets/Materials/MaterialCommon.h"
 
-#include "Rendering/RenderCommand.h"
+#include "Rendering/Renderer.h"
 #include "Rendering/Core/Camera/Camera.h"
 
 #if WITH_EDITOR
@@ -29,8 +29,10 @@ DirectionalLightComponent::DirectionalLightComponent(const std::string& Componen
 	: RenderableComponent(ComponentName)
 	, m_lightPixelBuffer(MaterialCommon::Register::DirectionalLightProperties)
 {
+#if WITH_EDITOR
 	m_arrowPointer = new StaticMesh("");
 	m_arrowPointer->InitialiseStaticMesh("ArrowZForward", AssetSystem::GetAsset<MaterialAsset>("Mat_FlatColor_Green")->GetMaterial());
+#endif
 }
 
 void DirectionalLightComponent::OnRegistered()
@@ -44,21 +46,24 @@ void DirectionalLightComponent::OnRegistered()
 
 void DirectionalLightComponent::Render()
 {
+#if WITH_EDITOR
 	//Update from component position
 	m_lightBuffer.m_direction = m_arrowPointer->m_Rotation.GetForwardVector();
-
 	m_arrowPointer->m_Position = m_RelativeTransform.m_Position + Vector3(m_lightBuffer.m_direction).Normalize() * 1.0f;
+#else
+	m_lightBuffer.m_direction = GetWorldRotation().GetForwardVector();
+#endif //WITH_EDITOR
 
 	//Create a copy and transform the copied position with the view matrix
 	DirectionalLightBuffer_t Copy = m_lightBuffer;
 
 	//Rotate light in view space
-	CameraBase* cam = RenderCommand::GetMainCamera();
+	CameraBase* cam = Renderer::GetMainCamera();
 	Transform temp = cam->GetCameraTransform();
 	cam->MoveCamera(Transform(0.0f, temp.m_Rotation, temp.m_Scale));
 
 	const DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&m_lightBuffer.m_direction);
-	DirectX::XMStoreFloat3(&Copy.m_direction, DirectX::XMVector3Transform(dir, RenderCommand::GetMainCamera()->GetViewMatrix())); // modelView
+	DirectX::XMStoreFloat3(&Copy.m_direction, DirectX::XMVector3Transform(dir, Renderer::GetMainCamera()->GetViewMatrix())); // modelView
 	
 	cam->MoveCamera(temp);
 
@@ -66,12 +71,11 @@ void DirectionalLightComponent::Render()
 	m_lightPixelBuffer.Update(Copy);
 	m_lightPixelBuffer.Bind();
 
-	//m_arrowPointer->m_Position = GetWorldPosition();
+#if WITH_EDITOR
 	m_arrowPointer->m_Rotation = GetWorldRotation();
 	m_arrowPointer->m_Scale = GetWorldScale();
-
 	Renderer::Submit(m_arrowPointer);
-	// Render Arrow
+#endif // WITH_EDITOR
 }
 
 void DirectionalLightComponent::DrawComponentDetailsWindow()
@@ -85,9 +89,10 @@ void DirectionalLightComponent::DrawComponentDetailsWindow()
 	ImGui::InputFloat("Specular Intensity", &m_lightBuffer.m_specularIntensity);
 }
 
+#if WITH_EDITOR
 void DirectionalLightComponent::IconUpdate(IconManager& iconManager)
 {
-	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Vector3 screen = Renderer::WorldToScreen(GetWorldPosition());
 	Icon& lightIcon = iconManager.GetIcon(GetGuid());
 	lightIcon.m_position.x = screen.x;
 	lightIcon.m_position.y = screen.y;
@@ -95,6 +100,7 @@ void DirectionalLightComponent::IconUpdate(IconManager& iconManager)
 	lightIcon.m_alignment = Icon::Alignment::Centre;
 	lightIcon.RefreshBinds(iconManager); //TODO: Dont do this every frame
 }
+#endif // WITH_EDITOR
 
 const DirectionalLightBuffer_t& DirectionalLightComponent::GetLightBuffer() const
 {

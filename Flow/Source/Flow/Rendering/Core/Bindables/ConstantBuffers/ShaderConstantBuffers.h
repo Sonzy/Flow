@@ -1,99 +1,119 @@
 #pragma once
 
-//= Includes ====================================
+// Includes //////////////////////////////////////////////////////////////////////////
 
 #include "ConstantBuffer.h"
+#include "Rendering/Renderer.h"
 
-//= Class Definitions ===========================
+// Class Definitions /////////////////////////////////////////////////////////////////
 
 //TODO: Might not want to use a constant buffer with the same signature multiple times. Might need to generate UID with a tag
 template<typename C>
 class PixelConstantBuffer : public ConstantBuffer<C>
 {
-	//= Typedefs =========================================================
+private:
+	// Using Statements //////////////////////////////////////////////////////////////
 
 	//These allow you to access parent class stuff in a template child class by importing them
 	//or could do this->GetContext(gfx)->PSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
-	using ConstantBuffer<C>::m_ConstantBuffer;
-	using ConstantBuffer<C>::m_Slot;
-	using ConstantBuffer<C>::m_Tag;
+	using Bindables::Bindable::m_id;
+	using ConstantBuffer<C>::m_constantBuffer;
+	using ConstantBuffer<C>::m_slot;
+	using ConstantBuffer<C>::m_tag;
 public:
-	//= Public Typedefs ==================================================
 	using ConstantBuffer<C>::ConstantBuffer;
 
 public:
 
-	//= Public Static Functions ===========================================
+	// Public Static Functions ///////////////////////////////////////////////////////
 
 	//= Bindable Interface =
 
-	static PixelConstantBuffer<C>* Resolve(const C& Consts, UINT Slot, const std::string& Tag)
+	static PixelConstantBuffer<C>* Resolve(const C& Consts, UINT Slot, HashString Tag)
 	{
-		return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, Tag);
+		return Bindables::Codex::Resolve<PixelConstantBuffer>(Consts, Slot, Tag);
 	}
 
 	static PixelConstantBuffer<C>* Resolve(const C& Consts, UINT Slot)
 	{
-		return BindableCodex::Resolve<PixelConstantBuffer>(Consts, Slot, "");
+		return Bindables::Codex::Resolve<PixelConstantBuffer>(Consts, Slot, HashString());
 	}
 
-	static std::string GenerateUID(const C& Consts, UINT Slot, const std::string& Tag)
+	static HashString GenerateID(const C& Consts, UINT Slot, HashString tag)
 	{
-		using namespace std::string_literals;
-		return typeid(PixelConstantBuffer).name() + "#"s + Tag;
+		char buffer[64];
+#if _DEBUG
+		snprintf(buffer, 64, "PixelConstantBuffer-%s", tag.c_str());
+#else
+		snprintf(buffer, 64, "PixelConstantBuffer-%d", tag);
+#endif
+		return buffer;
+
+	}
+
+	virtual HashString GetID() override
+	{
+		if (m_id.IsNull())
+		{
+			C dummy{};
+			m_id = GenerateID(dummy, m_slot, m_tag);
+		}
+		return m_id;
 	}
 
 public:
 
-	//= Public Functions =================================================
+	// Public Functions /////////////////////////////////////////////////////////////
 
 	void Bind() override
 	{
-		RenderCommand::DX11GetContext()->PSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
+		Renderer::GetContext()->PSSetConstantBuffers(m_slot, 1u, m_constantBuffer.GetAddressOf());
 	}
 };
 
 template<typename C>
 class VertexConstantBuffer : public ConstantBuffer<C>
 {
-	//= Typedefs =========================================================
+	// Using Statements //////////////////////////////////////////////////////////////
 
 	//These allow you to access parent class stuff in a template child class
-	using ConstantBuffer<C>::m_ConstantBuffer;
-	using ConstantBuffer<C>::m_Slot;
+	using Bindables::Bindable::m_id;
+	using ConstantBuffer<C>::m_constantBuffer;
+	using ConstantBuffer<C>::m_slot;
 public:
-
-	//= Public Typedefs ==================================================
-
 	using ConstantBuffer<C>::ConstantBuffer;
 
 public:
 
-	//= Public Static Functions ===========================================
+	// Public Static Functions ///////////////////////////////////////////////////////
 
 	//= Bindable Interface =
 
-	static std::shared_ptr<VertexConstantBuffer> Resolve()
+	static VertexConstantBuffer<C>* Resolve()
 	{
-		BindableCodex::Resolve<VertexConstantBuffer>();
+		Bindables::Codex::Resolve<VertexConstantBuffer>();
 	}
 
-	static std::string GenerateUID()
+	static HashString GenerateID()
 	{
-		return typeid(VertexConstantBuffer).name();
+		return "VertexConstantBuffer";
 	}
 
-	std::string GetUID() const
+	virtual HashString GetID() override
 	{
-		return GenerateUID();
+		if (m_id.IsNull())
+		{
+			m_id = GenerateID();
+		}
+		return m_id;
 	}
 
 public:
 
-	//= Public Functions =================================================
+	// Public Functions ////////////////////////////////////////////////////////////
 
 	void Bind() override
 	{
-		RenderCommand::DX11GetContext()->VSSetConstantBuffers(m_Slot, 1u, m_ConstantBuffer.GetAddressOf());
+		Renderer::GetContext()->VSSetConstantBuffers(m_slot, 1u, m_constantBuffer.GetAddressOf());
 	}
 };

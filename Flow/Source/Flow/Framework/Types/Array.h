@@ -31,6 +31,17 @@ public:
 		m_length++;
 	}
 
+	void Add(T element)
+	{
+		if (m_length == m_capacity)
+		{
+			GrowBuffer();
+		}
+
+		m_data[m_length] = element;
+		m_length++;
+	}
+
 	T* Data()
 	{
 		return m_data;
@@ -44,6 +55,11 @@ public:
 	_SizeType Length() const
 	{
 		return m_length;
+	}
+
+	void Reserve(_SizeType size)
+	{
+		AllocateBuffer((int)size);
 	}
 
 private:

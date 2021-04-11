@@ -1,40 +1,52 @@
-//= Includes ====================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ////////////////////////////////////////////////////////////////////
+
 #include "InputLayout.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
-#include "BindableCodex.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class (InputLayout) Definition =============
+//= Class Definition ///////////////////////////////////////////////////////////
 
-InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
-	: m_VertexLayout(Layout)
+Bindables::InputLayout::InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode)
+	: m_vertexLayout(Layout)
 {
 	CreateResultHandle();
 
-	const auto D3DLayout = m_VertexLayout.GetD3DLayout();
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateInputLayout(
+	const auto D3DLayout = m_vertexLayout.GetD3DLayout();
+	CaptureDXError(Renderer::GetDevice()->CreateInputLayout(
 		D3DLayout.data(),
 		(UINT)D3DLayout.size(),
 		vertexShaderByteCode->GetBufferPointer(),
 		vertexShaderByteCode->GetBufferSize(),
-		&m_InputLayout));
+		&m_inputLayout));
 }
 
-void InputLayout::Bind()
+void Bindables::InputLayout::Bind()
 {
-	RenderCommand::DX11GetContext()->IASetInputLayout(m_InputLayout.Get());
+	Renderer::GetContext()->IASetInputLayout(m_inputLayout.Get());
 }
-Bindable* InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
+
+Bindables::InputLayout* Bindables::InputLayout::Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 {
-	return BindableCodex::Resolve<InputLayout>(Layout, vertexShaderByteCode);
+	return Bindables::Codex::Resolve<InputLayout>(Layout, vertexShaderByteCode);
 }
-std::string InputLayout::GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
+
+HashString Bindables::InputLayout::GenerateID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode)
 {
-	using namespace std::string_literals;
-	return typeid(InputLayout).name() + "#"s + Layout.GetCode();
+	char buffer[64];
+	snprintf(buffer, 64, "InputLayout-%s", Layout.GetCode().c_str());
+	return buffer;
 }
-std::string InputLayout::GetUID() const
+
+HashString Bindables::InputLayout::GetID()
 {
-	return GenerateUID(m_VertexLayout);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_vertexLayout);
+	}
+	return m_id;
 }

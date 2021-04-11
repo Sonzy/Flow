@@ -303,6 +303,8 @@ Vector3* WorldComponent::GetWriteableScale()
 	return &m_RelativeTransform.m_Scale;
 }
 
+#if WITH_EDITOR
+
 void WorldComponent::DrawDetailsWindow(bool bDontUpdate)
 {
 }
@@ -337,6 +339,8 @@ void WorldComponent::DrawComponentInActorTreeRecursive()
 		ImGui::TreePop();
 	}
 }
+
+#endif // WITH_EDITOR
 
 std::vector<WorldComponent*> WorldComponent::GetChildren() const
 {

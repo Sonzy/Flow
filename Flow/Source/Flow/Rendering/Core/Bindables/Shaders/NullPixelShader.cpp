@@ -1,8 +1,10 @@
 //= Includes ===============================================
 
 #include "pch.h"
+#include <d3d11.h>
 #include "NullPixelShader.h"
-#include "Flow/Rendering/Core/Bindables/BindableCodex.h"
+#include "Flow/Rendering/Core/Bindables/Codex.h"
+#include "Flow/Rendering/Renderer.h"
 
 //= Class (Null Pixel Shader) Definition ===================
 NullPixelShader::NullPixelShader()
@@ -11,20 +13,24 @@ NullPixelShader::NullPixelShader()
 
 void NullPixelShader::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetShader(nullptr, nullptr, 0u);
+	Renderer::GetContext()->PSSetShader(nullptr, nullptr, 0u);
 }
 
 NullPixelShader* NullPixelShader::Resolve()
 {
-	return BindableCodex::Resolve<NullPixelShader>();
+	return Bindables::Codex::Resolve<NullPixelShader>();
 }
 
-std::string NullPixelShader::GenerateUID()
+HashString NullPixelShader::GenerateID()
 {
-	return typeid(NullPixelShader).name();
+	return "NullPixelShader";
 }
 
-std::string NullPixelShader::GetUID() const
+HashString NullPixelShader::GetID()
 {
-	return GenerateUID();
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID();
+	}
+	return m_id;
 }

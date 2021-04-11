@@ -27,10 +27,6 @@ public:
 
 	Vector2(IntVector2 v);
 
-	Vector2(DirectX::XMFLOAT2 Input)
-		: x(Input.x), y(Input.y)
-	{}
-
 	float* Data()
 	{
 		return reinterpret_cast<float*>(this);

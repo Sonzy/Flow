@@ -1,11 +1,14 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "EditorCamera.h"
 #include "Framework/Input/Input.h"
 #include "Framework/Events/MouseEvent.h"
 #include "Framework/Events/KeyEvent.h"
 #include "Editor/Editor.h"
 
-#include "Rendering/RenderCommand.h"
+#include "Rendering/Renderer.h"
 
 EditorCamera::EditorCamera()
 	: m_Position(0)
@@ -55,7 +58,7 @@ DirectX::XMMATRIX EditorCamera::GetViewMatrix2D() const
 	
 	//=================================
 
-	//IntVector2 size = RenderCommand::GetWindowSize();
+	//IntVector2 size = Renderer::GetWindowSize();
 	//float xVal = (float)size.x / 2.0f;
 	//float yVal = (float)size.y / 2.0f;
 	//
@@ -174,3 +177,5 @@ void EditorCamera::Update(float DeltaTime)
 
 	CacheMatrices();
 }
+
+#endif //WITH_EDITOR

@@ -1,29 +1,35 @@
 #pragma once
+
+#if WITH_EDITOR
+
+// Includes /////////////////////////////////////////////////////////
+
+#include "Editor/UIComponents/SceneManager.h"
 #include "Framework/Layers/Layer.h"
 #include "Framework/Events/MouseEvent.h"
-#include "Editor/UIComponents/SceneManager.h"
+#include "Maths/Vector4.h"
 
-//= Forward Declarations ================================
+// Forward Declarations /////////////////////////////////////////////////////////
 
-class UIComponent;
-class MenuBar;
 class Application;
-class EditorCamera;
-class LevelManager;
-class Tool;
 class Console;
+class EditorCamera;
 class IconManager;
+class KeyPressedEvent;
+class KeyReleasedEvent;
+class KeyTypedEvent;
+class LevelManager;
+class MenuBar;
 class Module;
-struct ImVec2;
-
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
 class MouseMovedEvent;
-class MouseScrolledEvent;
-class KeyPressedEvent;
-class KeyReleasedEvent;
 class WindowResizedEvent;
-class KeyTypedEvent;
+class MouseScrolledEvent;
+class Tool;
+class UIComponent;
+
+struct ImVec2;
 
 // Class Declaration ///////////////////////////////////////////////
 
@@ -299,3 +305,5 @@ private:
 	//Editor Window
 	Vector2							m_EditorViewportSize;
 };
+
+#endif //WITH_EDITOR

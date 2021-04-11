@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CameraActor.h"
-#include "Flow/Rendering/RenderCommand.h"
+#include "Flow/Rendering/Renderer.h"
 #include "Flow/GameFramework/Components/CameraComponent.h"
 #include "Flow/GameFramework/Controllers/Controller.h"
 #include "Framework/Input/Input.h"
@@ -65,5 +65,5 @@ void CameraActor::Tick(float DeltaTime)
 
 void CameraActor::SetMainCamera() const
 {
-	RenderCommand::SetMainCamera(m_CameraComponent);
+	Renderer::SetMainCamera(m_CameraComponent);
 }

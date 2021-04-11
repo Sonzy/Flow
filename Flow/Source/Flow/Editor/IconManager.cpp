@@ -1,6 +1,9 @@
 // Includes ///////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "IconManager.h"
 
 #include "Rendering\Renderer.h"
@@ -10,12 +13,13 @@
 #include "Rendering/Core/Vertex/VertexLayout.h"
 #include "Rendering/Core/Camera/Camera.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
-#include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 #include "Rendering/Core/Bindables/Topology.h"
-#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Rendering/Core/Bindables/VertexBuffer.h"
 #include "Rendering/Core/Bindables/IndexBuffer.h"
 #include "Rendering/Core/Materials/Material.h"
 #include "Rendering/Core/Bindables/Rasterizer.h"
+#include "Rendering/Core/Bindables/Shaders/PixelShader.h"
+#include "Rendering/Core/Bindables/Shaders/VertexShader.h"
 
 #include "Assets/AssetSystem.h"
 #include "Assets/Materials/Mat_Texture2D.h"
@@ -55,13 +59,13 @@ IconManager::IconManager()
 	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{  0.5f,  0.5f }, DirectX::XMFLOAT2{ 1.0f, 1.0f });
 	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{ -0.5f,  0.5f }, DirectX::XMFLOAT2{ 0.0f, 1.0f });
 
-	m_iconIndices.reserve(6);
-	m_iconIndices.push_back(0);
-	m_iconIndices.push_back(1);
-	m_iconIndices.push_back(2);
-	m_iconIndices.push_back(2);
-	m_iconIndices.push_back(3);
-	m_iconIndices.push_back(0);
+	m_iconIndices.Reserve(6);
+	m_iconIndices.Add(0);
+	m_iconIndices.Add(1);
+	m_iconIndices.Add(2);
+	m_iconIndices.Add(2);
+	m_iconIndices.Add(3);
+	m_iconIndices.Add(0);
 }
 
 void IconManager::RegisterIcon(FGUID guid, const IconData& data)
@@ -110,7 +114,7 @@ void IconManager::RenderIcons()
 	PROFILE_FUNCTION();
 
 	const World& world = World::Get();
-	Vector3 cameraPosition = RenderCommand::GetMainCamera()->GetCameraPosition();
+	Vector3 cameraPosition = Renderer::GetMainCamera()->GetCameraPosition();
 	for (auto iconData : m_iconData)
 	{
 		if (iconData.first == -1)
@@ -146,7 +150,7 @@ const VertexBuffer& IconManager::GetIconVertices(Icon::Alignment alignment) cons
 	}
 }
 
-const std::vector<unsigned short>& IconManager::GetIconIndices() const
+const Array<uint16>& IconManager::GetIconIndices() const
 {
 	return m_iconIndices;
 }
@@ -181,22 +185,22 @@ void Icon::RefreshBinds(const IconManager& manager)
 	PROFILE_FUNCTION();
 
 	//TODO: Batch render these
-	m_Techniques.clear();
+	m_techniques.clear();
 
 	Technique Standard = Technique("Basic_Icon");
 	{
 		//TODO: Fix memory leaks
 		Step MainStep(RenderPass::Standard2D);
 
-		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-		delete m_VertexBuffer;	//For now just recreate them in case of a change
-		m_VertexBuffer = new BindableVertexBuffer(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconVertices(m_alignment)); //TODO: Manage the tags
-		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve(std::string("IconQuad_") + std::to_string((int)m_alignment), manager.GetIconIndices()));
+		m_topology = static_cast<Bindables::Topology*>(Bindables::Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		delete m_vertexBuffer;	//For now just recreate them in case of a change
+		m_vertexBuffer = new Bindables::VertexBuffer(HashString((std::string("IconQuad_") + std::to_string((int)m_alignment)).c_str()), manager.GetIconVertices(m_alignment)); //TODO: Manage the tags
+		m_indexBuffer = static_cast<Bindables::IndexBuffer*>(Bindables::IndexBuffer::Resolve((std::string("IconQuad_") + std::to_string((int)m_alignment)).c_str(), manager.GetIconIndices()));
 
 		m_iconMaterial.BindMaterial(&MainStep, manager.GetIconLayout());
 
 		//Update vertex constant buffers
-		m_buf.windowSize = RenderCommand::GetWindowSize();
+		m_buf.windowSize = Renderer::GetWindowSize();
 		m_buf.xPosition = m_position.x;
 		m_buf.yPosition = m_position.y;
 		m_buf.xScale = manager.GetIconSize();
@@ -229,14 +233,14 @@ void Icon::RefreshBinds(const IconManager& manager)
 
 		//No need to recreate mesh binds
 		std::string tag = "SelectionBuffer_" + std::to_string(m_guid);
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(buff, MaterialCommon::Register::Selection, tag));
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(buff, MaterialCommon::Register::Selection, tag.c_str()));
 
-		auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_VS")->GetPath());
-		auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+		auto vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_VS")->GetPath());
+		auto vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
 		Rendering.AddBindable(std::move(vShader));
-		Rendering.AddBindable(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_PS")->GetPath()));
+		Rendering.AddBindable(Bindables::PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection2D_PS")->GetPath()));
 
-		m_buf.windowSize = RenderCommand::GetWindowSize();
+		m_buf.windowSize = Renderer::GetWindowSize();
 		m_buf.xPosition = m_position.x;
 		m_buf.yPosition = m_position.y;
 		m_buf.xScale = manager.GetIconSize();
@@ -254,3 +258,5 @@ DirectX::XMMATRIX Icon::GetTransformXM() const
 {
 	return 	DirectX::XMMatrixIdentity();
 }
+
+#endif //WITH_EDITOR

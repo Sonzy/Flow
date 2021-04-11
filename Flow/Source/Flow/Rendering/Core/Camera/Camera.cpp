@@ -53,7 +53,7 @@ void CameraBase::Update(float DeltaTime)
 	const DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&m_cameraBuffer.m_cameraPosition);
 
 	//TODO: Might have to recalculate
-	DirectX::XMStoreFloat3(&Copy.m_cameraPosition, DirectX::XMVector3Transform(Position, RenderCommand::GetMainCamera()->GetCachedView()));// modelView
+	DirectX::XMStoreFloat3(&Copy.m_cameraPosition, DirectX::XMVector3Transform(Position, Renderer::GetMainCamera()->GetCachedView()));// modelView
 
 	//Update the transformed position to the shader
 	//m_cameraPixelBuffer.Update(Copy);

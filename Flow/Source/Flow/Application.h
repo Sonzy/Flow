@@ -102,9 +102,9 @@ private:
 
 	//= Layers =
 
-	ImGuiLayer*							m_Layer_ImGui;
 	GameLayer*							m_Layer_Game;
 #if WITH_EDITOR
+	ImGuiLayer*							m_Layer_ImGui;
 	Editor*								m_Layer_Editor;
 #endif
 

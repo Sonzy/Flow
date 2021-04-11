@@ -16,8 +16,8 @@ public:
 	virtual void								MoveCamera(const Transform& NewTransform) override;
 	virtual void								Update(float DeltaTime) override;
 
-	N_DISC virtual DirectX::XMMATRIX			GetViewMatrix() const override;
-	N_DISC virtual DirectX::XMMATRIX			GetViewMatrix2D() const override;
+	[[nodiscard]] virtual DirectX::XMMATRIX			GetViewMatrix() const override;
+	[[nodiscard]] virtual DirectX::XMMATRIX			GetViewMatrix2D() const override;
 	virtual Transform							GetCameraTransform() const override;
 	virtual Vector3								GetCameraPosition() const override;
 

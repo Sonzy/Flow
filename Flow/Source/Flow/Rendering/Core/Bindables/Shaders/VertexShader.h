@@ -1,32 +1,41 @@
 #pragma once
 
-//= Includes =====================================
+// Includes ///////////////////////////////////////////////////////////////////////////
 
-#include "Rendering/Core/Bindable.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Class Definition =============================
+// Type Definitions ///////////////////////////////////////////////////////////////////
 
-class VertexShader : public Bindable
+struct ID3D11VertexShader;
+struct ID3D10Blob;
+typedef ID3D10Blob ID3DBlob;
+
+// Class Definition ///////////////////////////////////////////////////////////////////
+
+namespace Bindables
 {
-public:
+	class VertexShader : public Bindables::Bindable
+	{
+	public:
+		// Public Static Functions ////////////////////////////////////////////////////
 
-	//= PubliC Static Functions ====================================
+		static VertexShader*					Resolve(const string& LocalPath);
+		static HashString						GenerateID(const string& LocalPath);
 
-	static Bindable*		Resolve(const std::string& LocalPath);
-	static std::string						GenerateUID(const std::string& LocalPath);
+		// Public Functions ///////////////////////////////////////////////////////////
 
-	//= Public Functions ===========================================
+												VertexShader(const string& LocalPath);
+		void									Bind() override;
+		ID3DBlob*								GetByteCode() const;
+		HashString								GetID() override;
 
-											VertexShader(const std::string& LocalPath);
-	void									Bind() override;
-	ID3DBlob*								GetByteCode() const;
-	std::string								GetUID() const override;
+	private:
 
-protected:
-	
-	//= Protected Variables ========================================
+		// Private Variables ///////////////////////////////////////////////////////////
 
-	std::string									m_ShaderPath;
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>	m_VertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob>			m_Blob;
-};
+		string									m_shaderPath;
+		ComPtr<ID3D11VertexShader>				m_vertexShader;
+		ID3DBlob*								m_blob;
+	};
+}

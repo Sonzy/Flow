@@ -30,7 +30,10 @@ public:
 	virtual void						OnRegistered() override;
 	virtual void						Render() override;
 	virtual void						DrawComponentDetailsWindow() override;
+
+#if WITH_EDITOR
 	virtual void						IconUpdate(IconManager& iconManager) override;
+#endif
 
 	const DirectionalLightBuffer_t&		GetLightBuffer() const;
 	void								SetLightBuffer(const DirectionalLightBuffer_t& buf);
@@ -46,5 +49,8 @@ private:
 
 	DirectionalLightBuffer_t								m_lightBuffer;
 	PixelConstantBuffer<DirectionalLightBuffer_t>			m_lightPixelBuffer;
+
+#if WITH_EDITOR
 	StaticMesh*												m_arrowPointer;
+#endif
 };

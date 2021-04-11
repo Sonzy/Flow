@@ -13,7 +13,7 @@ class RenderableComponent;
 
 //= Class Definiton ================================
 
-class TransformConstantBuffer : public Bindable
+class TransformConstantBuffer : public Bindables::Bindable
 {
 public:
 	

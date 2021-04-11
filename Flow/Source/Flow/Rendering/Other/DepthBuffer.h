@@ -3,7 +3,7 @@
 //= Includes ============================
 
 #include <d3d11.h>
-#include <wrl.h>
+#include "Framework/Types/ComPtr.h"
 
 //= Class Defintion =====================
 
@@ -24,8 +24,8 @@ public:
 
 private:
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			m_DepthTexture = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthTextureView = nullptr;
+	ComPtr<ID3D11Texture2D>							m_DepthTexture = nullptr;
+	ComPtr<ID3D11DepthStencilView>					m_DepthTextureView = nullptr;
 
 	unsigned int									m_Width;
 	unsigned int									m_Height;

@@ -1,19 +1,24 @@
-//= Includes =============================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ////////////////////////////////////////////////////////////////////
+
+#include <d3d11.h>
 #include "Stencil.h"
-#include "BindableCodex.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
 //= Class (Stencil) Definition ===========
 
-Stencil::Stencil(StencilMode Mode)
-	: m_Mode(Mode)
+Bindables::Stencil::Stencil(Bindables::Stencil::Mode Mode)
+	: m_mode(Mode)
 {
 	D3D11_DEPTH_STENCIL_DESC Description = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
 
 	switch (Mode)
 	{
-	case StencilMode::Write:
+	case Bindables::Stencil::Mode::Write:
 		Description.DepthEnable = FALSE;
 		Description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		Description.StencilEnable = TRUE;
@@ -21,7 +26,7 @@ Stencil::Stencil(StencilMode Mode)
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 		break;
-	case StencilMode::Mask:
+	case Bindables::Stencil::Mode::Mask:
 		Description.DepthEnable = FALSE;
 		Description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		Description.StencilEnable = TRUE;
@@ -29,7 +34,7 @@ Stencil::Stencil(StencilMode Mode)
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
 		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		break;
-	case StencilMode::AlwaysOnTop:
+	case Bindables::Stencil::Mode::AlwaysOnTop:
 
 		Description.DepthEnable = TRUE;
 		Description.DepthFunc = D3D11_COMPARISON_ALWAYS;
@@ -41,46 +46,51 @@ Stencil::Stencil(StencilMode Mode)
 		Description.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		Description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 		break;
-	case StencilMode::NoDepth:
+	case Bindables::Stencil::Mode::NoDepth:
 		Description.DepthEnable = FALSE;
 		Description.StencilEnable = FALSE;
 		break;
-	case StencilMode::Off:
+	case Bindables::Stencil::Mode::Off:
 		break;
 	}
 
-	RenderCommand::DX11GetDevice()->CreateDepthStencilState(&Description, &m_Stencil);
+	Renderer::GetDevice()->CreateDepthStencilState(&Description, &m_stencil);
 }
 
-void Stencil::Bind()
+void Bindables::Stencil::Bind()
 {
-	RenderCommand::DX11GetContext()->OMSetDepthStencilState(m_Stencil.Get(), 0xFF);
+	Renderer::GetContext()->OMSetDepthStencilState(m_stencil.Get(), 0xFF);
 }
 
-Bindable* Stencil::Resolve(StencilMode mode)
+Bindables::Stencil* Bindables::Stencil::Resolve(Bindables::Stencil::Mode mode)
 {
-	return BindableCodex::Resolve<Stencil>(mode);
+	return Bindables::Codex::Resolve<Stencil>(mode);
 }
 
-std::string Stencil::GenerateUID(StencilMode mode)
+HashString Bindables::Stencil::GenerateID(Bindables::Stencil::Mode mode)
 {
-	using namespace std::string_literals;
-	return typeid(Stencil).name() + "#"s + Stencil::GetModeAsString(mode);
+	char buffer[64];
+	snprintf(buffer, 64, "Stencil-%s", Bindables::Stencil::GetModeAsString(mode).c_str());
+	return buffer;
 }
 
-std::string Stencil::GetUID() const
+HashString Bindables::Stencil::GetID()
 {
-	return GenerateUID(m_Mode);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_mode);
+	}
+	return m_id;
 }
 
-std::string Stencil::GetModeAsString(StencilMode mode)
+string Bindables::Stencil::GetModeAsString(Bindables::Stencil::Mode mode)
 {
 	switch (mode)
 	{
-	case StencilMode::Off: 			return "Off"; 
-	case StencilMode::Write:		return "Write";
-	case StencilMode::Mask:			return "Mask";
-	case StencilMode::AlwaysOnTop:	return "AlwaysOnTop";
+	case Bindables::Stencil::Mode::Off: 			return "Off"; 
+	case Bindables::Stencil::Mode::Write:		return "Write";
+	case Bindables::Stencil::Mode::Mask:			return "Mask";
+	case Bindables::Stencil::Mode::AlwaysOnTop:	return "AlwaysOnTop";
 	}
 
 	return "UNKNOWN";

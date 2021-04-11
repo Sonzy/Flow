@@ -3,7 +3,8 @@
 #include "pch.h"
 #include "StaticMesh.h"
 #include "Rendering/Core/Vertex/VertexLayout.h"
-#include "Rendering/Core/Vertex/VertexBuffer.h"
+#include "Rendering/Core/Vertex/VertexBufferData.h"
+#include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
 
 #include "Application.h"
 
@@ -40,9 +41,9 @@ void StaticMesh::InitialiseStaticMesh(const std::string& LocalPath, Material* Ma
 
 		//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 		m_Mesh->GenerateBinds(MeshLayout);
-		m_VertexBuffer = m_Mesh->m_BindableVBuffer;
-		m_IndexBuffer = m_Mesh->m_IndexBuffer;
-		m_Topology = m_Mesh->m_Topology;
+		m_vertexBuffer = m_Mesh->m_BindableVBuffer;
+		m_indexBuffer = m_Mesh->m_IndexBuffer;
+		m_topology = m_Mesh->m_Topology;
 
 		MaterialOverride->BindMaterial(&MainStep, MeshLayout);
 

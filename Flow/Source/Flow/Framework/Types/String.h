@@ -5,6 +5,22 @@
 
 class string
 {
+	// Public Classes ////////////////////////////////////////////////////
+
+	class Iterator
+	{
+	public:
+		Iterator(const char* ptr)
+			: m_ptr(ptr)
+		{
+
+		}
+
+	private:
+		const char* m_ptr;
+	};
+
+
 public:
 	// Public Functions //////////////////////////////////////////////////
 
@@ -27,6 +43,19 @@ public:
 		memcpy(&newbuffer + otherLength, m_ptr + m_length, otherLength);
 		m_ptr = newbuffer;
 	}
+
+	//= Iterators =
+
+	Iterator begin()
+	{
+		return Iterator(m_ptr);
+	}
+
+	Iterator end()
+	{
+		return Iterator(m_ptr + m_length);
+	}
+
 
 	//= STL Functions =
 
@@ -51,7 +80,7 @@ public:
 
 private:
 
-	const char*		m_ptr;
+	char*			m_ptr;
 	uint32			m_length;
 };
 
@@ -59,15 +88,22 @@ private:
 
 inline string::string()
 {
-	m_ptr = "";
+	m_ptr = nullptr;
 	m_length = 0;
 }
 
 inline string::string(const char* data)
 {
-	m_length = static_cast<uint32>(strlen(data));
+	if (data == nullptr)
+	{
+		m_length = 0;
+		m_ptr = nullptr;
+		return;
+	}
+
+	m_length = static_cast<uint32>(strlen(data)) + 1;
 	m_ptr = new char[m_length];
-	memcpy(&m_ptr, data, m_length);
+	memcpy(m_ptr, data, sizeof(char) * m_length);
 }
 
 

@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "Inspector.h"
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
@@ -9,7 +12,7 @@
 #include "Bullet/btBulletCollisionCommon.h"
 #include "Bullet/btBulletDynamicsCommon.h"
 
-#include "Rendering\RenderCommand.h"
+#include "Rendering\Renderer.h"
 #include "Framework/Input\Input.h"
 
 #include "Application.h"
@@ -199,3 +202,5 @@ void Inspector::DrawSelectedComponentTransform()
 		m_SelectedComponent->UpdateCollisionScale();
 	}
 }
+
+#endif WITH_EDITOR

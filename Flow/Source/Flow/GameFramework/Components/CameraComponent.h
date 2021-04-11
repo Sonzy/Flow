@@ -25,7 +25,10 @@ public:
 											CameraComponent(const std::string& Name);
 
 	virtual void							OnRegistered() override;
+
+#if WITH_EDITOR
 	virtual void							IconUpdate(IconManager& iconManager) override;
+#endif
 
 	virtual void							Update(float DeltaTime) override;
 	virtual void							MoveCamera(const Transform& NewTransform) override;
@@ -34,6 +37,6 @@ public:
 
 	//= ICamera interface =
 
-	N_DISC virtual DirectX::XMMATRIX		GetViewMatrix() const override;
+	[[nodiscard]] virtual DirectX::XMMATRIX		GetViewMatrix() const override;
 	virtual Vector3							GetCameraPosition() const override;
 };

@@ -43,7 +43,6 @@ Application* Application::sm_Application = nullptr;
 Application::Application(const std::string& AppName)
 	: m_ApplicationName(AppName)
 	, m_MainWindow(nullptr)
-	, m_Layer_ImGui(nullptr)
 	, m_Layer_Game(nullptr)
 	, m_Running(true)
 	, m_GamePaused(false)
@@ -54,6 +53,7 @@ Application::Application(const std::string& AppName)
 #if WITH_EDITOR
 	, m_RenderEditor(true)
 	, m_Layer_Editor(nullptr)
+	, m_Layer_ImGui(nullptr)
 #endif
 
 {
@@ -77,6 +77,7 @@ void Application::InitialiseApplication()
 		m_MainWindow->SetEventCallback(BIND_EVENT_FUNCTION(&Application::OnEvent));
 	}
 
+#if WITH_EDITOR
 	{
 		PROFILE_CURRENT_SCOPE("ImGui Layer Initialisation");
 
@@ -84,6 +85,7 @@ void Application::InitialiseApplication()
 		m_Layer_ImGui = new ImGuiLayer();
 		PushOverlay(m_Layer_ImGui);
 	}
+#endif //WITH_EDITOR
 
 	{
 		PROFILE_CURRENT_SCOPE("Factory Initialisation");
@@ -205,7 +207,7 @@ Application::~Application()
 {
 	FLOW_ENGINE_LOG("Shutting Down Engine");
 
-	RenderCommand::Shutdown();
+	Renderer::Shutdown();
 	AssetSystem::Shutdown();
 }
 
@@ -290,20 +292,20 @@ void Application::Run()
 		Renderer::EndScene();
 
 		//= UI Rendering =
+
+#if WITH_EDITOR
 		{
 			PROFILE_CURRENT_SCOPE("Game - ImGui Rendering");
 			m_Layer_ImGui->Begin();
 			for (Layer* layer : m_LayerStack)
 			{
-#if WITH_EDITOR
+
 				layer->OnImGuiRender(m_RenderEditor);
-#else
-				layer->OnImGuiRender(false);
-#endif
+
 			}
 			m_Layer_ImGui->End();
 		}
-
+#endif
 		//= Post Update =
 
 		m_MainWindow->PostUpdate();
@@ -348,24 +350,24 @@ bool Application::OnWindowClosed(WindowClosedEvent& e)
 
 bool Application::OnWindowResized(WindowResizedEvent& e)
 {
-	if (RenderCommand::IsMinimized())
+	if (Renderer::IsMinimized())
 	{
-		RenderCommand::SetMinimized(false);
+		Renderer::SetMinimized(false);
 	}
 
-	RenderCommand::Resize(e.GetWidth(), e.GetHeight());
+	Renderer::Resize(e.GetWidth(), e.GetHeight());
 	return false;
 }
 
 bool Application::OnWindowMinimized(WindowMinimizedEvent& e)
 {
-	RenderCommand::SetMinimized(true);
+	Renderer::SetMinimized(true);
 	return false;
 }
 
 bool Application::OnWindowRestored(WindowRestoredEvent& e)
 {
-	RenderCommand::SetMinimized(false);
+	Renderer::SetMinimized(false);
 	return false;
 }
 

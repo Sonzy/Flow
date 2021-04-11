@@ -5,14 +5,19 @@
 
 #include "Maths/Vector3.h"
 
-#include "Rendering\Core\Bindable.h"
-#include "Rendering\Core\Vertex\VertexLayout.h"
-#include "Rendering\Core\Renderable.h"
+#include "Rendering/Core/Bindables/Bindable.h"
+#include "Rendering/Core/Vertex/VertexLayout.h"
+#include "Rendering/Core/Renderable.h"
 
-#include "Assets\Asset.h"
+#include "Assets/Asset.h"
 
 //= Forward Declarations ==================
-class IndexBuffer;
+
+namespace Bindables
+{
+	class IndexBuffer;
+}
+
 class VertexLayout;
 class Material;
 class MeshAsset;
@@ -58,10 +63,10 @@ public:
 	const std::vector<Mesh::Face>&				GetFaces() const { return m_Faces; };
 	const size_t								GetNumFaces() const { return m_Faces.size(); };
 	std::vector<Mesh::Vertex>					GetVertices() const;
-	const IndexBuffer*							GetIndexBuffer() const;
+	const Bindables::IndexBuffer*				GetIndexBuffer() const;
 
 	/* Creates and returns a vector of all binds required from this mesh */
-	std::vector<Bindable*>		GenerateBinds(VertexLayout& OutVertexLayout);
+	std::vector<Bindables::Bindable*>		GenerateBinds(VertexLayout& OutVertexLayout);
 
 	//= Public Variables =================================
 
@@ -76,12 +81,12 @@ public:
 	std::vector<Mesh::Face>						m_Faces;
 
 	//const IndexBuffer* _IndexBuffer;
-	std::vector<Bindable*>		m_Binds;
+	std::vector<Bindables::Bindable*>			m_Binds;
 
 	//TODO: Clean up, these are the necessary binds for the mesh specifically
-	BindableVertexBuffer*						m_BindableVBuffer;
-	IndexBuffer*								m_IndexBuffer;
-	Topology*									m_Topology;
+	Bindables::VertexBuffer*						m_BindableVBuffer;
+	Bindables::IndexBuffer*								m_IndexBuffer;
+	Bindables::Topology*									m_Topology;
 	VertexLayout								m_VertexLayout;
 
 	// Asset this mesh belongs to

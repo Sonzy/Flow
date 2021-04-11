@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "FrameBuffer.h"
-#include "Flow/Rendering/RenderCommand.h"
+#include "Flow/Rendering/Renderer.h"
 #include "DepthBuffer.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
 
@@ -38,7 +38,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	Description.MiscFlags = 0;
 
 	//Create Texture
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&Description, nullptr, &m_Texture));
+	CaptureDXError(Renderer::GetDevice()->CreateTexture2D(&Description, nullptr, &m_Texture));
 
 	m_Width = Width;
 	m_Height = Height;
@@ -49,7 +49,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = -1;
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateShaderResourceView(m_Texture.Get(), &SRVDesc, &m_TextureView));
+	CaptureDXError(Renderer::GetDevice()->CreateShaderResourceView(m_Texture.Get(), &SRVDesc, &m_TextureView));
 
 	if (m_HasDepthBuffer)
 	{

@@ -28,18 +28,20 @@ void CameraComponent::OnRegistered()
 	IconManager::IconData iconData;
 	iconData.m_texture = AssetSystem::GetAsset<TextureAsset>("Icon_Camera");
 	Editor::Get().GetUIComponent<IconManager>()->RegisterIcon(GetGuid(), iconData);
-#endif
+#endif // WITH_EDITOR
 }
 
+#if WITH_EDITOR
 void CameraComponent::IconUpdate(IconManager& iconManager)
 {
-	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Vector3 screen = Renderer::WorldToScreen(GetWorldPosition());
 	Icon& icon = iconManager.GetIcon(GetGuid());
 	icon.m_position.x = screen.x;
 	icon.m_position.y = screen.y;
 	icon.m_alignment = Icon::Alignment::Centre;
 	icon.RefreshBinds(iconManager); //TODO: Dont do this every frame
 }
+#endif // WITH_EDITOR
 
 void CameraComponent::Update(float DeltaTime)
 {

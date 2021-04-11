@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "ImGuiLayer.h"
 #include "Application.h"
 
@@ -55,7 +58,7 @@ void ImGuiLayer::OnAttach()
 
 #ifdef  FLOW_PLATFORM_WINDOWS
 	ImGui_ImplWin32_Init(Window->GetWindowHandle());
-	ImGui_ImplDX11_Init(RenderCommand::DX11GetDevice(), RenderCommand::DX11GetContext());
+	ImGui_ImplDX11_Init(Renderer::GetDevice(), Renderer::GetContext());
 #endif
 
 	RECT rect;
@@ -512,3 +515,5 @@ void ImGuiLayer::SetRayTeakTheme()
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 	style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 }
+
+#endif // WITH_EDITOR

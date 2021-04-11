@@ -9,9 +9,14 @@
 
 #include "Flow\GameFramework\Components\CameraComponent.h"
 
+#include "Rendering/Core/Bindables/Topology.h"
+#include "Rendering/Core/Bindables/VertexBuffer.h"
+#include "Rendering/Core/Bindables/InputLayout.h"
+#include "Rendering/Core/Vertex/VertexBufferData.h"
+
 VertexLayout								Line::m_VertexLayout = VertexLayout();
-std::vector<Bindable*>		Line::m_Binds = std::vector<Bindable*>();
-IndexBuffer*								Line::m_IndexBuffer = nullptr;
+std::vector<Bindables::Bindable*>			Line::m_Binds = std::vector<Bindables::Bindable*>();
+Bindables::IndexBuffer*						Line::m_IndexBuffer = nullptr;
 int											Line::m_Count = 0;
 
 Line::Line()
@@ -21,22 +26,22 @@ Line::Line()
 void Line::Initialise()
 {
 	Line* LineObj = new Line();
-	LineObj->AddBind(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_LINELIST));
+	LineObj->AddBind(Bindables::Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_LINELIST));
 
 	m_VertexLayout.Append(ElementType::Position3D);
 
-	std::vector<unsigned short> indices;
-	indices.push_back(0);
-	indices.push_back(1);
+	Array<uint16> indices;
+	indices.Add(0);
+	indices.Add(1);
 	//Bind Index Buffer
-	LineObj->AddBind(IndexBuffer::Resolve("Line", indices));
+	LineObj->AddBind(Bindables::IndexBuffer::Resolve("Line", indices));
 
 	//Material
-	LineObj->AddBind(PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_P")->GetPath()));
-	auto vShader = VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_V")->GetPath());
-	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+	LineObj->AddBind(Bindables::PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_P")->GetPath()));
+	auto vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("LineShader_V")->GetPath());
+	auto vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
 	LineObj->AddBind(std::move(vShader));
-	LineObj->AddBind(InputLayout::Resolve(m_VertexLayout, vShaderByteCode));
+	LineObj->AddBind(Bindables::InputLayout::Resolve(m_VertexLayout, vShaderByteCode));
 }
 
 void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
@@ -49,7 +54,7 @@ void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 	VBuffer.EmplaceBack(DirectX::XMFLOAT3{ To.x ,  To.y,  To.z });
 
 	//Add Vertex Buffer Bind
-	BindableVertexBuffer BVB = BindableVertexBuffer("", VBuffer);
+	Bindables::VertexBuffer BVB = Bindables::VertexBuffer("", VBuffer);
 
 	struct LineColour
 	{
@@ -62,7 +67,7 @@ void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 	//Initialise VertexConstBuffer
 	struct LineTransform
 	{
-		DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(RenderCommand::GetMainCamera()->GetViewMatrix() * RenderCommand::GetMainCamera()->GetProjectionMatrix());
+		DirectX::XMMATRIX ViewProjectionMatrix = DirectX::XMMatrixTranspose(Renderer::GetMainCamera()->GetViewMatrix() * Renderer::GetMainCamera()->GetProjectionMatrix());
 	} Trans;
 
 	std::shared_ptr<VertexConstantBuffer<LineTransform>> VCB = std::make_shared<VertexConstantBuffer<LineTransform>>(0);
@@ -76,7 +81,7 @@ void Line::DrawLine(Vector3 From, Vector3 To, Vector3 Colour)
 
 	NewLine.BindAll();
 
-	RenderCommand::DrawIndexed(m_IndexBuffer->GetCount());
+	Renderer::DrawIndexed(m_IndexBuffer->GetCount());
 
 	m_Count++;
 }
@@ -86,13 +91,13 @@ DirectX::XMMATRIX Line::GetTransformXM() const
 	return DirectX::XMMATRIX();
 }
 
-void Line::AddBind(Bindable* bind)
+void Line::AddBind(Bindables::Bindable* bind)
 {
 	//If index buffer, only allow single bind.
-	if (typeid(*bind) == typeid(IndexBuffer))
+	if (typeid(*bind) == typeid(Bindables::IndexBuffer))
 	{
 		assert("Renderable::AddBind: Cannot bind multiple index buffers." && m_IndexBuffer == nullptr);
-		m_IndexBuffer = static_cast<IndexBuffer*>(bind);
+		m_IndexBuffer = static_cast<Bindables::IndexBuffer*>(bind);
 	}
 
 	m_Binds.push_back(std::move(bind));

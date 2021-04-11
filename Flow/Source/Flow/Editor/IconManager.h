@@ -4,7 +4,7 @@
 #include "Flow/Rendering/Core/Renderable.h"
 #include "Typedefs.h"
 #include "Rendering/Core/Materials/Material.h"
-#include "Rendering/Core/Vertex/VertexBuffer.h"
+#include "Rendering/Core/Vertex/VertexBufferData.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
 
 // Class Definition ////////////////////////////////////////////
@@ -87,7 +87,7 @@ public:
 	static const Material*				GetIconMaterial();
 
 	const VertexBuffer&					GetIconVertices(Icon::Alignment alignment) const;
-	const std::vector<unsigned short>&	GetIconIndices() const;
+	const Array<uint16>&				GetIconIndices() const;
 	const VertexLayout&					GetIconLayout() const;
 
 	Icon&								GetIcon(FGUID iconGuid);
@@ -100,7 +100,7 @@ private:
 
 	VertexBuffer							m_iconVerticesTopLeftAligned;
 	VertexBuffer							m_iconVerticesCentreAligned;
-	std::vector<unsigned short>				m_iconIndices;
+	Array<uint16>							m_iconIndices;
 	VertexLayout							m_iconLayout;
 
 	//= Configuration =

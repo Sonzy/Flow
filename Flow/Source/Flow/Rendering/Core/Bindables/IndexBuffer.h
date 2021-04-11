@@ -1,50 +1,63 @@
 #pragma once
 
-//= Includes ====================================
+// Includes ///////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-#include "Flow/Rendering/Core/Bindable.h"
+#include "Framework/Types/Array.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Class Definition ============================
+struct ID3D11Buffer;
 
-class IndexBuffer : public Bindable
+// Namespace //////////////////////////////////////////////////////////////////////////
+
+namespace Bindables
 {
-public:
-
-	//= Public Static Functions =======================================
-
-	static Bindable*							Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices);
-
-	/* Calls GenerateUID_Internal without passing the VBuffer */
-	template<typename ...Ignore>
-	static std::string GenerateUID(const std::string& Tag, Ignore&&... Ign)
+	class IndexBuffer : public Bindables::Bindable
 	{
-		return GenerateUID_Internal(Tag);
+	public:
 
+		// Public Static Functions ///////////////////////////////////////////////////
+
+		static IndexBuffer* Resolve(HashString id, const Array<uint16>& Indices);
+
+		template<typename ...IgnoredTypes>
+		static HashString GenerateID(HashString id, IgnoredTypes&&... Ign)
+		{
+			return GenerateID_Internal(id);
+		}
+
+	public:
+
+		// Public Functions ///////////////////////////////////////////////////////////
+
+													IndexBuffer(HashString id, const Array<uint16>& Indices);
+
+		//= Bindable Interface =
+
+		virtual void								Bind() override;
+		HashString									GetID() override;
+
+		uint32										GetCount() const;
+
+	private:
+
+		// Private Static Functions ////////////////////////////////////////////////////
+
+		static HashString							GenerateID_Internal(HashString tag);
+
+	private:
+
+		// Private Variables ///////////////////////////////////////////////////////////
+
+		uint32										m_count;
+		ComPtr<ID3D11Buffer>						m_buffer;
+		HashString									m_tag;
+	};
+
+	// Inline Functions ////////////////////////////////////////////////////////////////
+
+	inline uint32 IndexBuffer::GetCount() const
+	{
+		return m_count;
 	}
-
-	//= Public Functions ==============================================
-
-												IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices);
-	virtual void								Bind() override;
-	UINT										GetCount() const;
-	std::string									GetUID() const override;
-
-	//= Public Variables ==============================================
-
-	UINT										m_Count;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_IndexBuffer;
-
-private:
-
-	//= Private Functions =============================================
-
-	static std::string							GenerateUID_Internal(const std::string& Tag);
-
-private:
-
-	//= Private Variables =============================================
-
-	std::string									m_Tag;
-
-};
+}

@@ -26,7 +26,10 @@ public:
 	virtual void						OnRegistered() override;
 	virtual void						Render() override;
 	virtual void						DrawComponentDetailsWindow() override;
+
+#if WITH_EDITOR
 	virtual void						IconUpdate(IconManager& iconManager) override;
+#endif
 
 	const LightBuffer_t&				GetLightBuffer() const;
 	void								SetLightBuffer(const LightBuffer_t& buf);

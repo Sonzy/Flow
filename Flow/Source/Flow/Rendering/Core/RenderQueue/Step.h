@@ -6,7 +6,11 @@
 
 //= Forward Declarations =======================
 
-class Bindable;
+namespace Bindables
+{
+	class Bindable;
+}
+
 class Renderable;
 class TechniqueProbe;
 
@@ -23,8 +27,8 @@ public:
 	void				Submit(const Renderable& Drawable) const;
 	void				Bind() const;
 	void				InitialiseParentReferences(const Renderable& Drawable);
-	void				AddBindable(Bindable* NewBind);
-	void				AddBindables(std::vector<Bindable*> Binds);
+	void				AddBindable(Bindables::Bindable* NewBind);
+	void				AddBindables(std::vector<Bindables::Bindable*> Binds);
 
 	void				AcceptProbe(TechniqueProbe& Probe);
 
@@ -32,6 +36,6 @@ private:
 
 	//= Private Variables ======================================
 
-	RenderPass				m_TargetPass;
-	std::vector<Bindable*>	m_Bindables;
+	RenderPass							m_TargetPass;
+	std::vector<Bindables::Bindable*>	m_Bindables;
 };

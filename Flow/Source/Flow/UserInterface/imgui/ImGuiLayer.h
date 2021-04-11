@@ -1,5 +1,7 @@
 #pragma once
 
+#if WITH_EDITOR
+
 //= Includes =================================
 
 #include "Framework/Layers/Layer.h"
@@ -62,3 +64,5 @@ private:
 	const float		m_MenuBarSize = 20.0f;
 	static ImGuiTheme m_theme;
 };
+
+#endif // WITH_EDITOR

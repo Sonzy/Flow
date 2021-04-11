@@ -1,29 +1,34 @@
 #pragma once
 
-//= Includes =======================================
+// Includes //////////////////////////////////////////////////////////
 
-#include "Flow/Rendering/Core/Bindable.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 
-//= Class Definition ===============================
+// Type Definitions //////////////////////////////////////////////////
 
-class Sampler : public Bindable
+struct ID3D11SamplerState;
+
+// Class Definition //////////////////////////////////////////////////
+
+class Sampler : public Bindables::Bindable
 {
 public:
 
-	//= Public Static Functions ======================================
+	// Public Static Functions ///////////////////////////////////////
 
-	static Bindable*		Resolve();
-	static std::string						GenerateUID();
+	static Sampler*							Resolve();
+	static HashString						GenerateID();
 public:
 
-	//= Public Functions =============================================
+	// Public Functions //////////////////////////////////////////////
 
 											Sampler();
-	void									Bind() override;
-	std::string								GetUID() const override;
+	virtual void							Bind() override;
+	virtual HashString						GetID() override;
 private:
 
-	//= Private Variables ============================================
+	// Private Variables /////////////////////////////////////////////
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>		m_Sampler;
+	ComPtr<ID3D11SamplerState>				m_sampler;
 };

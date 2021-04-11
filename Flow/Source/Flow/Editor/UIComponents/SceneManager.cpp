@@ -1,15 +1,19 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "SceneManager.h"
 
 #include "GameFramework/World.h"
 #include "Editor/EditorCamera.h"
 #include "Editor/Editor.h"
 #include "Editor/Tools/SelectionTool.h"
-#include "Rendering/RenderCommand.h"
+#include "Rendering/Renderer.h"
 #include "Rendering/Other/FrameBuffer.h"
 #include "Toolbar.h"
 
 #include "ThirdParty/ImGui/imgui.h"
+#include "Rendering/Core/RenderQueue/RenderQueue.h"
 
 SceneManager::SceneManager()
 	: m_CachedWindowSize(0, 0)
@@ -30,7 +34,7 @@ void SceneManager::Update()
 {
 	if (m_EditorCam == nullptr)
 	{
-		m_EditorCam = static_cast<EditorCamera*>(RenderCommand::GetMainCamera());
+		m_EditorCam = static_cast<EditorCamera*>(Renderer::GetMainCamera());
 	}
 }
 
@@ -60,18 +64,18 @@ void SceneManager::Render()
 		}
 
 
-		FrameBuffer* Buff = RenderCommand::GetEditorFrameBuffer();;
+		FrameBuffer* Buff = Renderer::GetEditorFrameBuffer();;
 		const FrameBuffer* OutputBuffer = nullptr;
 		switch (m_viewMode)
 		{
 		case SceneBufferView::Game:
-			OutputBuffer = RenderCommand::GetEditorFrameBuffer();
+			OutputBuffer = Renderer::GetEditorFrameBuffer();
 			break;
 		case SceneBufferView::Selection:
 			OutputBuffer = RenderQueue::GetSelectionBuffer();
 			break;
 		default:
-			OutputBuffer = RenderCommand::GetEditorFrameBuffer();
+			OutputBuffer = Renderer::GetEditorFrameBuffer();
 			break;
 		}
 
@@ -80,7 +84,7 @@ void SceneManager::Render()
 		m_SceneWindowSize = IntVector2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
 		m_MouseOverScene = ImGui::IsWindowHovered();
 
-		IntVector2 WindowSize = RenderCommand::GetWindowSize();
+		IntVector2 WindowSize = Renderer::GetWindowSize();
 		m_SceneWindowSize.x = std::clamp(m_SceneWindowSize.x, 1, WindowSize.x);
 		m_SceneWindowSize.y = std::clamp(m_SceneWindowSize.y, 1, WindowSize.y);
 
@@ -103,3 +107,5 @@ void SceneManager::SetViewMode(SceneBufferView view)
 {
 	m_viewMode = view;
 }
+
+#endif WITH_EDITOR

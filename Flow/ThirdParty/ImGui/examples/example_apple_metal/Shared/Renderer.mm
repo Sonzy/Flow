@@ -61,7 +61,7 @@
 
         // Here, you could do additional rendering work, including other passes as necessary.
 
-        id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        id <MTLRendererEncoder> renderEncoder = [commandBuffer RendererEncoderWithDescriptor:renderPassDescriptor];
         [renderEncoder pushDebugGroup:@"ImGui demo"];
 
         // Start the Dear ImGui frame

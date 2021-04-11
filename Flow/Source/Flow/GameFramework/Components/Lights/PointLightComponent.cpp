@@ -57,7 +57,7 @@ void PointLightComponent::Render()
 	const DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&m_lightBuffer.m_Position);
 
 	//TODO: Might have to recalculate
-	DirectX::XMStoreFloat3(&Copy.m_Position, DirectX::XMVector3Transform(Position, RenderCommand::GetMainCamera()->GetCachedView()));// modelView
+	DirectX::XMStoreFloat3(&Copy.m_Position, DirectX::XMVector3Transform(Position, Renderer::GetMainCamera()->GetCachedView()));// modelView
 
 	//Update the transformed position to the shader
 	m_lightPixelBuffer.Update(Copy);
@@ -101,9 +101,10 @@ void PointLightComponent::DrawComponentDetailsWindow()
 	ImGui::NextColumn();
 }
 
+#if WITH_EDITOR
 void PointLightComponent::IconUpdate(IconManager& iconManager)
 {
-	Vector3 screen = RenderCommand::WorldToScreen(GetWorldPosition());
+	Vector3 screen = Renderer::WorldToScreen(GetWorldPosition());
 	Icon& lightIcon = iconManager.GetIcon(GetGuid());
 	lightIcon.m_position.x = screen.x;
 	lightIcon.m_position.y = screen.y;
@@ -111,6 +112,7 @@ void PointLightComponent::IconUpdate(IconManager& iconManager)
 	lightIcon.m_alignment = Icon::Alignment::Centre;
 	lightIcon.RefreshBinds(iconManager); //TODO: Dont do this every frame
 }
+#endif // WITH_EDITOR
 
 const LightBuffer_t& PointLightComponent::GetLightBuffer() const
 {

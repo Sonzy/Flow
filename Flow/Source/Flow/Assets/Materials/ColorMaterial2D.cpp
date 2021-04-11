@@ -31,13 +31,13 @@ void ColorMaterial2D::SetColour(Vector3 NewColour)
 
 void ColorMaterial2D::BindMaterial(Step* RenderingStep, const VertexLayout& VertexLayout) const
 {
-	auto vShader = VertexShader::Resolve(m_VertexShader->GetPath());
-	auto vShaderByteCode = static_cast<VertexShader&>(*vShader).GetByteCode();
+	Bindables::VertexShader* vShader = Bindables::VertexShader::Resolve(m_VertexShader->GetPath());
+	ID3DBlob* vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
 	RenderingStep->AddBindable(std::move(vShader));
-	RenderingStep->AddBindable(PixelShader::Resolve(m_PixelShader->GetPath()));
-	RenderingStep->AddBindable(InputLayout::Resolve(VertexLayout, vShaderByteCode));
+	RenderingStep->AddBindable(Bindables::PixelShader::Resolve(m_PixelShader->GetPath()));
+	RenderingStep->AddBindable(Bindables::InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
-	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, 0, GenerateTag()));
+	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, 0, GenerateTag().c_str()));
 }
 
 std::string ColorMaterial2D::GenerateTag() const

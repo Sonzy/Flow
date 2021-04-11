@@ -8,8 +8,12 @@
 //= Forward Declarations =======================================
 
 class VertexBuffer;
-class BindableVertexBuffer;
 class VertexLayout;
+
+namespace Bindables
+{
+	class VertexBuffer;
+}
 
 //= Class Definition ===========================================
 
@@ -48,13 +52,13 @@ private:
 	//= Private Functions =======================================================
 
 	void											BindAll();
-	void											AddBind(Bindable* NewBind);
+	void											AddBind(Bindables::Bindable* NewBind);
 	 
 	//= Private Variables =======================================================
 
-	std::vector<Bindable*>			m_Binds;													
+	std::vector<Bindables::Bindable*>				m_Binds;
 	VertexBuffer*									m_VertexBuffer;
-	BindableVertexBuffer*							m_BindableVertexBuffer;
+	Bindables::VertexBuffer*						m_BindableVertexBuffer;
 	VertexLayout*									m_VertexLayout;													
 	ViewProjectionBuffer							m_CameraMatrix;
 	VertexConstantBuffer<ViewProjectionBuffer>*		m_VertexCB;

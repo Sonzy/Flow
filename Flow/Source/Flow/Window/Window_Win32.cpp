@@ -23,8 +23,10 @@ Window_Win32::Window_Win32(const Window::Properties& Properties, bool MainWindow
 	::GetClientRect(m_WindowHandle, &rect);
 	IntVector2 Adj = IntVector2(float(rect.right - rect.left), float(rect.bottom - rect.top));
 
-	if(m_MainWindow)
-		RenderCommand::InitialiseDX11(GetWindowHandle(), Adj.x, Adj.y);
+	if (m_MainWindow)
+	{
+		Renderer::Initialise(GetWindowHandle(), Adj.x, Adj.y);
+	}
 }
 
 Window_Win32::~Window_Win32()
@@ -78,7 +80,7 @@ void Window_Win32::Shutdown()
 
 void Window_Win32::PreUpdate()
 {
-	RenderCommand::BeginFrame();
+	Renderer::BeginFrame();
 }
 
 void Window_Win32::OnUpdate()
@@ -88,7 +90,7 @@ void Window_Win32::OnUpdate()
 
 void Window_Win32::PostUpdate()
 {
-	RenderCommand::EndFrame();
+	Renderer::EndFrame();
 }
 
 unsigned int Window_Win32::GetWidth() const
@@ -372,8 +374,8 @@ WindowClass::WindowClass()
 	windowsClass.cbClsExtra = 0;
 	windowsClass.cbWndExtra = 0;
 	windowsClass.hInstance = GetInstanceHandle();
-	windowsClass.hIcon = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 128, 128, 0)); //Used to set up custom icon
-	windowsClass.hIconSm = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 32, 32, 0));// static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));; //Same as before but small one
+	windowsClass.hIcon = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 128, 128, 0));
+	windowsClass.hIconSm = static_cast<HICON>(LoadImage(windowsClass.hInstance, MAKEINTRESOURCE(101), IMAGE_ICON, 32, 32, 0));
 	windowsClass.hCursor = LoadCursor(NULL, IDC_ARROW); ;
 	windowsClass.lpszClassName = ClassName;	
 

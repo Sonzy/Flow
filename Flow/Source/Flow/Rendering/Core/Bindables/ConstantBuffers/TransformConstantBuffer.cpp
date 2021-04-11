@@ -23,14 +23,14 @@ void TransformConstantBuffer::Bind()
 
 	//Generate the transformation from the parent.
 	const auto modelView = 
-		RenderCommand::GetActivePass() != RenderPass::Standard2D || RenderCommand::GetActivePass() != RenderPass::UI ?
-		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix() :
-		ParentMatrix * RenderCommand::GetMainCamera()->GetViewMatrix2D();
+		Renderer::GetActivePass() != RenderPass::Standard2D || Renderer::GetActivePass() != RenderPass::UI ?
+		ParentMatrix * Renderer::GetMainCamera()->GetViewMatrix() :
+		ParentMatrix * Renderer::GetMainCamera()->GetViewMatrix2D();
 
 	const Transforms transform =
 	{
 		DirectX::XMMatrixTranspose(modelView),
-		DirectX::XMMatrixTranspose(modelView * RenderCommand::GetMainCamera()->GetProjectionMatrix()),
+		DirectX::XMMatrixTranspose(modelView * Renderer::GetMainCamera()->GetProjectionMatrix()),
 	};
 
 	//Update and bind the constant buffers

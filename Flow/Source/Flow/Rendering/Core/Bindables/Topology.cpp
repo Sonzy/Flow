@@ -1,35 +1,42 @@
-//= Includes =========================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ////////////////////////////////////////////////////////////////////
+
 #include "Topology.h"
-#include "BindableCodex.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Core/Bindables/Codex.h"
 
-//= Class (Topology) Definition =====================
+// Function Definitions //////////////////////////////////////////////////////
 
-Topology::Topology(D3D11_PRIMITIVE_TOPOLOGY type)
-	: m_Topology(type)
+Bindables::Topology::Topology(D3D11_PRIMITIVE_TOPOLOGY type)
+	: m_topology(type)
 {
-	m_CheckBound = true;
-	m_Bound = false;
 }
 
-void Topology::Bind() noexcept
+void Bindables::Topology::Bind()
 {
-	RenderCommand::DX11GetContext()->IASetPrimitiveTopology(m_Topology);
+	Renderer::GetContext()->IASetPrimitiveTopology(m_topology);
 }
 
-Bindable* Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY type)
+Bindables::Topology* Bindables::Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY type)
 {
-	return BindableCodex::Resolve<Topology>(type);
+	return Bindables::Codex::Resolve<Topology>(type);
 }
 
-std::string Topology::GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type)
+HashString Bindables::Topology::GenerateID(D3D11_PRIMITIVE_TOPOLOGY type)
 {
-	using namespace std::string_literals;
-	return typeid(Topology).name() + "#"s + std::to_string(type);
+	char buffer[64];
+	snprintf(buffer, 64, "Topology-%d", static_cast<int>(type));
+	return buffer;
 }
 
-std::string Topology::GetUID() const
+HashString Bindables::Topology::GetID()
 {
-	return GenerateUID(m_Topology);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_topology);
+	}
+	return m_id;
 }

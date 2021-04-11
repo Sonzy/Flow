@@ -57,7 +57,7 @@ float Maths::Distance(Vector3 V1, Vector3 V2)
 
 float Maths::DistanceSquared(Vector3 V1, Vector3 V2)
 {
-	return 	pow(V2.x - V1.x, 2) + pow(V2.y - V1.y, 2) + pow(V2.z - V1.z, 2);;
+	return 	powf(V2.x - V1.x, 2) + powf(V2.y - V1.y, 2) + powf(V2.z - V1.z, 2);;
 }
 
 Rotator Maths::FindLookAtRotation(Vector3 StartPosition, Vector3 EndPosition)

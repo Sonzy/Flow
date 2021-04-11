@@ -1,6 +1,9 @@
 //= Includes ====================================================
 
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "AssetBrowser.h"
 #include "Assets/AssetSystem.h"
 #include "Rendering/Core/Bindables/Texture.h"
@@ -25,10 +28,10 @@ AssetBrowser::AssetBrowser()
 	m_SelectedDirectory = AssetSystem::GetGameAssetDirectory();
 	m_SelectedEditorDirectory = AssetSystem::GetEngineAssetDirectory();
 
-	m_Icon_Mesh = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_FMesh"), 1);
-	m_Icon_Shader = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Shader"), 1);
-	m_Icon_Texture = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Image"), 1);
-	m_Icon_Folder = new Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Folder"), 1);
+	m_Icon_Mesh = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_FMesh"), 1);
+	m_Icon_Shader = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Shader"), 1);
+	m_Icon_Texture = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Image"), 1);
+	m_Icon_Folder = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Folder"), 1);
 }
 
 AssetBrowser::~AssetBrowser()
@@ -215,7 +218,7 @@ void AssetBrowser::DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vec
 	//=Draw File Image
 
 	std::string ExtensionString = CurrentPath.extension().string();
-	if (const Texture* tex = GetTextureForExtension(CurrentPath.filename()))
+	if (const Bindables::Texture* tex = GetTextureForExtension(CurrentPath.filename()))
 	{
 		ImGui::PushID(UniqueID);
 		if (ImGui::ImageButton(tex->GetTextureView(), ImVec2(m_IconSize, m_IconSize)))
@@ -293,7 +296,7 @@ void AssetBrowser::DrawContextWindow()
 	}
 }
 
-const Texture* AssetBrowser::GetTextureForExtension(const FilePath& FileName) const
+const Bindables::Texture* AssetBrowser::GetTextureForExtension(const FilePath& FileName) const
 {
 	std::string ExtensionString = FileName.extension().string();
 	if (AssetSystem::HasExtension(ExtensionString.c_str(), ".fmesh"))
@@ -310,7 +313,7 @@ const Texture* AssetBrowser::GetTextureForExtension(const FilePath& FileName) co
 	{
 		if (TextureAsset* Tex = AssetSystem::GetAsset<TextureAsset>(FileName.stem().string()))
 		{
-			if (const Texture* Thumb = Tex->GetThumbnail())
+			if (const Bindables::Texture* Thumb = Tex->GetThumbnail())
 			{
 				return Thumb;
 			}
@@ -395,3 +398,5 @@ void AssetBrowser::DrawDirectoryBar(const FilePath Parent, bool Editor)
 		}
 	}
 }
+
+#endif // WITH_EDITOR

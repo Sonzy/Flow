@@ -1,9 +1,12 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "SelectionTool.h"
 #include "Editor/Editor.h"
 #include "Framework/Input/Input.h"
 
-#include "Rendering\RenderCommand.h"
+#include "Rendering\Renderer.h"
 
 #include "Physics/Physics.h"
 
@@ -19,6 +22,9 @@
 #include "Editor/UIComponents/Console.h"
 
 #include "Rendering/Core/Camera/Camera.h"
+
+#include "Rendering/Other/FrameBuffer.h"
+#include "Rendering/Core/RenderQueue/RenderQueue.h"
 
 SelectionTool::SelectionTool()
 	: m_SelectedComponent(nullptr)
@@ -64,10 +70,10 @@ void SelectionTool::RenderImGuiGizmo()
 		//= Convert view matrix to valid format
 
 		DirectX::XMFLOAT4X4 fViewMatrix;
-		DirectX::XMStoreFloat4x4(&fViewMatrix, RenderCommand::GetMainCamera()->GetViewMatrix());
+		DirectX::XMStoreFloat4x4(&fViewMatrix, Renderer::GetMainCamera()->GetViewMatrix());
 
 		DirectX::XMFLOAT4X4 fProjectionMatrix;
-		DirectX::XMStoreFloat4x4(&fProjectionMatrix, RenderCommand::GetMainCamera()->GetProjectionMatrix());
+		DirectX::XMStoreFloat4x4(&fProjectionMatrix, Renderer::GetMainCamera()->GetProjectionMatrix());
 
 		ImGuizmo::Manipulate(
 			reinterpret_cast<float*>(&fViewMatrix),
@@ -131,14 +137,14 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 		textureDesc.MiscFlags = 0;
 
 
-		CaptureDXError(RenderCommand::DX11GetDevice()->CreateTexture2D(&textureDesc, nullptr, &pNewTexture));
+		CaptureDXError(Renderer::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_newTexture));
 	}
 
-	RenderCommand::DX11GetContext()->CopyResource(pNewTexture.Get(), buf->GetTexture());
+	Renderer::GetContext()->CopyResource(m_newTexture.Get(), buf->GetTexture());
 
 
-	CaptureDXError(RenderCommand::DX11GetContext()->Map(
-		pNewTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
+	CaptureDXError(Renderer::GetContext()->Map(
+		m_newTexture.Get(), 0u, D3D11_MAP_READ, 0u, &MSR));
 
 	MousePosition -= Editor::Get().GetSceneWindowPosition();
 	int index = (MousePosition.x * 4) + (MousePosition.y * MSR.RowPitch);
@@ -154,7 +160,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 
 	FGUID guid = 0;
 
-	RenderCommand::DX11GetContext()->Unmap(pNewTexture.Get(), 0u);
+	Renderer::GetContext()->Unmap(m_newTexture.Get(), 0u);
 
 	//debug
 	recentcolorclicked = Vector4((float)(R >> 16) / 255.0f, (float)(G >> 8) / 255.0f, (float)(B / 255.0f), (float)(A >> 24) / 255.0f);
@@ -301,3 +307,5 @@ ImGuizmo::OPERATION SelectionTool::TranslateTransformation(TransformMode mode)
 	default:						return ImGuizmo::OPERATION::TRANSLATE;
 	}
 }
+
+#endif // WITH_EDITOR

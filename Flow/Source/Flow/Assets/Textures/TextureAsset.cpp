@@ -6,7 +6,7 @@
 #include "DXTex/DirectXTex.h"
 #include "Framework/Utils/Timer.h"
 #include "Framework/Utils/FileSystem.h"
-
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
 #include "Rendering/Core/Bindables/Texture.h"
 
 //= PreProcessor Macro Definitions ===================================
@@ -129,5 +129,5 @@ void TextureAsset::CreateThumbnail()
 	HRESULT ResultHandle;
 
 	CaptureDXError(DirectX::Resize(*m_Image.GetImage(0, 0, 0), 128, 128, DirectX::TEX_FILTER_DEFAULT, m_ThumbnailImage));
-	m_Thumbnail = new Texture(m_ThumbnailImage, 0, m_AssetName + "_Thumnail");
+	m_Thumbnail = new Bindables::Texture(m_ThumbnailImage, 0, m_AssetName + "_Thumnail");
 }

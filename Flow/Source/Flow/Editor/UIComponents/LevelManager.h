@@ -1,5 +1,7 @@
 #pragma once
 
+#if WITH_EDITOR
+
 // Includes ///////////////////////////////////////////////////////////////////////
 
 #include <string>
@@ -38,3 +40,5 @@ private:
 	bool			m_DrawWindow_NewLevel;
 	std::string		m_NewLevelName;
 };
+
+#endif // WITH_EDITOR

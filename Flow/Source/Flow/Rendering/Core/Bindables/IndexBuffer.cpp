@@ -1,10 +1,17 @@
-#include "pch.h"
-#include "IndexBuffer.h"
-#include "BindableCodex.h"
+// Includes //////////////////////////////////////////////////////////////////////////
 
-IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned short>& Indices)
-	: m_Count((UINT)Indices.size())
-	, m_Tag(Tag)
+#include "pch.h"
+#include <d3d11.h>
+#include "IndexBuffer.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
+
+// Function Definitions //////////////////////////////////////////////////////////////
+
+Bindables::IndexBuffer::IndexBuffer(HashString tag, const Array<uint16>& indices)
+	: m_count(indices.Length())
+	, m_tag(tag)
 {
 	CreateResultHandle();
 
@@ -14,39 +21,41 @@ IndexBuffer::IndexBuffer(const std::string& Tag, const std::vector<unsigned shor
 	IndexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
 	IndexBufferDescription.CPUAccessFlags = 0u;
 	IndexBufferDescription.MiscFlags = 0u;
-	IndexBufferDescription.ByteWidth = UINT(m_Count * sizeof(unsigned short));
+	IndexBufferDescription.ByteWidth = UINT(m_count * sizeof(unsigned short));
 	IndexBufferDescription.StructureByteStride = sizeof(unsigned short);
 
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
-	SubresourceData.pSysMem = Indices.data();
+	SubresourceData.pSysMem = indices.Data();
 
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_IndexBuffer));
+	CaptureDXError(Renderer::GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_buffer));
 }
 
-void IndexBuffer::Bind()
+void Bindables::IndexBuffer::Bind()
 {
-	RenderCommand::DX11GetContext()->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	Renderer::GetContext()->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }
 
-UINT IndexBuffer::GetCount() const
+Bindables::IndexBuffer* Bindables::IndexBuffer::Resolve(HashString tag, const Array<uint16>& Indices)
 {
-	return m_Count;
+	return Bindables::Codex::Resolve<IndexBuffer>(tag, Indices);
 }
 
-Bindable* IndexBuffer::Resolve(const std::string& Tag, const std::vector<unsigned short>& Indices)
+HashString Bindables::IndexBuffer::GetID()
 {
-	return BindableCodex::Resolve<IndexBuffer>(Tag, Indices);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_tag);
+	}
+	return m_id;
 }
 
-std::string IndexBuffer::GetUID() const
+HashString Bindables::IndexBuffer::GenerateID_Internal(HashString tag)
 {
-	return GenerateUID(m_Tag);
+	char buffer[64];
+#if _DEBUG
+	snprintf(buffer, 128, "Topology-%s", tag.c_str());
+#else
+	snprintf(buffer, 64, "Topology-%d", static_cast<int>(type));
+#endif
+	return buffer;
 }
-
-std::string IndexBuffer::GenerateUID_Internal(const std::string& Tag)
-{
-	using namespace std::string_literals;
-	return typeid(IndexBuffer).name() + "#"s + Tag;
-}
-
-

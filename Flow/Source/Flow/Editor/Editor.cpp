@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "Editor.h"
 #include "Framework/Events/MouseEvent.h"
 #include "Editor/UIComponents/Inspector.h"
@@ -175,7 +178,7 @@ void Editor::OnUpdate(float DeltaTime)
 
 	if (!m_EditorCam)
 	{
-		m_EditorCam = dynamic_cast<EditorCamera*>(RenderCommand::GetMainCamera());
+		m_EditorCam = dynamic_cast<EditorCamera*>(Renderer::GetMainCamera());
 	}
 
 	UpdateTools(DeltaTime);
@@ -278,10 +281,10 @@ void Editor::SaveEditorSettings()
 		file << YAML::BeginMap;
 		{
 			file << YAML::Key << "NearPlane";
-			file << YAML::Value << RenderCommand::GetNearPlaneRef();
+			file << YAML::Value << Renderer::GetNearPlaneRef();
 
 			file << YAML::Key << "FarPlane";
-			file << YAML::Value << RenderCommand::GetFarPlaneRef();
+			file << YAML::Value << Renderer::GetFarPlaneRef();
 
 			file << YAML::Key << "RenderingFlags";
 			file << YAML::Value << YAML::BeginMap;
@@ -378,8 +381,8 @@ void Editor::LoadEditorSettings()
 
 	if (YAML::Node renderingData = data["Rendering"])
 	{
-		RenderCommand::SetNearPlane(renderingData["NearPlane"].as<float>());
-		RenderCommand::SetFarPlane(renderingData["FarPlane"].as<float>());
+		Renderer::SetNearPlane(renderingData["NearPlane"].as<float>());
+		Renderer::SetFarPlane(renderingData["FarPlane"].as<float>());
 
 		if (YAML::Node flags = renderingData["RenderingFlags"])
 		{
@@ -735,9 +738,9 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 		ImGui::Text("Rendering"); //TODO: Move somewhere else
 		{
 			bool updatedRenderSettings = false;
-			if (ImGui::InputFloat("Near Plane", &RenderCommand::GetNearPlaneRef(), 0.05f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+			if (ImGui::InputFloat("Near Plane", &Renderer::GetNearPlaneRef(), 0.05f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
 			{
-				float& nearPlane = RenderCommand::GetNearPlaneRef();
+				float& nearPlane = Renderer::GetNearPlaneRef();
 				if (nearPlane <= 0.0f)
 				{
 					nearPlane = 0.05f;
@@ -746,7 +749,7 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 				updatedRenderSettings = true;
 			}
 
-			if (ImGui::InputFloat("Far Plane", &RenderCommand::GetFarPlaneRef(), 10.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+			if (ImGui::InputFloat("Far Plane", &Renderer::GetFarPlaneRef(), 10.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				updatedRenderSettings = true;
 			}
@@ -783,3 +786,5 @@ void Editor::SettingsWindow::Render(Editor::Settings& EditorSettings, Editor& Ed
 	}
 	ImGui::End();
 }
+
+#endif //WITH_EDITOR

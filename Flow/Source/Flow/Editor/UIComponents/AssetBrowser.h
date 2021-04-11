@@ -1,14 +1,18 @@
 #pragma once
 
-// Includes ///////////////////////////////////////////
+#if WITH_EDITOR
 
+// Includes ///////////////////////////////////////////
 
 #include "UIComponent.h"
 #include "Framework/Utils/FileSystem.h"
 
 // Forward Declarations ///////////////////////////////
 
-class Texture;
+namespace Bindables
+{
+	class Texture;
+}
 
 // Class Definition ///////////////////////////////////
 
@@ -35,7 +39,7 @@ private:
 	void					DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vector<std::pair<FilePath, FilePath>>& OutRenameList);
 	void					DrawContextWindow();
 
-	const Texture*			GetTextureForExtension(const FilePath& FileName) const;
+	const Bindables::Texture*	GetTextureForExtension(const FilePath& FileName) const;
 
 	//TODO: Better renaming
 	void					AddToRenameQueue(const FilePath& ParentDirectory, const std::string& OldFilename, const std::string& NewFilename, std::vector<std::pair<FilePath, FilePath>>& OutRenameList);
@@ -51,10 +55,10 @@ private:
 	FilePath				m_SelectedDirectory;
 	FilePath				m_CurrentParentDirectory;
 
-	Texture*				m_Icon_Mesh;
-	Texture*				m_Icon_Shader;
-	Texture*				m_Icon_Texture;
-	Texture*				m_Icon_Folder;
+	Bindables::Texture*		m_Icon_Mesh;
+	Bindables::Texture*		m_Icon_Shader;
+	Bindables::Texture*		m_Icon_Texture;
+	Bindables::Texture*		m_Icon_Folder;
 
 	//= Formatting =
 
@@ -71,3 +75,5 @@ private:
 	float					m_CursorInitialX;
 	float					m_WindowWidth;
 };
+
+#endif WITH_EDITOR

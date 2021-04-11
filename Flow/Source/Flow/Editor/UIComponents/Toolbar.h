@@ -1,9 +1,15 @@
 #pragma once
 
+#if WITH_EDITOR
+
 // Includes //////////////////////////////////
 
 #include "UIComponent.h"
-#include "Flow/Rendering/Core/Bindables/Texture.h"
+
+namespace Bindables
+{
+	class Texture;
+}
 
 // Class Definition //////////////////////////////////
 
@@ -24,9 +30,11 @@ public:
 
 	// Public Variables /////////////////////////////////
 
-	Texture*				m_Icon_SelectionTool;
+	Bindables::Texture*				m_Icon_SelectionTool;
 
-	Texture*				m_Icon_Play;
-	Texture*				m_Icon_Pause;
-	Texture*				m_Icon_Stop;
+	Bindables::Texture*				m_Icon_Play;
+	Bindables::Texture*				m_Icon_Pause;
+	Bindables::Texture*				m_Icon_Stop;
 };
+
+#endif // WITH_EDITOR

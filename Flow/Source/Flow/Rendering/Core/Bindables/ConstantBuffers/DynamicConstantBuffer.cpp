@@ -33,7 +33,7 @@ namespace DynamicCB
 
 		case Struct:
 			return GetSignatureForStruct();
-		case ArrayElement:
+		case Array:
 			return GetSignatureForArray();
 		default:
 			assert("Bad Type in signature generation" && false);
@@ -48,7 +48,7 @@ namespace DynamicCB
 
 	std::pair<size_t, const LayoutElement*> LayoutElement::CalculateIndexingOffset(size_t Offset, size_t Index) const
 	{
-		assert("Indexing into non-array" && Type_ == ArrayElement);
+		assert("Indexing into non-array" && Type_ == Array);
 
 		const auto& Data = static_cast<ExtraData::Array&>(*ExtraData_);
 		assert(Index < Data.Size_);
@@ -76,7 +76,7 @@ namespace DynamicCB
 
 	LayoutElement& LayoutElement::T()
 	{
-		assert("Accessing T of a non-array" && Type_ == ArrayElement);
+		assert("Accessing T of a non-array" && Type_ == Array);
 		return *static_cast<ExtraData::Array&>(*ExtraData_).LayoutElement_;
 	}
 
@@ -103,7 +103,7 @@ namespace DynamicCB
 				const auto& Data = static_cast<ExtraData::Struct&>(*ExtraData_);
 				return AdvanceToBoundary(Data.LayoutElements_.back().second.GetOffsetEnd());
 			}
-		case ArrayElement:
+		case Array:
 		{
 			const auto& Data = static_cast<ExtraData::Array&>(*ExtraData_);
 			return *Offset_ + AdvanceToBoundary(Data.LayoutElement_->GetSizeInBytes()) * Data.Size_;
@@ -138,7 +138,7 @@ namespace DynamicCB
 
 	LayoutElement& LayoutElement::Set(ElemType AddedType, size_t Size)
 	{
-		assert("Tried to call Set() on non-array type" && Type_ == ArrayElement);
+		assert("Tried to call Set() on non-array type" && Type_ == Array);
 		assert(Size != 0u);
 
 		auto& ArrayData = static_cast<ExtraData::Array&>(*ExtraData_);
@@ -154,7 +154,7 @@ namespace DynamicCB
 
 		if (TypeIn == Struct)
 			ExtraData_ = std::unique_ptr<ExtraData::Struct>{ new ExtraData::Struct() };
-		else if (TypeIn == ArrayElement)
+		else if (TypeIn == Array)
 			ExtraData_ = std::unique_ptr<ExtraData::Array>{ new ExtraData::Array() };
 	}
 
@@ -190,7 +190,7 @@ namespace DynamicCB
 
 		case Struct:
 			return Finalize_Struct(OffsetIn);
-		case ArrayElement:
+		case Array:
 			return Finalize_Array(OffsetIn);
 		default:
 			assert("Bad type used in Finalize()" && false);

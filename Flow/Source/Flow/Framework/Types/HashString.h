@@ -3,7 +3,7 @@
 #include <functional>
 
 #if _DEBUG
-#include "String.h"
+	#include "String.h"
 #endif
 
 // Class Definition ///////////////////////////////////////////////////////
@@ -12,10 +12,12 @@ class HashString
 {
 public:
 
+	HashString();
 	HashString(const char* string);
 	HashString(string string);
 
 	bool				IsNull() const;
+	size_t				GetHash() const;
 
 #if _DEBUG
 	const char* c_str() const
@@ -24,7 +26,7 @@ public:
 	}
 #endif
 
-	bool operator==(const HashString other)
+	bool operator==(const HashString other) const
 	{
 		return m_hash == other.m_hash;
 	}
@@ -50,7 +52,29 @@ inline HashString::HashString(string input)
 	m_hash = std::hash<string>{}(input);
 }
 
+inline HashString::HashString()
+{
+	m_hash = 0;
+}
+
 inline bool HashString::IsNull() const
 {
 	return m_hash == 0;
+}
+
+inline size_t HashString::GetHash() const
+{
+	return m_hash;
+}
+
+
+namespace std
+{
+	template<> struct hash<HashString>
+	{
+		std::size_t operator()(HashString const& s) const noexcept
+		{
+			return s.GetHash();
+		}
+	};
 }

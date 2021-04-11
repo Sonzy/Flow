@@ -3,7 +3,10 @@
 #include "Flow\Assets\Asset.h"
 #include "DXTex\DirectXTex.h"
 
-
+namespace Bindables
+{
+	class Texture;
+}
 
 class FLOW_API TextureAsset : public Asset
 {
@@ -26,7 +29,7 @@ public:
 	uint8_t*						GetBufferPtr() const { return m_Image.GetPixels(); }
 	const std::string&				GetAssetPath() const { return m_AssetPath; }
 
-	const Texture*					GetThumbnail() const { return m_Thumbnail; }
+	const Bindables::Texture*		GetThumbnail() const { return m_Thumbnail; }
 
 protected:
 	//= Protected Functions ===================================
@@ -41,5 +44,5 @@ protected:
 	static constexpr DXGI_FORMAT	m_Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM; //Windows default format
 	std::string						m_AssetPath;
 	DirectX::ScratchImage			m_ThumbnailImage;
-	Texture*						m_Thumbnail;
+	Bindables::Texture*				m_Thumbnail;
 };

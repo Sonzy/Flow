@@ -1,20 +1,21 @@
 #pragma once
-#include <unordered_map>
 
+// Includes /////////////////////////////////////////////////////////////
+#include <unordered_map>
 #include "Module.h"
 
-// Forward Declarations /////////////////////////////////////
+// Forward Declarations /////////////////////////////////////////////////
 
 class World;
 class Actor;
 
-// Class Definitions ////////////////////////////////////////
+// Class Definitions ////////////////////////////////////////////////////
 
 class Spawner : public Module
 {
 public:
 
-	// Public Functions /////////////////////////////////////
+	// Public Functions /////////////////////////////////////////////////
 
 						Spawner();
 	virtual void		Update() override;
@@ -23,7 +24,7 @@ public:
 	void				DrawComponentSpawnContextWindow(Actor* Parent);
 	void				DrawActorSpawnContextWindow();
 
-	// Public Template Functions ////////////////////////////
+	// Public Template Functions ////////////////////////////////////////
 
 	template<typename T>
 	void RegisterActorClass(std::string_view DisplayName)
@@ -39,10 +40,10 @@ public:
 
 private:
 	
-	// Private Variables /////////////////////////////////////
+	// Private Variables ////////////////////////////////////////////////
 
-	World&											m_WorldReference;
-	float											m_SpawnDistance;
+	World&											m_worldReference;
+	float											m_spawnDistance;
 
 	/* Type name, display name*/
 	std::unordered_map<std::string, std::string>	m_actorClassMap;

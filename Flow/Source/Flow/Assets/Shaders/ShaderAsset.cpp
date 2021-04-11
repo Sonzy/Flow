@@ -8,8 +8,8 @@ ShaderAsset::ShaderAsset()
 
 bool ShaderAsset::ImportAsset(const std::string& FilePath, const std::string& SavePath)
 {
-	m_ShaderPath = FilePath;
-	m_AssetSize = sizeof(m_ShaderPath);
+	m_shaderPath = FilePath.c_str();
+	m_AssetSize = sizeof(m_shaderPath);
 
 	fs::path ConvertedPath = SavePath;
 	ConvertedPath.replace_extension(".cso");
@@ -21,13 +21,13 @@ bool ShaderAsset::ImportAsset(const std::string& FilePath, const std::string& Sa
 
 bool ShaderAsset::LoadAsset(const std::string& AssetPath)
 {
-	m_ShaderPath = AssetPath;
-	m_AssetSize = sizeof(m_ShaderPath);
+	m_shaderPath = AssetPath.c_str();
+	m_AssetSize = sizeof(m_shaderPath);
 
 	return true;
 }
 
-const std::string& ShaderAsset::GetPath() const
+const string& ShaderAsset::GetPath() const
 {
-	return m_ShaderPath;
+	return m_shaderPath;
 }

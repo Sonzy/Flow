@@ -1,41 +1,56 @@
-//= Includes =====================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ///////////////////////////////////////////////////////////////////
+
+#include <d3d11.h>
 #include <d3dcompiler.h>
-#include "Rendering\Core\Bindables\BindableCodex.h"
 #include "VertexShader.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class (Vertex Shader) Definition ========================================
+// Class Definition ///////////////////////////////////////////////////////////
 
-VertexShader::VertexShader(const std::string& LocalPath)
-	: m_ShaderPath(LocalPath)
+Bindables::VertexShader::VertexShader(const string& LocalPath)
+	: m_shaderPath(LocalPath)
 {
 	CreateResultHandle();
 
-	CaptureDXError(D3DReadFileToBlob(std::wstring{ LocalPath.begin(),LocalPath.end() }.c_str(), &m_Blob));
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader));
+	std::string temp = LocalPath.c_str();
+	CaptureDXError(D3DReadFileToBlob(std::wstring{ temp.begin(),temp.end() }.c_str(), &m_blob));
+	CaptureDXError(Renderer::GetDevice()->CreateVertexShader(m_blob->GetBufferPointer(), m_blob->GetBufferSize(), nullptr, &m_vertexShader));
 }
 
-void VertexShader::Bind()
+void Bindables::VertexShader::Bind()
 {
-	RenderCommand::DX11GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0);
+	Renderer::GetContext()->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 }
 
-ID3DBlob* VertexShader::GetByteCode() const
+ID3DBlob* Bindables::VertexShader::GetByteCode() const
 {
-	return m_Blob.Get();
+	return m_blob;
 }
-Bindable* VertexShader::Resolve(const std::string& LocalPath)
+
+Bindables::VertexShader* Bindables::VertexShader::Resolve(const string& LocalPath)
 {
-	return BindableCodex::Resolve<VertexShader>(LocalPath);
+	return Bindables::Codex::Resolve<VertexShader>(LocalPath);
 }
-std::string VertexShader::GenerateUID(const std::string& LocalPath)
+
+HashString Bindables::VertexShader::GenerateID(const string& LocalPath)
 {
-	using namespace std::string_literals;
-	return typeid(VertexShader).name() + "#"s + LocalPath;
+	char buffer[64];
+	snprintf(buffer, 64, "VertexShader-%s", LocalPath.c_str());
+	return buffer;
 }
-std::string VertexShader::GetUID() const
+
+HashString Bindables::VertexShader::GetID()
 {
-	return GenerateUID(m_ShaderPath);
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID(m_shaderPath);
+	}
+	return m_id;
 }
 

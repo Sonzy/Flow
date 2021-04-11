@@ -1,33 +1,42 @@
 #pragma once
 
-//= Includes =============================================
+// Includes ///////////////////////////////////////////////////////////////////////////
 
-#include "Flow/Rendering/Core/Bindable.h"
+#include "Rendering/Core/Bindables/Bindable.h"
+#include <d3d11.h>
 
-//= Class Definitions ====================================
+// Namespace //////////////////////////////////////////////////////////////////////////
 
-class Topology : public Bindable
+namespace Bindables
 {
-public:
-	
-	//= Public Static Functions ===============================================
+	// Class Definition ///////////////////////////////////////////////////////////////
 
+	class Topology : public Bindables::Bindable
+	{
+	public:
 
-	//= Bindable Interface =
+		// Public Static Functions ////////////////////////////////////////////////////
 
-	static Bindable*		Resolve(D3D11_PRIMITIVE_TOPOLOGY type);
-	static std::string						GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type);
-	std::string								GetUID() const override;
-public:
+		//= Bindable Interface =
 
-	//= Public Functions ======================================================
+		static Topology*						Resolve(D3D11_PRIMITIVE_TOPOLOGY type);
+		static HashString						GenerateID(D3D11_PRIMITIVE_TOPOLOGY type);
 
-											Topology(D3D11_PRIMITIVE_TOPOLOGY type);
-	void									Bind() noexcept override;
-	
-protected:
+	public:
 
-	//= Private Variables =====================================================
+		// Public Functions ///////////////////////////////////////////////////////////
 
-	D3D11_PRIMITIVE_TOPOLOGY				m_Topology;
-};
+												Topology(D3D11_PRIMITIVE_TOPOLOGY type);
+		virtual void							Bind() override;
+
+		//= Bindable Interface =
+
+		virtual HashString						GetID();
+
+	private:
+
+		// Private Variables ///////////////////////////////////////////////////////////
+
+		D3D11_PRIMITIVE_TOPOLOGY				m_topology;
+	};
+}

@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#if WITH_EDITOR
+
 #include "WorldViewer.h"
 #include "GameFramework/World.h"
 #include "GameFramework/Actor.h"
@@ -44,3 +47,5 @@ void WorldViewer::Render()
 		ImGui::End();
 	}
 }
+
+#endif //WITH_EDITOR

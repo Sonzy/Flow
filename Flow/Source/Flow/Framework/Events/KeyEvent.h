@@ -35,7 +35,7 @@ public:
 
 						KeyPressedEvent(int KeyCode, int RepeatCount);
 	int					GetRepeatCount() const;
-	N_DISC std::string	ToString() const override;
+	std::string			ToString() const override;
 	EVENT_CLASS_TYPE(KeyPressed)
 
 
@@ -52,7 +52,7 @@ public:
 	//= Public Functions =========================
 
 						KeyReleasedEvent(int KeyCode);
-	N_DISC std::string	ToString() const override;
+	std::string			ToString() const override;
 	EVENT_CLASS_TYPE(KeyReleased)
 };
 
@@ -65,6 +65,6 @@ public:
 	KeyTypedEvent(int KeyCode)
 		: KeyEvent(KeyCode)
 	{}
-	N_DISC std::string	ToString() const override;
+	std::string			ToString() const override;
 	EVENT_CLASS_TYPE(KeyTyped)
 };

@@ -1,10 +1,17 @@
+// Pch ///////////////////////////////////////////////////////////////////////////////////
+
 #include "pch.h"
+
+// Includes //////////////////////////////////////////////////////////////////////////////
+
 #include "DynamicShaderBuffers.h"
 #include "Flow/Rendering/Core/TechniqueProbe.h"
 
+// Function Definitons ///////////////////////////////////////////////////////////////////
+
 PixelConstantBufferDynamic::PixelConstantBufferDynamic(const DynamicCB::LayoutElement& LayoutRoot, UINT Slot, const DynamicCB::Buffer* Buffer)
 {
-	CreateResultHandle();
+	CREATE_RESULT_HANDLE();
 
 	D3D11_BUFFER_DESC ConstantBufferDescription;
 	ConstantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -28,7 +35,7 @@ void PixelConstantBufferDynamic::Update(const DynamicCB::Buffer& Buffer)
 {
 	assert(&Buffer.GetRootLayoutElement() == &GetRootLayoutElement());
 
-	CreateResultHandle();
+	CREATE_RESULT_HANDLE();
 
 	D3D11_MAPPED_SUBRESOURCE MSR;
 	CaptureDXError(RenderCommand::DX11GetContext()->Map(

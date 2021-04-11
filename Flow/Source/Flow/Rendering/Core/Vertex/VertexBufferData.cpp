@@ -1,7 +1,7 @@
 //= Includes ===========================
 
 #include "pch.h"
-#include "VertexBuffer.h"
+#include "VertexBufferData.h"
 #include "Rendering/Renderer.h"
 #include "Window/Window.h"
 

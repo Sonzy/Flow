@@ -1,11 +1,16 @@
-//= Includes ============================================
+// Pch ////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes ///////////////////////////////////////////////////////////////////
+
+#include <d3d11.h>
 #include "Sampler.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
-#include "BindableCodex.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class (Sampler) Definition ==========================
+// Class Definition ///////////////////////////////////////////////////////////
 
 Sampler::Sampler()
 {
@@ -22,22 +27,29 @@ Sampler::Sampler()
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	SamplerDesc.MipLODBias = 0.0f;
 
-	CaptureDXError(RenderCommand::DX11GetDevice()->CreateSamplerState(&SamplerDesc, &m_Sampler));
+	CaptureDXError(Renderer::GetDevice()->CreateSamplerState(&SamplerDesc, &m_sampler));
 }
 
 void Sampler::Bind()
 {
-	RenderCommand::DX11GetContext()->PSSetSamplers(0u, 1u, m_Sampler.GetAddressOf());
+	Renderer::GetContext()->PSSetSamplers(0u, 1u, m_sampler.GetAddressOf());
 }
-Bindable* Sampler::Resolve()
+
+Sampler* Sampler::Resolve()
 {
-	return BindableCodex::Resolve<Sampler>();
+	return Bindables::Codex::Resolve<Sampler>();
 }
-std::string Sampler::GenerateUID()
+
+HashString Sampler::GenerateID()
 {
-	return typeid(Sampler).name();
+	return "Sampler";
 }
-std::string Sampler::GetUID() const
+
+HashString Sampler::GetID() 
 {
-	return GenerateUID();
+	if (m_id.IsNull())
+	{
+		m_id = GenerateID();
+	}
+	return m_id;
 }

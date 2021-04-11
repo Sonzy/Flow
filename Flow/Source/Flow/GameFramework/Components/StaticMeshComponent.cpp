@@ -5,7 +5,6 @@
 #include "Rendering\Renderer.h"
 #include "Rendering\Core\Vertex\VertexLayout.h"
 #include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
-#include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
@@ -63,6 +62,8 @@ void StaticMeshComponent::Tick(float DeltaTime)
 
 }
 
+#if WITH_EDITOR
+
 void StaticMeshComponent::EditorBeginPlay()
 {
 	WorldComponent::BeginPlay();
@@ -87,6 +88,8 @@ void StaticMeshComponent::OnViewportDeselected()
 	//if(m_Techniques.size() >= 2)
 	//	m_Techniques[1].Deactivate();
 }
+
+#endif // WITH_EDITOR
 
 
 void StaticMeshComponent::SetMeshAndMaterial(const std::string& MeshName, const std::string& MaterialName, int MeshIndex)
@@ -254,7 +257,9 @@ void StaticMeshComponent::DefaultInitialise()
 
 	switch (World::Get().GetWorldState())
 	{
+#if WITH_EDITOR
 	case WorldState::Editor: EditorBeginPlay(); break;
+#endif
 	case WorldState::Paused:
 	case WorldState::InGame: BeginPlay(); break;
 	}
@@ -279,7 +284,7 @@ void StaticMeshComponent::RefreshBinds()
 		return;
 	}
 
-	m_Techniques.clear();
+	m_techniques.clear();
 
 	//= Standard Rendering ====
 	VertexLayout MeshLayout;
@@ -292,9 +297,9 @@ void StaticMeshComponent::RefreshBinds()
 
 			//Set the bindables for this specific object (Topology, Indices, VertexBuffer) 
 			m_StaticMesh->GenerateBinds(MeshLayout);
-			m_VertexBuffer = m_StaticMesh->m_BindableVBuffer;
-			m_IndexBuffer = m_StaticMesh->m_IndexBuffer;
-			m_Topology = m_StaticMesh->m_Topology;
+			m_vertexBuffer = m_StaticMesh->m_BindableVBuffer;
+			m_indexBuffer = m_StaticMesh->m_IndexBuffer;
+			m_topology = m_StaticMesh->m_Topology;
 
 			if (m_Material)
 				m_Material->BindMaterial(&MainStep, MeshLayout);
@@ -367,9 +372,9 @@ void StaticMeshComponent::DrawComponentDetailsWindow()
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Static Mesh Component");
 
-	if (m_Techniques.size() >= 2) //TODO: better system for this
+	if (m_techniques.size() >= 2) //TODO: better system for this
 	{
-		ImGui::Checkbox("Draw Outline", &m_Techniques[1].GetWriteAccessToActive());
+		ImGui::Checkbox("Draw Outline", &m_techniques[1].GetWriteAccessToActive());
 	}
 
 	DrawMeshSelector();
@@ -448,7 +453,7 @@ void StaticMeshComponent::DestroyPhysics()
 	m_RigidBody = nullptr;
 }
 
-void StaticMeshComponent::SetStencilMode(StencilMode NewMode)
+void StaticMeshComponent::SetStencilMode(Bindables::Stencil::Mode NewMode)
 {
 	FLOW_ENGINE_WARNING("StaticMeshComponent::SetStencilMode: TODO: Update");
 	//_StencilMode = NewMode;

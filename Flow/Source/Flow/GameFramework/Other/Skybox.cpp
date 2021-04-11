@@ -8,13 +8,13 @@
 #include "Assets\Meshes\MeshAsset.h"
 
 #include "Rendering\Core\Bindables\Topology.h"
-#include "Rendering\Core\Bindables\BindableVertexBuffer.h"
+#include "Rendering\Core\Bindables\VertexBuffer.h"
 #include "Rendering\Core\Materials\Material.h"
 #include "Rendering\Core\Bindables\ConstantBuffers\TransformConstantBuffer.h"
 #include "Rendering\Core\Bindables\Rasterizer.h"
 
 #include "Rendering\Core\Vertex\VertexLayout.h"
-#include "Rendering\Core\Vertex\VertexBuffer.h"
+#include "Rendering\Core\Vertex\VertexBufferData.h"
 
 #include "Rendering\Core\Camera\Camera.h"
 #include "GameFramework\Components\CameraComponent.h"
@@ -31,7 +31,7 @@ Skybox::Skybox()
 	{
 		Step MainStep(RenderPass::Main);
 
-		MainStep.AddBindable(Rasterizer::Resolve(CullMode::Front));
+		MainStep.AddBindable(Rasterizer::Resolve(Rasterizer::Cull_Front));
 
 		VertexLayout MeshLayout;
 		MainStep.AddBindables(m_Mesh->GetMesh(0)->GenerateBinds(MeshLayout));
@@ -44,7 +44,7 @@ Skybox::Skybox()
 
 DirectX::XMMATRIX Skybox::GetTransformXM() const
 {
-	DirectX::XMFLOAT3 CamPos = RenderCommand::GetMainCamera()->GetCameraPosition();
+	DirectX::XMFLOAT3 CamPos = Renderer::GetMainCamera()->GetCameraPosition();
 	return DirectX::XMMatrixScaling(300.0f, 300.0f, 300.0f) *
 		DirectX::XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 }

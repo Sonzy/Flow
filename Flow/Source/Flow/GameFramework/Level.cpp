@@ -28,7 +28,7 @@ void Level::Save(YAML::Emitter& file)
 	file << YAML::Value << m_Name;
 
 	file << YAML::Key << "EditorCameraTransform";
-	file << YAML::Value << RenderCommand::GetMainCamera()->GetCameraTransform();
+	file << YAML::Value << Renderer::GetMainCamera()->GetCameraTransform();
 
 	//= Serialise all actors =
 	file << YAML::Key << "Actors";
@@ -65,7 +65,7 @@ bool Level::Load(YAML::Node& Input)
 {
 	m_Name = Input["LevelName"].as<std::string>();
 
-	if (CameraBase* cam = RenderCommand::GetMainCamera())
+	if (CameraBase* cam = Renderer::GetMainCamera())
 	{
 		cam->MoveCamera(Input["EditorCameraTransform"].as<Transform>());
 	}
@@ -135,6 +135,7 @@ void Level::DispatchBeginPlay()
 	}
 }
 
+#if WITH_EDITOR
 void Level::DispatchEditorBeginPlay()
 {
 	for (std::pair<FGUID, Actor*> pair : m_Actors)
@@ -142,6 +143,7 @@ void Level::DispatchEditorBeginPlay()
 		pair.second->EditorBeginPlay();
 	}
 }
+#endif // WITH_EDITOR
 
 void Level::Tick(float DeltaTime)
 {

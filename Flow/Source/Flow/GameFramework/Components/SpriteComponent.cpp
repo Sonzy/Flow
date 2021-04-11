@@ -4,9 +4,8 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/Core/Vertex/VertexLayout.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/TransformConstantBuffer.h"
-#include "Rendering/Core/Bindables/ConstantBuffers/ScaledTransformConstantBuffer.h"
 #include "Rendering/Core/Bindables/Topology.h"
-#include "Rendering/Core/Bindables/BindableVertexBuffer.h"
+#include "Rendering/Core/Bindables/VertexBuffer.h"
 #include "Rendering/Core/Bindables/IndexBuffer.h"
 #include "Rendering/Core/Materials/Material.h"
 #include "Rendering/Core/Bindables/Rasterizer.h"
@@ -41,7 +40,7 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::RefreshBinds()
 {
-	m_Techniques.clear();
+	m_techniques.clear();
 
 	//= 2D Pass =
 
@@ -50,7 +49,7 @@ void SpriteComponent::RefreshBinds()
 		Step MainStep(RenderPass::Main);
 
 		//Topology
-		m_Topology = static_cast<Topology*>(Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		m_topology = static_cast<Bindables::Topology*>(Bindables::Topology::Resolve(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 		//Vertex Layout
 		VertexLayout MeshLayout;
@@ -64,23 +63,23 @@ void SpriteComponent::RefreshBinds()
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ 0.5f, 0.5f, 0.0f },		DirectX::XMFLOAT2{ 0.0f, 1.0f });
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ -0.5f, 0.5f, 0.0f },		DirectX::XMFLOAT2{ 1.0f, 1.0f });			
 
-		std::vector<unsigned short> indices;
-		indices.reserve(6);
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(0);
+		Array<uint16> indices;
+		indices.Reserve(6);
+		indices.Add(0);
+		indices.Add(1);
+		indices.Add(2);
+		indices.Add(2);
+		indices.Add(3);
+		indices.Add(0);
 
-		m_VertexBuffer = static_cast<BindableVertexBuffer*>(BindableVertexBuffer::Resolve("SpriteQuad", VBuffer));
-		m_IndexBuffer = static_cast<IndexBuffer*>(IndexBuffer::Resolve("SpriteQuad", indices));
+		m_vertexBuffer = Bindables::VertexBuffer::Resolve("SpriteQuad", VBuffer);
+		m_indexBuffer = Bindables::IndexBuffer::Resolve("SpriteQuad", indices);
 
 		m_Material->BindMaterial(&MainStep, MeshLayout);
 
 		MainStep.AddBindable(new TransformConstantBuffer(this));
 
-		MainStep.AddBindable(Rasterizer::Resolve(m_DoubleSided ? CullMode::None : CullMode::Back));
+		MainStep.AddBindable(Rasterizer::Resolve(m_DoubleSided ? Rasterizer::Cull_None : Rasterizer::Cull_Back));
 
 		Standard.AddStep(std::move(MainStep));
 	}
@@ -129,6 +128,7 @@ void SpriteComponent::InitialisePhysics()
 	World::Get().AddPhysicsObject(m_RigidBody);
 }
 
+#if WITH_EDITOR
 void SpriteComponent::EditorBeginPlay()
 {
 	WorldComponent::BeginPlay();
@@ -163,6 +163,8 @@ void SpriteComponent::DrawComponentDetailsWindow()
 		RefreshBinds();
 	}
 }
+
+#endif //WITH_EDITOR
 
 void SpriteComponent::Serialize(YAML::Emitter& Archive)
 {

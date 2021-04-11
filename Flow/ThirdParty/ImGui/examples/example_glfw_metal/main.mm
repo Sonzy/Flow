@@ -101,7 +101,7 @@ int main(int, char**)
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
             renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
             renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
-            id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+            id <MTLRendererEncoder> renderEncoder = [commandBuffer RendererEncoderWithDescriptor:renderPassDescriptor];
             [renderEncoder pushDebugGroup:@"ImGui demo"];
 
             // Start the Dear ImGui frame

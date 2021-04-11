@@ -1,33 +1,40 @@
 #pragma once
 
-//= Includes =======================================
+// Includes ////////////////////////////////////////////////////////////
 
 #include <vector>
-#include "Rendering/Core/Bindable.h"
+#include "Framework/Types/ComPtr.h"
+#include "Rendering/Core/Bindables/Bindable.h"
 #include "Rendering/Core/Vertex/VertexLayout.h"
 
-//= Class Definition ================================
+// Type Definitions ////////////////////////////////////////////////////
 
-class InputLayout : public Bindable
+struct ID3D11InputLayout;
+
+namespace Bindables
 {
-public:
+	// Class Definition ////////////////////////////////////////////////////
 
-	//= Public Static Functions ========================================
+	class InputLayout : public Bindables::Bindable
+	{
+	public:
 
-	static Bindable*		Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
-	static std::string						GenerateUID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode = nullptr);
+		// Public Static Functions /////////////////////////////////////////
 
-	//= Public Functions ===============================================
+		static InputLayout* Resolve(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode);
+		static HashString						GenerateID(const VertexLayout& Layout, ID3DBlob* vertexShaderByteCode = nullptr);
 
-											InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode);
-	void									Bind() override;
-	std::string								GetUID() const override;
+		// Public Functions ////////////////////////////////////////////////////////////
 
-private:
-	
-	//= Private Variables ===============================================
+		InputLayout(VertexLayout Layout, ID3DBlob* vertexShaderByteCode);
+		virtual void							Bind() override;
+		virtual HashString						GetID() override;
 
-	//Describe the input layout for the vertex shader
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>		m_InputLayout;
-	VertexLayout									m_VertexLayout;
-};
+	private:
+
+		// Private Variables ///////////////////////////////////////////////
+
+		ComPtr<ID3D11InputLayout>						m_inputLayout;
+		VertexLayout									m_vertexLayout;
+	};
+}

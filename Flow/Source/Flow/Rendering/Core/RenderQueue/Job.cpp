@@ -2,8 +2,9 @@
 
 #include "pch.h"
 #include "Job.h"
-#include "Flow/Rendering/Core/Renderable.h"
-#include "Flow/Rendering/Core/RenderQueue/Step.h"
+#include "Rendering/Core/Renderable.h"
+#include "Rendering/Core/RenderQueue/Step.h"
+#include "Rendering/Renderer.h"
 
 //= Class Definition - Job =========================
 
@@ -18,5 +19,5 @@ void Job::Execute() const
 	m_Renderable->Bind();
 	m_Step->Bind();
 
-	RenderCommand::DrawIndexed(m_Renderable->GetIndexCount());
+	Renderer::DrawIndexed(m_Renderable->GetIndexCount());
 }

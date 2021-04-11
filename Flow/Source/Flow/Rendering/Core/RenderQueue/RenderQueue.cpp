@@ -60,14 +60,21 @@ void RenderQueue::Execute()
 {
 	//= Main Render pass
 
+	//Testing, main window background color
+	Renderer::SetClearColour(0.25f, 0.0f, 0.25f, 1.0f);
+
+#if WITH_EDITOR
+	Renderer::BindEditorBuffer();
+#endif
+
 	Pass& mainPass = sm_Passes[RenderPass::Main];
 	if (mainPass.IsEnabled())
 	{
 		sm_CurrentPass = RenderPass::Main;
 
-		RenderCommand::SetPerspective();
-		Rasterizer::Resolve(CullMode::Back)->Bind();
-		Stencil::Resolve(StencilMode::Off)->Bind();
+		Renderer::SetPerspective();
+		Rasterizer::Resolve(Rasterizer::Cull_Back)->Bind();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 
 		mainPass.Execute();
 	}
@@ -77,11 +84,13 @@ void RenderQueue::Execute()
 	{
 		sm_CurrentPass = RenderPass::OutlineMasking;
 
-		Stencil::Resolve(StencilMode::Write)->Bind();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Write)->Bind();
 		NullPixelShader::Resolve()->Bind(); //Stop D3D11 from using render targets
 
 		outlineMaskPass.Execute();
 	}
+
+#if WITH_EDITOR
 
 	Pass& outlinePass = sm_Passes[RenderPass::Outline];
 	if (mainPass.IsEnabled())
@@ -91,7 +100,7 @@ void RenderQueue::Execute()
 		Vector3 Colour = Editor::GetSettings().m_ObjectHighlightColour;
 
 		//= Outline Drawing Pass.
-		Stencil::Resolve(StencilMode::Mask)->Bind();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Mask)->Bind();
 
 		CBT_Colour ColourBuffer = CBT_Colour(Colour.x, Colour.y, Colour.z, 1.0f);
 		auto PXCB = static_cast<PixelConstantBuffer<CBT_Colour>*>(PixelConstantBuffer<CBT_Colour>::Resolve(ColourBuffer, 2u));
@@ -101,24 +110,26 @@ void RenderQueue::Execute()
 		outlinePass.Execute();
 	}
 
+#endif // WITH_EDITOR
+
 	Pass& noDepthPass = sm_Passes[RenderPass::NoDepth];
 	if (mainPass.IsEnabled())
 	{
 		sm_CurrentPass = RenderPass::NoDepth;
-		Stencil::Resolve(StencilMode::NoDepth)->Bind();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::NoDepth)->Bind();
 
 		noDepthPass.Execute();
 	}
 
-	Stencil::Resolve(StencilMode::Off)->Bind();
+	Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 
 	Pass& standard2DPass = sm_Passes[RenderPass::Standard2D];
 	if (standard2DPass.IsEnabled())
 	{
 		sm_CurrentPass = RenderPass::Standard2D;
 
-		RenderCommand::SetOrthographic();
-		Stencil::Resolve(StencilMode::Off)->Bind();
+		Renderer::SetOrthographic();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 
 		standard2DPass.Execute();
 	}
@@ -128,28 +139,29 @@ void RenderQueue::Execute()
 	{
 		sm_CurrentPass = RenderPass::UI;
 
-		RenderCommand::SetOrthographic();
-		Stencil::Resolve(StencilMode::NoDepth)->Bind();
+		Renderer::SetOrthographic();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::NoDepth)->Bind();
 
 		UIPass.Execute();
 	}
-	Stencil::Resolve(StencilMode::Off)->Bind();
+	Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 
 	Pass& frontCullPass = sm_Passes[RenderPass::FrontFaceCulling];
 	if (frontCullPass.IsEnabled())
 	{
 		sm_CurrentPass = RenderPass::FrontFaceCulling;
 
-		RenderCommand::SetPerspective();
-		Rasterizer::Resolve(CullMode::Front)->Bind();
+		Renderer::SetPerspective();
+		Rasterizer::Resolve(Rasterizer::Cull_Front)->Bind();
 
 		frontCullPass.Execute();
 	}
-	Rasterizer::Resolve(CullMode::Back)->Bind();
+	Rasterizer::Resolve(Rasterizer::Cull_Back)->Bind();
 
 	bool selectionBufferClearedThisFrame = false;
 
-	RenderCommand::SetClearColour(0.0f, 0.0f, 0.0f, 1.0f);
+	//Make selection background black
+	Renderer::SetClearColour(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Pass& selectionPass = sm_Passes[RenderPass::Selection];
 	if (selectionPass.IsEnabled())
@@ -158,25 +170,28 @@ void RenderQueue::Execute()
 
 		if (sm_SelectionBuffer == nullptr)
 		{
-			sm_SelectionBuffer = new FrameBuffer(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y, true);
+			sm_SelectionBuffer = new FrameBuffer(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
 		}
 
-		if (sm_SelectionBuffer->GetWidth() != RenderCommand::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != RenderCommand::GetWindowSize().y)
+		if (sm_SelectionBuffer->GetWidth() != Renderer::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != Renderer::GetWindowSize().y)
 		{
-			sm_SelectionBuffer->Resize(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y);
+			sm_SelectionBuffer->Resize(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y);
 		}
 
-		RenderCommand::BindFrameBuffer(sm_SelectionBuffer);
+		Renderer::BindFrameBuffer(sm_SelectionBuffer);
 		selectionBufferClearedThisFrame = true;
 
-		RenderCommand::SetPerspective();
+		Renderer::SetPerspective();
 
 		selectionPass.Execute();
 
+#if WITH_EDITOR
 		// Post Selection Rendering
-		RenderCommand::BindEditorBufferWithoutClear();
+		Renderer::BindEditorBufferWithoutClear();
+#endif // WITH_EDITOR
 	}
 
+#if WITH_EDITOR
 	Pass& selectionPass2D = sm_Passes[RenderPass::Selection2D];
 	if (selectionPass2D.IsEnabled())
 	{
@@ -184,30 +199,32 @@ void RenderQueue::Execute()
 
 		if (sm_SelectionBuffer == nullptr)
 		{
-			sm_SelectionBuffer = new FrameBuffer(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y, true);
+			sm_SelectionBuffer = new FrameBuffer(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
 		}
 
-		if (sm_SelectionBuffer->GetWidth() != RenderCommand::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != RenderCommand::GetWindowSize().y)
+		if (sm_SelectionBuffer->GetWidth() != Renderer::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != Renderer::GetWindowSize().y)
 		{
-			sm_SelectionBuffer->Resize(RenderCommand::GetWindowSize().x, RenderCommand::GetWindowSize().y);
+			sm_SelectionBuffer->Resize(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y);
 		}
 
-		selectionBufferClearedThisFrame ? RenderCommand::BindFrameBufferWithoutClear(sm_SelectionBuffer) : RenderCommand::BindFrameBuffer(sm_SelectionBuffer);
+		selectionBufferClearedThisFrame ? Renderer::BindFrameBufferWithoutClear(sm_SelectionBuffer) : Renderer::BindFrameBuffer(sm_SelectionBuffer);
 		selectionBufferClearedThisFrame = true;
 
-		RenderCommand::SetOrthographic();
-		Stencil::Resolve(StencilMode::NoDepth)->Bind();
+		Renderer::SetOrthographic();
+		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::NoDepth)->Bind();
 
 		selectionPass2D.Execute();
 
-		// Post Selection Rendering
-		RenderCommand::BindEditorBufferWithoutClear();
-	}
 
-	Stencil::Resolve(StencilMode::Off)->Bind();
+		// Post Selection Rendering
+		Renderer::BindEditorBufferWithoutClear();
+	}
+#endif // WITH_EDITOR
+
+	Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 
 	//Reset for late rendering (imgui etc)
-	RenderCommand::SetPerspective();
+	Renderer::SetPerspective();
 
 	sm_CurrentPass = RenderPass::Main;
 }

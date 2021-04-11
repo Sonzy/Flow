@@ -1,5 +1,7 @@
 #pragma once
 
+#if WITH_EDITOR
+
 // Includes ////////////////////////////////
 
 #include "UIComponent.h"
@@ -24,3 +26,5 @@ private:
 
 	World& m_World;
 };
+
+#endif // WITH_EDITOR

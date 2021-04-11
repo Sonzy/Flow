@@ -3,8 +3,8 @@
 //= Includes ========================================
 
 #include <DirectXMath.h>
+#include "Rendering/Core/Renderable.h"
 #include "Core.h"
-#include "Rendering/Core/RenderableBase.h"
 #include "Maths/Vector3.h"
 #include "Maths/Rotator.h"
 
@@ -14,7 +14,7 @@ class Material;
 
 //= Class Definition ================================
 
-class FLOW_API StaticMesh : public RenderableBase
+class FLOW_API StaticMesh : public Renderable
 {
 public:
 

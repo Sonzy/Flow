@@ -80,7 +80,7 @@ public:
 	virtual void				InitialisePhysics() override;
 	virtual void				DestroyPhysics() override;
 
-	void						SetStencilMode(StencilMode NewMode);
+	void						SetStencilMode(Bindables::Stencil::Mode NewMode);
 
 public:
 

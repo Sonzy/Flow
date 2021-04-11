@@ -1,19 +1,23 @@
 #pragma once
 
-//= Includes =====================================================
+// Includes /////////////////////////////////////////////////////////////////////////
 
+#include <d3d11.h>
 #include "Framework/Logging/Log.h"
-#include "Rendering/Core/Bindable.h"
-#include "Rendering/Core/Bindables/BindableCodex.h"
+#include "Framework/Types/ComPtr.h"
+#include "Framework/Utils/DirectX11/DirectX11Utils.h"
+#include "Rendering/Core/Bindables/Bindable.h"
+#include "Rendering/Core/Bindables/Codex.h"
+#include "Rendering/Renderer.h"
 
-//= Class Definitions =============================================
+//= Class Definitions ///////////////////////////////////////////////////////////////
 
 template<typename C>
-class ConstantBuffer : public Bindable
+class ConstantBuffer : public Bindables::Bindable
 {
 public:
 
-	//= Public Functions ==============================================================
+	// Public Functions /////////////////////////////////////////////////////////////
 
 	ConstantBuffer(const C& consts, UINT slot)
 		: ConstantBuffer(consts, slot, "")
@@ -21,11 +25,11 @@ public:
 
 	}
 
-	ConstantBuffer(const C& consts, UINT slot, const std::string& Tag)
-		: m_Slot(slot)
-		, m_Tag(Tag)
+	ConstantBuffer(const C& consts, UINT slot, HashString Tag)
+		: m_slot(slot)
+		, m_tag(Tag)
 	{
-		HRESULT ResultHandle;
+		CreateResultHandle();
 
 		D3D11_BUFFER_DESC cbd = {};
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -37,13 +41,13 @@ public:
 
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &consts;
-		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
+		CaptureDXError(Renderer::GetDevice()->CreateBuffer(&cbd, &csd, &m_constantBuffer));
 	}
 
 	ConstantBuffer(UINT slot)
-		: m_Slot(slot)
+		: m_slot(slot)
 	{
-		HRESULT ResultHandle;
+		CreateResultHandle();
 
 		D3D11_BUFFER_DESC cbd = {};
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -53,26 +57,27 @@ public:
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
 
-		CaptureDXError(RenderCommand::DX11GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+		CaptureDXError(Renderer::GetDevice()->CreateBuffer(&cbd, nullptr, &m_constantBuffer));
 	}
 
 	void Update(const C& consts)
 	{
-		HRESULT ResultHandle;
+		CreateResultHandle();
 		D3D11_MAPPED_SUBRESOURCE MSR;
 
-		CaptureDXError(RenderCommand::DX11GetContext()->Map(
-			m_ConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
+		CaptureDXError(Renderer::GetContext()->Map(
+			m_constantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &MSR));
 
 		memcpy(MSR.pData, &consts, sizeof(consts));
 
-		RenderCommand::DX11GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
+		Renderer::GetContext()->Unmap(m_constantBuffer.Get(), 0u);
 	}
 
 protected:
 
-	//= Protected Variables ===========================================================
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ConstantBuffer;
-	UINT									m_Slot;
-	std::string								m_Tag;
+	//= Protected Variables ///////////////////////////////////////////////////////
+
+	ComPtr<ID3D11Buffer>					m_constantBuffer;
+	UINT									m_slot;
+	HashString								m_tag;
 };
