@@ -71,13 +71,10 @@ public:
 	static void							EndFrame();
 
 #if WITH_EDITOR
-	static FrameBuffer*					GetEditorFrameBuffer();
-	static void							BindEditorBuffer();
-	static void							BindEditorBufferWithoutClear();
-#endif
 	static void							BindGameBuffer();
 	static void							BindGameBufferWithoutClear();
 	static FrameBuffer*					GetGameFrameBuffer();
+#endif
 
 	static void							BindFrameBuffer(FrameBuffer* Buffer);
 	static void							BindBackBuffer();

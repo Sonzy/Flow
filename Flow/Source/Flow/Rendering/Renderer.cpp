@@ -23,17 +23,21 @@ void Renderer::BeginScene()
 	s_objectsRendered = 0;
 
 #if WITH_EDITOR
-	Renderer::BindEditorBuffer();
+	Renderer::BindGameBuffer();
 #else
 	Renderer::BindBackBuffer();
-#endif // WITH_EDITOR
+#endif
 }
 
 void Renderer::EndScene()
 {
 	RenderQueue::Execute();
 	RenderQueue::Reset();
+
+	// We draw the Editor to the back buffer directly.
+#if WITH_EDITOR
 	Renderer::BindBackBuffer();
+#endif
 }
 
 int Renderer::SubmitWithoutDraw(Renderable* Renderables)
@@ -174,23 +178,6 @@ void Renderer::EndFrame()
 }
 
 #if WITH_EDITOR
-FrameBuffer* Renderer::GetEditorFrameBuffer()
-{
-	return sm_renderApi->GetEditorBuffer();
-}
-
-void Renderer::BindEditorBuffer()
-{
-	sm_renderApi->BindEditorFrameBuffer(true);
-}
-
-void Renderer::BindEditorBufferWithoutClear()
-{
-	sm_renderApi->BindEditorFrameBuffer(false);
-}
-
-#endif // WITH_EDITOR
-
 void Renderer::BindGameBuffer()
 {
 	sm_renderApi->BindGameFrameBuffer(true);
@@ -205,6 +192,7 @@ FrameBuffer* Renderer::GetGameFrameBuffer()
 {
 	return sm_renderApi->GetGameBuffer();
 }
+#endif // WITH_EDITOR
 
 void Renderer::BindFrameBuffer(FrameBuffer* Buffer)
 {

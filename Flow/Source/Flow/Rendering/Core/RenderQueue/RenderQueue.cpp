@@ -63,8 +63,6 @@ void RenderQueue::Execute()
 	//Testing, main window background color
 	Renderer::SetClearColour(0.25f, 0.0f, 0.25f, 1.0f);
 
-	Renderer::BindGameBuffer();
-
 	Pass& mainPass = sm_Passes[RenderPass::Main];
 	if (mainPass.IsEnabled())
 	{
@@ -210,16 +208,11 @@ void RenderQueue::Execute()
 	}
 #endif // WITH_EDITOR
 
-	Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
-
 	//Reset for late rendering (imgui etc)
+	Bindables::Stencil::Resolve(Bindables::Stencil::Mode::Off)->Bind();
 	Renderer::SetPerspective();
 
 	sm_CurrentPass = RenderPass::Main;
-
-#if WITH_EDITOR
-	Renderer::BindEditorBuffer();
-#endif
 }
 
 void RenderQueue::Reset()

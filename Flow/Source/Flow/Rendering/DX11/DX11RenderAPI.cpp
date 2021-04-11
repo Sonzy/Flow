@@ -37,7 +37,7 @@ DX11RenderAPI::~DX11RenderAPI()
 
 
 #if WITH_EDITOR
-	delete m_editorBuffer;
+	delete m_gameBuffer;
 #endif
 	delete m_currentBuffer;
 }
@@ -110,9 +110,8 @@ void DX11RenderAPI::Initialise(HWND WindowHandle, int ViewportWidth, int Viewpor
 	m_context->RSSetViewports(1u, &Viewport);
 
 #if WITH_EDITOR
-	m_editorBuffer = new FrameBuffer("Editor Buffer", ViewportWidth, ViewportHeight, true);
+	m_gameBuffer = new FrameBuffer("Game Buffer", ViewportWidth, ViewportHeight, true);
 #endif
-	m_gameBuffer = new FrameBuffer("Game Buffer", ViewportWidth, ViewportHeight, true); //Keep this the correct size
 
 	m_currentBuffer = nullptr;
 }
@@ -357,10 +356,6 @@ void DX11RenderAPI::BindBackBuffer(bool clear)
 	Viewport.TopLeftY = 0.0f;
 
 	m_context->RSSetViewports(1u, &Viewport);
-
-#if WITH_EDITOR
-	m_editorBufferBound = false;
-#endif
 }
 
 void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer, bool clear)
@@ -399,38 +394,13 @@ void DX11RenderAPI::BindFrameBuffer(FrameBuffer* Buffer, bool clear)
 	m_context->RSSetViewports(1u, &Viewport);
 
 	m_currentBuffer = Buffer;
-#if WITH_EDITOR
-	m_editorBufferBound = false;
-#endif
 }
 
 #if WITH_EDITOR
-void DX11RenderAPI::BindEditorFrameBuffer(bool clear)
-{
-	//Bind the frame buffer
-	BindFrameBuffer(m_editorBuffer, clear);
-	m_editorBufferBound = true;
-
-	//Update the window rendering properties
-	CameraBase* mainCamera = Renderer::GetMainCamera();
-	mainCamera->SetProjectionMatrix(DirectX::XMMatrixPerspectiveFovLH(Maths::DegreesToRadians(mainCamera->GetFOV()), (float)m_viewportSize.x / (float)m_viewportSize.y, m_nearPlane, m_farPlane));
-}
-
-FrameBuffer* DX11RenderAPI::GetEditorBuffer() const
-{
-	return m_editorBuffer;
-}
-
-#endif // WITH_EDITOR
-
 void DX11RenderAPI::BindGameFrameBuffer(bool clear)
 {
 	//Bind the frame buffer
 	BindFrameBuffer(m_gameBuffer, clear);
-
-#if WITH_EDITOR
-	m_editorBufferBound = false;
-#endif // WITH_EDITOR
 
 	//Update the window rendering properties
 	CameraBase* mainCamera = Renderer::GetMainCamera();
@@ -441,3 +411,5 @@ FrameBuffer* DX11RenderAPI::GetGameBuffer() const
 {
 	return m_gameBuffer;
 }
+
+#endif //WITH_EDITOR

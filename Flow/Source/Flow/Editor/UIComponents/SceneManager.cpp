@@ -64,7 +64,7 @@ void SceneManager::Render()
 		}
 
 
-		FrameBuffer* Buff = Renderer::GetEditorFrameBuffer();;
+		FrameBuffer* Buff = Renderer::GetGameFrameBuffer();
 		const FrameBuffer* OutputBuffer = nullptr;
 		switch (m_viewMode)
 		{

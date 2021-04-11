@@ -83,14 +83,10 @@ private:
 
 	FrameBuffer*				m_currentBuffer;
 
-	FrameBuffer*				m_gameBuffer;
+	//Render the game to a seperate buffer if we're in the editor
 #if WITH_EDITOR
-	FrameBuffer*				m_editorBuffer;
-	bool						m_editorBufferBound;
+	FrameBuffer*				m_gameBuffer;
 #endif
-
-
-
 
 	float						m_backgroundColour[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	IntVector2					m_viewportSize;
