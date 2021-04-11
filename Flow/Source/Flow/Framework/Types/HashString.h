@@ -13,8 +13,10 @@ class HashString
 public:
 
 	HashString();
+	HashString(size_t hash);
 	HashString(const char* string);
 	HashString(string string);
+	HashString(const HashString& hash);
 
 	bool				IsNull() const;
 	size_t				GetHash() const;
@@ -48,8 +50,23 @@ inline HashString::HashString(const char* cstr)
 }
 
 inline HashString::HashString(string input)
+	: m_hash(std::hash<string>{}(input))
+	, m_string(input)
 {
-	m_hash = std::hash<string>{}(input);
+}
+
+inline HashString::HashString(const HashString& hash)
+	: m_hash(hash.m_hash)
+	, m_string(string(hash.m_string.c_str())) //TODO: make a copy constructor for string instead of being lazy
+{
+
+}
+
+inline HashString::HashString(size_t hash)
+	: m_hash(hash)
+	, m_string("")
+{
+
 }
 
 inline HashString::HashString()

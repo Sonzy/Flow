@@ -42,4 +42,5 @@ protected:
 	Material*						m_Material;									
 	std::string						m_MeshPath = "Cube";
 	std::string						m_MaterialPath = "Mat_SkyCube";
+	std::string						m_textureName = "Unknown";
 };

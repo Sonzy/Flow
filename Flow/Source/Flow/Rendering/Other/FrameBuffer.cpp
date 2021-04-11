@@ -4,11 +4,12 @@
 #include "DepthBuffer.h"
 #include "Framework/Utils/DirectX11/DirectX11Utils.h"
 
-FrameBuffer::FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt)
+FrameBuffer::FrameBuffer(const char* bufferName, unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt)
 	: m_HasDepthBuffer(CreateDepthBuffer)
 	, m_Texture(nullptr)
 	, m_TextureView(nullptr)
 	, m_fmt(fmt)
+	, m_bufferName(bufferName)
 {
 	Resize(Width, Height);
 }

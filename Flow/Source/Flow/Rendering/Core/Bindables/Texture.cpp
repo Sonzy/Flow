@@ -52,6 +52,8 @@ Bindables::Texture::Texture(TextureAsset* asset, UINT slot)
 
 Bindables::Texture::Texture(const DirectX::ScratchImage& Asset, UINT slot, const std::string& AssetName)
 	: m_slot(slot)
+	, m_asset(nullptr)
+	//, m_customName(AssetName.c_str())
 {
 	HRESULT ResultHandle;
 
@@ -92,9 +94,15 @@ Bindables::Texture::Texture(const DirectX::ScratchImage& Asset, UINT slot, const
 	Renderer::GetContext()->GenerateMips(m_textureView.Get());
 }
 
+Bindables::Texture::~Texture()
+{
+	m_textureView.Reset();
+	m_texture.Reset();
+}
+
 void Bindables::Texture::Bind()
 {
-	Renderer::GetContext()->PSSetShaderResources(m_slot, 1u, &m_textureView);
+	Renderer::GetContext()->PSSetShaderResources(m_slot, 1u, m_textureView.GetAddressOf());
 }
 
 ID3D11ShaderResourceView* Bindables::Texture::GetTextureView() const

@@ -17,7 +17,7 @@ public:
 
 	//= Public Functions =======================================
 
-										FrameBuffer(unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt = DXGI_FORMAT_B8G8R8A8_UNORM);
+										FrameBuffer(const char* bufferName, unsigned int Width, unsigned int Height, bool CreateDepthBuffer, DXGI_FORMAT fmt = DXGI_FORMAT_B8G8R8A8_UNORM);
 										~FrameBuffer();
 	void								Resize(unsigned int Width, unsigned int Height);
 	
@@ -42,4 +42,5 @@ private:
 														
 	unsigned int										m_Width;
 	unsigned int										m_Height;
+	string												m_bufferName;
 };

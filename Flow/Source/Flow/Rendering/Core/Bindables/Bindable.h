@@ -28,7 +28,7 @@ namespace Bindables
 
 		// Private Variables ///////////////////////////////////////////////////////////
 
-		HashString	m_id = 0;
+		HashString m_id = (size_t)0;
 	};
 
 	inline HashString Bindable::GetID()

@@ -63,9 +63,7 @@ void RenderQueue::Execute()
 	//Testing, main window background color
 	Renderer::SetClearColour(0.25f, 0.0f, 0.25f, 1.0f);
 
-#if WITH_EDITOR
-	Renderer::BindEditorBuffer();
-#endif
+	Renderer::BindGameBuffer();
 
 	Pass& mainPass = sm_Passes[RenderPass::Main];
 	if (mainPass.IsEnabled())
@@ -158,10 +156,11 @@ void RenderQueue::Execute()
 	}
 	Rasterizer::Resolve(Rasterizer::Cull_Back)->Bind();
 
-	bool selectionBufferClearedThisFrame = false;
+#if WITH_EDITOR
 
 	//Make selection background black
 	Renderer::SetClearColour(0.0f, 0.0f, 0.0f, 1.0f);
+	bool selectionBufferClearedThisFrame = false;
 
 	Pass& selectionPass = sm_Passes[RenderPass::Selection];
 	if (selectionPass.IsEnabled())
@@ -170,7 +169,7 @@ void RenderQueue::Execute()
 
 		if (sm_SelectionBuffer == nullptr)
 		{
-			sm_SelectionBuffer = new FrameBuffer(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
+			sm_SelectionBuffer = new FrameBuffer("Selection Buffer", Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
 		}
 
 		if (sm_SelectionBuffer->GetWidth() != Renderer::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != Renderer::GetWindowSize().y)
@@ -184,14 +183,8 @@ void RenderQueue::Execute()
 		Renderer::SetPerspective();
 
 		selectionPass.Execute();
-
-#if WITH_EDITOR
-		// Post Selection Rendering
-		Renderer::BindEditorBufferWithoutClear();
-#endif // WITH_EDITOR
 	}
 
-#if WITH_EDITOR
 	Pass& selectionPass2D = sm_Passes[RenderPass::Selection2D];
 	if (selectionPass2D.IsEnabled())
 	{
@@ -199,7 +192,7 @@ void RenderQueue::Execute()
 
 		if (sm_SelectionBuffer == nullptr)
 		{
-			sm_SelectionBuffer = new FrameBuffer(Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
+			sm_SelectionBuffer = new FrameBuffer("Selection Buffer", Renderer::GetWindowSize().x, Renderer::GetWindowSize().y, true);
 		}
 
 		if (sm_SelectionBuffer->GetWidth() != Renderer::GetWindowSize().x || sm_SelectionBuffer->GetHeight() != Renderer::GetWindowSize().y)
@@ -214,10 +207,6 @@ void RenderQueue::Execute()
 		Bindables::Stencil::Resolve(Bindables::Stencil::Mode::NoDepth)->Bind();
 
 		selectionPass2D.Execute();
-
-
-		// Post Selection Rendering
-		Renderer::BindEditorBufferWithoutClear();
 	}
 #endif // WITH_EDITOR
 
@@ -227,6 +216,10 @@ void RenderQueue::Execute()
 	Renderer::SetPerspective();
 
 	sm_CurrentPass = RenderPass::Main;
+
+#if WITH_EDITOR
+	Renderer::BindEditorBuffer();
+#endif
 }
 
 void RenderQueue::Reset()

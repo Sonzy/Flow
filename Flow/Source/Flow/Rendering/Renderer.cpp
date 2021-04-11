@@ -181,14 +181,30 @@ FrameBuffer* Renderer::GetEditorFrameBuffer()
 
 void Renderer::BindEditorBuffer()
 {
-	sm_renderApi->BindEditorFrameBuffer(false);
+	sm_renderApi->BindEditorFrameBuffer(true);
 }
 
 void Renderer::BindEditorBufferWithoutClear()
 {
 	sm_renderApi->BindEditorFrameBuffer(false);
 }
+
 #endif // WITH_EDITOR
+
+void Renderer::BindGameBuffer()
+{
+	sm_renderApi->BindGameFrameBuffer(true);
+}
+
+void Renderer::BindGameBufferWithoutClear()
+{
+	sm_renderApi->BindGameFrameBuffer(false);
+}
+
+FrameBuffer* Renderer::GetGameFrameBuffer()
+{
+	return sm_renderApi->GetGameBuffer();
+}
 
 void Renderer::BindFrameBuffer(FrameBuffer* Buffer)
 {

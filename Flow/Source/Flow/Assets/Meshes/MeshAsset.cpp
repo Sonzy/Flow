@@ -334,7 +334,9 @@ std::vector<Bindables::Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLay
 	}
 
 	//Add Vertex Buffer Bind
-	m_BindableVBuffer = static_cast<Bindables::VertexBuffer*>(Bindables::VertexBuffer::Resolve(HashString((m_Parent->GetAssetName() + std::to_string(m_MeshIndex)).c_str()) , VBuffer));
+	std::string name = (m_Parent->GetAssetName() + std::to_string(m_MeshIndex));
+	HashString testHash(name.c_str());
+	m_BindableVBuffer = static_cast<Bindables::VertexBuffer*>(Bindables::VertexBuffer::Resolve(testHash, VBuffer));
 	m_Binds.push_back(m_BindableVBuffer);
 
 	//Bind Index Buffer

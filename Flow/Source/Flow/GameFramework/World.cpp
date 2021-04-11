@@ -22,6 +22,7 @@
 #else
 	#include "Actors\CameraActor.h"
 	#include "Rendering\Core\Camera\Camera.h"
+	#include "GameFramework/Components/CameraComponent.h"
 #endif
 
 #include "Framework/Utils/GUIDGenerator.h"
@@ -104,11 +105,31 @@ void World::LoadLevel()
 	}
 
 	//Get all actors
+
+#if WITH_EDITOR
 	std::vector<FGUID> actorsToDestroy;
 	for (const std::pair<FGUID, Actor*>& Act : m_actorMap)
 	{
 		actorsToDestroy.push_back(Act.first);
 	}
+#else
+	//Dont destroy the main camera actor
+	Actor* cameraActor = nullptr;
+	if (CameraComponent* cam = dynamic_cast<CameraComponent*>(Renderer::GetMainCamera()))
+	{
+		cameraActor = cam->GetParentActor();
+	}
+	std::vector<FGUID> actorsToDestroy;
+	for (const std::pair<FGUID, Actor*>& Act : m_actorMap)
+	{
+		if (Act.second == cameraActor)
+		{
+			continue;
+		}
+
+		actorsToDestroy.push_back(Act.first);
+	}
+#endif // WITH_EDITOR
 
 	//Destroy them
 	for (FGUID guid : actorsToDestroy)

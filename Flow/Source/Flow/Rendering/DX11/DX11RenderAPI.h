@@ -61,11 +61,13 @@ public:
 	void					BindBackBuffer(bool clear = true);
 	void					BindFrameBuffer(FrameBuffer* Buffer, bool clear = true);
 	void					BindEditorFrameBuffer(bool clear = true);
+	void					BindGameFrameBuffer(bool clear = true);
 
 #if WITH_EDITOR
 	void					BindEditorFrameBuffer();
 	FrameBuffer*			GetEditorBuffer() const;
 #endif
+	FrameBuffer*			GetGameBuffer() const;
 
 private:
 
@@ -81,6 +83,7 @@ private:
 
 	FrameBuffer*				m_currentBuffer;
 
+	FrameBuffer*				m_gameBuffer;
 #if WITH_EDITOR
 	FrameBuffer*				m_editorBuffer;
 	bool						m_editorBufferBound;

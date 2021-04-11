@@ -30,6 +30,7 @@ namespace Bindables
 
 												Texture(TextureAsset* asset, UINT slot);
 												Texture(const DirectX::ScratchImage& image, UINT slot, const std::string& assetName);
+		virtual									~Texture();
 
 		virtual void							Bind() override;
 		ID3D11ShaderResourceView*				GetTextureView() const;

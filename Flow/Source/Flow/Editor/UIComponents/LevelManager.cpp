@@ -41,7 +41,6 @@ void LevelManager::Draw_NewLevel()
 		}
 		ImGui::End();
 	}
-
-
+}
 
 #endif // WITH_EDITOR

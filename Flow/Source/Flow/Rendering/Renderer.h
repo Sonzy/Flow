@@ -75,6 +75,10 @@ public:
 	static void							BindEditorBuffer();
 	static void							BindEditorBufferWithoutClear();
 #endif
+	static void							BindGameBuffer();
+	static void							BindGameBufferWithoutClear();
+	static FrameBuffer*					GetGameFrameBuffer();
+
 	static void							BindFrameBuffer(FrameBuffer* Buffer);
 	static void							BindBackBuffer();
 	static void							BindFrameBufferWithoutClear(FrameBuffer* Buffer);

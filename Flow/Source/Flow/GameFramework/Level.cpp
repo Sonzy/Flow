@@ -65,10 +65,12 @@ bool Level::Load(YAML::Node& Input)
 {
 	m_Name = Input["LevelName"].as<std::string>();
 
+#if WITH_EDITOR
 	if (CameraBase* cam = Renderer::GetMainCamera())
 	{
 		cam->MoveCamera(Input["EditorCameraTransform"].as<Transform>());
 	}
+#endif
 
 	YAML::Node components = Input["Components"];
 	if (components.IsDefined())

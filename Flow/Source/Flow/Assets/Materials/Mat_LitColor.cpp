@@ -46,7 +46,7 @@ void Mat_LitColor::BindMaterial(Step* RenderingStep, const VertexLayout& VertexL
 	RenderingStep->AddBindable(Bindables::InputLayout::Resolve(VertexLayout, vShaderByteCode));
 
 	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ColorFloat4>::Resolve(m_color, 0, GenerateTag().c_str()));
-	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ObjectLightProperties>::Resolve(m_lightProperties, MaterialCommon::Register::ObjectLightProperties));
+	RenderingStep->AddBindable(PixelConstantBuffer<MaterialCommon::Buffer::ObjectLightProperties>::Resolve(m_lightProperties, MaterialCommon::Register::ObjectLightProperties, "ObjectLightProperties")); //TODO: Unique version of this? Need custom tag
 }
 
 std::string Mat_LitColor::GenerateTag() const

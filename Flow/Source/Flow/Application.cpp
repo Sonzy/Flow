@@ -161,7 +161,7 @@ void Application::InitialiseApplication()
 		//= Flat Color =
 
 		Mat_FlatColour* flatColorGreen = AssetSystem::CreateMaterial<Mat_FlatColour>("Mat_FlatColor_Green")->GetMaterial<Mat_FlatColour>();
-		flatColorGreen->SetColour(Vector3(1.0f, 1.0f, 1.0f));
+		flatColorGreen->SetColour(Vector3(0.0f, 1.0f, 0.0f));
 
 		//= 2D Materials =
 
@@ -418,6 +418,8 @@ Window& Application::GetWindow()
 bool Application::StartGame()
 {
 	Application& App = Application::Get();
+
+	World::Get().LoadLevel();
 
 	if (App.m_GameWorld->GetWorldState() == WorldState::InGame)
 		return false;

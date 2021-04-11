@@ -89,22 +89,54 @@ void SkyboxComponent::DrawComponentDetailsWindow()
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Skybox Component");
 
 
-	std::vector<const char*> Assets = AssetSystem::BuildAssetList<TextureAsset>();
-	static int CurrentItem = 0;
-	const char* currentItem = m_MaterialPath.c_str();
+	std::vector<const char*> textures = AssetSystem::BuildAssetList<TextureAsset>();
+	const char* currentTextureName = m_textureName.c_str();
 
-	if (ImGui::BeginCombo("Material Selector - Skybox", currentItem, 0)) // The second parameter is the label previewed before opening the combo.
+	if (ImGui::BeginCombo("Textures", currentTextureName, 0)) // The second parameter is the label previewed before opening the combo.
 	{
-		for (int n = 0; n < Assets.size(); n++)
+		for (int n = 0; n < textures.size(); n++)
 		{
-			bool is_selected = (currentItem == Assets[n]);
+			bool is_selected = (currentTextureName == textures[n]);
 
-			if (ImGui::Selectable(Assets[n], is_selected))
+			if (ImGui::Selectable(textures[n], is_selected))
 			{
-				currentItem = Assets[n];
+				currentTextureName = textures[n];
 
-				m_MaterialPath = currentItem;
-				m_Material->SetTexture(currentItem);
+				m_textureName = currentTextureName;
+				m_Material->SetTexture(currentTextureName);
+				RefreshBinds();
+			}
+
+			// Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	std::vector<const char*> materials = AssetSystem::BuildAssetList<MaterialAsset>();
+	const char* currentTexutre = m_MaterialPath.c_str();
+	if (ImGui::BeginCombo("Materials", currentTexutre, 0)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < materials.size(); n++)
+		{
+			bool is_selected = (currentTexutre == materials[n]);
+
+			if (ImGui::Selectable(materials[n], is_selected))
+			{
+				currentTexutre = materials[n];
+
+				m_MaterialPath = currentTexutre;
+				MaterialAsset* FoundMat = AssetSystem::GetAsset<MaterialAsset>(m_MaterialPath);
+				if (!FoundMat)
+				{
+					FLOW_ENGINE_ERROR("StaticMeshComponent::SetMaterial: Failed to find material with name %s", m_MaterialPath.c_str());
+					return;
+				}
+				m_Material = FoundMat->GetMaterial();
+
 				RefreshBinds();
 			}
 

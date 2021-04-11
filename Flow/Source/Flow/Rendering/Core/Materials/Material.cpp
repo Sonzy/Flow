@@ -47,7 +47,7 @@ void Material::SetTexture(const std::string& TextureName)
 {
 	auto NewTexture = AssetSystem::GetAsset<TextureAsset>(TextureName);
 
-	CHECK_RETURN(!NewTexture, "Material::SetShader: Texture was nullptr");
+	CHECK_RETURN(!NewTexture, "Material::SetShader: Texture (%s) was nullptr", TextureName.c_str());
 	m_Texture = NewTexture;
 }
 

@@ -26,6 +26,7 @@ public:
 
 	string();
 	string(const char* data);
+	string(const string& other);
 
 public:
 
@@ -104,6 +105,12 @@ inline string::string(const char* data)
 	m_length = static_cast<uint32>(strlen(data)) + 1;
 	m_ptr = new char[m_length];
 	memcpy(m_ptr, data, sizeof(char) * m_length);
+}
+
+inline string::string(const string& other)
+	: string(other.c_str())
+{
+
 }
 
 

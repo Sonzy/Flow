@@ -69,13 +69,13 @@ void SceneManager::Render()
 		switch (m_viewMode)
 		{
 		case SceneBufferView::Game:
-			OutputBuffer = Renderer::GetEditorFrameBuffer();
+			OutputBuffer = Renderer::GetGameFrameBuffer();
 			break;
 		case SceneBufferView::Selection:
 			OutputBuffer = RenderQueue::GetSelectionBuffer();
 			break;
 		default:
-			OutputBuffer = Renderer::GetEditorFrameBuffer();
+			OutputBuffer = Renderer::GetGameFrameBuffer();
 			break;
 		}
 
