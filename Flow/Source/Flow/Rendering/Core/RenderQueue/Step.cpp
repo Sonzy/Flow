@@ -29,7 +29,7 @@ void Step::Bind() const
 
 void Step::InitialiseParentReferences(const Renderable& Drawable)
 {
-	FLOW_ENGINE_LOG("InitialiseParentReferences:: TODO");
+	//FLOW_ENGINE_LOG("InitialiseParentReferences:: TODO");
 	//for (auto& Bind : m_Bindables)
 	//{
 	//	Bind->InitialiseParentReferences( Drawable );

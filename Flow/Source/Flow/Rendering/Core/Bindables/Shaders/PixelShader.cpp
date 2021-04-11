@@ -36,8 +36,8 @@ Bindables::PixelShader* Bindables::PixelShader::Resolve(const string& localPath)
 
 HashString Bindables::PixelShader::GenerateID(const string& localPath)
 {
-	char buffer[64];
-	snprintf(buffer, 64, "PixelShader-%s", localPath.c_str());
+	char buffer[256];
+	snprintf(buffer, 256, "PixelShader-%s", localPath.c_str());
 	return buffer;
 }
 

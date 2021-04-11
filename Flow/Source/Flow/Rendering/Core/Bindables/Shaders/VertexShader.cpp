@@ -40,8 +40,8 @@ Bindables::VertexShader* Bindables::VertexShader::Resolve(const string& LocalPat
 
 HashString Bindables::VertexShader::GenerateID(const string& LocalPath)
 {
-	char buffer[64];
-	snprintf(buffer, 64, "VertexShader-%s", LocalPath.c_str());
+	char buffer[256];
+	snprintf(buffer, 256, "VertexShader-%s", LocalPath.c_str());
 	return buffer;
 }
 
