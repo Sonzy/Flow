@@ -33,17 +33,12 @@ public:
 	{}
 
 	Vector3(Vector2 Input)
-	{
-		x = Input.x;
-		y = Input.y;
-	}
+		: x(Input.x), y(Input.y), z(0.0f)
+	{}
 
 	Vector3(DirectX::XMFLOAT3 Input)
-	{
-		x = Input.x;
-		y = Input.y;
-		z = Input.z;
-	}
+		: x(Input.x), y(Input.y), z(Input.z)
+	{}
 
 	Vector3(Vector4 Input);
 

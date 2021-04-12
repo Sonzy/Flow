@@ -209,6 +209,7 @@ private:
 
 #if WITH_EDITOR
 	class EditorCamera*									m_EditorCam;
+	string												m_defaultSaveFileName;
 #endif
 
 	//= Controllers =======

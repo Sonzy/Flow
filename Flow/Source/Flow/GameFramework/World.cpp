@@ -44,6 +44,7 @@ World::World(const std::string& WorldName)
 	, m_LogGameObjectDestruction(false)
 #if WITH_EDITOR
 	, m_WorldState(WorldState::Editor)
+	, m_defaultSaveFileName("MainLevel.flvl")
 #else
 	, m_WorldState(WorldState::Paused)
 #endif
@@ -62,8 +63,13 @@ void World::SaveLevel()
 	m_MainLevel->Save(outFile);
 
 	// Save to disk
+	fs::path saveDirectory = AssetSystem::GetGameAssetParentDirectory() / "Saved";
+	if (fs::exists(saveDirectory) == false)
+	{
+		fs::create_directory(saveDirectory);
+	}
 
-	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml"; //TODO: change file type
+	fs::path savePath = saveDirectory / m_defaultSaveFileName.c_str();
 	std::ofstream OutStream = std::ofstream(savePath);
 	OutStream << outFile.c_str();
 	OutStream.close();
@@ -71,11 +77,11 @@ void World::SaveLevel()
 	//Check for errors
 	if (outFile.GetLastError().empty())
 	{
-		FLOW_ENGINE_ERROR("Level saved to %s successfully", savePath.string().c_str());
+		FLOW_ENGINE_ERROR("World::SaveLevel: Level saved to %s successfully", savePath.string().c_str());
 	}
 	else
 	{
-		FLOW_ENGINE_ERROR("Error saving level: %s", outFile.GetLastError().c_str());
+		FLOW_ENGINE_ERROR("World::SaveLevel: Error saving level: %s", outFile.GetLastError().c_str());
 	}
 
 }
@@ -84,8 +90,8 @@ void World::LoadLevel()
 {
 	InitialisePhysics(true);
 
-	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved\\SaveFile.yaml";
-	FLOW_ENGINE_LOG("Loading level %s...", savePath.string().c_str());
+	fs::path savePath = AssetSystem::GetGameAssetParentDirectory() / "Saved" / m_defaultSaveFileName.c_str();
+	FLOW_ENGINE_LOG("World::LoadLevel: Loading level %s...", savePath.string().c_str());
 
 	std::ifstream InStream = std::ifstream(savePath);
 	if (InStream.is_open() == false)
@@ -301,19 +307,20 @@ bool World::DestroyActor(FGUID guid)
 
 		for (WorldComponent* component : components)
 		{
-			auto iterator = m_componentMap.find(component->GetGuid());
-			if (iterator == m_componentMap.end())
-			{
-				FLOW_ENGINE_ERROR("World::DestroyActor: Failed to destroy component");
-				continue;
-			}
-
-			if (m_LogGameObjectDestruction)
-			{
-				FLOW_ENGINE_ERROR("World::DestroyActor: Destroying Component %lu - %s", component->GetGuid(), component->GetName().c_str());
-			}
-			m_componentMap.erase(iterator);
-			delete component;
+			DestroyComponent(component->GetGuid());
+			//auto iterator = m_componentMap.find(component->GetGuid());
+			//if (iterator == m_componentMap.end())
+			//{
+			//	FLOW_ENGINE_ERROR("World::DestroyActor: Failed to destroy component");
+			//	continue;
+			//}
+			//
+			//if (m_LogGameObjectDestruction)
+			//{
+			//	FLOW_ENGINE_ERROR("World::DestroyActor: Destroying Component %lu - %s", component->GetGuid(), component->GetName().c_str());
+			//}
+			//m_componentMap.erase(iterator);
+			//delete component;
 		}
 	}
 

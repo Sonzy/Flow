@@ -157,8 +157,11 @@ void SkyboxComponent::Serialize(YAML::Emitter& Archive)
 	Archive << YAML::Key << "SkyboxComponent";
 	Archive << YAML::BeginMap;
 	{
-		Archive << YAML::Key << "SkyboxTexture";
+		Archive << YAML::Key << "SkyboxMaterial";
 		Archive << YAML::Value << m_MaterialPath;
+
+		Archive << YAML::Key << "SkyboxTexture";
+		Archive << YAML::Value << m_textureName;
 	}
 	Archive << YAML::EndMap;
 }
@@ -169,6 +172,8 @@ void SkyboxComponent::Deserialize(YAML::Node& Archive)
 
 	if (YAML::Node node = Archive["SkyboxComponent"])
 	{
-		SetMaterial(node["SkyboxTexture"].as<std::string>());
+		SetMaterial(node["SkyboxMaterial"].as<std::string>());
+		m_Material->SetTexture(node["SkyboxTexture"].as<std::string>());
+		RefreshBinds();
 	}
 }
