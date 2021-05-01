@@ -12,6 +12,7 @@ ReferencedAssets:
   - Flow/Assets/Models/Wabble_Rifle.fmesh
   - Flow/Assets/Models/Wabble_Blunderbuss.fmesh
   - Flow/Assets/Models/ArrowZForward.fmesh
+  - Flow\Assets\Models\FirstTestCharacter.fmesh
   - Flow/Assets/Icons/Icon_FMesh.png
   - Flow/Assets/Textures/Error.png
   - Flow/Assets/Icons/Icon_DirectionalLight.png

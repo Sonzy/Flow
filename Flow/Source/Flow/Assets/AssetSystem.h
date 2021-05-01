@@ -33,10 +33,11 @@ public:
 	static bool									LoadAsset(const std::string& FilePath);
 	static bool									ImportAsset(const std::string& FilePath, const std::string& ImportDirectory);
 	//static bool								LoadEditorAsset(const std::string& AssetName, const std::string& FilePath, bool AbsolutePath = false);
-	static Asset*								GetAsset(const std::string& AssetPath);
+	static Asset*								GetAsset(const std::string& AssetPath, bool NotifyError = true);
 	static bool 								DoesAssetExist(const std::string& AssetPath);
-
 	static void									UpdateAssetName(const std::string& Old, const std::string& New);
+
+	static void									RemoveAsset(const std::string& assetPath);
 
 	template <typename T>
 	static T*									GetAsset(const std::string& AssetPath)

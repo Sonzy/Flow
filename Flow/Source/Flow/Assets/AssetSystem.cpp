@@ -244,10 +244,11 @@ bool AssetSystem::ImportAsset(const std::string& FilePath, const std::string& In
 	fs::path relativePath = fs::relative(path_OriginalPath, Application::GetEnginePath().parent_path());
 
 	//Setup Metadata
-	NewAsset->GetMetaData().m_IDHash = HashedName;
-	NewAsset->GetMetaData().m_EditorAsset = true;
-	NewAsset->GetMetaData().m_GamePath = relativePath.string();
-	NewAsset->GetMetaData().m_OriginalPath = FilePath;
+	Asset::MetaData& newData = NewAsset->GetMetaData();
+	newData.m_IDHash = HashedName;
+	newData.m_EditorAsset = true;
+	newData.m_GamePath = relativePath.string(); //TODO: Importing doesn't know the file type given to the imported data
+	newData.m_OriginalPath = FilePath;
 	NewAsset->SetAssetName(FileName);//TODO: Manage this properly
 
 	//Update tracked data size
@@ -294,7 +295,19 @@ void AssetSystem::UpdateAssetName(const std::string& Old, const std::string& New
 	sm_AssetSystem->SaveAssetMap();
 }
 
-Asset* AssetSystem::GetAsset(const std::string& AssetName)
+void AssetSystem::RemoveAsset(const std::string& AssetName)
+{
+	//TODO: Get objects with dependancies on this asset and remove them
+
+	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str());
+	auto iterator = sm_AssetSystem->m_LoadedAssets.find(HashedName);
+	if (iterator != sm_AssetSystem->m_LoadedAssets.end())
+	{
+		sm_AssetSystem->m_LoadedAssets.erase(iterator);
+	}
+}
+
+Asset* AssetSystem::GetAsset(const std::string& AssetName, bool NotifyError /*= true*/)
 {
 	//Hash the string
 	std::size_t HashedName = std::hash<std::string>{}(AssetName.c_str()); //Use the c_str otherwise the null char is hashed too
@@ -302,7 +315,10 @@ Asset* AssetSystem::GetAsset(const std::string& AssetName)
 	//Error if the path doesnt exist in the system
 	if (sm_AssetSystem->m_LoadedAssets.find(HashedName) == sm_AssetSystem->m_LoadedAssets.end())
 	{
-		FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path (%s) and failed", AssetName.c_str());
+		if (NotifyError == true)
+		{
+			FLOW_ENGINE_ERROR("AssetSystem::GetAsset: Tried to get asset from path (%s) and failed", AssetName.c_str());
+		}
 		return nullptr;
 	}
 

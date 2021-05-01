@@ -1,6 +1,8 @@
-//= Includes ====================================================
+// Pch ///////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+
+// Includes //////////////////////////////////////////////////////////////
 
 #if WITH_EDITOR
 
@@ -14,32 +16,32 @@
 
 #include "Editor/Editor.h"
 
-//= Class Definition - AssetBrowser ==============================
+// Function Definitions //////////////////////////////////////////////////
 
 AssetBrowser::AssetBrowser()
-	: m_IconSize(100.0f)
-	, m_IconSpacing(20.0f)
-	, m_YSpacing(50.0f)
-	, m_EditorMode(false)
-	, m_TextYOffset(15.0f)
-	, m_NameBoxHeight(50.0f)
-	, m_MaxNameLines(3)
+	: m_iconSize(100.0f)
+	, m_iconSpacing(20.0f)
+	, m_ySpacing(50.0f)
+	, m_editorMode(false)
+	, m_textYOffset(15.0f)
+	, m_nameBoxHeight(50.0f)
+	, m_maxNameLines(3)
 {
-	m_SelectedDirectory = AssetSystem::GetGameAssetDirectory();
-	m_SelectedEditorDirectory = AssetSystem::GetEngineAssetDirectory();
+	m_selectedDirectory = AssetSystem::GetGameAssetDirectory();
+	m_selectedEditorDirectory = AssetSystem::GetEngineAssetDirectory();
 
-	m_Icon_Mesh = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_FMesh"), 1);
-	m_Icon_Shader = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Shader"), 1);
-	m_Icon_Texture = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Image"), 1);
-	m_Icon_Folder = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Folder"), 1);
+	m_icon_Mesh = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_FMesh"), 1);
+	m_icon_Shader = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Shader"), 1);
+	m_icon_Texture = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Image"), 1);
+	m_icon_Folder = new Bindables::Texture(AssetSystem::GetAsset<TextureAsset>("Icon_Folder"), 1);
 }
 
 AssetBrowser::~AssetBrowser()
 {
-	delete m_Icon_Mesh;
-	delete m_Icon_Shader;
-	delete m_Icon_Texture;
-	delete m_Icon_Folder;
+	delete m_icon_Mesh;
+	delete m_icon_Shader;
+	delete m_icon_Texture;
+	delete m_icon_Folder;
 }
 
 void AssetBrowser::Update()
@@ -69,12 +71,12 @@ void AssetBrowser::Render()
 		{
 			if (ImGui::BeginTabItem("Editor"))
 			{
-				DrawDirectoryBar(m_SelectedEditorDirectory, true);
+				DrawDirectoryBar(m_selectedEditorDirectory, true);
 
 				if (ImGui::BeginChild("EditorBrowser", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar))
 				{
-					m_EditorMode = true;
-					DrawDirectory(m_SelectedEditorDirectory);
+					m_editorMode = true;
+					DrawDirectory(m_selectedEditorDirectory);
 
 					DrawContextWindow();
 				}
@@ -85,12 +87,12 @@ void AssetBrowser::Render()
 
 			if (ImGui::BeginTabItem("Game"))
 			{
-				DrawDirectoryBar(m_SelectedDirectory, false);
+				DrawDirectoryBar(m_selectedDirectory, false);
 
 				if (ImGui::BeginChild("Browser", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar))
 				{
-					m_EditorMode = false;
-					DrawDirectory(m_SelectedDirectory);
+					m_editorMode = false;
+					DrawDirectory(m_selectedDirectory);
 
 					DrawContextWindow();
 				}
@@ -105,13 +107,15 @@ void AssetBrowser::Render()
 		previousFrameWindowHeight = ImGui::GetWindowSize().y;
 	}
 	ImGui::End();
+
+	DrawPropertiesWindow();
 }
 
 void AssetBrowser::DrawDirectory(const FilePath& CurrentPath)
 {
 	std::vector<std::pair<FilePath, FilePath>> Renames;
-	m_WindowWidth = ImGui::GetContentRegionAvailWidth();
-	m_CursorInitialX = ImGui::GetCursorPosX();
+	m_windowWidth = ImGui::GetContentRegionAvailWidth();
+	m_cursorInitialX = ImGui::GetCursorPosX();
 	int Count = 0;
 
 	//Draw folders first
@@ -157,15 +161,15 @@ void AssetBrowser::DrawFolder(const FilePath& CurrentPath, int UniqueID, std::ve
 	float CursorStartY = ImGui::GetCursorPosX();
 
 	ImGui::PushID(UniqueID);
-	if (ImGui::ImageButton(m_Icon_Folder->GetTextureView(), ImVec2(m_IconSize, m_IconSize), ImVec2(0, 0), ImVec2(1, 1)))
+	if (ImGui::ImageButton(m_icon_Folder->GetTextureView(), ImVec2(m_iconSize, m_iconSize), ImVec2(0, 0), ImVec2(1, 1)))
 	{
-		if (m_EditorMode)
+		if (m_editorMode)
 		{
-			m_SelectedEditorDirectory = CurrentPath;
+			m_selectedEditorDirectory = CurrentPath;
 		}
 		else
 		{
-			m_SelectedDirectory = CurrentPath;
+			m_selectedDirectory = CurrentPath;
 		}
 	}
 	ImGui::PopID();
@@ -176,7 +180,7 @@ void AssetBrowser::DrawFolder(const FilePath& CurrentPath, int UniqueID, std::ve
 	//Move Cursor
 	ImVec2 CursorPos = ImGui::GetCursorPos();
 	ImGui::SetCursorPosX(CursorStartX);
-	ImGui::SetCursorPosY(CursorPos.y + m_IconSize + m_TextYOffset);
+	ImGui::SetCursorPosY(CursorPos.y + m_iconSize + m_textYOffset);
 
 	// Draw name
 	FilePath FolderName = CurrentPath.stem();
@@ -184,22 +188,22 @@ void AssetBrowser::DrawFolder(const FilePath& CurrentPath, int UniqueID, std::ve
 
 	//Draw the centred filename text - TODO: Cleanup
 	ImVec2 ItemSize = ImGui::CalcTextSize(FilenameString.c_str());
-	int LineCount = static_cast<int>(ceil(ItemSize.x / m_IconSize));
-	float centreOffset = (ItemSize.x > m_IconSize) ? ImGui::GetStyle().FramePadding.x : ((m_IconSize - ItemSize.x) / 2.0f) + ImGui::GetStyle().FramePadding.x;
+	int LineCount = static_cast<int>(ceil(ItemSize.x / m_iconSize));
+	float centreOffset = (ItemSize.x > m_iconSize) ? ImGui::GetStyle().FramePadding.x : ((m_iconSize - ItemSize.x) / 2.0f) + ImGui::GetStyle().FramePadding.x;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centreOffset);
-	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + m_IconSize);
-	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + m_IconSize, ImGui::GetCursorScreenPos().y + (m_MaxNameLines * ImGui::GetTextLineHeight())), true);
+	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + m_iconSize);
+	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + m_iconSize, ImGui::GetCursorScreenPos().y + (m_maxNameLines * ImGui::GetTextLineHeight())), true);
 	ImGui::Text("%s", FilenameString.c_str());
 	ImGui::PopClipRect();
 	ImGui::PopTextWrapPos();
 
 	//Reset the cursor
 
-	ImGui::SetCursorPos(ImVec2(CursorPos.x + m_IconSpacing, CursorPos.y));
+	ImGui::SetCursorPos(ImVec2(CursorPos.x + m_iconSpacing, CursorPos.y));
 
-	if (ImGui::GetCursorPosX() + m_IconSpacing + m_IconSize > m_WindowWidth)
+	if (ImGui::GetCursorPosX() + m_iconSpacing + m_iconSize > m_windowWidth)
 	{
-		ImGui::SetCursorPos(ImVec2(m_CursorInitialX, CursorPos.y + m_IconSize + m_YSpacing));
+		ImGui::SetCursorPos(ImVec2(m_cursorInitialX, CursorPos.y + m_iconSize + m_ySpacing));
 	}
 }
 
@@ -210,7 +214,8 @@ void AssetBrowser::DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vec
 
 	//Skip unloaded assets
 	std::string SearchString = CurrentPath.stem().string();
-	if (AssetSystem::DoesAssetExist(SearchString) == false)
+	const Asset* currentAsset = AssetSystem::GetAsset(SearchString, false);
+	if (currentAsset == nullptr)
 	{
 		return;
 	}
@@ -221,11 +226,26 @@ void AssetBrowser::DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vec
 	if (const Bindables::Texture* tex = GetTextureForExtension(CurrentPath.filename()))
 	{
 		ImGui::PushID(UniqueID);
-		if (ImGui::ImageButton(tex->GetTextureView(), ImVec2(m_IconSize, m_IconSize)))
+		if (ImGui::ImageButton(tex->GetTextureView(), ImVec2(m_iconSize, m_iconSize)))
 		{
 			//TODO:
 		}
+		if (ImGui::BeginPopupContextItem("ContextMenu"))
+		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				m_propertiesAsset = currentAsset;		
+			}
+
+			if (ImGui::MenuItem("Delete (May crash)"))
+			{
+				AssetSystem::RemoveAsset(currentAsset->GetAssetName());
+			}
+			ImGui::EndPopup();
+		}
 		ImGui::PopID();
+
+
 	}
 	else
 	{
@@ -239,43 +259,41 @@ void AssetBrowser::DrawEntry(const FilePath& CurrentPath, int UniqueID, std::vec
 
 	ImGui::SameLine();
 
-
-
 	// Move Cursor
 	ImVec2 CursorPos = ImGui::GetCursorPos();
 	ImGui::SetCursorPosX(CursorStartX);
-	ImGui::SetCursorPosY(CursorPos.y + m_IconSize + m_TextYOffset);
+	ImGui::SetCursorPosY(CursorPos.y + m_iconSize + m_textYOffset);
 
 	// Draw File name
 	FilePath Filename = CurrentPath.stem();
 	std::string FilenameString = Filename.string();
 
-	ImGui::PushItemWidth(m_IconSize);
+	ImGui::PushItemWidth(m_iconSize);
 
-	sprintf_s(m_UIDBuffer, "###Label%d", UniqueID);
+	sprintf_s(m_uIDBuffer, "###Label%d", UniqueID);
 
 	//Draw the centred filename text - TODO: Cleanup
 	ImVec2 ItemSize = ImGui::CalcTextSize(FilenameString.c_str());
-	int LineCount = static_cast<int>(ceil(ItemSize.x / m_IconSize));
-	float centreOffset = (ItemSize.x > m_IconSize) ? ImGui::GetStyle().FramePadding.x : ((m_IconSize - ItemSize.x) / 2.0f) + ImGui::GetStyle().FramePadding.x;
+	int LineCount = static_cast<int>(ceil(ItemSize.x / m_iconSize));
+	float centreOffset = (ItemSize.x > m_iconSize) ? ImGui::GetStyle().FramePadding.x : ((m_iconSize - ItemSize.x) / 2.0f) + ImGui::GetStyle().FramePadding.x;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centreOffset);
-	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + m_IconSize);
-	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + m_IconSize, ImGui::GetCursorScreenPos().y + (m_MaxNameLines * ImGui::GetTextLineHeight())), true);
+	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + m_iconSize);
+	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + m_iconSize, ImGui::GetCursorScreenPos().y + (m_maxNameLines * ImGui::GetTextLineHeight())), true);
 	ImGui::Text("%s", FilenameString.c_str());
 	ImGui::PopClipRect();
 	ImGui::PopTextWrapPos();
 
 	ImGui::SetCursorPos(CursorPos);
 
-	if (ImGui::GetCursorPosX() + m_IconSpacing + m_IconSize > m_WindowWidth)
+	if (ImGui::GetCursorPosX() + m_iconSpacing + m_iconSize > m_windowWidth)
 	{
-		ImGui::SetCursorPos(ImVec2(m_CursorInitialX, CursorPos.y + m_IconSize + m_YSpacing));
+		ImGui::SetCursorPos(ImVec2(m_cursorInitialX, CursorPos.y + m_iconSize + m_ySpacing));
 	}
 }
 
 void AssetBrowser::DrawContextWindow()
 {
-	if (ImGui::BeginPopupContextWindow("AssetBrowserContext"))
+	if (ImGui::BeginPopupContextWindow("AssetBrowserContext", 1, false))
 	{
 		if (ImGui::MenuItem("Import Asset"))
 		{
@@ -284,7 +302,7 @@ void AssetBrowser::DrawContextWindow()
 			{
 				FilePath path = FilePathString;
 				std::string FileName = path.filename().string();
-				AssetSystem::ImportAsset(FilePathString, m_EditorMode ? m_SelectedEditorDirectory.string() + '\\' + FileName : m_SelectedDirectory.string() + '\\' + FileName); //TODO: Meshes being imported to asset map as .obj not .fmesh
+				AssetSystem::ImportAsset(FilePathString, m_editorMode ? m_selectedEditorDirectory.string() + '\\' + FileName : m_selectedDirectory.string() + '\\' + FileName); //TODO: Meshes being imported to asset map as .obj not .fmesh
 			}
 			else
 			{
@@ -301,12 +319,12 @@ const Bindables::Texture* AssetBrowser::GetTextureForExtension(const FilePath& F
 	std::string ExtensionString = FileName.extension().string();
 	if (AssetSystem::HasExtension(ExtensionString.c_str(), ".fmesh"))
 	{
-		return m_Icon_Mesh;
+		return m_icon_Mesh;
 	}
 
 	if (AssetSystem::HasExtension(ExtensionString.c_str(), ".cso"))
 	{
-		return m_Icon_Shader;
+		return m_icon_Shader;
 	}
 
 	if (AssetSystem::HasExtension(ExtensionString.c_str(), ".png"))
@@ -318,7 +336,7 @@ const Bindables::Texture* AssetBrowser::GetTextureForExtension(const FilePath& F
 				return Thumb;
 			}
 		}
-		return m_Icon_Texture;
+		return m_icon_Texture;
 	}
 
 	return nullptr;
@@ -372,17 +390,17 @@ void AssetBrowser::DrawDirectoryBar(const FilePath Parent, bool Editor)
 		{
 			if (Editor)
 			{
-				if (m_SelectedEditorDirectory != AssetSystem::GetEngineAssetDirectory())
+				if (m_selectedEditorDirectory != AssetSystem::GetEngineAssetDirectory())
 				{
-					m_SelectedEditorDirectory = AssetSystem::GetEngineAssetParentDirectory() / current;
+					m_selectedEditorDirectory = AssetSystem::GetEngineAssetParentDirectory() / current;
 					break;
 				}
 			}
 			else
 			{
-				if (m_SelectedDirectory != AssetSystem::GetGameAssetDirectory())
+				if (m_selectedDirectory != AssetSystem::GetGameAssetDirectory())
 				{
-					m_SelectedDirectory = AssetSystem::GetGameAssetParentDirectory() / current;
+					m_selectedDirectory = AssetSystem::GetGameAssetParentDirectory() / current;
 					break;
 				}
 			}
@@ -397,6 +415,30 @@ void AssetBrowser::DrawDirectoryBar(const FilePath Parent, bool Editor)
 			it_next++;
 		}
 	}
+}
+
+void AssetBrowser::DrawPropertiesWindow()
+{
+	if (m_propertiesAsset == nullptr)
+	{
+		return;
+	}
+
+	sprintf_s(m_uIDBuffer, "%s Properties###Window_Properties", m_propertiesAsset->GetAssetName().c_str());
+
+	if (ImGui::Begin(m_uIDBuffer))
+	{
+		const Asset::MetaData& metadata = m_propertiesAsset->GetMetaData();
+
+		ImGui::Text("Name: %s", m_propertiesAsset->GetAssetName().c_str());
+		ImGui::Text("Type: %d", m_propertiesAsset->GetAssetType());
+		ImGui::Text("Size: %d", m_propertiesAsset->GetAssetSize());
+
+		ImGui::Text("Original Path: %s", metadata.m_OriginalPath.c_str());
+		ImGui::Text("Game Path: %s", metadata.m_GamePath.c_str());
+		ImGui::Text("ID Hash %d", metadata.m_IDHash);	
+	}
+	ImGui::End();
 }
 
 #endif // WITH_EDITOR

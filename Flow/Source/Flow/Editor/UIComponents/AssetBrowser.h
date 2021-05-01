@@ -9,6 +9,8 @@
 
 // Forward Declarations ///////////////////////////////
 
+class Asset;
+
 namespace Bindables
 {
 	class Texture;
@@ -46,34 +48,40 @@ private:
 
 	void					DrawDirectoryBar(const FilePath Parent, bool Editor);
 
+	void					DrawPropertiesWindow();
+
 private:
 
 	// Private Variables ///////////////////////////////////
 
-	bool					m_EditorMode;
-	FilePath				m_SelectedEditorDirectory;
-	FilePath				m_SelectedDirectory;
-	FilePath				m_CurrentParentDirectory;
+	bool					m_editorMode;
+	FilePath				m_selectedEditorDirectory;
+	FilePath				m_selectedDirectory;
+	FilePath				m_currentParentDirectory;
 
-	Bindables::Texture*		m_Icon_Mesh;
-	Bindables::Texture*		m_Icon_Shader;
-	Bindables::Texture*		m_Icon_Texture;
-	Bindables::Texture*		m_Icon_Folder;
+	Bindables::Texture*		m_icon_Mesh;
+	Bindables::Texture*		m_icon_Shader;
+	Bindables::Texture*		m_icon_Texture;
+	Bindables::Texture*		m_icon_Folder;
 
 	//= Formatting =
 
-	float					m_IconSize;
-	float					m_IconSpacing;
-	float					m_YSpacing;
-	float					m_TextYOffset; //Y Offset from the icon 
-	float					m_NameBoxHeight; //Y Offset from the icon 
-	int						m_MaxNameLines; //Y Offset from the icon 
+	float					m_iconSize;
+	float					m_iconSpacing;
+	float					m_ySpacing;
+	float					m_textYOffset; //Y Offset from the icon 
+	float					m_nameBoxHeight; //Y Offset from the icon 
+	int						m_maxNameLines; //Y Offset from the icon 
 
 	//= Imgui Helper stuff =
 
-	char					m_UIDBuffer[128];
-	float					m_CursorInitialX;
-	float					m_WindowWidth;
+	char					m_uIDBuffer[128];
+	float					m_cursorInitialX;
+	float					m_windowWidth;
+
+	//= Properties Window =
+
+	const Asset*			m_propertiesAsset;
 };
 
 #endif WITH_EDITOR
