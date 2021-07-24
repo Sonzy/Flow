@@ -41,6 +41,7 @@ Editor::Editor()
 	, m_ShowSettingsWindow(false)
 	, m_ShowPrototypingWindow(false)
 	, m_DrawDemoWindow(false)
+	, m_drawCollision(false)
 {
 
 }
@@ -448,7 +449,7 @@ void Editor::ImGuiPrototypingWindow()
 				if (m_filterImapsWithinDistance == true)
 				{					
 					ImVec2 position = ImVec2(ImGui::GetWindowPos().x + ImGui::GetCursorPosX() + 5.0f, ImGui::GetWindowPos().y + ImGui::GetCursorPosY());
-					ImGui::RenderCheckMark(position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
+					ImGui::RenderCheckMark(ImGui::GetWindowDrawList(), position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
 				}
 
 				float inputSize = 80.0f;
@@ -471,7 +472,7 @@ void Editor::ImGuiPrototypingWindow()
 		}
 
 		ImVec2 position = ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + ImGui::GetCursorPosX(), ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + ImGui::GetCursorPosY());
-		ImGui::RenderCheckMark(position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
+		ImGui::RenderCheckMark(ImGui::GetWindowDrawList(), position, ImGui::GetColorU32(ImGuiCol_Text), ImGui::GetFontSize() * 0.866f);
 
 		ImGui::GetCurrentContext()->NavDisableMouseHover = true;
 		static bool selected = false;
@@ -625,8 +626,13 @@ void Editor::RenderApplicationDebug(float DeltaTime)
 
 	if (ImGui::Begin("Application Statistics"))
 	{
-		ImGui::Checkbox("Pause Game", &m_ApplicationPointer->m_GamePaused);
-		ImGui::Checkbox("Draw Collision", &m_ApplicationPointer->m_DrawCollision);
+		bool paused = World::Get().IsGamePaused();
+		if (ImGui::Selectable(paused ? "Unpause Game" : "Pause Game", paused))
+		{
+			paused ? World::Get().UnpauseGame() : World::Get().PauseGame();
+		}
+
+		ImGui::Checkbox("Draw Collision", &m_ApplicationPointer->m_drawCollision);
 
 		ImGui::Text("Framerate: %.1f", 1 / m_FrameTimer);
 		ImGui::Text("FrameTime: %.1f ms", m_LastFrameTime);

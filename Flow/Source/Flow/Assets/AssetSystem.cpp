@@ -427,12 +427,14 @@ void AssetSystem::RenderDebugWindow(bool Render)
 
 fs::path AssetSystem::GetEngineAssetDirectory()
 {
-	return Application::GetEnginePath().append("Assets");
+	fs::path path = Application::GetEnginePath();
+	return path.append("Assets");
 }
 
 fs::path AssetSystem::GetGameAssetDirectory()
 {
-	return Application::GetGamePath().append("Assets");
+	fs::path path = Application::GetGamePath();
+	return path.append("Assets");
 }
 
 fs::path AssetSystem::GetEngineAssetParentDirectory()

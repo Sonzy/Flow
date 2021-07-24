@@ -4,7 +4,7 @@
 
 #include "Inspector.h"
 #include "ThirdParty\ImGui\imgui.h"
-#include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
+#include "ThirdParty\ImGui\imgui_stdlib.h"
 #include "GameFramework\World.h"
 
 #include "GameFramework\Actor.h"
@@ -194,9 +194,9 @@ void Inspector::DrawSelectedComponentTransform()
 	bool bUpdate = false;
 	RenderableComponent* rComp = dynamic_cast<RenderableComponent*>(m_SelectedComponent);
 
-	bUpdate |= ImGui::InputFloat3("Position", (float*)m_SelectedComponent->GetWriteablePosition(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_SelectedComponent->GetWriteableRotation(), 1, ImGuiInputTextFlags_EnterReturnsTrue);
-	if (ImGui::InputFloat3("Scale", (float*)m_SelectedComponent->GetWriteableScale(), 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	bUpdate |= ImGui::InputFloat3("Position", (float*)m_SelectedComponent->GetWriteablePosition(), "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+	bUpdate |= ImGui::InputFloat3("Rotation", (float*)m_SelectedComponent->GetWriteableRotation(), "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+	if (ImGui::InputFloat3("Scale", (float*)m_SelectedComponent->GetWriteableScale(), "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		bUpdate = true;
 		m_SelectedComponent->UpdateCollisionScale();

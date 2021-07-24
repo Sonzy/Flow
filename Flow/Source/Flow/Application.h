@@ -1,19 +1,16 @@
 #pragma once
-#include "Core.h"
 
-//= Standard Includes =
+// Includes ///////////////////////////////////////////////////////////////////////
+
+#include "Core.h"
 #include "Flow/Window/Window.h"
 #include "Framework/Layers/LayerStack.h"
-
-//= Event Includes =
 #include "Framework/Events/ApplicationEvent.h"
-
-//= Helper Includes =
 #include "UserInterface/imgui/ImGuiLayer.h"
 #include "Framework/Utils/Timer.h"
 #include "Framework/Utils/FileSystem.h"
 
-//= Forward Declarations ===============================
+// Forward Declarations ///////////////////////////////////////////////////////////
 
 class Application;
 class World;
@@ -23,15 +20,19 @@ class ClassFactory;
 class GameLayer;
 class Layer;
 
-//= External Functions =================================
+// Global Functions ///////////////////////////////////////////////////////////////
 
 Application* CreateApplication();
 
+// Class Definition ///////////////////////////////////////////////////////////////
+
 class FLOW_API Application
 {
+	friend class Editor;
+
 public:
 
-	//= Public Static Functions ================================
+	// Public Static Functions ////////////////////////////////////////////////////
 
 	static Application&					Get();
 	static World*						GetWorld();
@@ -40,13 +41,13 @@ public:
 	static void							SaveLevel();
 	static void							LoadLevel();
 	static void							NewLevel();
-	static void							SavePlayState();
-	static void							LoadPlayState();
 
-	static fs::path						GetEnginePath() { return Get().m_EngineDirectory; };
-	static fs::path						GetGamePath()	{ return Get().m_GameDirectory; };
+	static fs::path						GetEnginePath();
+	static fs::path						GetGamePath();
 
-	//= Public Functions =======================================
+public:
+
+	// Public Functions ///////////////////////////////////////////////////////////
 
 										Application(const std::string& AppName);
 	virtual void						InitialiseApplication();
@@ -67,68 +68,102 @@ public:
 	Window&								GetWindow();
 
 #if WITH_EDITOR
-	Editor*								GetEditor()				{ return m_Layer_Editor; };
+	Editor*								GetEditor();
+	bool								IsRenderingEditor();
+	void								SetEditorRenderingEnabled(bool enabled);
 #endif
 
 	static bool							StartGame();
-	static bool							PauseGame();
-	static bool							StopGame();
 
-	ClassFactory&						GetClassFactory()		{ return *m_ClassFactory; }
+	ClassFactory&						GetClassFactory();
 
-public:
-
-	//= Public Variables =======================================
-
-	std::string							m_ApplicationName;
-
-	//= Public Editor Variables  ===============================
-#if WITH_EDITOR
-	bool								m_RenderEditor = true;
-#endif
-
+	const std::string&					GetName() const;
 
 private:
-	//Allow editor to control local variables
-	friend class Editor;
 
-	//= Private Static Variables ================================
+	// Private Static Variables ///////////////////////////////////////////////////
 
 	static Application*					sm_Application;
 
-	//= Private Variables ================================
+	// Private Variables //////////////////////////////////////////////////////////
 
-	Window*								m_MainWindow;
+	Window*								m_window;
 
-	//= Layers =
+	// Layers //
 
-	GameLayer*							m_Layer_Game;
+	GameLayer*							m_gameLayer;
+
+	// Editor //
+
 #if WITH_EDITOR
-	ImGuiLayer*							m_Layer_ImGui;
-	Editor*								m_Layer_Editor;
+
+	ImGuiLayer*							m_imGuiLayer;
+	Editor*								m_editorLayer;
+	bool								m_renderEditor;
+	bool								m_drawCollision;
+
 #endif
 
-	bool								m_Running;
-	bool								m_GamePaused;
-	bool								m_DrawCollision;
-
-	//= Game ====================
-
-	World*								m_GameWorld;
-
-	//= Debug ===================
+	bool								m_running;
 
 
+	// Game //
 
-	//= Helper ===============
+	World*								m_world;
 
-	LayerStack							m_LayerStack;
-	Timer								m_Timer;
-	ClassFactory*						m_ClassFactory;
+	// Helper //
 
-	//= Paths =================
+	LayerStack							m_layerStack;
+	Timer								m_timer;
+	ClassFactory*						m_classFactory;
 
-	fs::path							m_EngineDirectory;
-	fs::path							m_GameDirectory;
+	// Paths //
+
+	fs::path							m_engineDirectory;
+	fs::path							m_gameDirectory;
+
+	std::string							m_name;
+
+
 };
 
+// Inline Function Definitions ////////////////////////////////////////////////////
+
+inline ClassFactory& Application::GetClassFactory()
+{ 
+	return *m_classFactory; 
+}
+
+inline fs::path Application::GetEnginePath() 
+{ 
+	return Get().m_engineDirectory; 
+};
+
+inline fs::path Application::GetGamePath() 
+{ 
+	return Get().m_gameDirectory; 
+};
+
+inline const std::string& Application::GetName() const
+{
+	return m_name;
+}
+
+#if WITH_EDITOR
+
+inline Editor* Application::GetEditor()
+{ 
+	return m_editorLayer; 
+};
+
+inline bool	Application::IsRenderingEditor()
+{
+	return m_renderEditor;
+}
+
+inline void	Application::SetEditorRenderingEnabled(bool enabled)
+{
+	m_renderEditor = enabled;
+}
+
+#endif

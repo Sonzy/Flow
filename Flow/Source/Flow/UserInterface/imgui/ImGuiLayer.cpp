@@ -41,8 +41,6 @@ void ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	io.ConfigDockingWithShift = true;
-
 	//TODO: Fix IMGUI viewports not rendering on the main window when returned to the main window
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
@@ -513,7 +511,6 @@ void ImGuiLayer::SetRayTeakTheme()
 	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-	style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 }
 
 #endif // WITH_EDITOR

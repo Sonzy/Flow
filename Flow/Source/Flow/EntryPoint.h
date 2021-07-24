@@ -9,8 +9,9 @@ extern Application* CreateApplication();
 int main(int argc, char** argv)
 {
 	Log::InitialiseEngineLogger();
-	auto App = CreateApplication();
-	Log::InitialiseApplicationLogger(App->m_ApplicationName);
+
+	Application* App = CreateApplication();
+	Log::InitialiseApplicationLogger(App->GetName());
 
 	App->InitialiseApplication();
 

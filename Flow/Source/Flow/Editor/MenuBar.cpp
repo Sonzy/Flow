@@ -63,7 +63,7 @@ ImVec2 MenuBar::Draw()
 			if (ImGui::MenuItem("Toggle Editor"))
 			{
 				Application& App = Application::Get();
-				App.m_RenderEditor = !App.m_RenderEditor;
+				App.SetEditorRenderingEnabled(!App.IsRenderingEditor());
 			}
 
 			ImGui::EndMenu();
@@ -122,17 +122,23 @@ ImVec2 MenuBar::Draw()
 		{
 			if (ImGui::MenuItem("Play"))
 			{
-				Application::SavePlayState();
+				World::Get().SavePlayState();
 				Application::StartGame();
 			}
 	
 			if (ImGui::MenuItem("Pause"))
-				Application::PauseGame();
+			{
+				World::Get().PauseGame();
+			}
 
 			if (ImGui::MenuItem("Stop (WIP)"))
 			{
-				if(Application::StopGame())
-					Application::LoadPlayState();
+				World& world = World::Get();
+
+				if (world.StopGame() == true)
+				{
+					world.LoadPlayState();
+				}
 			}
 
 

@@ -4,7 +4,6 @@
 #include "Components\WorldComponent.h"
 
 #include "ThirdParty\ImGui\imgui.h"
-#include "ThirdParty\ImGui\misc\cpp\imgui_stdlib.h"
 
 #include "GameFramework\World.h"
 

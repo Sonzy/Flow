@@ -43,11 +43,12 @@ World::World(const std::string& WorldName)
 	, m_LogGameObjectRegistering(false)
 	, m_LogGameObjectDestruction(false)
 #if WITH_EDITOR
-	, m_WorldState(WorldState::Editor)
+	, m_worldState(WorldState::Editor)
 	, m_defaultSaveFileName("MainLevel.flvl")
 #else
-	, m_WorldState(WorldState::Paused)
+	, m_worldState(WorldState::Paused)
 #endif
+	, m_previousState(WorldState::Paused)
 {
 	m_DebugDrawer.Init();
 	sm_LineBatcher.Initialise();
@@ -270,9 +271,9 @@ void World::InitialiseWorld()
 
 void World::StartEditor()
 {
-	if (m_WorldState != WorldState::Editor)
+	if (m_worldState != WorldState::Editor)
 	{
-		m_WorldState = WorldState::Editor;
+		m_worldState = WorldState::Editor;
 		m_MainLevel->DispatchEditorBeginPlay();
 	}
 }
@@ -374,7 +375,7 @@ bool World::DestroyComponent(FGUID guid)
 
 void World::StartGame()
 {
-	m_WorldState = WorldState::InGame;
+	m_worldState = WorldState::InGame;
 	FLOW_ENGINE_LOG("World State set to InGame");
 
 	//TODO: Dont spawn one till the start?
@@ -400,13 +401,30 @@ void World::StartGame()
 
 void World::PauseGame()
 {
-	m_WorldState = WorldState::Paused;
+	m_previousState = m_worldState;
+	m_worldState = WorldState::Paused;
 }
 
-void World::StopGame()
+void World::UnpauseGame()
 {
+	if (IsGamePaused() == false)
+	{
+		return;
+	}
+
+	m_worldState = m_previousState;
+	m_previousState = WorldState::Paused;
+}
+
+bool World::StopGame()
+{
+	if (m_worldState != WorldState::InGame)
+	{
+		return false;
+	}
+
 #if WITH_EDITOR
-	m_WorldState = WorldState::Editor;
+	m_worldState = WorldState::Editor;
 	FLOW_ENGINE_LOG("World State set to Editor");
 #endif
 	// Quit here? should be editor only tbh, might make the whole func editor only
@@ -416,6 +434,8 @@ void World::StopGame()
 	{
 		DestroyActor(cont);
 	}
+
+	return true;
 }
 
 LineBatcher& World::GetLineBatcher_S()
@@ -490,7 +510,7 @@ void World::Tick(float DeltaTime)
 	{
 		PROFILE_CURRENT_SCOPE("Update Physics World");
 
-		if (m_WorldState == WorldState::InGame)
+		if (m_worldState == WorldState::InGame)
 		{
 			m_PhysicsWorld->stepSimulation(DeltaTime, 0);
 		}

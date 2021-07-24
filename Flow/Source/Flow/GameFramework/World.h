@@ -98,6 +98,8 @@ public:
 	void												SavePlayState();
 	void												LoadPlayState();
 
+	bool												IsGamePaused() const;
+
 	//TODO: Temp rendering in the level
 	void												Render();
 
@@ -157,17 +159,21 @@ public:
 	const std::unordered_map<FGUID, Actor*>&			GetActorMap()			{ return m_actorMap; }
 	const std::unordered_map<FGUID, Component*>&		GetComponentMap()		{ return m_componentMap; }
 
-	WorldState											GetWorldState() const	{ return m_WorldState; }
+	WorldState											GetWorldState() const;
 
 	void												PrintAllPhysicsObjects() const;
+
+	void												StartGame();
+	void												PauseGame();
+	void												UnpauseGame();
+	bool												StopGame();
+
 protected:
 	friend class Application;
 
 	//= Protected Functions ===============
 
-	void												StartGame();
-	void												PauseGame();
-	void												StopGame();
+
 	void												InitialisePhysics(bool Force = false);
 
 private:
@@ -177,7 +183,8 @@ private:
 
 	std::string											m_WorldName;
 	Level*												m_MainLevel;
-	WorldState											m_WorldState;
+	WorldState											m_worldState;
+	WorldState											m_previousState;
 
 	//= Lookup =
 
@@ -216,3 +223,15 @@ private:
 
 	std::vector<Controller*>							m_RegisteredControllers;
 };
+
+// Inline Function Definitions ///////////////////////////////////////////////////////////////
+
+inline bool World::IsGamePaused() const
+{
+	return m_worldState == WorldState::Paused;
+}
+
+inline WorldState World::GetWorldState() const 
+{ 
+	return m_worldState;
+}

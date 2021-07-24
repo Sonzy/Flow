@@ -7,7 +7,7 @@
 #include "ThirdParty/ImGui/imgui.h"
 #include "Flow/Assets/AssetSystem.h"
 
-#include "Flow/Application.h"
+#include "Flow/GameFramework/World.h"
 
 #include "Rendering/Core/Bindables/Texture.h"
 
@@ -51,8 +51,10 @@ void ToolBar::Render()
 
 			if (ImGui::ImageButton(tex, ImVec2(28, 28)))
 			{
-				Application::SavePlayState();
-				Application::StartGame();
+				World& world = World::Get();
+
+				world.SavePlayState();
+				world.StartGame();
 			}
 		}
 
@@ -63,7 +65,8 @@ void ToolBar::Render()
 			auto tex = m_Icon_Pause->GetTextureView();
 			if (ImGui::ImageButton(tex, ImVec2(28, 28)))
 			{
-				Application::PauseGame();
+				World& world = World::Get();
+				world.PauseGame();
 			}
 		}
 
@@ -74,8 +77,12 @@ void ToolBar::Render()
 			auto tex = m_Icon_Stop->GetTextureView();
 			if (ImGui::ImageButton(tex, ImVec2(28, 28)))
 			{
-				if (Application::StopGame())
-					Application::LoadPlayState();
+				World& world = World::Get();
+
+				if (world.StopGame() == true)
+				{
+					world.LoadPlayState();
+				}
 			}
 		}
 

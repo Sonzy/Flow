@@ -155,7 +155,6 @@
     <ClInclude Include="Source\Flow\Framework\Types\Array.h" />
     <ClInclude Include="Source\Flow\Framework\Types\HashString.h" />
     <ClInclude Include="Source\Flow\Framework\Types\String.h" />
-    <ClInclude Include="Source\Flow\Framework\Utils\UndoSystem\ActorUndoEvents.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BlendState.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Codex.h" />
@@ -341,10 +340,10 @@
     <ClInclude Include="ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\ImGui\imgui_stdlib.h" />
     <ClInclude Include="ThirdParty\ImGui\imstb_rectpack.h" />
     <ClInclude Include="ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h" />
-    <ClInclude Include="ThirdParty\ImGui\misc\cpp\imgui_stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Flow\Application.cpp" />
@@ -380,7 +379,6 @@
     <ClCompile Include="Source\Flow\Framework\Events\Event.cpp" />
     <ClCompile Include="Source\Flow\Framework\Events\KeyEvent.cpp" />
     <ClCompile Include="Source\Flow\Framework\Events\MouseEvent.cpp" />
-    <ClCompile Include="Source\Flow\Framework\Utils\UndoSystem\ActorUndoEvents.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\BlendState.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\Codex.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Bindables\VertexBuffer.cpp" />
@@ -472,8 +470,9 @@
     <ClCompile Include="ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\ImGui\imgui_stdlib.cpp" />
+    <ClCompile Include="ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="ThirdParty\ImGui\misc\cpp\imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Flow\Framework\Utils\DirectX11\DXGetErrorDescription.inl" />

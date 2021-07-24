@@ -304,6 +304,10 @@ private:
 
 	//Editor Window
 	Vector2							m_EditorViewportSize;
+
+	// Debug Options //
+
+	bool							m_drawCollision;
 };
 
 #endif //WITH_EDITOR
