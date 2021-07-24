@@ -177,10 +177,11 @@ void Editor::OnUpdate(float DeltaTime)
 {
 	m_FrameDeltaTime = DeltaTime;
 
-	if (!m_EditorCam)
+	if (m_EditorCam == nullptr)
 	{
 		m_EditorCam = dynamic_cast<EditorCamera*>(Renderer::GetMainCamera());
 	}
+	m_EditorCam->Update(DeltaTime);
 
 	UpdateTools(DeltaTime);
 	RenderTools();

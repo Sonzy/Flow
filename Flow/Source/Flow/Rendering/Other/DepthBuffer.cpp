@@ -30,14 +30,14 @@ void DepthBuffer::Resize(unsigned int Width, unsigned int Height)
 	DepthDescription.SampleDesc.Quality = 0u;
 	DepthDescription.Usage = D3D11_USAGE_DEFAULT;
 	DepthDescription.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	CaptureDXError(Device->CreateTexture2D(&DepthDescription, nullptr, &m_DepthTexture));
+	CaptureDXError(Device->CreateTexture2D(&DepthDescription, nullptr, m_DepthTexture.ReleaseAndGetAddressOf()));
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDescription = {};
 	DepthStencilViewDescription.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	DepthStencilViewDescription.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	DepthStencilViewDescription.Texture2D.MipSlice = 0u;
-	CaptureDXError(Device->CreateDepthStencilView(m_DepthTexture.Get(), &DepthStencilViewDescription, m_DepthTextureView.GetAddressOf()));
+	CaptureDXError(Device->CreateDepthStencilView(m_DepthTexture.Get(), &DepthStencilViewDescription, m_DepthTextureView.ReleaseAndGetAddressOf()));
 
 	m_Width = Width;
 	m_Height = Height;

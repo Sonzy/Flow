@@ -64,7 +64,7 @@ void Window_Win32::Initialise(const Window::Properties& Properties)
 		this
 	);
 
-	ShowWindow(m_WindowHandle, SW_SHOW);
+	ShowWindow(m_WindowHandle, SW_SHOWMAXIMIZED);
 
 	m_Props = Properties;
 
