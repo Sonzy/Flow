@@ -41,47 +41,34 @@ public:
 	// Public Structs ///////////////////////////////////////////////
 	struct Settings
 	{
-		Settings()
-			: m_StartingLevel("")
-			, m_DockFloatingWindows(true)
-			, m_DockPadding(10.0f, 10.0f)
-			, m_consoleLogColor(1.0f, 1.0f, 1.0f, 1.0f)
-			, m_consoleWarningColor(1.0f, 1.0f, 0.0f, 1.0f)
-			, m_consoleErrorColor(1.0f, 0.0f, 0.0f, 1.0f)
-			, m_cameraSpeed(10.0f)
-			, m_cameraPanningSpeed(0.5f)
-			, m_cameraScrollingSpeed(0.5f)
-			, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
-			, m_nearPlane(0.5f)
-			, m_farPlane(2000.0f)
-		{}
+		Settings();
 
-		//= Levels =
+		// Levels //
 
 		std::string			m_StartingLevel;
 
-		//= Docking =
+		// Docking //
 
 		bool				m_DockFloatingWindows;
 		Vector2				m_DockPadding;
 
-		//= Console =
+		// Console //
 
 		Vector4				m_consoleLogColor;
 		Vector4				m_consoleWarningColor;
 		Vector4				m_consoleErrorColor;
 
-		//= Editor Camera =
+		// Editor Camera //
 
 		float				m_cameraSpeed;
 		float				m_cameraPanningSpeed;
 		float				m_cameraScrollingSpeed;
 
-		//= Other =
+		// Other //
 
 		Vector3				m_ObjectHighlightColour;
 
-		//= Rendering =
+		// Rendering //
 
 		float				m_nearPlane;
 		float				m_farPlane;
@@ -145,98 +132,28 @@ public:
 
 	//= Miscellanious =
 
-	bool						IsInitialised() const { return m_Initialised; }
-	void						ShowSettingsWindow(bool Show) { m_ShowSettingsWindow = Show; }
+	bool						IsInitialised() const;
+	void						ShowSettingsWindow(bool Show);
 
 	// Public Template Functions ///////////////////////////////////////////////
 
 	template<typename T>
-	T* GetTool() const
-	{
-		for (Tool* tool : m_Tools)
-		{
-			if (T* casted = dynamic_cast<T*>(tool))
-			{
-				return casted;
-			}
-		}
-
-		return nullptr;
-	}
+	T* GetTool() const;
 
 	template<typename T>
-	T* GetUIComponent() const
-	{
-		for (UIComponent* component : m_UIComponents)
-		{
-			if (T* casted = dynamic_cast<T*>(component))
-			{
-				return casted;
-			}
-		}
-
-		return nullptr;
-	}
+	T* GetUIComponent() const;
 
 	template<typename T>
-	T* GetModule() const
-	{
-		for (Module* module : m_modules)
-		{
-			if (T* casted = dynamic_cast<T*>(module))
-			{
-				return casted;
-			}
-		}
-
-		return nullptr;
-	}
+	T* GetModule() const;
 
 	template<typename T>
-	void RegisterTool()
-	{
-		static_assert(std::is_base_of<Tool, T>::value, "Tried to create a component Tool with a non-Tool type");
-
-		if (GetTool<T>() != nullptr)
-		{
-			FLOW_ENGINE_WARNING("Editor::RegisterTool: Already registered tool");
-			return;
-		}
-
-		m_Tools.push_back(new T());
-	}
+	void RegisterTool();
 
 	template<typename T>
-	void RegisterUIComponent()
-	{
-		static_assert(std::is_base_of<UIComponent, T>::value, "Tried to create a UIComponent templated with a non-UIComponent type");
-
-		if (GetUIComponent<T>() != nullptr)
-		{
-			FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered UI Component");
-			return;
-		}
-
-		T* NewUIComponent = new T();
-		NewUIComponent->m_editor = this;
-		m_UIComponents.push_back(NewUIComponent);
-	}
+	void RegisterUIComponent();
 
 	template<typename T>
-	void RegisterModule()
-	{
-		static_assert(std::is_base_of<Module, T>::value, "Tried to create a module templated with a non-module type");
-
-		if (GetModule<T>() != nullptr)
-		{
-			FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered Module");
-			return;
-		}
-
-		T* newModule = new T();
-		newModule->m_editor = this;
-		m_modules.push_back(newModule);
-	}
+	void RegisterModule();
 
 private:
 
@@ -309,5 +226,122 @@ private:
 
 	bool							m_drawCollision;
 };
+
+// Inline Function Definitions ////////////////////////////////////
+
+inline Editor::Settings::Settings()
+	: m_StartingLevel("")
+	, m_DockFloatingWindows(true)
+	, m_DockPadding(10.0f, 10.0f)
+	, m_consoleLogColor(1.0f, 1.0f, 1.0f, 1.0f)
+	, m_consoleWarningColor(1.0f, 1.0f, 0.0f, 1.0f)
+	, m_consoleErrorColor(1.0f, 0.0f, 0.0f, 1.0f)
+	, m_cameraSpeed(10.0f)
+	, m_cameraPanningSpeed(0.5f)
+	, m_cameraScrollingSpeed(0.5f)
+	, m_ObjectHighlightColour(0.0f, 1.0f, 0.0f)
+	, m_nearPlane(0.5f)
+	, m_farPlane(2000.0f)
+{
+
+}
+
+inline bool	Editor::IsInitialised() const 
+{ 
+	return m_Initialised; 
+}
+
+inline void	Editor::ShowSettingsWindow(bool Show) 
+{ 
+	m_ShowSettingsWindow = Show;
+}
+
+template<typename T>
+inline T* Editor::GetTool() const
+{
+	for (Tool* tool : m_Tools)
+	{
+		if (T* casted = dynamic_cast<T*>(tool))
+		{
+			return casted;
+		}
+	}
+
+	return nullptr;
+}
+
+template<typename T>
+inline T* Editor::GetUIComponent() const
+{
+	for (UIComponent* component : m_UIComponents)
+	{
+		if (T* casted = dynamic_cast<T*>(component))
+		{
+			return casted;
+		}
+	}
+
+	return nullptr;
+}
+
+template<typename T>
+inline T* Editor::GetModule() const
+{
+	for (Module* module : m_modules)
+	{
+		if (T* casted = dynamic_cast<T*>(module))
+		{
+			return casted;
+		}
+	}
+
+	return nullptr;
+}
+
+template<typename T>
+inline void Editor::RegisterTool()
+{
+	static_assert(std::is_base_of<Tool, T>::value, "Tried to create a component Tool with a non-Tool type");
+
+	if (GetTool<T>() != nullptr)
+	{
+		FLOW_ENGINE_WARNING("Editor::RegisterTool: Already registered tool");
+		return;
+	}
+
+	m_Tools.push_back(new T());
+}
+
+template<typename T>
+inline void Editor::RegisterUIComponent()
+{
+	static_assert(std::is_base_of<UIComponent, T>::value, "Tried to create a UIComponent templated with a non-UIComponent type");
+
+	if (GetUIComponent<T>() != nullptr)
+	{
+		FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered UI Component");
+		return;
+	}
+
+	T* NewUIComponent = new T();
+	NewUIComponent->m_editor = this;
+	m_UIComponents.push_back(NewUIComponent);
+}
+
+template<typename T>
+inline void Editor::RegisterModule()
+{
+	static_assert(std::is_base_of<Module, T>::value, "Tried to create a module templated with a non-module type");
+
+	if (GetModule<T>() != nullptr)
+	{
+		FLOW_ENGINE_WARNING("Editor::RegisterUIComponent: Already registered Module");
+		return;
+	}
+
+	T* newModule = new T();
+	newModule->m_editor = this;
+	m_modules.push_back(newModule);
+}
 
 #endif //WITH_EDITOR
