@@ -27,7 +27,7 @@ bool ShaderAsset::LoadAsset(const std::string& AssetPath)
 	return true;
 }
 
-const string& ShaderAsset::GetPath() const
+const std::string& ShaderAsset::GetPath() const
 {
 	return m_shaderPath;
 }

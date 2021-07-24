@@ -1,21 +1,22 @@
 #pragma once
 
 #ifdef FLOW_PLATFORM_WINDOWS
+
 	#ifndef NOMINMAX
 		#define NOMINMAX
 	#endif // NOMINMAX
 
+	#include <string>
 	#include <Windows.h>
 	#include "dxerr.h"
-	#include "Framework/Types/String.h"
 
 	namespace DirectX11Utils
 	{
-		static string GenerateErrorDescription(HRESULT result)
+		static std::string GenerateErrorDescription(HRESULT result)
 		{
 			char buf[512];
 			DXGetErrorDescription(result, buf, sizeof(buf));
-			return string(buf);
+			return std::string(buf);
 		}
 	}
 		

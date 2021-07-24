@@ -323,14 +323,14 @@ std::vector<Bindables::Bindable*> Mesh::GenerateBinds(VertexLayout& OutVertexLay
 		);
 	}
 
-	Array<uint16> indices;
-	indices.Reserve((uint32)(GetNumFaces() * 3)); //Using triangles, change for quads
+	std::vector<uint16> indices;
+	indices.reserve((uint32)(GetNumFaces() * 3)); //Using triangles, change for quads
 	for (const Mesh::Face& Face : GetFaces())
 	{
 		assert(Face.m_NumIndices == 3);
-		indices.Add(static_cast<uint16>(Face.m_Indices[0]));
-		indices.Add(static_cast<uint16>(Face.m_Indices[1]));
-		indices.Add(static_cast<uint16>(Face.m_Indices[2]));
+		indices.push_back(static_cast<uint16>(Face.m_Indices[0]));
+		indices.push_back(static_cast<uint16>(Face.m_Indices[1]));
+		indices.push_back(static_cast<uint16>(Face.m_Indices[2]));
 	}
 
 	//Add Vertex Buffer Bind

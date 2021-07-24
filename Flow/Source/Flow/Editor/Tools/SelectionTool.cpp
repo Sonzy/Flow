@@ -39,9 +39,10 @@ SelectionTool::~SelectionTool()
 
 void SelectionTool::UpdateTool(float DeltaTime)
 {
+	LineBatcher& batcher = World::Get().GetLineBatcher();
 	for (auto& line : m_PreviousLines)
 	{
-		World::GetLineBatcher_S().AddLine(line.first, line.second, m_DebugLineColor);
+		batcher.AddLine(line.first, line.second, m_DebugLineColor);
 	}
 }
 

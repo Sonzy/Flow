@@ -1,21 +1,27 @@
 #pragma once
+
+// Includes /////////////////////////////////////////////////////////////////////
+
+#include <string>
 #include "Flow\Assets\Asset.h"
 
-/* For now, shader asset just stores the path to the shader since I need a platform agnostic way of storing the shader,
-not sure how other platforms handle shaders so will set up later */
+// Class Definition /////////////////////////////////////////////////////////////
+
 class FLOW_API ShaderAsset : public Asset
 {
 public:
 
-	//= Public Functions =========================
+	// Public Functions /////////////////////////////////////////////////////////
 
 								ShaderAsset();
 
 	virtual bool				ImportAsset(const std::string& FilePath, const std::string& SavePath) override;
 	virtual bool				LoadAsset(const std::string& AssetPath) override;
-	const string&				GetPath() const;
+	const std::string&			GetPath() const;
 
 private:
 
-	string						m_shaderPath;
+	// Private Functions /////////////////////////////////////////////////////////
+
+	std::string					m_shaderPath;
 };

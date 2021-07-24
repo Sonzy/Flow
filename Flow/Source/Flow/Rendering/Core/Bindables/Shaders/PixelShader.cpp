@@ -13,7 +13,7 @@
 
 // Class Definition ///////////////////////////////////////////////////////////
 
-Bindables::PixelShader::PixelShader(const string& localPath)
+Bindables::PixelShader::PixelShader(const std::string& localPath)
 	: m_shaderPath(localPath)
 {
 	CreateResultHandle();
@@ -29,12 +29,12 @@ void Bindables::PixelShader::Bind()
 	Renderer::GetContext()->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 }
 
-Bindables::PixelShader* Bindables::PixelShader::Resolve(const string& localPath)
+Bindables::PixelShader* Bindables::PixelShader::Resolve(const std::string& localPath)
 {
 	return Bindables::Codex::Resolve<PixelShader>(localPath);
 }
 
-HashString Bindables::PixelShader::GenerateID(const string& localPath)
+HashString Bindables::PixelShader::GenerateID(const std::string& localPath)
 {
 	char buffer[256];
 	snprintf(buffer, 256, "PixelShader-%s", localPath.c_str());

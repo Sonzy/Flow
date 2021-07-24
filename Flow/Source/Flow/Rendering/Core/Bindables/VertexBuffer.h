@@ -2,6 +2,7 @@
 
 // Includes //////////////////////////////////////////////////////////////////////////////
 
+#include "Typedefs.h"
 #include "Framework/Types/ComPtr.h"
 #include "Rendering/Core/Bindables/Bindable.h"
 #include "Rendering/Core/Vertex/VertexBufferData.h"

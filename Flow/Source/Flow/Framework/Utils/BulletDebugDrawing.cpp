@@ -11,7 +11,7 @@ void BulletDebugDraw::Init()
 
 void BulletDebugDraw::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
-	DebugDraw::DrawLine(from, to, color);
+	World::Get().GetLineBatcher().AddLine(from, to, color);
 }
 
 void BulletDebugDraw::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)

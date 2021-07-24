@@ -63,14 +63,14 @@ void SpriteComponent::RefreshBinds()
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ 0.5f, 0.5f, 0.0f },		DirectX::XMFLOAT2{ 0.0f, 1.0f });
 		VBuffer.EmplaceBack(DirectX::XMFLOAT3{ -0.5f, 0.5f, 0.0f },		DirectX::XMFLOAT2{ 1.0f, 1.0f });			
 
-		Array<uint16> indices;
-		indices.Reserve(6);
-		indices.Add(0);
-		indices.Add(1);
-		indices.Add(2);
-		indices.Add(2);
-		indices.Add(3);
-		indices.Add(0);
+		std::vector<uint16> indices;
+		indices.reserve(6);
+		indices.push_back(0);
+		indices.push_back(1);
+		indices.push_back(2);
+		indices.push_back(2);
+		indices.push_back(3);
+		indices.push_back(0);
 
 		m_vertexBuffer = Bindables::VertexBuffer::Resolve("SpriteQuad", VBuffer);
 		m_indexBuffer = Bindables::IndexBuffer::Resolve("SpriteQuad", indices);

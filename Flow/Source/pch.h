@@ -24,8 +24,6 @@
 #include "Framework/Logging/Log.h"
 #include "Framework/Utils/HelperMacros.h"
 #include "Framework/Utils/Profiling.h"
-#include "Framework/Types/String.h"
-#include "Framework/Types/Array.h"
 #include "Framework/Types/HashString.h"
 
 //Saving and loading

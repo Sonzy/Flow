@@ -70,7 +70,7 @@ Bindables::Stencil* Bindables::Stencil::Resolve(Bindables::Stencil::Mode mode)
 HashString Bindables::Stencil::GenerateID(Bindables::Stencil::Mode mode)
 {
 	char buffer[64];
-	snprintf(buffer, 64, "Stencil-%s", Bindables::Stencil::GetModeAsString(mode).c_str());
+	snprintf(buffer, 64, "Stencil-%s", Bindables::Stencil::ModeToString(mode));
 	return buffer;
 }
 
@@ -83,15 +83,14 @@ HashString Bindables::Stencil::GetID()
 	return m_id;
 }
 
-string Bindables::Stencil::GetModeAsString(Bindables::Stencil::Mode mode)
+const char* Bindables::Stencil::ModeToString(Bindables::Stencil::Mode mode)
 {
 	switch (mode)
 	{
 	case Bindables::Stencil::Mode::Off: 			return "Off"; 
-	case Bindables::Stencil::Mode::Write:		return "Write";
+	case Bindables::Stencil::Mode::Write:			return "Write";
 	case Bindables::Stencil::Mode::Mask:			return "Mask";
-	case Bindables::Stencil::Mode::AlwaysOnTop:	return "AlwaysOnTop";
+	case Bindables::Stencil::Mode::AlwaysOnTop:		return "AlwaysOnTop";
+	default:										return "Unknown";
 	}
-
-	return "UNKNOWN";
 }

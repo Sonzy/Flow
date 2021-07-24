@@ -2,6 +2,7 @@
 
 // Includes ///////////////////////////////////////////////////////////////////////////
 
+#include <string>
 #include "Framework/Types/ComPtr.h"
 #include "Rendering/Core/Bindables/Bindable.h"
 
@@ -20,12 +21,12 @@ namespace Bindables
 	public:
 		// Public Static Functions ////////////////////////////////////////////////////
 
-		static VertexShader*					Resolve(const string& LocalPath);
-		static HashString						GenerateID(const string& LocalPath);
+		static VertexShader*					Resolve(const std::string& LocalPath);
+		static HashString						GenerateID(const std::string& LocalPath);
 
 		// Public Functions ///////////////////////////////////////////////////////////
 
-												VertexShader(const string& LocalPath);
+												VertexShader(const std::string& LocalPath);
 		void									Bind() override;
 		ID3DBlob*								GetByteCode() const;
 		HashString								GetID() override;
@@ -34,7 +35,7 @@ namespace Bindables
 
 		// Private Variables ///////////////////////////////////////////////////////////
 
-		string									m_shaderPath;
+		std::string									m_shaderPath;
 		ComPtr<ID3D11VertexShader>				m_vertexShader;
 		ID3DBlob*								m_blob;
 	};

@@ -2,8 +2,9 @@
 
 //= Includes ===============================
 
-#include "Framework/Types/ComPtr.h"
 #include <d3d11.h>
+#include <string>
+#include "Framework/Types/ComPtr.h"
 
 //= Forward Declarations ===================
 
@@ -23,7 +24,7 @@ public:
 	
 	ID3D11Texture2D*					GetTexture() const;
 	ID3D11ShaderResourceView*			GetTextureView() const;
-	std::shared_ptr<DepthBuffer>		GetDepthBuffer() const;
+	DepthBuffer*						GetDepthBuffer() const;
 	unsigned int						GetWidth() const;
 	unsigned int						GetHeight() const;
 	bool								HasDepthBuffer() const;
@@ -32,15 +33,15 @@ private:
 
 	//= Private Variables ======================================
 
-	ComPtr<ID3D11Texture2D>								m_Texture = nullptr;
-	ComPtr<ID3D11ShaderResourceView>					m_TextureView = nullptr;
-														
-	bool												m_HasDepthBuffer;
-	std::shared_ptr<DepthBuffer>						m_DepthBuffer;
+	ComPtr<ID3D11Texture2D>				m_Texture = nullptr;
+	ComPtr<ID3D11ShaderResourceView>	m_TextureView = nullptr;
+										
+	bool								m_HasDepthBuffer;
+	DepthBuffer*						m_DepthBuffer;
 
-	DXGI_FORMAT											m_fmt;
-														
-	unsigned int										m_Width;
-	unsigned int										m_Height;
-	string												m_bufferName;
+	DXGI_FORMAT							m_fmt;
+										
+	unsigned int						m_Width;
+	unsigned int						m_Height;
+	std::string							m_bufferName;
 };

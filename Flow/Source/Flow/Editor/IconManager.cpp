@@ -59,13 +59,13 @@ IconManager::IconManager()
 	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{  0.5f,  0.5f }, DirectX::XMFLOAT2{ 1.0f, 1.0f });
 	m_iconVerticesCentreAligned.EmplaceBack(DirectX::XMFLOAT2{ -0.5f,  0.5f }, DirectX::XMFLOAT2{ 0.0f, 1.0f });
 
-	m_iconIndices.Reserve(6);
-	m_iconIndices.Add(0);
-	m_iconIndices.Add(1);
-	m_iconIndices.Add(2);
-	m_iconIndices.Add(2);
-	m_iconIndices.Add(3);
-	m_iconIndices.Add(0);
+	m_iconIndices.reserve(6);
+	m_iconIndices.push_back(0);
+	m_iconIndices.push_back(1);
+	m_iconIndices.push_back(2);
+	m_iconIndices.push_back(2);
+	m_iconIndices.push_back(3);
+	m_iconIndices.push_back(0);
 }
 
 void IconManager::RegisterIcon(FGuid guid, const IconData& data)
@@ -150,7 +150,7 @@ const VertexBuffer& IconManager::GetIconVertices(Icon::Alignment alignment) cons
 	}
 }
 
-const Array<uint16>& IconManager::GetIconIndices() const
+const std::vector<uint16>& IconManager::GetIconIndices() const
 {
 	return m_iconIndices;
 }

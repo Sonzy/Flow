@@ -9,8 +9,8 @@
 
 // Function Definitions //////////////////////////////////////////////////////////////
 
-Bindables::IndexBuffer::IndexBuffer(HashString tag, const Array<uint16>& indices)
-	: m_count(indices.Length())
+Bindables::IndexBuffer::IndexBuffer(HashString tag, const std::vector<uint16>& indices)
+	: m_count(indices.size())
 	, m_tag(tag)
 {
 	CreateResultHandle();
@@ -25,7 +25,7 @@ Bindables::IndexBuffer::IndexBuffer(HashString tag, const Array<uint16>& indices
 	IndexBufferDescription.StructureByteStride = sizeof(unsigned short);
 
 	D3D11_SUBRESOURCE_DATA SubresourceData = {};
-	SubresourceData.pSysMem = indices.Data();
+	SubresourceData.pSysMem = indices.data();
 
 	CaptureDXError(Renderer::GetDevice()->CreateBuffer(&IndexBufferDescription, &SubresourceData, &m_buffer));
 }
@@ -35,7 +35,7 @@ void Bindables::IndexBuffer::Bind()
 	Renderer::GetContext()->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }
 
-Bindables::IndexBuffer* Bindables::IndexBuffer::Resolve(HashString tag, const Array<uint16>& Indices)
+Bindables::IndexBuffer* Bindables::IndexBuffer::Resolve(HashString tag, const std::vector<uint16>& Indices)
 {
 	return Bindables::Codex::Resolve<IndexBuffer>(tag, Indices);
 }

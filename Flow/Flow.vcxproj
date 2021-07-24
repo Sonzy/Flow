@@ -231,7 +231,6 @@
     <ClInclude Include="Source\Flow\Rendering\Core\Camera\Camera.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\DebugDrawing\LineBatcher.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Lights\PointLight.h" />
-    <ClInclude Include="Source\Flow\Rendering\Core\Line.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Materials\Material.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Renderable.h" />
@@ -441,7 +440,6 @@
     <ClCompile Include="Source\Flow\Rendering\Core\Camera\Camera.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\DebugDrawing\LineBatcher.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Lights\PointLight.cpp" />
-    <ClCompile Include="Source\Flow\Rendering\Core\Line.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Materials\Material.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Mesh\StaticMesh.cpp" />
     <ClCompile Include="Source\Flow\Rendering\Core\Renderable.cpp" />

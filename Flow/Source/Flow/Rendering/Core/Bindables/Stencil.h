@@ -32,9 +32,9 @@ namespace Bindables
 
 		// Public Static Functions //////////////////////////////////////////////////////
 
-		static Stencil* Resolve(Stencil::Mode mode);
+		static Stencil*										Resolve(Stencil::Mode mode);
 		static HashString									GenerateID(Stencil::Mode mode);
-		static string										GetModeAsString(Stencil::Mode mode);
+		static const char*									ModeToString(Stencil::Mode mode);
 
 	public:
 

@@ -2,7 +2,8 @@
 
 // Includes ///////////////////////////////////////////////////////////////////////////
 
-#include "Framework/Types/Array.h"
+#include <vector>
+#include "Typedefs.h"
 #include "Framework/Types/ComPtr.h"
 #include "Rendering/Core/Bindables/Bindable.h"
 
@@ -18,7 +19,7 @@ namespace Bindables
 
 		// Public Static Functions ///////////////////////////////////////////////////
 
-		static IndexBuffer* Resolve(HashString id, const Array<uint16>& Indices);
+		static IndexBuffer* Resolve(HashString id, const std::vector<uint16>& Indices);
 
 		template<typename ...IgnoredTypes>
 		static HashString GenerateID(HashString id, IgnoredTypes&&... Ign)
@@ -30,7 +31,7 @@ namespace Bindables
 
 		// Public Functions ///////////////////////////////////////////////////////////
 
-													IndexBuffer(HashString id, const Array<uint16>& Indices);
+													IndexBuffer(HashString id, const std::vector<uint16>& Indices);
 
 		//= Bindable Interface =
 

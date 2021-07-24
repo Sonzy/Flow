@@ -1,8 +1,12 @@
 #pragma once
-#include "Assets/Textures/TextureAsset.h"
-#include "GameFramework/Components/WorldComponent.h"
-#include "Flow/Rendering/Core/Renderable.h"
+
+// Includes ////////////////////////////////////////////////////
+
+#include <vector>
 #include "Typedefs.h"
+#include "Assets/Textures/TextureAsset.h"
+#include "Flow/Rendering/Core/Renderable.h"
+#include "GameFramework/Components/WorldComponent.h"
 #include "Rendering/Core/Materials/Material.h"
 #include "Rendering/Core/Vertex/VertexBufferData.h"
 #include "Rendering/Core/Bindables/ConstantBuffers/ShaderConstantBuffers.h"
@@ -87,7 +91,7 @@ public:
 	static const Material*				GetIconMaterial();
 
 	const VertexBuffer&					GetIconVertices(Icon::Alignment alignment) const;
-	const Array<uint16>&				GetIconIndices() const;
+	const std::vector<uint16>&			GetIconIndices() const;
 	const VertexLayout&					GetIconLayout() const;
 
 	Icon&								GetIcon(FGuid iconGuid);
@@ -100,7 +104,7 @@ private:
 
 	VertexBuffer							m_iconVerticesTopLeftAligned;
 	VertexBuffer							m_iconVerticesCentreAligned;
-	Array<uint16>							m_iconIndices;
+	std::vector<uint16>						m_iconIndices;
 	VertexLayout							m_iconLayout;
 
 	//= Configuration =

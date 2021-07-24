@@ -61,8 +61,7 @@ void RenderableComponent::RefreshBinds()
 
 		char buffer[64];
 		snprintf(buffer, 64, "SelectionBuffer_%s", std::to_string(GetGuid()).c_str());
-		string tag = buffer;
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, tag));
+		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, buffer));
 
 		Bindables::VertexShader* vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
 		ID3DBlob* vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();

@@ -3,7 +3,7 @@
 #include <functional>
 
 #if _DEBUG
-	#include "String.h"
+	#include <string>
 #endif
 
 // Class Definition ///////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ public:
 	HashString();
 	HashString(size_t hash);
 	HashString(const char* string);
-	HashString(string string);
+	HashString(std::string string);
 	HashString(const HashString& hash);
 
 	bool				IsNull() const;
@@ -37,27 +37,27 @@ private:
 
 	size_t m_hash;
 #if _DEBUG
-	string m_string;
+	std::string m_string;
 #endif
 };
 
 // Inline Function Definitions ///////////////////////////////////////////////////////
 
 inline HashString::HashString(const char* cstr)
-	: HashString(string(cstr))
+	: HashString(std::string(cstr))
 {
 
 }
 
-inline HashString::HashString(string input)
-	: m_hash(std::hash<string>{}(input))
+inline HashString::HashString(std::string input)
+	: m_hash(std::hash<std::string>{}(input))
 	, m_string(input)
 {
 }
 
 inline HashString::HashString(const HashString& hash)
 	: m_hash(hash.m_hash)
-	, m_string(string(hash.m_string.c_str())) //TODO: make a copy constructor for string instead of being lazy
+	, m_string(std::string(hash.m_string.c_str())) //TODO: make a copy constructor for string instead of being lazy
 {
 
 }

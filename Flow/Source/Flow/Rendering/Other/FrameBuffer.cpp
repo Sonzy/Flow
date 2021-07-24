@@ -18,7 +18,9 @@ FrameBuffer::~FrameBuffer()
 {
 	m_Texture.Reset();
 	m_TextureView.Reset();
-}//
+
+	delete m_DepthBuffer;
+}
 
 void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 {
@@ -55,7 +57,7 @@ void FrameBuffer::Resize(unsigned int Width, unsigned int Height)
 	if (m_HasDepthBuffer)
 	{
 		if (!m_DepthBuffer)
-			m_DepthBuffer = std::make_shared<DepthBuffer>(Width, Height);
+			m_DepthBuffer = new DepthBuffer(Width, Height);
 		else
 			m_DepthBuffer->Resize(Width, Height);
 	}
@@ -71,7 +73,7 @@ ID3D11ShaderResourceView* FrameBuffer::GetTextureView() const
 	return m_TextureView.Get();
 }
 
-std::shared_ptr<DepthBuffer> FrameBuffer::GetDepthBuffer() const
+DepthBuffer* FrameBuffer::GetDepthBuffer() const
 {
 	return m_DepthBuffer;
 }

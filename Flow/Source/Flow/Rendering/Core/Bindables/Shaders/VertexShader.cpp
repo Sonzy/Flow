@@ -13,7 +13,7 @@
 
 // Class Definition ///////////////////////////////////////////////////////////
 
-Bindables::VertexShader::VertexShader(const string& LocalPath)
+Bindables::VertexShader::VertexShader(const std::string& LocalPath)
 	: m_shaderPath(LocalPath)
 {
 	CreateResultHandle();
@@ -33,12 +33,12 @@ ID3DBlob* Bindables::VertexShader::GetByteCode() const
 	return m_blob;
 }
 
-Bindables::VertexShader* Bindables::VertexShader::Resolve(const string& LocalPath)
+Bindables::VertexShader* Bindables::VertexShader::Resolve(const std::string& LocalPath)
 {
 	return Bindables::Codex::Resolve<VertexShader>(LocalPath);
 }
 
-HashString Bindables::VertexShader::GenerateID(const string& LocalPath)
+HashString Bindables::VertexShader::GenerateID(const std::string& LocalPath)
 {
 	char buffer[256];
 	snprintf(buffer, 256, "VertexShader-%s", LocalPath.c_str());

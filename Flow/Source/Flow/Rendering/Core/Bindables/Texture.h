@@ -2,6 +2,7 @@
 
 // Includes ////////////////////////////////////////////////////////////
 
+#include "Typedefs.h"
 #include "Framework/Types/ComPtr.h"
 #include "DXTex/DirectXTex.h"
 #include "Rendering/Core/Bindables/Bindable.h"

@@ -1,17 +1,25 @@
+// Pch /////////////////////////////////////////////////////////////////////
+
 #include "pch.h"
+
+// Main Include ////////////////////////////////////////////////////////////
+
 #include "World.h"
+
+// Includes ////////////////////////////////////////////////////////////////
+
+#include <yaml-cpp/yaml.h>
+
 #include "Actor.h"
-
 #include "Application.h"
-
-#include "Bullet\LinearMath\btIDebugDraw.h"
-
-#include "GameFramework\Other\Skybox.h"
-
-#include "GameFramework\Controllers\Controller.h"
-#include "GameFramework\Controllers\PlayerController.h"
-
+#include "Assets/AssetSystem.h"
+#include "Bullet/LinearMath/btIDebugDraw.h"
 #include "Framework/Utils/DebugDraw.h"
+#include "Framework/Utils/GUIDGenerator.h"
+#include "Framework/Utils/ComponentHelper.h"
+#include "GameFramework/Other/Skybox.h"
+#include "GameFramework/Controllers/Controller.h"
+#include "GameFramework/Controllers/PlayerController.h"
 
 #if WITH_EDITOR
 	#include "Editor/EditorCamera.h"
@@ -20,38 +28,33 @@
 	#include "Editor/IconManager.h"
 	#include "Editor/Tools/SelectionTool.h"
 #else
-	#include "Actors\CameraActor.h"
-	#include "Rendering\Core\Camera\Camera.h"
+	#include "Actors/CameraActor.h"
+	#include "Rendering/Core/Camera/Camera.h"
 	#include "GameFramework/Components/CameraComponent.h"
 #endif
 
-#include "Framework/Utils/GUIDGenerator.h"
-#include "Framework/Utils/ComponentHelper.h"
-#include "Assets/AssetSystem.h"
-
-#include <yaml-cpp/yaml.h>
-
-LineBatcher World::sm_LineBatcher = LineBatcher();
+// Function Definitions ////////////////////////////////////////////////////
 
 World::World()
 	: World("Unnamed World")
-{	}
+{	
+}
 
 World::World(const std::string& WorldName)
-	: m_WorldName(WorldName)
-	, m_MainLevel(new Level("Main Level"))
+	: m_name(WorldName)
+	, m_level(new Level("Main Level"))
 	, m_LogGameObjectRegistering(false)
 	, m_LogGameObjectDestruction(false)
+	, m_previousState(WorldState::Paused)
 #if WITH_EDITOR
 	, m_worldState(WorldState::Editor)
 	, m_defaultSaveFileName("MainLevel.flvl")
 #else
 	, m_worldState(WorldState::Paused)
 #endif
-	, m_previousState(WorldState::Paused)
 {
-	m_DebugDrawer.Init();
-	sm_LineBatcher.Initialise();
+	m_debugDrawer.Init();
+	m_lineBatcher.Initialise();
 }
 
 World::~World()
@@ -61,7 +64,7 @@ World::~World()
 void World::SaveLevel()
 {
 	YAML::Emitter outFile;
-	m_MainLevel->Save(outFile);
+	m_level->Save(outFile);
 
 	// Save to disk
 	fs::path saveDirectory = AssetSystem::GetGameAssetParentDirectory() / "Saved";
@@ -162,12 +165,12 @@ void World::LoadLevel()
 
 #endif
 
-	m_MainLevel->Load(data);
+	m_level->Load(data);
 
 	//====================
 
 	//TODO: Gravity has to be set after object are added to physics world
-	m_PhysicsWorld->setGravity(btVector3(0, -9.81f, 0));
+	m_physicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
 	InStream.close();
 
@@ -187,7 +190,7 @@ void World::LoadLevel()
 void World::SavePlayState()
 {
 	YAML::Emitter file;
-	m_MainLevel->Save(file);
+	m_level->Save(file);
 	std::ofstream outFile = std::ofstream("Saved/PlayState.flvl");
 	outFile << file.c_str();
 	outFile.close();
@@ -196,10 +199,10 @@ void World::SavePlayState()
 void World::LoadPlayState()
 {
 	// Remove all collision objects from the world then delete and restart the physics world
-	for (int i = m_PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	for (int i = m_physicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
-		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
-		m_PhysicsWorld->removeCollisionObject(obj);
+		btCollisionObject* obj = m_physicsWorld->getCollisionObjectArray()[i];
+		m_physicsWorld->removeCollisionObject(obj);
 	}
 
 	//= Load File =
@@ -219,7 +222,7 @@ void World::LoadPlayState()
 		return;
 	}
 
-	m_MainLevel->Load(data);
+	m_level->Load(data);
 
 	InStream.close();
 
@@ -249,8 +252,8 @@ void World::Render()
 void World::InitialiseWorld()
 {
 #if WITH_EDITOR
-	m_EditorCam = new EditorCamera();
-	Renderer::SetMainCamera(m_EditorCam);
+	m_editorCam = new EditorCamera();
+	Renderer::SetMainCamera(m_editorCam);
 #else
 	std::vector<CameraBase*> cams = GetAllActorsOfType<CameraBase>();
 	if (cams.size() > 0)
@@ -274,7 +277,7 @@ void World::StartEditor()
 	if (m_worldState != WorldState::Editor)
 	{
 		m_worldState = WorldState::Editor;
-		m_MainLevel->DispatchEditorBeginPlay();
+		m_level->DispatchEditorBeginPlay();
 	}
 }
 
@@ -380,14 +383,14 @@ void World::StartGame()
 
 	//TODO: Dont spawn one till the start?
 	PlayerController* NewLocalController = SpawnActor<PlayerController>("NewLocalController");
-	m_RegisteredControllers.push_back(NewLocalController);
+	m_registeredControllers.push_back(NewLocalController);
 
-	m_MainLevel->InitialiseTickList();
-	m_MainLevel->DispatchBeginPlay();
+	m_level->InitialiseTickList();
+	m_level->DispatchBeginPlay();
 
-	for (int i = m_PhysicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	for (int i = m_physicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
-		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
+		btCollisionObject* obj = m_physicsWorld->getCollisionObjectArray()[i];
 		obj->activate(true);
 	}
 
@@ -395,7 +398,7 @@ void World::StartGame()
 #if WITH_EDITOR
 	//TODO: Dont want to do this normally, only if we want to simulate link unreal etc
 	//Move camera to the editor camera
-	Renderer::GetMainCamera()->MoveCamera(m_EditorCam->GetCameraTransform());
+	Renderer::GetMainCamera()->MoveCamera(m_editorCam->GetCameraTransform());
 #endif
 }
 
@@ -438,57 +441,52 @@ bool World::StopGame()
 	return true;
 }
 
-LineBatcher& World::GetLineBatcher_S()
-{
-	return Application::GetWorld()->sm_LineBatcher;
-}
-
 void World::PrintAllPhysicsObjects() const
 {
-	int i = m_PhysicsWorld->getNumCollisionObjects();
+	int i = m_physicsWorld->getNumCollisionObjects();
 	FLOW_ENGINE_LOG("There are %d physics objects", i);
 	for (i = i - 1; i >= 0; i--)
 	{
-		btCollisionObject* obj = m_PhysicsWorld->getCollisionObjectArray()[i];
+		btCollisionObject* obj = m_physicsWorld->getCollisionObjectArray()[i];
 	}
 }
 
 void World::InitialisePhysics(bool Force)
 {
-	if (m_PhysicsWorld && Force == false)
+	if (m_physicsWorld && Force == false)
 	{
 		FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Already Initialised");
 		return;
 	}
 
 	//Clear Physics World State
-	if (m_PhysicsWorld != nullptr)
+	if (m_physicsWorld != nullptr)
 	{
-		btCollisionObjectArray objs = m_PhysicsWorld->getCollisionObjectArray();
+		btCollisionObjectArray objs = m_physicsWorld->getCollisionObjectArray();
 		for (int i = 0; i < objs.size(); i++)
 		{
-			m_PhysicsWorld->removeCollisionObject(objs[i]);
+			m_physicsWorld->removeCollisionObject(objs[i]);
 		}
 	}
 
-	delete m_CollisionConfig;
-	delete m_Dispatcher;
-	delete m_OverlappingPairCache;
-	delete m_Solver;
-	delete m_PhysicsWorld;
+	delete m_collisionConfig;
+	delete m_dispatcher;
+	delete m_overlappingPairCache;
+	delete m_solver;
+	delete m_physicsWorld;
 
 	/* Create the physics world with default settings */
-	m_CollisionConfig = new btDefaultCollisionConfiguration();
-	m_Dispatcher = new btCollisionDispatcher(m_CollisionConfig);
-	m_OverlappingPairCache = new btDbvtBroadphase();
-	m_Solver = new btSequentialImpulseConstraintSolver;
-	m_PhysicsWorld = new btDiscreteDynamicsWorld(m_Dispatcher, m_OverlappingPairCache, m_Solver, m_CollisionConfig);
+	m_collisionConfig = new btDefaultCollisionConfiguration();
+	m_dispatcher = new btCollisionDispatcher(m_collisionConfig);
+	m_overlappingPairCache = new btDbvtBroadphase();
+	m_solver = new btSequentialImpulseConstraintSolver;
+	m_physicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_overlappingPairCache, m_solver, m_collisionConfig);
 
 	/* Initialise Physics world properties */
-	m_PhysicsWorld->setGravity(btVector3(0, -9.81f, 0));
+	m_physicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
-	m_PhysicsWorld->setDebugDrawer(&m_DebugDrawer);
-	m_PhysicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	m_physicsWorld->setDebugDrawer(&m_debugDrawer);
+	m_physicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 
 	FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Initialised");
 }
@@ -512,40 +510,35 @@ void World::Tick(float DeltaTime)
 
 		if (m_worldState == WorldState::InGame)
 		{
-			m_PhysicsWorld->stepSimulation(DeltaTime, 0);
+			m_physicsWorld->stepSimulation(DeltaTime, 0);
 		}
 	}
 
 	{
 
 #if WITH_EDITOR
-		if (m_EditorCam)
+		if (m_editorCam)
 		{
-			m_EditorCam->Update(DeltaTime);
+			m_editorCam->Update(DeltaTime);
 		}
 #endif
 
 		PROFILE_CURRENT_SCOPE("Tick Objects");
-		m_MainLevel->Tick(DeltaTime);
+		m_level->Tick(DeltaTime);
 	}
-}
-
-const std::string& World::GetName()
-{
-	return m_WorldName;
 }
 
 btCollisionWorld::ClosestRayResultCallback World::WorldTrace(Vector3 Start, Vector3 End)
 {
 	btCollisionWorld::ClosestRayResultCallback Result(Start, End);
-	Application::GetWorld()->m_PhysicsWorld->rayTest(Start, End, Result);
+	Application::GetWorld()->m_physicsWorld->rayTest(Start, End, Result);
 
 	return Result;
 }
 
 btDiscreteDynamicsWorld* World::GetPhysicsWorld()
 {
-	return Application::GetWorld()->m_PhysicsWorld;
+	return Application::GetWorld()->m_physicsWorld;
 }
 
 World& World::Get()
@@ -555,35 +548,35 @@ World& World::Get()
 
 void World::AddPhysicsObject(btRigidBody* Obj)
 {
-	m_PhysicsWorld->addRigidBody(Obj);
+	m_physicsWorld->addRigidBody(Obj);
 }
 
 void World::AddCollisionObject(btCollisionObject* Obj)
 {
-	m_PhysicsWorld->addCollisionObject(Obj);
+	m_physicsWorld->addCollisionObject(Obj);
 }
 
 void World::RegisterController(Controller* NewController)
 {
 	CHECK_RETURN(!NewController, "Layer::DeRegisterController: Tried to register null controller");
-	m_RegisteredControllers.push_back(NewController);
+	m_registeredControllers.push_back(NewController);
 }
 
 void World::DeRegisterController(Controller* OldController)
 {
 	CHECK_RETURN(!OldController, "Layer::DeRegisterController: Tried to deregister null controller");
 
-	auto FoundIterator = std::find(m_RegisteredControllers.begin(), m_RegisteredControllers.end(), OldController);
+	auto FoundIterator = std::find(m_registeredControllers.begin(), m_registeredControllers.end(), OldController);
 
-	if (FoundIterator == m_RegisteredControllers.end())
+	if (FoundIterator == m_registeredControllers.end())
 		FLOW_ENGINE_WARNING("Tried to remove controller ");
 
-	m_RegisteredControllers.erase(FoundIterator);
+	m_registeredControllers.erase(FoundIterator);
 }
 
 Controller* World::GetLocalController() const
 {
-	for (auto& Controller : m_RegisteredControllers)
+	for (auto& Controller : m_registeredControllers)
 	{
 		if (Controller->IsLocalController())
 		{

@@ -40,6 +40,8 @@ enum class WorldState
 
 class FLOW_API World
 {
+	friend class Application;
+	friend class Inspector;
 public:
 
 	// Public Static Functions ////////////////////////////////////
@@ -62,7 +64,8 @@ public:
 
 	// Info //
 
-	const std::string&			GetName();
+	const std::string&			GetName() const;
+	WorldState					GetWorldState() const;
 
 	// Updates //
 
@@ -79,7 +82,10 @@ public:
 	// World State //
 
 	bool						IsGamePaused() const;
-
+	void						StartGame();
+	void						PauseGame();
+	void						UnpauseGame();
+	bool						StopGame();
 
 
 
@@ -115,96 +121,80 @@ public:
 	template<typename T>
 	std::vector<T*>	GetAllActorsOfType();
 
+	const Map<FGuid, Actor*>&		GetActorMap();
+	const Map<FGuid, Component*>&	GetComponentMap();
 
 
+	void						AddPhysicsObject(btRigidBody* Obj);
+	void						AddCollisionObject(btCollisionObject* Obj);
 
+	// Controllers //
 
-	void												AddPhysicsObject(btRigidBody* Obj);
-	void												AddCollisionObject(btCollisionObject* Obj);
+	void						RegisterController(Controller* NewController);
+	void						DeRegisterController(Controller* OldController);
+	Controller*					GetLocalController() const;
 
-	//= Controllers ========
+	// Registration //
 
-	void												RegisterController(Controller* NewController);
-	void												DeRegisterController(Controller* OldController);
-	Controller*											GetLocalController() const;
+	void						RegisterGameObject(GameObject* newObject);
+	void						RegisterGameObject(GameObject* newObject, FGuid guid); //Register with specific guid
 
-	//= Registration =
+	// Debug Drawing //
 
-	void												RegisterGameObject(GameObject* newObject);
-	void												RegisterGameObject(GameObject* newObject, FGuid guid); //Register with specific guid
-
-
-	//= Getters etc
-	LineBatcher&										GetLineBatcher() const	{ return sm_LineBatcher; };
-	static LineBatcher&									GetLineBatcher_S();
-	BulletDebugDraw&									GetPhysicsDebugDrawer() { return m_DebugDrawer; }
-
-	const Map<FGuid, Actor*>&			GetActorMap()			{ return m_actorMap; }
-	const Map<FGuid, Component*>&		GetComponentMap()		{ return m_componentMap; }
-
-	WorldState											GetWorldState() const;
-
-	void												PrintAllPhysicsObjects() const;
-
-	void												StartGame();
-	void												PauseGame();
-	void												UnpauseGame();
-	bool												StopGame();
-
-protected:
-	friend class Application;
-
-	//= Protected Functions ===============
-
-
-	void												InitialisePhysics(bool Force = false);
+	LineBatcher&				GetLineBatcher();
+	BulletDebugDraw&			GetPhysicsDebugDrawer();
+	void						PrintAllPhysicsObjects() const;
 
 private:
-	friend class Inspector;
 
-	//= Private Variables =================
+	// Private Functions //////////////////////////////////////////
 
-	std::string											m_WorldName;
-	Level*												m_MainLevel;
+	void						InitialisePhysics(bool Force = false);
+
+private:
+
+	// Private Variables //////////////////////////////////////////
+
+	std::string											m_name;
+	Level*												m_level;
+
 	WorldState											m_worldState;
 	WorldState											m_previousState;
 
-	//= Lookup =
+	// Object Management //
 
 	std::unordered_map<FGuid, Actor*>					m_actorMap;
 	std::unordered_map<FGuid, Component*>				m_componentMap;
 
-	//=== World Physics ===
+	// Physics //
 
 	/* Default memory setup */
-	btDefaultCollisionConfiguration*					m_CollisionConfig;
+	btDefaultCollisionConfiguration*					m_collisionConfig;
 	/* Default single threaded collision dispatcher */
-	btCollisionDispatcher*								m_Dispatcher;
+	btCollisionDispatcher*								m_dispatcher;
 	/// btDbvtBroadphase is a good general purpose broadphase . You can also try out btAxis3Sweep .
-	btBroadphaseInterface*								m_OverlappingPairCache;
+	btBroadphaseInterface*								m_overlappingPairCache;
 	/// the default constraint solver . For parallel processing you can use a different solver (see Extras / BulletMultiThreaded)
-	btSequentialImpulseConstraintSolver*				m_Solver;
-	btDiscreteDynamicsWorld*							m_PhysicsWorld;
+	btSequentialImpulseConstraintSolver*				m_solver;
+	btDiscreteDynamicsWorld*							m_physicsWorld;
 
-	//= Debug ===
+	// Debug Information //
 
-	BulletDebugDraw										m_DebugDrawer;
-	static LineBatcher									sm_LineBatcher;
+	LineBatcher											m_lineBatcher;
+	BulletDebugDraw										m_debugDrawer;
 	bool												m_LogGameObjectRegistering;
 	bool												m_LogGameObjectDestruction;
 
-	//= Other =======
+	// Controllers //
 
-	//= Editor =========
+	std::vector<Controller*>							m_registeredControllers;
+
+	// Editor //
 
 #if WITH_EDITOR
-	class EditorCamera*									m_EditorCam;
-	string												m_defaultSaveFileName;
+	class EditorCamera*									m_editorCam;
+	std::string											m_defaultSaveFileName;
 #endif
-
-	//= Controllers =======
-
-	std::vector<Controller*>							m_RegisteredControllers;
 };
 
 // Inline Function Definitions ///////////////////////////////////////////////////////////////
@@ -263,6 +253,11 @@ inline T* World::FindComponent(FGuid guid) const
 	return dynamic_cast<T*>(FindComponent(guid));
 }
 
+inline const std::string& World::GetName() const
+{
+	return m_name;
+}
+
 inline bool World::IsGamePaused() const
 {
 	return m_worldState == WorldState::Paused;
@@ -271,4 +266,24 @@ inline bool World::IsGamePaused() const
 inline WorldState World::GetWorldState() const 
 { 
 	return m_worldState;
+}
+
+inline LineBatcher& World::GetLineBatcher() 
+{ 
+	return m_lineBatcher;
+};
+
+inline BulletDebugDraw& World::GetPhysicsDebugDrawer()
+{ 
+	return m_debugDrawer; 
+}
+
+inline const Map<FGuid, Actor*>& World::GetActorMap() 
+{ 
+	return m_actorMap; 
+}
+
+inline const Map<FGuid, Component*>& World::GetComponentMap() 
+{ 
+	return m_componentMap; 
 }
