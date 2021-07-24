@@ -8,11 +8,11 @@
 
 std::random_device						GUIDGen::m_RandomDevice;
 std::mt19937							GUIDGen::m_MTEngine(GUIDGen::m_RandomDevice());
-std::uniform_int_distribution<FGUID>	GUIDGen::m_Distribution;
+std::uniform_int_distribution<FGuid>	GUIDGen::m_Distribution;
 
 // Function Definitions ////////////////////////////////////////////////
 
-FGUID GUIDGen::Generate()
+FGuid GUIDGen::Generate()
 {
 	//TODO: Better guid gen 
 	//Generate a random 32 bit number.

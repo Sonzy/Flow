@@ -86,7 +86,7 @@ void Component::Deserialize(YAML::Node& Archive)
 
 	if (YAML::Node node = Archive["Component"])
 	{
-		m_ParentObject = World::Get().FindActor(node["ParentActor"].as<FGUID>());
+		m_ParentObject = World::Get().FindActor(node["ParentActor"].as<FGuid>());
 	}
 }
 

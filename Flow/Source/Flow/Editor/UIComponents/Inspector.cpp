@@ -117,7 +117,7 @@ void Inspector::RenderHeirarchy()
 		if (ImGui::BeginChild("Hierarchy"))
 		{
 			char Buffer[256] = { '\0' };
-			for (std::pair<FGUID, Actor*> Object : m_CurrentWorld.GetActorMap())
+			for (std::pair<FGuid, Actor*> Object : m_CurrentWorld.GetActorMap())
 			{
 				Actor* actor = Object.second;
 				sprintf_s(Buffer, "%s (%s)", actor->GetName().c_str(), actor->GetStaticName());

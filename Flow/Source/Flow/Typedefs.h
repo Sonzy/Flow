@@ -1,6 +1,6 @@
 #pragma once
 
-//= Int Types =
+// Int Types //
 
 typedef signed char				int8;
 typedef short					int16;
@@ -11,6 +11,6 @@ typedef unsigned short			uint16;
 typedef unsigned int			uint32;
 typedef unsigned long long		uint64;
 
-//= Other =
+// Other //
 
-typedef uint32					FGUID;
+typedef uint32					FGuid;

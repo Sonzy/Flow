@@ -33,7 +33,7 @@ void Level::Save(YAML::Emitter& file)
 	//= Serialise all actors =
 	file << YAML::Key << "Actors";
 	file << YAML::Value << YAML::BeginSeq;
-	for (const std::pair<FGUID, Actor*> actor : World::Get().GetActorMap())
+	for (const std::pair<FGuid, Actor*> actor : World::Get().GetActorMap())
 	{
 		if (actor.second->IsOwned() == false)
 		{
@@ -47,7 +47,7 @@ void Level::Save(YAML::Emitter& file)
 	//= Serialise all components =
 	file << YAML::Key << "Components";
 	file << YAML::Value << YAML::BeginSeq;
-	for (const std::pair<FGUID, Component*> component : World::Get().GetComponentMap())
+	for (const std::pair<FGuid, Component*> component : World::Get().GetComponentMap())
 	{
 		if (component.second->IsOwned() == false)
 		{
@@ -88,7 +88,7 @@ bool Level::Load(YAML::Node& Input)
 				continue;
 			}
 
-			World::Get().RegisterGameObject(NewComponent, GameObject["Guid"].as<FGUID>());
+			World::Get().RegisterGameObject(NewComponent, GameObject["Guid"].as<FGuid>());
 			NewComponent->Deserialize(componentNode);
 		}
 	}
@@ -109,7 +109,7 @@ bool Level::Load(YAML::Node& Input)
 				continue;
 			}
 
-			World::Get().RegisterGameObject(NewActor, GameObject["Guid"].as<FGUID>());
+			World::Get().RegisterGameObject(NewActor, GameObject["Guid"].as<FGuid>());
 			NewActor->Deserialize(actor);
 		}
 	}
@@ -119,7 +119,7 @@ bool Level::Load(YAML::Node& Input)
 
 void Level::InitialiseTickList()
 {
-	for (std::pair<FGUID, Actor*> pair : m_Actors)
+	for (std::pair<FGuid, Actor*> pair : m_Actors)
 	{
 		Actor* actor = pair.second;
 		if (actor->IsTickEnabled())
@@ -131,7 +131,7 @@ void Level::InitialiseTickList()
 
 void Level::DispatchBeginPlay()
 {
-	for (std::pair<FGUID, Actor*> pair : m_Actors)
+	for (std::pair<FGuid, Actor*> pair : m_Actors)
 	{
 		pair.second->BeginPlay();
 	}
@@ -140,7 +140,7 @@ void Level::DispatchBeginPlay()
 #if WITH_EDITOR
 void Level::DispatchEditorBeginPlay()
 {
-	for (std::pair<FGUID, Actor*> pair : m_Actors)
+	for (std::pair<FGuid, Actor*> pair : m_Actors)
 	{
 		pair.second->EditorBeginPlay();
 	}

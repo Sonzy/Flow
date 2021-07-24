@@ -41,12 +41,12 @@ public:
 public:
 	// Public Functions ////////////////////////////
 
-	Icon(FGUID guid, TextureAsset* tex);
+	Icon(FGuid guid, TextureAsset* tex);
 
 	void							RefreshBinds(const IconManager& manager);
 	virtual DirectX::XMMATRIX		GetTransformXM() const override;
 
-	FGUID							m_guid;
+	FGuid							m_guid;
 	Vector3							m_position;
 	Icon::Alignment					m_alignment;
 	Vector4							m_tint;
@@ -75,8 +75,8 @@ public:
 
 	IconManager();
 
-	void								RegisterIcon(FGUID guid, const IconData& data);
-	void								RemoveIcon(FGUID guid);
+	void								RegisterIcon(FGuid guid, const IconData& data);
+	void								RemoveIcon(FGuid guid);
 	void								Reset();
 
 	virtual void						Update() override;
@@ -90,13 +90,13 @@ public:
 	const Array<uint16>&				GetIconIndices() const;
 	const VertexLayout&					GetIconLayout() const;
 
-	Icon&								GetIcon(FGUID iconGuid);
+	Icon&								GetIcon(FGuid iconGuid);
 	float								GetIconSize() const;
 
 private:
 	static Material*						sm_iconMaterialDefault;
 
-	std::unordered_map<FGUID, Icon*>		m_iconData;
+	std::unordered_map<FGuid, Icon*>		m_iconData;
 
 	VertexBuffer							m_iconVerticesTopLeftAligned;
 	VertexBuffer							m_iconVerticesCentreAligned;

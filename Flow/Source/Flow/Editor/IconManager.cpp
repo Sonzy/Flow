@@ -68,7 +68,7 @@ IconManager::IconManager()
 	m_iconIndices.Add(0);
 }
 
-void IconManager::RegisterIcon(FGUID guid, const IconData& data)
+void IconManager::RegisterIcon(FGuid guid, const IconData& data)
 {
 	if (m_iconData.find(guid) != m_iconData.end())
 	{
@@ -82,7 +82,7 @@ void IconManager::RegisterIcon(FGUID guid, const IconData& data)
 	m_iconData[guid] = newIcon;
 }
 
-void IconManager::RemoveIcon(FGUID guid)
+void IconManager::RemoveIcon(FGuid guid)
 {
 	auto iterator = m_iconData.find(guid);
 	if (iterator != m_iconData.end())
@@ -160,7 +160,7 @@ const VertexLayout& IconManager::GetIconLayout() const
 	return m_iconLayout;
 }
 
-Icon& IconManager::GetIcon(FGUID iconGuid)
+Icon& IconManager::GetIcon(FGuid iconGuid)
 {
 	return *m_iconData[iconGuid]; //TODO: what if we get an invalid one lololol do it soon
 }
@@ -170,7 +170,7 @@ float IconManager::GetIconSize() const
 	return m_iconSize; //Pixels
 }
 
-Icon::Icon(FGUID guid, TextureAsset* tex)
+Icon::Icon(FGuid guid, TextureAsset* tex)
 	: m_guid(guid)
 	, m_tint(1.0f, 1.0f, 1.0f, 1.0f)
 	, m_vCB(new VertexConstantBuffer<IconVertexData>(1)) //TODO: no magic numbers

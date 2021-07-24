@@ -38,6 +38,6 @@ private:
 	//= Private Variables ==========
 
 	std::string								m_Name;
-	std::unordered_map<FGUID, Actor*>		m_Actors;
+	std::unordered_map<FGuid, Actor*>		m_Actors;
 	std::vector<Actor*>						m_TickList;
 };

@@ -158,7 +158,7 @@ bool SelectionTool::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	uint32 G = *pixelData & 0xff00;
 	uint32 B = *pixelData & 0xff;
 
-	FGUID guid = 0;
+	FGuid guid = 0;
 
 	Renderer::GetContext()->Unmap(m_newTexture.Get(), 0u);
 

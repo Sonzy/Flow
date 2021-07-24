@@ -1,19 +1,20 @@
 #pragma once
 
-//= Includes ============================================
+// Includes ///////////////////////////////////////////////////////
 
 #include <vector>
 #include <memory>
-#include "Bullet/btBulletDynamicsCommon.h"
 #include "Core.h"
+#include "Typedefs.h"
+#include "Bullet/btBulletDynamicsCommon.h"
 #include "GameFramework/Level.h"
+#include "Framework/Types/Map.h"
+#include "Framework/Utils/BulletDebugDrawing.h"
+#include "Framework/Utils/ComponentHelper.h"
 #include "Rendering/Core/DebugDrawing/LineBatcher.h"
 #include "Maths/Vector3.h"
-#include "Framework/Utils\BulletDebugDrawing.h"
-#include "Typedefs.h"
-#include "Framework/Utils/ComponentHelper.h"
 
-//= Forward Declarations =================================
+// Forward Declarations ///////////////////////////////////////////
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -26,7 +27,7 @@ class Controller;
 class Component;
 class GameObject;
 
-//= Enum Definitions ====================================
+// Global Enums ///////////////////////////////////////////////////
 
 enum class WorldState
 {
@@ -35,106 +36,88 @@ enum class WorldState
 	InGame
 };
 
-//= Class Definition ====================================
+// Class Definition ///////////////////////////////////////////////
 
 class FLOW_API World
 {
 public:
 
-	//= Public Template Functions ===================
+	// Public Static Functions ////////////////////////////////////
 
-	template<typename T>
-	T* SpawnActor(const std::string& Name)
-	{
-		static_assert(std::is_base_of<Actor, T>::value, "Trying to spawn a class that isn't an actor");
+	static World&										Get();
+	static btDiscreteDynamicsWorld*						GetPhysicsWorld();
+	static btCollisionWorld::ClosestRayResultCallback	WorldTrace(Vector3 Start, Vector3 End);
 
-		T* newActor = new T(Name);
-		RegisterGameObject(newActor);
+public:
 
-		return newActor;
-	}
+	// Public Functions ///////////////////////////////////////////
 
-	template<typename T>
-	T* DestroyActor(T* act)
-	{
-		static_assert(std::is_base_of<Actor, T>::value, "Tried to destroy a component templated with a non-component type");
+	World();
+	World(const std::string& WorldName);
+	~World();
 
-		return DestroyActor(act->GetGuid()) ? nullptr : act;
-	}
+	// Initialisation //
 
-	template<typename T>
-	T* DestroyComponent(T* comp)
-	{
-		static_assert(std::is_base_of<Component, T>::value, "Tried to destroy a component templated with a non-component type");
+	void						InitialiseWorld();
 
-		return DestroyComponent(comp->GetGuid()) ? nullptr : comp;
-	}
+	// Info //
 
-	template<typename T>
-	std::vector<T*>	GetAllActorsOfType()
-	{
-		std::vector<T*> outVec;
-		for (auto actor : m_actorMap)
-		{
-			if (T* found = dynamic_cast<T*>(actor.second))
-			{
-				outVec.push_back(found);
-			}
-		}
+	const std::string&			GetName();
 
-		return std::move(outVec);
-	}
+	// Updates //
+
+	void						Render();
+	void						Tick(float DeltaTime);
+
+	// Levels //
+
+	void						SaveLevel();
+	void						LoadLevel();
+	void						SavePlayState();
+	void						LoadPlayState();
+
+	// World State //
+
+	bool						IsGamePaused() const;
 
 
-	//= Public Functions ============================
 
-														World();
-														World(const std::string& WorldName);
-														~World();
 
-	void												Tick(float DeltaTime);
-	void												SaveLevel();
-	void												LoadLevel();
-	void												SavePlayState();
-	void												LoadPlayState();
-
-	bool												IsGamePaused() const;
-
-	//TODO: Temp rendering in the level
-	void												Render();
-
-	void												InitialiseWorld();
 #if WITH_EDITOR
-	void												StartEditor();
+	void						StartEditor();
 #endif
 
 	//= Actor manipulation = 
 
-	bool												DestroyActor(FGUID guid);
-	bool												DestroyComponent(FGUID guid);
+	bool						DestroyActor(FGuid guid);
+	bool						DestroyComponent(FGuid guid);
 
-	//= Object Management =
-	Actor*												FindActor(FGUID guid) const;
-	Component*											FindComponent(FGUID guid) const;
+	// Object Management //
 
-	template<typename T>
-	T* FindActor(FGUID guid) const
-	{
-		return dynamic_cast<T*>(FindActor(guid));
-	}
+	Actor*						FindActor(FGuid guid) const;
+	Component*					FindComponent(FGuid guid) const;
 
 	template<typename T>
-	T* FindComponent(FGUID guid) const
-	{
-		return dynamic_cast<T*>(FindComponent(guid));
-	}
+	T* FindActor(FGuid guid) const;
 
-	const std::string&									GetName();
+	template<typename T>
+	T* FindComponent(FGuid guid) const;
 
-	static btCollisionWorld::ClosestRayResultCallback	WorldTrace(Vector3 Start, Vector3 End);
+	template<typename T>
+	T* SpawnActor(const std::string& Name);
 
-	static btDiscreteDynamicsWorld*						GetPhysicsWorld();
-	static World&										Get();
+	template<typename T>
+	T* DestroyActor(T* act);
+
+	template<typename T>
+	T* DestroyComponent(T* comp);
+
+	template<typename T>
+	std::vector<T*>	GetAllActorsOfType();
+
+
+
+
 
 	void												AddPhysicsObject(btRigidBody* Obj);
 	void												AddCollisionObject(btCollisionObject* Obj);
@@ -148,7 +131,7 @@ public:
 	//= Registration =
 
 	void												RegisterGameObject(GameObject* newObject);
-	void												RegisterGameObject(GameObject* newObject, FGUID guid); //Register with specific guid
+	void												RegisterGameObject(GameObject* newObject, FGuid guid); //Register with specific guid
 
 
 	//= Getters etc
@@ -156,8 +139,8 @@ public:
 	static LineBatcher&									GetLineBatcher_S();
 	BulletDebugDraw&									GetPhysicsDebugDrawer() { return m_DebugDrawer; }
 
-	const std::unordered_map<FGUID, Actor*>&			GetActorMap()			{ return m_actorMap; }
-	const std::unordered_map<FGUID, Component*>&		GetComponentMap()		{ return m_componentMap; }
+	const Map<FGuid, Actor*>&			GetActorMap()			{ return m_actorMap; }
+	const Map<FGuid, Component*>&		GetComponentMap()		{ return m_componentMap; }
 
 	WorldState											GetWorldState() const;
 
@@ -188,8 +171,8 @@ private:
 
 	//= Lookup =
 
-	std::unordered_map<FGUID, Actor*>					m_actorMap;
-	std::unordered_map<FGUID, Component*>				m_componentMap;
+	std::unordered_map<FGuid, Actor*>					m_actorMap;
+	std::unordered_map<FGuid, Component*>				m_componentMap;
 
 	//=== World Physics ===
 
@@ -225,6 +208,60 @@ private:
 };
 
 // Inline Function Definitions ///////////////////////////////////////////////////////////////
+
+template<typename T>
+inline T* World::SpawnActor(const std::string& Name)
+{
+	static_assert(std::is_base_of<Actor, T>::value, "Trying to spawn a class that isn't an actor");
+
+	T* newActor = new T(Name);
+	RegisterGameObject(newActor);
+
+	return newActor;
+}
+
+template<typename T>
+inline T* World::DestroyActor(T* act)
+{
+	static_assert(std::is_base_of<Actor, T>::value, "Tried to destroy a component templated with a non-component type");
+
+	return DestroyActor(act->GetGuid()) ? nullptr : act;
+}
+
+template<typename T>
+inline T* World::DestroyComponent(T* comp)
+{
+	static_assert(std::is_base_of<Component, T>::value, "Tried to destroy a component templated with a non-component type");
+
+	return DestroyComponent(comp->GetGuid()) ? nullptr : comp;
+}
+
+template<typename T>
+inline std::vector<T*> World::GetAllActorsOfType()
+{
+	std::vector<T*> outVec;
+	for (auto actor : m_actorMap)
+	{
+		if (T* found = dynamic_cast<T*>(actor.second))
+		{
+			outVec.push_back(found);
+		}
+	}
+
+	return std::move(outVec);
+}
+
+template<typename T>
+inline T* World::FindActor(FGuid guid) const
+{
+	return dynamic_cast<T*>(FindActor(guid));
+}
+
+template<typename T>
+inline T* World::FindComponent(FGuid guid) const
+{
+	return dynamic_cast<T*>(FindComponent(guid));
+}
 
 inline bool World::IsGamePaused() const
 {

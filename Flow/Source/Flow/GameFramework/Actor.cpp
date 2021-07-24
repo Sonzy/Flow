@@ -228,7 +228,7 @@ void Actor::Deserialize(YAML::Node& Archive)
 			bool root = true;
 			for (YAML::iterator::value_type child : node)
 			{
-				WorldComponent* childComponent = world.FindComponent<WorldComponent>(child.as<FGUID>());
+				WorldComponent* childComponent = world.FindComponent<WorldComponent>(child.as<FGuid>());
 				if (childComponent == nullptr)
 				{
 					continue;

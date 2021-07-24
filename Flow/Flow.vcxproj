@@ -146,15 +146,14 @@
     <ClInclude Include="Source\Flow\Editor\UndoSystem\UndoManager.h" />
     <ClInclude Include="Source\Flow\EntryPoint.h" />
     <ClInclude Include="Source\Flow\Framework\Types\ComPtr.h" />
+    <ClInclude Include="Source\Flow\Framework\Types\Map.h" />
     <ClInclude Include="Source\Flow\Framework\Utils\DirectX11\DirectX11Utils.h" />
     <ClInclude Include="Source\Flow\Framework\Utils\DirectX11\dxerr.h" />
     <ClInclude Include="Source\Flow\Framework\Events\ApplicationEvent.h" />
     <ClInclude Include="Source\Flow\Framework\Events\Event.h" />
     <ClInclude Include="Source\Flow\Framework\Events\KeyEvent.h" />
     <ClInclude Include="Source\Flow\Framework\Events\MouseEvent.h" />
-    <ClInclude Include="Source\Flow\Framework\Types\Array.h" />
     <ClInclude Include="Source\Flow\Framework\Types\HashString.h" />
-    <ClInclude Include="Source\Flow\Framework\Types\String.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Bindable.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\BlendState.h" />
     <ClInclude Include="Source\Flow\Rendering\Core\Bindables\Codex.h" />

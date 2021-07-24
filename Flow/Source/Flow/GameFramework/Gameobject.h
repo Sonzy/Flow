@@ -42,8 +42,8 @@ public:
 	std::string&			GetWritableName();
 	void					SetName(const std::string& NewName);
 
-	FGUID					GetGuid() const			{ return m_guid; }
-	void					SetGuid(FGUID guid)		{ m_guid = guid; }
+	FGuid					GetGuid() const			{ return m_guid; }
+	void					SetGuid(FGuid guid)		{ m_guid = guid; }
 
 
 	//= Serialisation =
@@ -63,6 +63,6 @@ protected:
 	// Protected Variables /////////////////////////////////////////////////
 
 	std::string				m_name;
-	FGUID					m_guid;
+	FGuid					m_guid;
 	bool					m_owned;
 };

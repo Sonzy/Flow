@@ -512,7 +512,7 @@ void WorldComponent::Deserialize(YAML::Node& Archive)
 
 	if (YAML::Node node = Archive["WorldComponent"])
 	{
-		SetParent(World::Get().FindActor(node["ParentActor"].as<FGUID>()));
+		SetParent(World::Get().FindActor(node["ParentActor"].as<FGuid>()));
 
 		//TODO: mebby reimplement. for now the actor handles this
 		//if (node["IsRoot"].as<bool>())
@@ -527,7 +527,7 @@ void WorldComponent::Deserialize(YAML::Node& Archive)
 		//	}
 		//}
 
-		SetParentComponent(dynamic_cast<WorldComponent*>(World::Get().FindComponent(node["ParentComponent"].as<FGUID>())));
+		SetParentComponent(dynamic_cast<WorldComponent*>(World::Get().FindComponent(node["ParentComponent"].as<FGuid>())));
 
 		SetRelativeTransform(node["ComponentTransform"].as<Transform>());
 
@@ -539,7 +539,7 @@ void WorldComponent::Deserialize(YAML::Node& Archive)
 			World& world = World::Get();			
 			for (YAML::iterator::value_type child : node)
 			{
-				WorldComponent* childComponent = world.FindComponent<WorldComponent>(child.as<FGUID>());
+				WorldComponent* childComponent = world.FindComponent<WorldComponent>(child.as<FGuid>());
 				if (childComponent == nullptr)
 				{
 					continue;

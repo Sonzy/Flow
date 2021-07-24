@@ -114,8 +114,8 @@ void World::LoadLevel()
 	//Get all actors
 
 #if WITH_EDITOR
-	std::vector<FGUID> actorsToDestroy;
-	for (const std::pair<FGUID, Actor*>& Act : m_actorMap)
+	std::vector<FGuid> actorsToDestroy;
+	for (const std::pair<FGuid, Actor*>& Act : m_actorMap)
 	{
 		actorsToDestroy.push_back(Act.first);
 	}
@@ -126,8 +126,8 @@ void World::LoadLevel()
 	{
 		cameraActor = cam->GetParentActor();
 	}
-	std::vector<FGUID> actorsToDestroy;
-	for (const std::pair<FGUID, Actor*>& Act : m_actorMap)
+	std::vector<FGuid> actorsToDestroy;
+	for (const std::pair<FGuid, Actor*>& Act : m_actorMap)
 	{
 		if (Act.second == cameraActor)
 		{
@@ -139,7 +139,7 @@ void World::LoadLevel()
 #endif // WITH_EDITOR
 
 	//Destroy them
-	for (FGUID guid : actorsToDestroy)
+	for (FGuid guid : actorsToDestroy)
 	{
 		DestroyActor(guid);
 	}
@@ -147,7 +147,7 @@ void World::LoadLevel()
 	//Clear the components that are left over for some reason
 	if (const bool reportFreeComponents = true)
 	{
-		for (const std::pair<FGUID, Component*>& Act : m_componentMap)
+		for (const std::pair<FGuid, Component*>& Act : m_componentMap)
 		{
 			FLOW_ENGINE_WARNING("Deleted free component %lu - %s", Act.second->GetGuid(), Act.second->GetName().c_str());
 			actorsToDestroy.push_back(Act.first);
@@ -177,7 +177,7 @@ void World::LoadLevel()
 
 #if WITH_EDITOR
 	//Reinitialise all actors for editor
-	for (std::pair<FGUID, Actor*> Act : m_actorMap)
+	for (std::pair<FGuid, Actor*> Act : m_actorMap)
 	{
 		Act.second->EditorBeginPlay();
 	}
@@ -280,7 +280,7 @@ void World::StartEditor()
 
 #endif // WITH_EDITOR
 
-bool World::DestroyActor(FGUID guid)
+bool World::DestroyActor(FGuid guid)
 {
 	if (guid == -1)
 	{
@@ -340,7 +340,7 @@ bool World::DestroyActor(FGUID guid)
 	return true;
 }
 
-bool World::DestroyComponent(FGUID guid)
+bool World::DestroyComponent(FGuid guid)
 {
 	if (guid == -1)
 	{
@@ -493,13 +493,13 @@ void World::InitialisePhysics(bool Force)
 	FLOW_ENGINE_LOG("World::InitialisePhysics: Physics Initialised");
 }
 
-Actor* World::FindActor(FGUID guid) const
+Actor* World::FindActor(FGuid guid) const
 {
 	auto iterator = m_actorMap.find(guid);
 	return iterator == m_actorMap.end() ? nullptr : iterator->second;
 }
 
-Component* World::FindComponent(FGUID guid) const
+Component* World::FindComponent(FGuid guid) const
 {
 	auto iterator = m_componentMap.find(guid);
 	return iterator == m_componentMap.end() ? nullptr : iterator->second;
@@ -602,7 +602,7 @@ void World::RegisterGameObject(GameObject* newObject)
 		return;
 	}
 
-	FGUID newGuid = GUIDGen::Generate();
+	FGuid newGuid = GUIDGen::Generate();
 	newObject->SetGuid(newGuid);
 
 	if (Actor* newActor = dynamic_cast<Actor*>(newObject))
@@ -627,15 +627,15 @@ void World::RegisterGameObject(GameObject* newObject)
 	}
 }
 
-void World::RegisterGameObject(GameObject* newObject, FGUID guid)
+void World::RegisterGameObject(GameObject* newObject, FGuid guid)
 {
-	std::unordered_map<FGUID, Actor*>::iterator foundActor = m_actorMap.find(guid);
+	std::unordered_map<FGuid, Actor*>::iterator foundActor = m_actorMap.find(guid);
 	if (foundActor != m_actorMap.end())
 	{
 		m_actorMap.erase(foundActor);
 	}
 
-	std::unordered_map<FGUID, Component*>::iterator foundComponent = m_componentMap.find(guid);
+	std::unordered_map<FGuid, Component*>::iterator foundComponent = m_componentMap.find(guid);
 	if (foundComponent != m_componentMap.end())
 	{
 		m_componentMap.erase(foundComponent);
