@@ -41,6 +41,8 @@ public:
 	void								SetPixelShader(const std::string& ShaderName);
 	void								SetVertexShader(const std::string& ShaderName);
 
+	bool								HasTexture() const;
+
 protected:
 
 	//= Protected Variables ===============================
@@ -50,3 +52,9 @@ protected:
 	ShaderAsset*						m_PixelShader;
 };
 
+// Inline Function Definitions /////////////////////////////
+
+inline bool Material::HasTexture() const
+{
+	return m_Texture != nullptr;
+}

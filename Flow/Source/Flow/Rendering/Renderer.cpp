@@ -52,7 +52,10 @@ void Renderer::Submit(Renderable* const  Object)
 
 	CHECK_RETURN(!Object, "Renderer::Submit: Renderable was nullptr");
 
-	assert(Object->m_techniques.size() != 0 && "Renderer::Submit: Object %s had 0 techniques");
+	if (Object->m_techniques.size() == 0)
+	{
+		FLOW_ENGINE_ERROR("Renderer::Submit: Trying to render object without any techniques");
+	}
 
 	for (const auto& T : Object->m_techniques)
 	{

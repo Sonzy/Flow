@@ -158,6 +158,11 @@ void Application::InitialiseApplication()
 		Mat_Texture2D* matTexture2D = AssetSystem::CreateMaterial<Mat_Texture2D>("Mat_Texture2D")->GetMaterial<Mat_Texture2D>();
 		matTexture2D->SetTexture("Icon_Light");
 		matTexture2D->SetPixelShader("Texture2D_PS");
+
+		Mat_TexturedPhong* SpriteTest = AssetSystem::CreateMaterial<Mat_TexturedPhong>("Mat_SpriteTest")->GetMaterial<Mat_TexturedPhong>();
+		SpriteTest->SetTexture("Blue");
+		SpriteTest->SetPixelShader("Texture_PS");
+		SpriteTest->SetVertexShader("Texture_VS");
 	}
 
 	{

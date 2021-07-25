@@ -25,6 +25,7 @@ public:
 							Component(const std::string& Name);
 	virtual					~Component();
 
+	virtual void			Initialise();
 	virtual void			OnRegistered();
 	bool					IsRegistered() const;
 

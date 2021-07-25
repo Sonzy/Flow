@@ -35,6 +35,7 @@ public:
 
 	virtual DirectX::XMMATRIX	GetTransformXM() const;
 
+	virtual void				Initialise() override;
 	virtual void				OnRegistered() override;
 
 protected:
@@ -44,4 +45,10 @@ protected:
 	virtual void				RefreshBinds();
 
 	SelectionPassConstantBuffer m_SelectionConstantBuffer;
+
+private:
+
+	// Private Functions //////////////////////////
+
+	void						SetupSelection();
 };

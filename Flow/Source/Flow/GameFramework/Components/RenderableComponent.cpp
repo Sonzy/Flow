@@ -40,6 +40,11 @@ DirectX::XMMATRIX RenderableComponent::GetTransformXM() const
 		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
 }
 
+void RenderableComponent::Initialise()
+{
+	RefreshBinds();
+}
+
 void RenderableComponent::OnRegistered()
 {
 	WorldComponent::OnRegistered();
@@ -54,26 +59,33 @@ void RenderableComponent::OnRegistered()
 
 void RenderableComponent::RefreshBinds()
 {
-	if (IsRegistered() == true)
+	SetupSelection();
+}
+
+void RenderableComponent::SetupSelection()
+{
+	if (IsRegistered() == false)
 	{
-		Technique Selection = Technique("RenderableComponent_Selection");
-		Step Rendering(RenderPass::Selection);
-
-		char buffer[64];
-		snprintf(buffer, 64, "SelectionBuffer_%s", std::to_string(GetGuid()).c_str());
-		Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, buffer));
-
-		Bindables::VertexShader* vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
-		ID3DBlob* vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
-		Rendering.AddBindable(std::move(vShader));
-		Rendering.AddBindable(Bindables::PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
-
-		Rendering.AddBindable(Bindables::InputLayout::Resolve(m_vertexBuffer->GetLayout(), vShaderByteCode));
-
-		Rendering.AddBindable(new TransformConstantBuffer(this));
-
-		Selection.AddStep(std::move(Rendering));
-
-		AddTechnique(Selection);
+		return;
 	}
+
+	Technique Selection = Technique("RenderableComponent_Selection");
+	Step Rendering(RenderPass::Selection);
+
+	char buffer[64];
+	snprintf(buffer, 64, "SelectionBuffer_%s", std::to_string(GetGuid()).c_str());
+	Rendering.AddBindable(PixelConstantBuffer<SelectionPassConstantBuffer>::Resolve(m_SelectionConstantBuffer, MaterialCommon::Register::Selection, buffer));
+
+	Bindables::VertexShader* vShader = Bindables::VertexShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_VS")->GetPath());
+	ID3DBlob* vShaderByteCode = static_cast<Bindables::VertexShader&>(*vShader).GetByteCode();
+	Rendering.AddBindable(std::move(vShader));
+	Rendering.AddBindable(Bindables::PixelShader::Resolve(AssetSystem::GetAsset<ShaderAsset>("Selection_PS")->GetPath()));
+
+	Rendering.AddBindable(Bindables::InputLayout::Resolve(m_vertexBuffer->GetLayout(), vShaderByteCode));
+
+	Rendering.AddBindable(new TransformConstantBuffer(this));
+
+	Selection.AddStep(std::move(Rendering));
+
+	AddTechnique(Selection);
 }

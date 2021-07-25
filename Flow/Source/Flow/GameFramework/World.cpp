@@ -612,6 +612,7 @@ void World::RegisterGameObject(GameObject* newObject)
 	{
 		m_componentMap[newGuid] = newComponent;
 		newComponent->OnRegistered();
+		newComponent->Initialise();
 
 		if (m_LogGameObjectRegistering)
 		{
@@ -651,6 +652,8 @@ void World::RegisterGameObject(GameObject* newObject, FGuid guid)
 	{
 		m_componentMap[guid] = newComponent;
 		newComponent->OnRegistered();
+		newComponent->Initialise();
+
 
 		if (m_LogGameObjectRegistering)
 		{

@@ -48,6 +48,11 @@ private:
 
 	void						GenerateCollision();
 
+#if WITH_EDITOR
+
+	bool						DrawMaterialSelector();
+#endif
+
 private:
 
 	// Private Variables //////////////////////////////////////////
@@ -55,5 +60,6 @@ private:
 	//TODO:	//Texture*					m_Sprite;
 	Vector4						m_Tint;
 	Material*					m_Material;
+	std::string					m_textureName;
 	bool						m_DoubleSided;
 };

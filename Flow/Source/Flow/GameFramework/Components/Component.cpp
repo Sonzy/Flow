@@ -22,6 +22,10 @@ Component::~Component()
 {
 }
 
+void Component::Initialise()
+{
+}
+
 void Component::OnRegistered()
 {
 	m_registered = true;
