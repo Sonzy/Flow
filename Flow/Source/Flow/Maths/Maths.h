@@ -81,5 +81,5 @@ namespace Maths
 
 	bool			CompareFloat(float a, float b, float epsilon = 0.0001f);
 
-
+	Vector3			Transform(DirectX::XMMATRIX matrix, Vector3 position);
 }

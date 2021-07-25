@@ -15,7 +15,7 @@ CameraActor::CameraActor(const std::string& Name)
 {
 	m_CameraComponent = CreateComponent<CameraComponent>("Camera");
 	m_CameraComponent->SetOwned(false);
-	m_RootComponent = m_CameraComponent;
+	m_rootComponent = m_CameraComponent;
 }
 
 void CameraActor::OnControlled(Controller* OwningController)
@@ -53,11 +53,11 @@ void CameraActor::Tick(float DeltaTime)
 			Vector3 Direction = (m_LastMousePosition - Pos);
 			Direction.x = Direction.x * m_CameraHorizontalRotationSpeed; //Horizontal Sensitivity
 			Direction.y = Direction.y * m_CameraVerticalRotationSpeed;  //Vertical Sensitivity
-			m_RootComponent->AddRelativeRotation(Rotator(-Direction.y, 0.0f, -Direction.x));
+			m_rootComponent->AddRelativeRotation(Rotator(-Direction.y, 0.0f, -Direction.x));
 		}
 	}
 
-	m_RootComponent->SetRelativePosition(m_RootComponent->GetRelativePosition() + m_RootComponent->GetRelativeRotation().RotateVector(Translation));
+	m_rootComponent->SetRelativePosition(m_rootComponent->GetRelativePosition() + m_rootComponent->GetRelativeRotation().RotateVector(Translation));
 	m_LastMousePosition = Pos;
 
 	m_CameraComponent->CacheMatrices();

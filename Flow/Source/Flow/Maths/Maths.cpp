@@ -307,6 +307,16 @@ bool Maths::CompareFloat(float a, float b, float epsilon)
 	return abs(b - a) < epsilon;
 }
 
+Vector3 Maths::Transform(DirectX::XMMATRIX matrix, Vector3 position)
+{
+	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(reinterpret_cast<DirectX::XMFLOAT3*>(&position));
+	DirectX::XMVECTOR transformed = DirectX::XMVector3Transform(vec, matrix);
+
+	DirectX::XMFLOAT3 out{};
+	DirectX::XMStoreFloat3(&out, transformed);
+	return out;
+}
+
 FLOW_API Vector3::Vector3(Vector4 v)
 	: x(v.x), y(v.y), z(v.z)
 {}

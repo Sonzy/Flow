@@ -247,6 +247,11 @@ void World::Render()
 	{
 		Act.second->Render();
 	}
+
+	for (auto component : m_componentMap)
+	{
+		component.second->CustomRender();
+	}
 }
 
 void World::InitialiseWorld()

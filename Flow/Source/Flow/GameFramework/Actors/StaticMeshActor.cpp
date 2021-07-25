@@ -14,7 +14,7 @@ StaticMeshActor::StaticMeshActor(const std::string& NewName)
 	: Actor(NewName)
 {
 	m_MeshComponent = CreateComponent<StaticMeshComponent>("Mesh Component");
-	m_RootComponent = m_MeshComponent;
+	m_rootComponent = m_MeshComponent;
 	m_MeshComponent->SetOwned(false);
 }
 
@@ -42,7 +42,7 @@ void StaticMeshActor::Serialize(YAML::Emitter& Archive)
 
 void StaticMeshActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
+	m_rootComponent = World::Get().DestroyComponent(m_rootComponent);
 
 	Actor::Deserialize(Archive);
 

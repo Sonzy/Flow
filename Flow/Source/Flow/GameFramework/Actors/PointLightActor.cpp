@@ -17,7 +17,7 @@ PointLightActor::PointLightActor(const std::string& Name)
 {
 	m_PointLight = CreateComponent<PointLightComponent>("Point Light");
 	m_PointLight->SetOwned(false);
-	m_RootComponent = m_PointLight;
+	m_rootComponent = m_PointLight;
 }
 
 void PointLightActor::Serialize(YAML::Emitter& Archive)
@@ -34,7 +34,7 @@ void PointLightActor::Serialize(YAML::Emitter& Archive)
 
 void PointLightActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
+	m_rootComponent = World::Get().DestroyComponent(m_rootComponent);
 
 	Actor::Deserialize(Archive);
 

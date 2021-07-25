@@ -65,6 +65,19 @@ void WorldComponent::IconUpdate(IconManager& iconManager)
 }
 #endif
 
+DirectX::XMMATRIX WorldComponent::GetTransformXM() const
+{
+	PROFILE_FUNCTION();
+
+	Transform WorldTransform = GetWorldTransform();
+	Rotator RadiansRotation = Rotator::AsRadians(WorldTransform.m_Rotation);
+
+	return 	DirectX::XMMatrixScaling(WorldTransform.m_Scale.x, WorldTransform.m_Scale.y, WorldTransform.m_Scale.z) *
+		DirectX::XMMatrixRotationQuaternion(Maths::EulersToQuaternion(RadiansRotation)) *
+		//TODO: XMMAtrixRotationRollPitchYaw doesn't work here. Not sure what is different between the conversion formulae
+		DirectX::XMMatrixTranslation(WorldTransform.m_Position.x, WorldTransform.m_Position.y, WorldTransform.m_Position.z);
+}
+
 void WorldComponent::BeginPlay()
 {
 	for (auto& Child : m_Children)

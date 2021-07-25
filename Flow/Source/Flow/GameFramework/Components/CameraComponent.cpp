@@ -1,14 +1,24 @@
-#include "pch.h"
-#include "CameraComponent.h"
-#include "Framework\Input\Input.h"
+// Pch //////////////////////////////////////////////////////////////////////
 
-#if WITH_EDITOR
-#include "Assets/AssetSystem.h"
-#include "Editor/Editor.h"
-#include "Editor/IconManager.h"
-#endif
+#include "pch.h"
+
+// Main Include /////////////////////////////////////////////////////////////
+
+#include "CameraComponent.h"
+
+// Includes /////////////////////////////////////////////////////////////////
 
 #include <yaml-cpp/yaml.h>
+#include "Framework/Input/Input.h"
+#include "Framework/Utils/DebugDraw.h"
+
+#if WITH_EDITOR
+	#include "Assets/AssetSystem.h"
+	#include "Editor/Editor.h"
+	#include "Editor/IconManager.h"
+#endif
+
+// Function Definitions /////////////////////////////////////////////////////
 
 CameraComponent::CameraComponent()
 	: CameraComponent("Camera Component")
@@ -56,6 +66,49 @@ void CameraComponent::MoveCamera(const Transform& NewTransform)
 Transform CameraComponent::GetCameraTransform() const
 {
 	return m_RelativeTransform;
+}
+
+void CameraComponent::CustomRender()
+{
+	// Draw a camera frustum //
+
+	DirectX::XMMATRIX matrix = GetTransformXM();
+
+	const float nearZ = 0.5f;
+	const float farZ = 500.0f;
+	const float zRatio = farZ / nearZ;
+
+	const float width = 1.0f;
+	const float height = (float)Renderer::GetWindowSize().y / (float)Renderer::GetWindowSize().x;
+
+	const float nearX = width / 2.0f;
+	const float nearY = height / 2.0f;
+	const float farX = nearX * zRatio;
+	const float farY = nearY * zRatio;
+
+	Vector3 aTransformed = Maths::Transform(matrix, Vector3(-nearX, nearY, nearZ));
+	Vector3 bTransformed = Maths::Transform(matrix, Vector3(nearX, nearY, nearZ));
+	Vector3 cTransformed = Maths::Transform(matrix, Vector3(nearX, -nearY, nearZ));
+	Vector3 dTransformed = Maths::Transform(matrix, Vector3(-nearX, -nearY, nearZ));
+	Vector3 eTransformed = Maths::Transform(matrix, Vector3(-farX, farY, farZ));
+	Vector3 fTransformed = Maths::Transform(matrix, Vector3(farX, farY, farZ));
+	Vector3 gTransformed = Maths::Transform(matrix, Vector3(farX, -farY, farZ));
+	Vector3 hTransformed = Maths::Transform(matrix, Vector3(-farX, -farY, farZ));
+
+	DebugDraw::DrawLine(aTransformed, bTransformed);
+	DebugDraw::DrawLine(bTransformed, cTransformed);
+	DebugDraw::DrawLine(cTransformed, dTransformed);
+	DebugDraw::DrawLine(dTransformed, aTransformed);
+
+	DebugDraw::DrawLine(eTransformed, fTransformed);
+	DebugDraw::DrawLine(fTransformed, gTransformed);
+	DebugDraw::DrawLine(gTransformed, hTransformed);
+	DebugDraw::DrawLine(hTransformed, eTransformed);
+
+	DebugDraw::DrawLine(aTransformed, eTransformed);
+	DebugDraw::DrawLine(bTransformed, fTransformed);
+	DebugDraw::DrawLine(cTransformed, gTransformed);
+	DebugDraw::DrawLine(dTransformed, hTransformed);
 }
 
 DirectX::XMMATRIX CameraComponent::GetViewMatrix() const

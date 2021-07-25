@@ -45,6 +45,10 @@ public:
 	virtual void			Serialize(YAML::Emitter& Archive) override;
 	virtual void			Deserialize(YAML::Node& Archive) override;
 
+#if WITH_EDITOR
+	virtual void			CustomRender();
+#endif
+
 protected:
 
 	//= Protected Variables ===========================

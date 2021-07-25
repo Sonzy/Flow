@@ -94,4 +94,8 @@ void Component::Deserialize(YAML::Node& Archive)
 	}
 }
 
+void Component::CustomRender()
+{
+}
+
 

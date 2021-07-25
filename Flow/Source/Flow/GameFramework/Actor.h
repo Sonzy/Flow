@@ -1,60 +1,60 @@
 #pragma once
 
-//= Includes ===============================================
+// Includes ////////////////////////////////////////////////////////////
 
 #include <fstream>
 #include <memory>
 #include <type_traits>
 
-#include "Bullet/btBulletCollisionCommon.h"
-#include "Components\Component.h"
-#include "Components\Component.h"
-#include "Framework/Logging\Log.h"
 #include "Gameobject.h"
-#include "Maths/Maths.h"
+#include "Bullet/btBulletCollisionCommon.h"
+#include "Components/Component.h"
+#include "Components/Component.h"
+#include "Framework/Logging\Log.h"
 #include "GameFramework/World.h"
+#include "Maths/Maths.h"
 
-//= Forward Declarations ===================================
+// Forward Declarations ////////////////////////////////////////////////
 
 class WorldComponent;
 class Controller;
 
-//= Class Definitions ======================================
+// Class Definitions ///////////////////////////////////////////////////
 
 class FLOW_API Actor : public GameObject
 {
+	friend class Level;
+
 public:
 
 	REGISTER_CLASS(Actor)
 
-	//= Public Functions ============================
+	// Public Functions ////////////////////////////////////////////////
 
 							Actor();
 							Actor(const std::string& Name);
 	virtual					~Actor();
 
 	virtual void			OnRegistered();
-
 	virtual void			BeginPlay();
+	virtual void			Tick(float DeltaTime) override;
+	void					Render();
 
 #if WITH_EDITOR
 	virtual void			EditorBeginPlay() override;
 	virtual void			OnViewportSelected() override;
 	virtual void			OnViewportDeselected() override;
 #endif
-	virtual void			Tick(float DeltaTime) override;
+
 
 	WorldComponent*			SetRootComponent(WorldComponent* NewRoot);
-
 	WorldComponent*			GetRootComponent() const;
 	Vector3					GetLocation() const;
 	Vector3					GetScale() const;
 	Rotator					GetRotation() const;
 	Transform				GetWorldTransform() const;
-
 	void					SetWorldTransform(const Transform& transform);
 
-	void					Render();
 
 	bool					IsSimulatingPhysics();
 	bool					CollisionEnabled();
@@ -63,7 +63,7 @@ public:
 	virtual void			DrawDetailsWindow(bool bDontUpdate) override;
 
 	void					SetVisibility(bool Visible);
-	bool					IsTickEnabled() { return m_TickEnabled; }
+	bool					IsTickEnabled() const;
 
 	std::vector<WorldComponent*> GetComponents() const;
 	Component*				GetComponentByName(const std::string& Name) const;
@@ -90,33 +90,39 @@ public:
 
 protected:
 
-	//= Protected Template Functions =======================
+	// Protected Functions /////////////////////////////////////////////
 
 	/* Creates a new component, assigns it's parent as this object and returns it */
 	template <typename T>
-	T* CreateComponent(const std::string& NewName)
-	{
-		static_assert(std::is_base_of<Component, T>::value, "Tried to create a component templated with a non-component type");
-
-		T* NewComponent = new T(NewName);
-		NewComponent->SetParent(this);
-
-		World::Get().RegisterGameObject(NewComponent);
-
-		return NewComponent;
-	}
+	T* CreateComponent(const std::string& NewName);
 
 protected:
-	friend class Level;
 
-	//= Protected Variables ===============================
+	// Protected Variables /////////////////////////////////////////////
 
-	/* This only works in the constructor of a spawned actor, */
-	bool					m_TickEnabled = true;
-	WorldComponent*			m_RootComponent;
-	int						m_Tag;
-	bool					m_Visible = true;
-	Controller*				m_CurrentController;
+	bool					m_tickEnabled;
+	WorldComponent*			m_rootComponent;
+	bool					m_visible;
+	Controller*				m_currentController;
 
 };
 
+// Inline Function Definitions ////////////////////////////////////////////////
+
+template <typename T>
+inline T* Actor::CreateComponent(const std::string& NewName)
+{
+	static_assert(std::is_base_of<Component, T>::value, "Tried to create a component templated with a non-component type");
+
+	T* NewComponent = new T(NewName);
+	NewComponent->SetParent(this);
+
+	World::Get().RegisterGameObject(NewComponent);
+
+	return NewComponent;
+}
+
+inline bool Actor::IsTickEnabled() const
+{
+	return m_tickEnabled;
+}

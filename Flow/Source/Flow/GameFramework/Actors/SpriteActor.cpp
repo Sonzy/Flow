@@ -12,7 +12,7 @@ SpriteActor::SpriteActor(const std::string& NewName)
 {
 	m_SpriteComponent = CreateComponent<SpriteComponent>("Sprite Component");
 	m_SpriteComponent->SetOwned(true);
-	m_RootComponent = m_SpriteComponent;
+	m_rootComponent = m_SpriteComponent;
 }
 
 SpriteActor::~SpriteActor()

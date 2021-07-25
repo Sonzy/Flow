@@ -17,7 +17,7 @@ DirectionalLightActor::DirectionalLightActor(const std::string& Name)
 {
 	m_DirectionalLight = CreateComponent<DirectionalLightComponent>("Directional Light");
 	m_DirectionalLight->SetOwned(false);
-	m_RootComponent = m_DirectionalLight;
+	m_rootComponent = m_DirectionalLight;
 }
 
 void DirectionalLightActor::Serialize(YAML::Emitter& Archive)
@@ -34,7 +34,7 @@ void DirectionalLightActor::Serialize(YAML::Emitter& Archive)
 
 void DirectionalLightActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
+	m_rootComponent = World::Get().DestroyComponent(m_rootComponent);
 
 	Actor::Deserialize(Archive);
 

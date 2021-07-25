@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Maths/Maths.h"
 #include <fstream>
+#include <DirectXMath.h>
 
 //= Forward Declarations ============================================
 
@@ -39,6 +40,8 @@ public:
 	virtual void					Tick(float DeltaTime) override;
 
 	void							AddChild(WorldComponent* Child);
+
+	DirectX::XMMATRIX				GetTransformXM() const;
 
 	Vector3							GetWorldPosition() const;
 	Vector3							GetRelativePosition() const;

@@ -1,16 +1,16 @@
 #pragma once
 
-//= Includes ================================================================
+// Includes ////////////////////////////////////////////////////////////////
 
-#include "Flow\GameFramework\Components\WorldComponent.h"
 #include <DirectXMath.h>
-#include "Flow\Rendering\Core\Camera\Camera.h"
+#include "GameFramework/Components/WorldComponent.h"
+#include "Rendering/Core/Camera/Camera.h"
 
-//= Forward Declarations ====================================================
+// Forward Declarations ////////////////////////////////////////////////////
 
 namespace YAML { class Emitter; }
 
-//= Class Definitions =======================================================
+// Class Definitions ///////////////////////////////////////////////////////
 
 /* Component wrapper around the camera interface. */
 class FLOW_API CameraComponent : public WorldComponent, public CameraBase
@@ -19,24 +19,27 @@ public:
 
 	REGISTER_CLASS(CameraComponent)
 	
-	//= Public Functions ========================================
+	// Public Functions ///////////////////////////////////////////////////
 
-											CameraComponent();
-											CameraComponent(const std::string& Name);
+									CameraComponent();
+									CameraComponent(const std::string& Name);
 
-	virtual void							OnRegistered() override;
+	virtual void					OnRegistered() override;
 
 #if WITH_EDITOR
-	virtual void							IconUpdate(IconManager& iconManager) override;
+	virtual void					IconUpdate(IconManager& iconManager) override;
 #endif
 
-	virtual void							Update(float DeltaTime) override;
-	virtual void							MoveCamera(const Transform& NewTransform) override;
-	virtual Transform						GetCameraTransform() const override;
+	virtual void					Update(float DeltaTime) override;
+	virtual void					MoveCamera(const Transform& NewTransform) override;
+	virtual Transform				GetCameraTransform() const override;
 
+#if WITH_EDITOR
+	virtual void					CustomRender() override;
+#endif
 
-	//= ICamera interface =
+	// Camera Interface //
 
-	[[nodiscard]] virtual DirectX::XMMATRIX		GetViewMatrix() const override;
-	virtual Vector3							GetCameraPosition() const override;
+	virtual DirectX::XMMATRIX		GetViewMatrix() const override;
+	virtual Vector3					GetCameraPosition() const override;
 };

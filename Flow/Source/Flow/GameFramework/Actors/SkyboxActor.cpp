@@ -14,7 +14,7 @@ SkyboxActor::SkyboxActor(const std::string& Name)
 {
 	m_Skybox = CreateComponent<SkyboxComponent>("Skybox");
 	m_Skybox->SetOwned(false);
-	m_RootComponent = m_Skybox;
+	m_rootComponent = m_Skybox;
 }
 
 void SkyboxActor::Serialize(YAML::Emitter& Archive)
@@ -31,7 +31,7 @@ void SkyboxActor::Serialize(YAML::Emitter& Archive)
 
 void SkyboxActor::Deserialize(YAML::Node& Archive)
 {
-	m_RootComponent = World::Get().DestroyComponent(m_RootComponent);
+	m_rootComponent = World::Get().DestroyComponent(m_rootComponent);
 
 	Actor::Deserialize(Archive);
 

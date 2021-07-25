@@ -172,11 +172,11 @@ void Level::SetTickEnabled(Actor* TickActor, bool Enable)
 	if (Enable)
 	{
 		m_TickList.push_back(TickActor);
-		TickActor->m_TickEnabled = true;
+		TickActor->m_tickEnabled = true;
 	}
 	else
 	{
 		m_TickList.erase(std::find(m_TickList.begin(), m_TickList.end(), TickActor));
-		TickActor->m_TickEnabled = false;
+		TickActor->m_tickEnabled = false;
 	}
 }

@@ -15,7 +15,7 @@ Controller::Controller(const std::string& Name)
 {
 	m_Root = CreateComponent<WorldComponent>("Root Component");
 	m_Root->SetOwned(true);
-	m_RootComponent = m_Root;
+	m_rootComponent = m_Root;
 }
 
 void Controller::ControlObject(Pawn* Obj)
